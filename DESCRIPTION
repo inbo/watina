@@ -1,5 +1,5 @@
 Package: watina
-Title: What the Package Does (One Line, Title Case)
+Title: Querying & Preprocessing Data From The INBO Watina Database (Groundwater Data)
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "First",
@@ -7,7 +7,11 @@ Authors@R:
            role = c("aut", "cre"),
            email = "first.last@example.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: The watina package is an R package with functions to query
+    and preprocess data from the INBO Watina database. This database provides
+    groundwater levels and groundwater chemical data, mainly from natural 
+    areas in Flanders (Belgium).
 License: GPL-3
+URL: https://github.com/inbo/watina
 Encoding: UTF-8
 LazyData: true
