@@ -1,9 +1,10 @@
 ## Welcome
 
 The `watina` package is an R package with functions to query
-and preprocess data from the _INBO Watina database_. This database provides
-groundwater levels and groundwater chemical data, mainly from natural 
-areas in Flanders (Belgium).
+and preprocess data from the _Watina database_ at the Research Institute for
+Nature and Forest (INBO).
+This database provides groundwater level and chemical data, mainly 
+from natural areas in Flanders (Belgium).
 
 Currently the R package won't work outside INBO.
 
