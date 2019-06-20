@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "first.last@example.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: The watina package is an R package with functions to query
+Description: The watina R-package contains functions to query
     and preprocess data from the Watina database at the Research Institute for
     Nature and Forest (INBO). This database provides
     groundwater level and chemical data, mainly from natural 
