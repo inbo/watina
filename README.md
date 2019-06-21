@@ -1,6 +1,6 @@
 ## Welcome
 
-The `watina` R-package contains functions to query
+The R-package `watina` contains functions to query
 and preprocess data from the _Watina database_ at the Research Institute for
 Nature and Forest (INBO).
 This database provides groundwater level and chemical data, mainly 
