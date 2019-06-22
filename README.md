@@ -32,8 +32,13 @@ Recommended resources to get started are:
 - have a quick look at the [tidyverse style guide](https://style.tidyverse.org/).
 There you see how to style object, variable and function names, as well as the documentation.
 At least keep in mind: **use lower case and 'snake_case'** for object, variable and function names.
-- if your function returns a dataframe, use `dplyr::as_tibble()` to return it as a tibble instead.
+
+If your function returns data:
+
+- return data in a [tidy](https://r4ds.had.co.nz/tidy-data.html#tidy-data-1) way.
+- use `dplyr::as_tibble()` to return a dataframe as a tibble.
 A tibble is a dataframe that makes working in the tidyverse a little [easier](https://r4ds.had.co.nz/tibbles.html).
+- return data as much as possible internationalized: use English names for dataframe variables!
 
 
 ### How can I contribute code?
