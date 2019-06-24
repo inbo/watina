@@ -44,7 +44,7 @@
 #'
 #' @return
 #' By default, a \code{tbl_lazy} object.
-#' With \code{collect = FALSE} or with a specified \code{mask},
+#' With \code{collect = TRUE} or with a specified \code{mask},
 #' a local \code{\link[tibble]{tibble}} is returned.
 #'
 #' (TO BE ADDED: Explanation on the variable names of the returned object)
