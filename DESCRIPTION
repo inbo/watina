@@ -1,5 +1,5 @@
 Package: watina
-Title: Querying & Preprocessing Data From The INBO Watina Database (Groundwater Data)
+Title: Querying & Preprocessing Data From The INBO Watina Database (mainly groundwater data)
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "First",
