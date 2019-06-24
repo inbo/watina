@@ -11,7 +11,12 @@ Description: What the package does (one paragraph).
 Depends: 
     R (>= 3.5.0)
 Imports:
-    inborutils
+    assertthat,
+    dplyr,
+    inborutils,
+    rlang,
+    sf,
+    tibble
 Remotes:
     inbo/inborutils
 License: GPL-3
