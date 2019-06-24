@@ -29,9 +29,11 @@
 #' @param loc_type Type of the location (mainly: the type of measurement device).
 #' Defaults to \code{"P"}, i.e. only groundwater piezometers are returned by
 #' default.
+#' Can be a vector with multiple selected values.
 #' @param loc_validity Validation status of the location.
 #' Defaults to \code{"VLD"}, i.e. only validated locations are returned by
 #' default.
+#' Can be a vector with multiple selected values.
 #' @param loc_vec An optional vector with location codes.
 #' If provided, only locations are returned that are present in this vector.
 #' @param collect Should the data be retrieved as a local tibble?
