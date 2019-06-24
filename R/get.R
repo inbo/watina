@@ -5,8 +5,8 @@
 #' local tibble.
 #' Essential metadata are included in the result.
 #'
-#' (TO BE ADDED: Explanation on the variable names of the returned object,
-#' and on the different available values of loc_type and loc_validity)
+#' (TO BE ADDED: Explanation on the different available values of loc_type
+#' and loc_validity)
 #'
 #' @param con A \code{DBIConnection} object to Watina.
 #' See \code{\link{connect_watina}} to generate one.
@@ -46,6 +46,8 @@
 #' By default, a \code{tbl_lazy} object.
 #' With \code{collect = FALSE} or with a specified \code{mask},
 #' a local \code{\link[tibble]{tibble}} is returned.
+#'
+#' (TO BE ADDED: Explanation on the variable names of the returned object)
 #'
 #' @examples
 #' \dontrun{
@@ -206,7 +208,7 @@ get_locs <- function(con,
                loc_validitycode = .data$MeetpuntStatusCode,
                loc_validity = .data$MeetpuntStatus,
                loc_typecode = .data$MeetpuntTypeCode,
-               loc_type = .data$MeetpuntType) %>%
+               loc_typename = .data$MeetpuntType) %>%
         distinct
 
     if (!is.null(mask)) {

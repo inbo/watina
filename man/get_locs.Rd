@@ -56,6 +56,8 @@ Hence the result can be further built upon before retrieving data with
 By default, a \code{tbl_lazy} object.
 With \code{collect = FALSE} or with a specified \code{mask},
 a local \code{\link[tibble]{tibble}} is returned.
+
+(TO BE ADDED: Explanation on the variable names of the returned object)
 }
 \description{
 Returns locations from the \emph{Watina} database that meet
@@ -64,8 +66,8 @@ local tibble.
 Essential metadata are included in the result.
 }
 \details{
-(TO BE ADDED: Explanation on the variable names of the returned object,
-and on the different available values of loc_type and loc_validity)
+(TO BE ADDED: Explanation on the different available values of loc_type
+and loc_validity)
 }
 \examples{
 \dontrun{
