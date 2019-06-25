@@ -158,7 +158,8 @@ get_locs <- function(con,
         left_join(tbl(con, "vwDimGebied") %>%
                       select(.data$GebiedWID,
                              .data$GebiedCode,
-                             .data$GebiedNaam))
+                             .data$GebiedNaam),
+                  by = "GebiedWID")
 
     if (!is.null(loc_vec)) {
         locs <-
@@ -194,7 +195,8 @@ get_locs <- function(con,
                              .data$ReferentieNiveauMaaiveld) %>%
                       filter(.data$PeilpuntStatusCode %in% c("VLD",
                                                        "ENT",
-                                                       "CLD"))) %>%
+                                                       "CLD")),
+                  by = "MeetpuntWID") %>%
         filter(.data$MeetpuntTypeCode == "P" &
                    (.data$PeilbuisLengte - .data$ReferentieNiveauMaaiveld) <=
                      max_filterdepth |
