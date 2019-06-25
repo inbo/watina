@@ -68,6 +68,12 @@ Essential metadata are included in the result.
 \details{
 (TO BE ADDED: Explanation on the different available values of loc_type
 and loc_validity)
+
+The lazy object returns a \code{loc_wid} variable, for further use in
+\emph{remote} queries.
+However, don't use it in local objects: \code{loc_wid} is not to be
+regarded as stable.
+Therefore, \code{collect = TRUE} does not return \code{loc_wid}.
 }
 \examples{
 \dontrun{

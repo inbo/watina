@@ -10,7 +10,7 @@ get_xg3(locs, con, startyear, endyear = year(now()) - 1,
 }
 \arguments{
 \item{locs}{A \code{tbl_lazy} object or a dataframe, with at least a column
-\code{loc_wid} that defines the locations for which values are to be
+\code{loc_code} that defines the locations for which values are to be
 returned.
 Typically, this will be the object returned by \code{\link{get_locs}}.}
 
@@ -79,7 +79,9 @@ mylocs \%>\% get_xg3(watina, 2010)
 mylocs \%>\% get_xg3(watina, 2010, collect = TRUE)
 mylocs \%>\%
   get_xg3(watina, 2010) \%>\%
-  left_join(mylocs, .) \%>\%
+  left_join(mylocs \%>\%
+            select(-loc_wid),
+            .) \%>\%
   collect
 mylocs \%>\% get_xg3(watina, 2010, vert_crs = "ostend")
 # Disconnect:

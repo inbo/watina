@@ -8,6 +8,12 @@
 #' (TO BE ADDED: Explanation on the different available values of loc_type
 #' and loc_validity)
 #'
+#' The lazy object returns a \code{loc_wid} variable, for further use in
+#' \emph{remote} queries.
+#' However, don't use it in local objects: \code{loc_wid} is not to be
+#' regarded as stable.
+#' Therefore, \code{collect = TRUE} does not return \code{loc_wid}.
+#'
 #' @param con A \code{DBIConnection} object to Watina.
 #' See \code{\link{connect_watina}} to generate one.
 #' @param max_filterdepth Numeric.
@@ -233,6 +239,7 @@ get_locs <- function(con,
 
         locs <-
             locs %>%
+            select(-loc_wid) %>%
             collect %>%
             filter(!is.na(.data$x), !is.na(.data$y)) %>%
             as_points %>%
@@ -245,7 +252,9 @@ get_locs <- function(con,
 
     if (collect) {
         locs <-
-            locs %>% collect
+            locs %>%
+            select(-loc_wid) %>%
+            collect
     }
 
     return(locs)
@@ -280,7 +289,7 @@ get_locs <- function(con,
 #' When to choose which \code{vert_crs}?)
 #'
 #' @param locs A \code{tbl_lazy} object or a dataframe, with at least a column
-#' \code{loc_wid} that defines the locations for which values are to be
+#' \code{loc_code} that defines the locations for which values are to be
 #' returned.
 #' Typically, this will be the object returned by \code{\link{get_locs}}.
 #' @param startyear First hydroyear of the timeframe.
@@ -319,7 +328,9 @@ get_locs <- function(con,
 #' mylocs %>% get_xg3(watina, 2010, collect = TRUE)
 #' mylocs %>%
 #'   get_xg3(watina, 2010) %>%
-#'   left_join(mylocs, .) %>%
+#'   left_join(mylocs %>%
+#'             select(-loc_wid),
+#'             .) %>%
 #'   collect
 #' mylocs %>% get_xg3(watina, 2010, vert_crs = "ostend")
 #' # Disconnect:
@@ -359,13 +370,20 @@ get_xg3 <- function(locs,
     assert_that(is.number(endyear))
     assert_that(endyear >= startyear,
                 msg = "endyear must not be smaller than startyear.")
-    assert_that("loc_wid" %in% colnames(locs),
-                msg = "locs does not have a column name 'loc_wid'.")
+    assert_that("loc_code" %in% colnames(locs),
+                msg = "locs does not have a column name 'loc_code'.")
     assert_that(is.logical(truncated))
     assert_that(is.logical(collect))
 
     if (inherits(locs, "data.frame")) {
-        locs <- copy_to(con, locs)
+        locs <-
+            copy_to(con,
+                    locs) %>%
+            inner_join(tbl(con, "vwDimMeetpunt") %>%
+                          select(loc_wid = .data$MeetpuntWID,
+                                 loc_code = .data$MeetpuntCode),
+                      .,
+                      by = "loc_code")
     }
 
     xg3 <-
@@ -385,7 +403,12 @@ get_xg3 <- function(locs,
                ) %>%
         filter(.data$hydroyear >= startyear,
                .data$hydroyear <= endyear) %>%
-        semi_join(locs, by = "loc_wid")
+        inner_join(locs %>%
+                       select(.data$loc_wid,
+                              .data$loc_code),
+                   .,
+                   by = "loc_wid") %>%
+        select(-.data$loc_wid)
 
     xg3 <-
         switch(vert_crs,
@@ -393,7 +416,7 @@ get_xg3 <- function(locs,
                ostend = xg3 %>% select(-contains("lcl")),
                both = xg3
                ) %>%
-        arrange(.data$loc_wid,
+        arrange(.data$loc_code,
                 .data$hydroyear)
 
     if (collect) {
