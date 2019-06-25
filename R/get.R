@@ -348,6 +348,7 @@ get_locs <- function(con,
 #' now
 #' @importFrom dplyr
 #' copy_to
+#' db_drop_table
 #' filter
 #' left_join
 #' semi_join
@@ -355,6 +356,7 @@ get_locs <- function(con,
 #' collect
 #' contains
 #' arrange
+#' distinct
 get_xg3 <- function(locs,
                     con,
                     startyear,
@@ -376,6 +378,10 @@ get_xg3 <- function(locs,
     assert_that(is.logical(collect))
 
     if (inherits(locs, "data.frame")) {
+        locs <-
+            locs %>%
+            distinct(loc_code)
+
         locs <-
             copy_to(con,
                     locs) %>%
