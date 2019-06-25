@@ -239,7 +239,7 @@ get_locs <- function(con,
 
         locs <-
             locs %>%
-            select(-loc_wid) %>%
+            select(-.data$loc_wid) %>%
             collect %>%
             filter(!is.na(.data$x), !is.na(.data$y)) %>%
             as_points %>%
@@ -253,7 +253,7 @@ get_locs <- function(con,
     if (collect) {
         locs <-
             locs %>%
-            select(-loc_wid) %>%
+            select(-.data$loc_wid) %>%
             collect
     }
 
@@ -351,7 +351,7 @@ get_locs <- function(con,
 #' db_drop_table
 #' filter
 #' left_join
-#' semi_join
+#' inner_join
 #' select
 #' collect
 #' contains
@@ -380,7 +380,7 @@ get_xg3 <- function(locs,
     if (inherits(locs, "data.frame")) {
         locs <-
             locs %>%
-            distinct(loc_code)
+            distinct(.data$loc_code)
 
         try(db_drop_table(con, "##locs"),
             silent = TRUE)
