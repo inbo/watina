@@ -84,6 +84,7 @@
 #'      package = "BelgiumMaps.StatBel")
 #' library(dplyr)
 #' library(sf)
+#' library(stringr)
 #' mymask <-
 #'     st_as_sf(BE_ADMIN_PROVINCE) %>%
 #'     filter(str_detect(TX_PROV_DESCR_NL, "West")) %>%

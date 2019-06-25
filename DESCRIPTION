@@ -15,7 +15,9 @@ Imports:
     dplyr,
     inborutils,
     rlang,
-    sf,
+    sf
+Suggests:
+    stringr,
     tibble
 Remotes:
     inbo/inborutils
