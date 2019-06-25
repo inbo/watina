@@ -113,6 +113,7 @@
 #' select
 #' collect
 #' distinct
+#' arrange
 get_locs <- function(con,
                      max_filterdepth = 3,
                      mask = NULL,
@@ -212,7 +213,9 @@ get_locs <- function(con,
                loc_validity = .data$MeetpuntStatus,
                loc_typecode = .data$MeetpuntTypeCode,
                loc_typename = .data$MeetpuntType) %>%
-        distinct
+        distinct %>%
+        arrange(.data$area_code,
+                .data$loc_code)
 
     if (!is.null(mask)) {
 
@@ -340,6 +343,7 @@ get_locs <- function(con,
 #' select
 #' collect
 #' contains
+#' arrange
 get_xg3 <- function(locs,
                     con,
                     startyear,
@@ -388,7 +392,9 @@ get_xg3 <- function(locs,
                local = xg3 %>% select(-contains("ost")),
                ostend = xg3 %>% select(-contains("lcl")),
                both = xg3
-               )
+               ) %>%
+        arrange(.data$loc_wid,
+                .data$hydroyear)
 
     if (collect) {
         xg3 <-
