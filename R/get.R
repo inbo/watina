@@ -249,3 +249,165 @@ get_locs <- function(con,
 
 }
 
+
+
+
+
+
+
+
+
+#' Get XG3 values from the database
+#'
+#' Returns XG3 values from the \emph{Watina} database,
+#' either as a lazy object or as a
+#' local tibble.
+#' The values must belong to selected locations
+#' and
+#' to a specified timeframe.
+#'
+#' The timeframe is a selection interval between
+#' a given first and last hydroyear.
+#'
+#' Note: the argument \code{truncated} is currently not used.
+#' Currently, non-truncated values are returned!
+#'
+#' (TO BE ADDED: What are XG3 values? What is a hydroyear?
+#' Why truncate, and why truncate by default?
+#' When to choose which \code{vert_crs}?)
+#'
+#' @param locs A \code{tbl_lazy} object or a dataframe, with at least a column
+#' \code{loc_wid} that defines the locations for which values are to be
+#' returned.
+#' Typically, this will be the object returned by \code{\link{get_locs}}.
+#' @param startyear First hydroyear of the timeframe.
+#' @param endyear Last hydroyear of the timeframe.
+#' @param vert_crs A string, defining the 1-dimensional vertical coordinate
+#' reference system (CRS) of the XG3 water levels.
+#' Either \code{"local"} (the default, i.e. returned values are relative to
+#' soil surface level, with positive values = above soil surface),
+#' or \code{"ostend"} (values are from the CRS
+#' \href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend height}
+#' (EPSG \href{https://epsg.io/5710}{5710}),
+#' also known as 'TAW' or 'DNG'),
+#' or \code{"both"}, where the values for both CRS options are returned.
+#' The units are always meters.
+#' @param truncated Logical.
+#' If \code{TRUE} (the default), the XG3 values are calculated after having set
+#' the underlying water level measurements that are above soil surface level
+#' to the soil surface level itself
+#' (which is zero in the case of the relative CRS).
+#'
+#' @inheritParams get_locs
+#'
+#' @return
+#' By default, a \code{tbl_lazy} object.
+#' With \code{collect = TRUE},
+#' a local \code{\link[tibble]{tibble}} is returned.
+#'
+#' (TO BE ADDED: Explanation on the variable names of the returned object)
+#'
+#' @examples
+#' \dontrun{
+#' watina <- connect_watina()
+#' library(dplyr)
+#' mylocs <- get_locs(watina, area_codes = "KAL")
+#' mylocs %>% get_xg3(watina, 2010)
+#' mylocs %>% get_xg3(watina, 2010, collect = TRUE)
+#' mylocs %>%
+#'   get_xg3(watina, 2010) %>%
+#'   left_join(mylocs, .) %>%
+#'   collect
+#' mylocs %>% get_xg3(watina, 2010, vert_crs = "ostend")
+#' # Disconnect:
+#' DBI::dbDisconnect(watina)
+#' }
+#'
+#' @export
+#' @importFrom assertthat
+#' assert_that
+#' has_name
+#' is.number
+#' @importFrom rlang .data
+#' @importFrom lubridate
+#' year
+#' now
+#' @importFrom dplyr
+#' copy_to
+#' filter
+#' left_join
+#' semi_join
+#' select
+#' collect
+#' contains
+get_xg3 <- function(locs,
+                    con,
+                    startyear,
+                    endyear = year(now()) - 1,
+                    vert_crs = c("local",
+                                 "ostend",
+                                 "both"),
+                    truncated = TRUE,
+                    collect = FALSE) {
+
+    vert_crs <- match.arg(vert_crs)
+    assert_that(is.number(startyear))
+    assert_that(is.number(endyear))
+    assert_that(endyear >= startyear,
+                msg = "endyear must not be smaller than startyear.")
+    assert_that("loc_wid" %in% colnames(locs),
+                msg = "locs does not have a column name 'loc_wid'.")
+    assert_that(is.logical(truncated))
+    assert_that(is.logical(collect))
+
+    if (inherits(locs, "data.frame")) {
+        locs <- copy_to(con, locs)
+    }
+
+    xg3 <-
+        tbl(con, "ssrs_Precalc") %>%
+        # left_join(tbl(con, "DimMetingType"),
+        #           by = "MetingTypeWID") %>%
+        select(loc_wid = .data$MeetpuntWID,
+               hydroyear = .data$HydroJaar,
+               # method_code = .data$MetingTypeCode,
+               # method_name = .data$MetingTypeNaam,
+               lg3_lcl = .data$GLG_2,
+               hg3_lcl = .data$GHG_2,
+               vg3_lcl = .data$GVG_2,
+               lg3_ost = .data$GLG_1,
+               hg3_ost = .data$GHG_1,
+               vg3_ost = .data$GVG_1
+               ) %>%
+        filter(.data$hydroyear >= startyear,
+               .data$hydroyear <= endyear) %>%
+        semi_join(locs, by = "loc_wid")
+
+    xg3 <-
+        switch(vert_crs,
+               local = xg3 %>% select(-contains("ost")),
+               ostend = xg3 %>% select(-contains("lcl")),
+               both = xg3
+               )
+
+    if (collect) {
+        xg3 <-
+            xg3 %>%
+            collect
+    }
+
+    return(xg3)
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
