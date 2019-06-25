@@ -99,7 +99,7 @@ get_locs(watina,
            collect = TRUE)
 
 # Selecting all piezometers with status VLD or ENT of the
-# province "West-Vlaanderen:
+# province "West-Vlaanderen":
 data(BE_ADMIN_PROVINCE,
      package = "BelgiumMaps.StatBel")
 library(dplyr)
