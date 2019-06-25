@@ -382,6 +382,9 @@ get_xg3 <- function(locs,
             locs %>%
             distinct(loc_code)
 
+        try(db_drop_table(con, "##locs"),
+            silent = TRUE)
+
         locs <-
             copy_to(con,
                     locs) %>%
