@@ -20,6 +20,8 @@
 #' A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
 #' \code{nryears}, \code{firstyear} and \code{lastyear}.
 #'
+#' @family functions to evaluate locations
+#'
 #' @examples
 #' \dontrun{
 #' watina <- connect_watina()

@@ -124,3 +124,7 @@ DBI::dbDisconnect(watina)
 }
 
 }
+\seealso{
+Other functions to query the database: \code{\link{get_xg3}}
+}
+\concept{functions to query the database}

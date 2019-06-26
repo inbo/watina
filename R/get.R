@@ -55,6 +55,8 @@
 #'
 #' (TO BE ADDED: Explanation on the variable names of the returned object)
 #'
+#' @family functions to query the database
+#'
 #' @examples
 #' \dontrun{
 #' watina <- connect_watina()
@@ -319,6 +321,8 @@ get_locs <- function(con,
 #' a local \code{\link[tibble]{tibble}} is returned.
 #'
 #' (TO BE ADDED: Explanation on the variable names of the returned object)
+#'
+#' @family functions to query the database
 #'
 #' @examples
 #' \dontrun{

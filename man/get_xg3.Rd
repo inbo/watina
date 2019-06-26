@@ -89,3 +89,7 @@ DBI::dbDisconnect(watina)
 }
 
 }
+\seealso{
+Other functions to query the database: \code{\link{get_locs}}
+}
+\concept{functions to query the database}
