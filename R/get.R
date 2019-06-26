@@ -113,6 +113,7 @@
 #' st_drop_geometry
 #' st_intersects
 #' @importFrom dplyr
+#' %>%
 #' tbl
 #' filter
 #' left_join
@@ -347,6 +348,7 @@ get_locs <- function(con,
 #' year
 #' now
 #' @importFrom dplyr
+#' %>%
 #' copy_to
 #' db_drop_table
 #' filter
