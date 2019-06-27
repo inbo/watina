@@ -377,7 +377,7 @@ get_xg3 <- function(locs,
     assert_that(is.number(startyear))
     assert_that(is.number(endyear))
     assert_that(endyear >= startyear,
-                msg = "endyear must not be smaller than startyear.")
+                msg = "startyear must not be larger than endyear.")
     assert_that("loc_code" %in% colnames(locs),
                 msg = "locs does not have a column name 'loc_code'.")
     assert_that(is.logical(truncated))
