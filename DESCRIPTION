@@ -20,7 +20,8 @@ Imports:
     inborutils,
     lubridate,
     rlang,
-    sf
+    sf,
+    tidyr
 Suggests:
     stringr,
     tibble

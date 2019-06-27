@@ -5,10 +5,19 @@
 #' last (hydro)year and the number of (hydro)years with available XG3 values
 #' of the specified type(s) (LG3, HG3 and/or VG3).
 #'
+#' The column \code{xg3_variable} in the resulting tibble
+#' lists the requested XG3 types, for each location.
+#' If more than one XG3 type is requested, or if \code{data} contains both
+#' vertical CRSes, an extra value "\code{combined}" is listed in the
+#' \code{xg3_variable} column.
+#' It evaluates the combined presence of the involved XG3 variables at each
+#' location.
+#'
 #' @inheritParams qualify_xg3
 #'
 #' @return
 #' A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
+#' \code{xg3_variable} (character; see Details),
 #' \code{nryears}, \code{firstyear} and \code{lastyear}.
 #'
 #' @family functions to evaluate locations
@@ -24,10 +33,7 @@
 #' mydata
 #' eval_xg3_avail(mydata,
 #'                xg3_type = c("L", "V"))
-#' eval_xg3_avail(mydata,
-#'                xg3_type = c("L", "V"),
-#'                combined = FALSE)
-#' # Disconnect:
+    #' # Disconnect:
 #' DBI::dbDisconnect(watina)
 #' }
 #'
@@ -40,19 +46,18 @@
 #' group_by
 #' summarise
 eval_xg3_avail <- function(data,
-                           xg3_type = c("L", "H", "V"),
-                           combined = TRUE) {
+                           xg3_type = c("L", "H", "V")) {
 
     xg3_avail <-
         data %>%
-        qualify_xg3(xg3_type = xg3_type,
-                    combined = combined)
+        qualify_xg3(xg3_type = xg3_type)
 
     xg3_avail <-
         xg3_avail %>%
-        group_by(.data$loc_code) %>%
+        group_by(.data$loc_code,
+                 .data$xg3_variable) %>%
         summarise(
-            nryears = sum(.data$meets_condition),
+            nryears = sum(.data$available),
             firstyear = ifelse(.data$nryears > 0,
                                min(.data$hydroyear),
                                NA),
@@ -78,28 +83,33 @@ eval_xg3_avail <- function(data,
 #' Qualify XG3 data per location x hydroyear
 #'
 #' Helper function to select the specified XG3 columns and determine
-#' if availability-condition is met per location x hydroyear.
+#' their availability per location x hydroyear.
+#'
+#' The column \code{xg3_variable} in the resulting tibble
+#' lists the requested XG3 types, for each location and hydroyear.
+#' If more than one XG3 type is requested, or if \code{data} contains both
+#' vertical CRSes, an extra value "\code{combined}" is listed in the
+#' \code{xg3_variable} column.
+#' It evaluates the combined presence of the involved XG3 variables at each
+#' location and hydroyear.
 #'
 #' @param data An object returned by \code{\link{get_xg3}}.
 #' @param xg3_type Character vector of length 1, 2 or 3.
 #' Defines the types of XG3 which are taken to evaluate the hydroyears for
-#' each location: either \code{"LG3"}, \code{"HG3"} and/or \code{"VG3"}.
-#' @param combined Logical.
-#' If \code{xg3_type} has length two or three:
-#' for a hydroyear to be evaluated as 'XG3 is available',
-#' should \emph{all} selected XG3 types be non-\code{NA}
-#' (\code{combined = TRUE}),
-#' or \emph{at least one} (\code{combined = FALSE})?
+#' each location.
+#' Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
 #'
 #' @return
-#' A \code{tbl_lazy} object or a tibble, with a variable \code{meets_condition}
-#' to denote whether the hydroyear has the requested XG3 values available,
-#' at each location.
+#' A \code{tbl_lazy} object or a tibble, with columns \code{xg3_variable}
+#' (character; see Details) and \code{available} (logical) to denote at each
+#' location whether the hydroyear has the requested XG3 values available.
 #'
 #' @keywords internal
 #' @importFrom assertthat
 #' assert_that
 #' @importFrom rlang .data
+#' @importFrom tidyr
+#' gather
 #' @importFrom dplyr
 #' %>%
 #' select
@@ -107,9 +117,10 @@ eval_xg3_avail <- function(data,
 #' contains
 #' arrange
 #' filter
+#' vars
+#' mutate_at
 qualify_xg3 <- function(data,
-                        xg3_type,
-                        combined) {
+                        xg3_type) {
 
     if (missing(xg3_type)) {
         xg3_type <- match.arg(xg3_type)} else {
@@ -117,8 +128,6 @@ qualify_xg3 <- function(data,
                                 c("L", "H", "V")),
                         msg = "You specified at least one unknown xg3_type.")
         }
-
-    assert_that(is.logical(combined))
 
     assert_that(all(c("loc_code", "hydroyear") %in% colnames(data)) &
                     any(grepl("g3", colnames(data))),
@@ -147,18 +156,22 @@ qualify_xg3 <- function(data,
         xg3_qualified <- collect(xg3_qualified)
     }
 
+    if (ncol(xg3_qualified) > 3) {
+        xg3_qualified <-
+            xg3_qualified %>%
+            mutate(combined = select(., contains("g3")) %>%
+                                apply(1, function(x) all(!is.na(x)))
+            )
+    }
+
     xg3_qualified <-
         xg3_qualified %>%
-        mutate(meets_condition = if (combined) {
-            select(., contains("g3")) %>%
-                apply(1, function(x) all(!is.na(x)))
-        } else {
-            select(., contains("g3")) %>%
-                apply(1, function(x) any(!is.na(x)))
-        }) %>%
-        select(.data$loc_code,
-               .data$hydroyear,
-               .data$meets_condition)
+        mutate_at(.vars = vars(contains("g3")),
+                      .funs = (function(x) !is.na(x))) %>%
+        gather(key = "xg3_variable",
+               value = "available",
+               -.data$loc_code,
+               -.data$hydroyear)
 
     return(xg3_qualified)
 }
