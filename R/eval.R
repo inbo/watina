@@ -124,6 +124,14 @@ qualify_xg3 <- function(data,
                     any(grepl("g3", colnames(data))),
                 msg = "data does not have the necessary 'loc_code', 'hydroyear' and XG3 columns.")
 
+    assert_that(("L" %in% xg3_type & any(grepl("lg3", colnames(data)))) |
+                ("H" %in% xg3_type & any(grepl("hg3", colnames(data)))) |
+                ("V" %in% xg3_type & any(grepl("vg3", colnames(data)))),
+                msg = paste("xg3_type is set to",
+                            dput(xg3_type),
+                            "but at least one XG3 type is missing in data.")
+                )
+
     xg3_qualified <-
         data %>%
         select(.data$loc_code,
