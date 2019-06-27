@@ -5,16 +5,7 @@
 #' last (hydro)year and the number of (hydro)years with available XG3 values
 #' of the specified type(s) (LG3, HG3 and/or VG3).
 #'
-#' @param data An object returned by \code{\link{get_xg3}}.
-#' @param xg3_type Character vector of length 1, 2 or 3.
-#' Defines the types of XG3 which are taken to evaluate the hydroyears for
-#' each location: either \code{"LG3"}, \code{"HG3"} and/or \code{"VG3"}.
-#' @param combined Logical.
-#' If \code{xg3_type} has length two or three:
-#' for a hydroyear to be evaluated as 'XG3 is available',
-#' should \emph{all} selected XG3 types be non-\code{NA}
-#' (\code{combined = TRUE}),
-#' or \emph{at least one} (\code{combined = FALSE})?
+#' @inheritParams qualify_xg3
 #'
 #' @return
 #' A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
@@ -42,16 +33,9 @@
 #'
 #'
 #' @export
-#' @importFrom assertthat
-#' assert_that
 #' @importFrom rlang .data
 #' @importFrom dplyr
 #' %>%
-#' select
-#' collect
-#' contains
-#' arrange
-#' filter
 #' mutate
 #' group_by
 #' summarise
@@ -59,38 +43,13 @@ eval_xg3_avail <- function(data,
                            xg3_type = c("L", "H", "V"),
                            combined = TRUE) {
 
-    if (missing(xg3_type)) {
-        xg3_type <- match.arg(xg3_type)} else {
-            assert_that(all(xg3_type %in%
-                                c("L", "H", "V")),
-                        msg = "You specified at least one unknown xg3_type.")
-        }
-
     xg3_avail <-
         data %>%
-        select(.data$loc_code,
-               .data$hydroyear,
-               if ("L" %in% xg3_type) contains("lg"),
-               if ("H" %in% xg3_type) contains("hg"),
-               if ("V" %in% xg3_type) contains("vg")
-        ) %>%
-        arrange(.data$loc_code,
-                .data$hydroyear)
-
-    if (inherits(xg3_avail, "tbl_lazy")) xg3_avail <- collect(xg3_avail)
+        qualify_xg3(xg3_type = xg3_type,
+                    combined = combined)
 
     xg3_avail <-
         xg3_avail %>%
-        mutate(meets_condition = if (combined) {
-            select(., contains("g3")) %>%
-                apply(1, function(x) all(!is.na(x)))
-        } else {
-            select(., contains("g3")) %>%
-                apply(1, function(x) any(!is.na(x)))
-        }) %>%
-        select(.data$loc_code,
-               .data$hydroyear,
-               .data$meets_condition) %>%
         group_by(.data$loc_code) %>%
         summarise(
             nryears = sum(.data$meets_condition),
@@ -104,3 +63,99 @@ eval_xg3_avail <- function(data,
 
     return(xg3_avail)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+#' Qualify XG3 data per location x hydroyear
+#'
+#' Helper function to select the specified XG3 columns and determine
+#' if availability-condition is met per location x hydroyear.
+#'
+#' @param data An object returned by \code{\link{get_xg3}}.
+#' @param xg3_type Character vector of length 1, 2 or 3.
+#' Defines the types of XG3 which are taken to evaluate the hydroyears for
+#' each location: either \code{"LG3"}, \code{"HG3"} and/or \code{"VG3"}.
+#' @param combined Logical.
+#' If \code{xg3_type} has length two or three:
+#' for a hydroyear to be evaluated as 'XG3 is available',
+#' should \emph{all} selected XG3 types be non-\code{NA}
+#' (\code{combined = TRUE}),
+#' or \emph{at least one} (\code{combined = FALSE})?
+#'
+#' @return
+#' A \code{tbl_lazy} object or a tibble, with a variable \code{meets_condition}
+#' to denote whether the hydroyear has the requested XG3 values available,
+#' at each location.
+#'
+#' @keywords internal
+#' @importFrom assertthat
+#' assert_that
+#' @importFrom rlang .data
+#' @importFrom dplyr
+#' %>%
+#' select
+#' collect
+#' contains
+#' arrange
+#' filter
+qualify_xg3 <- function(data,
+                        xg3_type,
+                        combined) {
+
+    if (missing(xg3_type)) {
+        xg3_type <- match.arg(xg3_type)} else {
+            assert_that(all(xg3_type %in%
+                                c("L", "H", "V")),
+                        msg = "You specified at least one unknown xg3_type.")
+        }
+
+    assert_that(is.logical(combined))
+
+    assert_that(all(c("loc_code", "hydroyear") %in% colnames(data)) &
+                    any(grepl("g3", colnames(data))),
+                msg = "data does not have the necessary 'loc_code', 'hydroyear' and XG3 columns.")
+
+    xg3_qualified <-
+        data %>%
+        select(.data$loc_code,
+               .data$hydroyear,
+               if ("L" %in% xg3_type) contains("lg"),
+               if ("H" %in% xg3_type) contains("hg"),
+               if ("V" %in% xg3_type) contains("vg")
+        ) %>%
+        arrange(.data$loc_code,
+                .data$hydroyear)
+
+    if (inherits(xg3_qualified, "tbl_lazy")) {
+        xg3_qualified <- collect(xg3_qualified)
+    }
+
+    xg3_qualified <-
+        xg3_qualified %>%
+        mutate(meets_condition = if (combined) {
+            select(., contains("g3")) %>%
+                apply(1, function(x) all(!is.na(x)))
+        } else {
+            select(., contains("g3")) %>%
+                apply(1, function(x) any(!is.na(x)))
+        }) %>%
+        select(.data$loc_code,
+               .data$hydroyear,
+               .data$meets_condition)
+
+    return(xg3_qualified)
+}
+
+
+
+
+
