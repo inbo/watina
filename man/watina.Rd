@@ -6,7 +6,7 @@
 \alias{watina-package}
 \title{\code{watina} package}
 \description{
-Querying & preprocessing data from the INBO Watina database (mainly groundwater data)
+Querying & processing data from the INBO Watina database (mainly groundwater data)
 }
 \details{
 See the README on
