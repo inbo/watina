@@ -32,7 +32,7 @@ A tibble with variables:
 \item{\code{series}}: series ID, unique within \code{loc_code}
 \item{\code{ser_length}}: series duration, i.e. from first to last year
 \item{\code{ser_nryears}}: number of years in the series for which the
-XG3 variable is available,
+XG3 variable is available
 \item{\code{ser_rel_nryears}}: the fraction \code{ser_nryears / ser_length},
 \item{\code{ser_firstyear}}: first year in the series with XG3 variable
 \item{\code{ser_lastyear}}: last year in the series with XG3 variable
