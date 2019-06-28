@@ -44,12 +44,14 @@ Only with larger values of \code{max_gap} this P-value can get low.
 \item{Summary statistics based on the XG3 values,
 i.e. excluding the 'combined' series}:
   \itemize{
-  \item{\code{ser_mean}}: mean XG3 value of the series
+  \item{\code{ser_mean}}: mean XG3 value of the series, as meters.
   \item{\code{ser_sd}}: standard deviation of the XG3 values of the series
-  (an estimate of the superpopulation's standard deviation)
+  (an estimate of the superpopulation's standard deviation).
+  As meters.
   \item{\code{ser_se_6y}}: estimated standard error of the mean XG3 for a
   six-year period, applying finite population correction
   (i.e. for design-based estimation of this mean).
+  As meters.
   For series shorter than six years, the estimation is still regarding a
   six-year period, assuming the same sampling variance as in the short
   series.
