@@ -322,6 +322,10 @@ get_locs <- function(con,
 #'
 #' (TO BE ADDED: Explanation on the variable names of the returned object)
 #'
+#' The suffix of the XG3 variables is either "\code{_lcl}" for
+#' \code{vert_crs = "local"} or
+#' "\code{_ost}" for \code{vert_crs = "ostend"}.
+#'
 #' @family functions to query the database
 #'
 #' @examples

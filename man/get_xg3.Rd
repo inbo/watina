@@ -50,6 +50,10 @@ With \code{collect = TRUE},
 a local \code{\link[tibble]{tibble}} is returned.
 
 (TO BE ADDED: Explanation on the variable names of the returned object)
+
+The suffix of the XG3 variables is either "\code{_lcl}" for
+\code{vert_crs = "local"} or
+"\code{_ost}" for \code{vert_crs = "ostend"}.
 }
 \description{
 Returns XG3 values from the \emph{Watina} database,
