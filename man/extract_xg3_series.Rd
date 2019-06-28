@@ -4,7 +4,7 @@
 \alias{extract_xg3_series}
 \title{Identify XG3 series per location}
 \usage{
-extract_xg3_series(data, xg3_type, max_gap, min_dur)
+extract_xg3_series(data, xg3_type = c("L", "H", "V"), max_gap, min_dur)
 }
 \arguments{
 \item{data}{An object returned by \code{\link{get_xg3}}.}

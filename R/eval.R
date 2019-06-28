@@ -111,13 +111,6 @@ eval_xg3_avail <- function(data,
 filter_xg3 <- function(data,
                         xg3_type) {
 
-    if (missing(xg3_type)) {
-        xg3_type <- match.arg(xg3_type)} else {
-            assert_that(all(xg3_type %in%
-                                c("L", "H", "V")),
-                        msg = "You specified at least one unknown xg3_type.")
-        }
-
     assert_that(all(c("loc_code", "hydroyear") %in% colnames(data)) &
                     any(grepl("g3", colnames(data))),
                 msg = "data does not have the necessary 'loc_code', 'hydroyear' and XG3 columns.")
@@ -332,6 +325,13 @@ eval_xg3_series <- function(data,
                             xg3_type = c("L", "H", "V"),
                             max_gap,
                             min_dur) {
+
+    if (missing(xg3_type)) {
+        xg3_type <- match.arg(xg3_type)} else {
+            assert_that(all(xg3_type %in%
+                                c("L", "H", "V")),
+                        msg = "You specified at least one unknown xg3_type.")
+        }
 
     series_memberyrs <-
         data %>%

@@ -92,9 +92,16 @@
 #' select
 #' inner_join
 extract_xg3_series <- function(data,
-                               xg3_type,
+                               xg3_type = c("L", "H", "V"),
                                max_gap,
                                min_dur) {
+
+    if (missing(xg3_type)) {
+        xg3_type <- match.arg(xg3_type)} else {
+            assert_that(all(xg3_type %in%
+                                c("L", "H", "V")),
+                        msg = "You specified at least one unknown xg3_type.")
+        }
 
     assert_that(max_gap %% max_gap == 0 & max_gap >= 0,
                 msg = "max_gap must be a positive integer value.")
