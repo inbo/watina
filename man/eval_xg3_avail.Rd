@@ -10,8 +10,7 @@ eval_xg3_avail(data, xg3_type = c("L", "H", "V"))
 \item{data}{An object returned by \code{\link{get_xg3}}.}
 
 \item{xg3_type}{Character vector of length 1, 2 or 3.
-Defines the types of XG3 which are taken to evaluate the hydroyears for
-each location.
+Defines the types of XG3 which are taken from \code{data}.
 Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.}
 }
 \value{
@@ -31,7 +30,7 @@ lists the requested XG3 types, for each location.
 If more than one XG3 type is requested, or if \code{data} contains both
 vertical CRSes, an extra value "\code{combined}" is listed in the
 \code{xg3_variable} column.
-It evaluates the combined presence of the involved XG3 variables at each
+It evaluates the combined presence of the selected XG3 variables at each
 location.
 }
 \examples{

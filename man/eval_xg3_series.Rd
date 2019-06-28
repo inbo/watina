@@ -10,8 +10,7 @@ eval_xg3_series(data, xg3_type = c("L", "H", "V"), max_gap, min_dur)
 \item{data}{An object returned by \code{\link{get_xg3}}.}
 
 \item{xg3_type}{Character vector of length 1, 2 or 3.
-Defines the types of XG3 which are taken to evaluate the hydroyears for
-each location.
+Defines the types of XG3 which are taken from \code{data}.
 Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.}
 
 \item{max_gap}{A positive integer (can be zero).
@@ -71,7 +70,7 @@ and/or VG3) via the \code{xg3_type} argument, but adds an extra level
 vertical CRSes) and \code{xg3_type} results in more than one requested
 variable.
 This 'combined' level defines an XG3 series as an XG3 series where each
-'member' year has \strong{all} individual XG3 variables available.
+'member' year has \strong{all} selected XG3 variables available.
 }
 \examples{
 \dontrun{
