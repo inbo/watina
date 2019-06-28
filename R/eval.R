@@ -47,6 +47,7 @@
 #' mutate
 #' group_by
 #' summarise
+#' ungroup
 eval_xg3_avail <- function(data,
                            xg3_type = c("L", "H", "V")) {
 
@@ -73,7 +74,8 @@ eval_xg3_avail <- function(data,
             lastyear = ifelse(.data$nryears > 0,
                               max(.data$hydroyear),
                               NA)
-        )
+        ) %>%
+        ungroup
 
     return(xg3_avail)
 }
@@ -362,6 +364,7 @@ qualify_xg3 <- function(data,
 #' inner_join
 #' n
 #' first
+#' ungroup
 eval_xg3_series <- function(data,
                             xg3_type = c("L", "H", "V"),
                             max_gap,
@@ -398,7 +401,8 @@ eval_xg3_series <- function(data,
                                                      .data$ser_lastyear)),
                                             exact = TRUE) %>%
                                 .$p.value
-        )
+        ) %>%
+        ungroup
     sink()
 
     # calculation of standard errors
@@ -440,7 +444,8 @@ eval_xg3_series <- function(data,
                                             first(.data$xg3_variable), "_lcl"),
                                         .data$ser_se_6y / abs(.data$ser_mean),
                                         NA)
-        )
+        ) %>%
+        ungroup
 
     # put it all together...
     xg3_series_props <-
