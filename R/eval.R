@@ -100,7 +100,7 @@ eval_xg3_avail <- function(data,
 #' Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
 #'
 #' @return
-#' A \code{tbl_lazy} object or a tibble, with columns \code{xg3_variable}
+#' A tibble, with columns \code{xg3_variable}
 #' (character; see Details) and \code{available} (logical) to denote at each
 #' location whether the hydroyear has the requested XG3 values available.
 #'
