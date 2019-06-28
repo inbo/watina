@@ -290,6 +290,11 @@ qualify_xg3 <- function(data,
 #' \item{\code{ser_rel_nryears}}: the fraction \code{ser_nryears / ser_length},
 #' \item{\code{ser_firstyear}}: first year in the series with XG3 variable
 #' \item{\code{ser_lastyear}}: last year in the series with XG3 variable
+#' \item{\code{ser_pval_uniform}}: P-value of an exact, one-sample two-sided
+#' Kolmogorov-Smirnov test for the discrete uniform distribution of the member
+#' years withing the XG3 series.
+#' The smaller the p-value, the less uniform years are spread in the series.
+#' Only with larger values of \code{max_gap} this P-value can get low.
 #' }
 #'
 #' @family functions to evaluate locations
@@ -313,6 +318,7 @@ qualify_xg3 <- function(data,
 #'
 #' @export
 #' @importFrom rlang .data
+#' @importFrom KSgeneral disc_ks_test
 #' @importFrom dplyr
 #' %>%
 #' mutate
@@ -334,6 +340,7 @@ eval_xg3_series <- function(data,
                            min_dur = min_dur)
 
     # summarize series properties:
+    sink(tempfile()) # to suppress the many disc_ks_test() messages
     xg3_series_props <-
         series_memberyrs %>%
         group_by(.data$loc_code,
@@ -344,8 +351,14 @@ eval_xg3_series <- function(data,
             ser_nryears = n(),
             ser_rel_nryears = .data$ser_nryears / .data$ser_length,
             ser_firstyear = min(.data$hydroyear),
-            ser_lastyear = max(.data$hydroyear)
+            ser_lastyear = max(.data$hydroyear),
+            ser_pval_uniform = disc_ks_test(.data$hydroyear,
+                                            ecdf(seq(.data$ser_firstyear,
+                                                     .data$ser_lastyear)),
+                                            exact = TRUE) %>%
+                                .$p.value
         )
+    sink()
 
     # to do: add remaining properties
 
