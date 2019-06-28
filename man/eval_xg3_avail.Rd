@@ -51,4 +51,7 @@ DBI::dbDisconnect(watina)
 
 
 }
+\seealso{
+Other functions to evaluate locations: \code{\link{eval_xg3_series}}
+}
 \concept{functions to evaluate locations}
