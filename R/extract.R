@@ -79,6 +79,8 @@
 #' @importFrom rlang .data
 #' @importFrom assertthat
 #' assert_that
+#' @importFrom stringr
+#' str_c
 #' @importFrom tidyr
 #' full_seq
 #' complete
@@ -91,6 +93,9 @@
 #' filter
 #' select
 #' inner_join
+#' lag
+#' lead
+#' ungroup
 extract_xg3_series <- function(data,
                                xg3_type = c("L", "H", "V"),
                                max_gap,

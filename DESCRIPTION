@@ -22,9 +22,10 @@ Imports:
     lubridate,
     rlang,
     sf,
+    stringr,
+    stats,
     tidyr
 Suggests:
-    stringr,
     tibble
 Remotes:
     inbo/inborutils

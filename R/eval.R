@@ -332,7 +332,16 @@ qualify_xg3 <- function(data,
 #'
 #' @export
 #' @importFrom rlang .data
-#' @importFrom KSgeneral disc_ks_test
+#' @importFrom assertthat
+#' assert_that
+#' @importFrom KSgeneral
+#' disc_ks_test
+#' @importFrom stringr
+#' str_detect
+#' @importFrom stats
+#' sd
+#' var
+#' ecdf
 #' @importFrom dplyr
 #' %>%
 #' mutate
@@ -342,6 +351,8 @@ qualify_xg3 <- function(data,
 #' filter
 #' select
 #' inner_join
+#' n
+#' first
 eval_xg3_series <- function(data,
                             xg3_type = c("L", "H", "V"),
                             max_gap,
