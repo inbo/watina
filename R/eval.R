@@ -40,6 +40,8 @@
 #'
 #' @export
 #' @importFrom rlang .data
+#' @importFrom assertthat
+#' assert_that
 #' @importFrom dplyr
 #' %>%
 #' mutate
@@ -47,6 +49,13 @@
 #' summarise
 eval_xg3_avail <- function(data,
                            xg3_type = c("L", "H", "V")) {
+
+    if (missing(xg3_type)) {
+        xg3_type <- match.arg(xg3_type)} else {
+            assert_that(all(xg3_type %in%
+                                c("L", "H", "V")),
+                        msg = "You specified at least one unknown xg3_type.")
+        }
 
     xg3_avail <-
         data %>%
