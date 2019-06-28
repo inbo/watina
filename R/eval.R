@@ -288,6 +288,27 @@ qualify_xg3 <- function(data,
 #' years withing the XG3 series.
 #' The smaller the p-value, the less uniform years are spread in the series.
 #' Only with larger values of \code{max_gap} this P-value can get low.
+#' \item{Summary statistics based on the XG3 values,
+#' i.e. excluding the 'combined' series}:
+#'   \itemize{
+#'   \item{\code{ser_mean}}: mean XG3 value of the series
+#'   \item{\code{ser_sd}}: standard deviation of the XG3 values of the series
+#'   (an estimate of the superpopulation's standard deviation)
+#'   \item{\code{ser_se_6y}}: estimated standard error of the mean XG3 for a
+#'   six-year period, applying finite population correction
+#'   (i.e. for design-based estimation of this mean).
+#'   For series shorter than six years, the estimation is still regarding a
+#'   six-year period, assuming the same sampling variance as in the short
+#'   series.
+#'   \item{\code{ser_rel_sd_lcl}}: relative standard deviation of XG3 values,
+#'   i.e. \code{ser_sd / ser_mean}.
+#'   \strong{This value is only calculated for \code{vert_crs = "local"}.}
+#'   \item{\code{ser_rel_se_6y_lcl}}:
+#'   relative standard error of the mean XG3 for a
+#'   six-year period,
+#'   i.e. \code{ser_se_6y / ser_mean}.
+#'   \strong{This value is only calculated for \code{vert_crs = "local"}.}
+#'   }
 #' }
 #'
 #' @family functions to evaluate locations
@@ -360,7 +381,55 @@ eval_xg3_series <- function(data,
         )
     sink()
 
-    # to do: add remaining properties
+    # calculation of standard errors
+
+    xg3_filtered <-
+        data %>%
+        filter_xg3(xg3_type = xg3_type)
+
+    if (inherits(xg3_filtered, "tbl_lazy")) {
+        xg3_filtered <- collect(xg3_filtered)
+    }
+
+    xg3_series_values <-
+        xg3_filtered %>%
+        gather(key = "xg3_variable",
+               value = "value",
+               -.data$loc_code,
+               -.data$hydroyear) %>%
+        inner_join(
+            series_memberyrs,
+            by = c("loc_code", "hydroyear", "xg3_variable")
+        ) %>%
+        group_by(.data$loc_code,
+                 .data$xg3_variable,
+                 .data$series)
+
+    xg3_series_se <-
+        xg3_series_values %>%
+        summarise(
+            ser_mean = mean(.data$value),
+            ser_sd = sd(.data$value),
+            ser_se_6y = (var(.data$value) / 6 *
+                              (1 - n() / first(.data$series_length))) %>%
+                                sqrt,
+            ser_rel_sd_lcl = ifelse(str_detect(first(.data$xg3_variable), "_lcl"),
+                                .data$ser_sd / abs(.data$ser_mean),
+                                NA),
+            ser_rel_se_6y_lcl = ifelse(str_detect(
+                                            first(.data$xg3_variable), "_lcl"),
+                                        .data$ser_se_6y / abs(.data$ser_mean),
+                                        NA)
+        )
+
+    # put it all together...
+    xg3_series_props <-
+        xg3_series_props %>%
+        left_join(xg3_series_se,
+                  by = c("loc_code",
+                              "xg3_variable",
+                              "series")
+                  )
 
     return(xg3_series_props)
 }
