@@ -179,7 +179,10 @@ extract_xg3_series <- function(data,
                           "xg3_variable",
                           "unint")) %>%
         ungroup %>%
-        select(-.data$unint)
+        select(-.data$unint) %>%
+        arrange(.data$loc_code,
+                .data$xg3_variable,
+                .data$hydroyear)
 
     return(series_memberyrs)
 }
