@@ -314,6 +314,7 @@ qualify_xg3 <- function(data,
 #'   \item{\code{ser_se_6y}}: estimated standard error of the mean XG3 for a
 #'   six-year period, applying finite population correction
 #'   (i.e. for design-based estimation of this mean).
+#'   Hence, \code{ser_se_6y} is zero when a series has no missing years.
 #'   As meters.
 #'   For series shorter than six years, the estimation is still regarding a
 #'   six-year period, assuming the same sampling variance as in the short
@@ -328,6 +329,8 @@ qualify_xg3 <- function(data,
 #'   \strong{This value is only calculated for \code{vert_crs = "local"}.}
 #'   }
 #' }
+#'
+#' @seealso \code{\link{extract_xg3_series}}
 #'
 #' @family functions to evaluate locations
 #'

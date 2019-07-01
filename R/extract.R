@@ -28,7 +28,8 @@
 #' to which a series belongs.
 #' \code{xg3_variable} is restricted to the requested XG3 types (LG3, HG3
 #' and/or VG3) via the \code{xg3_type} argument, but adds an extra level
-#' \emph{'combined'} whenever the  combination of data (which may have both
+#' "\code{combined}" whenever the  combination of \code{data} (which may have
+#' both
 #' vertical CRSes) and \code{xg3_type} results in more than one requested
 #' variable.
 #' This 'combined' level defines an XG3 series as an XG3 series where each

@@ -52,6 +52,7 @@ i.e. excluding the 'combined' series}:
   \item{\code{ser_se_6y}}: estimated standard error of the mean XG3 for a
   six-year period, applying finite population correction
   (i.e. for design-based estimation of this mean).
+  Hence, \code{ser_se_6y} is zero when a series has no missing years.
   As meters.
   For series shorter than six years, the estimation is still regarding a
   six-year period, assuming the same sampling variance as in the short
@@ -121,6 +122,8 @@ DBI::dbDisconnect(watina)
 
 }
 \seealso{
+\code{\link{extract_xg3_series}}
+
 Other functions to evaluate locations: \code{\link{eval_xg3_avail}}
 }
 \concept{functions to evaluate locations}
