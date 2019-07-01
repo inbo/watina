@@ -299,11 +299,13 @@ qualify_xg3 <- function(data,
 #' \item{\code{ser_rel_nryears}}: the fraction \code{ser_nryears / ser_length},
 #' \item{\code{ser_firstyear}}: first year in the series with XG3 variable
 #' \item{\code{ser_lastyear}}: last year in the series with XG3 variable
-#' \item{\code{ser_pval_uniform}}: P-value of an exact, one-sample two-sided
+#' \item{\code{ser_pval_uniform}}: p-value of an exact, one-sample two-sided
 #' Kolmogorov-Smirnov test for the discrete uniform distribution of the member
 #' years withing the XG3 series.
-#' The smaller the p-value, the less uniform years are spread in the series.
-#' Only with larger values of \code{max_gap} this P-value can get low.
+#' The smaller the p-value,
+#' the less uniform the member years are spread within a series.
+#' A perfectly uniform spread results in a p-value of 1.
+#' Only with larger values of \code{max_gap} this p-value can get low.
 #' \item{Summary statistics based on the XG3 values,
 #' i.e. excluding the 'combined' series}:
 #'   \itemize{
