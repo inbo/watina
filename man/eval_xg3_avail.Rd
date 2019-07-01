@@ -26,12 +26,15 @@ of the specified type(s) (LG3, HG3 and/or VG3).
 }
 \details{
 The column \code{xg3_variable} in the resulting tibble
-lists the requested XG3 types, for each location.
-If more than one XG3 type is requested, or if \code{data} contains both
-vertical CRSes, an extra value "\code{combined}" is listed in the
-\code{xg3_variable} column.
-It evaluates the combined presence of the selected XG3 variables at each
-location.
+stands for the XG3 type + the vertical CRS (see \code{\link{get_xg3}}).
+\code{xg3_variable} is restricted to the requested XG3 types (LG3, HG3
+and/or VG3) via the \code{xg3_type} argument, but adds an extra level
+"\code{combined}" whenever the  combination of \code{data} (which may have
+both
+vertical CRSes) and \code{xg3_type} results in more than one requested
+variable.
+The "\code{combined}" level evaluates the combined presence of the selected
+XG3 variables at each location.
 }
 \examples{
 \dontrun{

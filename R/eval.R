@@ -6,12 +6,15 @@
 #' of the specified type(s) (LG3, HG3 and/or VG3).
 #'
 #' The column \code{xg3_variable} in the resulting tibble
-#' lists the requested XG3 types, for each location.
-#' If more than one XG3 type is requested, or if \code{data} contains both
-#' vertical CRSes, an extra value "\code{combined}" is listed in the
-#' \code{xg3_variable} column.
-#' It evaluates the combined presence of the selected XG3 variables at each
-#' location.
+#' stands for the XG3 type + the vertical CRS (see \code{\link{get_xg3}}).
+#' \code{xg3_variable} is restricted to the requested XG3 types (LG3, HG3
+#' and/or VG3) via the \code{xg3_type} argument, but adds an extra level
+#' "\code{combined}" whenever the  combination of \code{data} (which may have
+#' both
+#' vertical CRSes) and \code{xg3_type} results in more than one requested
+#' variable.
+#' The "\code{combined}" level evaluates the combined presence of the selected
+#' XG3 variables at each location.
 #'
 #' @inheritParams filter_xg3
 #'
@@ -264,7 +267,8 @@ qualify_xg3 <- function(data,
 #' to which a series belongs.
 #' \code{xg3_variable} is restricted to the requested XG3 types (LG3, HG3
 #' and/or VG3) via the \code{xg3_type} argument, but adds an extra level
-#' \emph{'combined'} whenever the  combination of data (which may have both
+#' "\code{combined}" whenever the  combination of \code{data} (which may have
+#' both
 #' vertical CRSes) and \code{xg3_type} results in more than one requested
 #' variable.
 #' This 'combined' level defines an XG3 series as an XG3 series where each
@@ -288,7 +292,8 @@ qualify_xg3 <- function(data,
 #' \item{\code{loc_code}}: see \code{\link{get_locs}}
 #' \item{\code{xg3_variable}}: character; see Details
 #' \item{\code{series}}: series ID, unique within \code{loc_code}
-#' \item{\code{ser_length}}: series duration, i.e. from first to last year
+#' \item{\code{ser_length}}: series duration (as years), i.e. from first to
+#' last year
 #' \item{\code{ser_nryears}}: number of years in the series for which the
 #' XG3 variable is available
 #' \item{\code{ser_rel_nryears}}: the fraction \code{ser_nryears / ser_length},
