@@ -48,7 +48,15 @@ as_points <- function(df, xvar = "x", yvar = "y", remove = FALSE) {
     assert_that(has_name(df, xvar))
     assert_that(has_name(df, yvar))
 
-    df %>%
+    df_cleaned <-
+        df[!is.na(df[,xvar]) & !is.na(df[,yvar]),]
+
+    if (nrow(df_cleaned) < nrow(df)) {
+        warning(nrow(df) - nrow(df_cleaned),
+                " locations were removed because of missing X or Y coordinates.")
+    }
+
+    df_cleaned %>%
         st_as_sf(coords = c(xvar, yvar),
                  crs = 31370,
                  remove = remove)
