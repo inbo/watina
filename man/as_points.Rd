@@ -18,7 +18,7 @@ the Belgian Lambert 72 CRS (EPSG-code 31370).}
 dataframe after conversion to a spatial object?}
 }
 \value{
-An \code{sf} object of geometry type \code{POINT} and with EPSG-code
+An \code{sf} object of geometry type \code{POINT} with EPSG-code
 31370 as coordinate reference system.
 }
 \description{
