@@ -20,6 +20,9 @@ remotes::install_github("inbo/watina",
                         build_opts = c("--no-resave-data", "--no-manual"))
 ```
 
+Note that this will install the package from the `master` branch.
+If you need a version from another branch, add the `ref` argument in the above function to provide the branch name.
+
 ## You are welcome to contribute!
 
 ### Coding tools: it's never too late for learning!
