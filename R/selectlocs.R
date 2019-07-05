@@ -249,6 +249,7 @@
 #' @importFrom rlang .data
 #' @importFrom assertthat
 #' assert_that
+#' is.flag
 #' @importFrom stringr
 #' str_detect
 #' @importFrom tidyr
@@ -289,8 +290,8 @@ selectlocs_xg3 <- function(data,
         }
 
     assert_that(inherits(conditions, "data.frame"))
-    assert_that(is.logical(verbose))
-    assert_that(is.logical(list))
+    assert_that(is.flag(verbose))
+    assert_that(is.flag(list))
 
     assert_that(all(c("xg3_variable",
                   "statistic",

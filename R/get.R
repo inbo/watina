@@ -111,6 +111,7 @@
 #' @importFrom assertthat
 #' assert_that
 #' is.number
+#' is.flag
 #' @importFrom sf
 #' st_drop_geometry
 #' st_intersects
@@ -141,7 +142,7 @@ get_locs <- function(con,
     assert_that(is.null(area_codes) | all(is.character(area_codes)))
     assert_that(is.null(loc_vec) | all(is.character(loc_vec)),
                 msg = "loc_vec must be a character vector.")
-    assert_that(is.logical(collect))
+    assert_that(is.flag(collect))
 
     if (!is.null(mask) & !collect) {
         message("As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.")
@@ -364,6 +365,7 @@ get_locs <- function(con,
 #' assert_that
 #' has_name
 #' is.number
+#' is.flag
 #' @importFrom rlang .data
 #' @importFrom lubridate
 #' year
@@ -397,8 +399,8 @@ get_xg3 <- function(locs,
                 msg = "startyear must not be larger than endyear.")
     assert_that("loc_code" %in% colnames(locs),
                 msg = "locs does not have a column name 'loc_code'.")
-    assert_that(is.logical(truncated))
-    assert_that(is.logical(collect))
+    assert_that(is.flag(truncated))
+    assert_that(is.flag(collect))
 
     if (inherits(locs, "data.frame")) {
         locs <-
