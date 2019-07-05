@@ -12,7 +12,7 @@ qualify_xg3(data, xg3_type)
 \item{xg3_type}{Character vector of length 1, 2 or 3.
 Defines the types of XG3 which are taken from \code{data}.
 Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
-Defaults to code{"L"}.}
+Defaults to \code{"L"}.}
 }
 \value{
 A tibble, with columns \code{xg3_variable}
