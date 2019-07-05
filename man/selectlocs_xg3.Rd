@@ -194,12 +194,14 @@ XG3 series conditions can be distinguished.
 The \code{conditions} parameter takes a dataframe that must have the
 following columns:
 \describe{
-\item{xg3_variable}{One of: \code{"combined","lg3_lcl","lg3_ost","vg3_lcl",
+\item{\code{xg3_variable}}{One of: \code{"combined","lg3_lcl","lg3_ost",
+"vg3_lcl",
 "vg3_ost","hg3_lcl","hg3_ost"}.}
-\item{statistic}{Name of the statistic to be evaluated.}
-\item{criterion}{Numeric. Defines the value of the statistic on which the
+\item{\code{statistic}}{Name of the statistic to be evaluated.}
+\item{\code{criterion}}{Numeric. Defines the value of the statistic on which
+the
 condition will be based.}
-\item{direction}{One of: \code{"min","max","equal"}.
+\item{\code{direction}}{One of: \code{"min","max","equal"}.
 Together with \code{criterion}, this completes the condition which will
 be evaluated with respect to the specific \code{xg3_variable}:
 for \code{direction = "min"}, the statistic must be the criterion
