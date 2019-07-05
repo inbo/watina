@@ -146,6 +146,18 @@ get_locs <- function(con,
         message("As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.")
     }
 
+    if (!is.null(mask)) {
+        assert_that(inherits(mask, "sf"),
+                    msg = "mask must be an sf object.")
+        assert_that(st_crs(mask) == st_crs(31370),
+                    msg = "The CRS of mask must be Belgian Lambert 72 (EPSG-code 31370).")
+    }
+
+    if (!is.null(bbox)) {
+        assert_that(bbox["xmax"] >= bbox["xmin"],
+                    bbox["ymax"] >= bbox["ymin"])
+    }
+
     if (missing(loc_type)) {
         loc_type <- match.arg(loc_type)} else {
             assert_that(all(loc_type %in%
