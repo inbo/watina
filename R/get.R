@@ -20,9 +20,21 @@
 #' Maximum depth of the filter bottom below soil surface, as meters.
 #' This condition is only applied to piezometers.
 #' @param mask An optional geospatial filter of class \code{sf}.
-#' If provided, only locations that intersect with \code{mask} will be returned.
+#' If provided, only locations that intersect with \code{mask} will be returned,
+#' with the value of \code{buffer} taken into account.
 #' The CRS must be Belgian Lambert 72 (EPSG-code
 #' \href{https://epsg.io/31370}{31370}).
+#' @param join_mask Logical.
+#' Do you want to spatially join the attribute columns of \code{mask} to the
+#' resulting tibble?
+#' The spatial join is executed with
+#' \code{\link[sf:st_intersects]{st_intersects()}} as the topological operator.
+#' Beware: if the same location intersects with more than one element of
+#' \code{mask} (taking into account the value of \code{buffer}), that location
+#' will occur multiple times in the result.
+#' \code{join_mask} is ignored if \code{mask} is not provided.
+#' @param buffer Number of meters taken as a buffer to enlarge
+#' \code{mask} (or shrink it, if \code{buffer < 0}) if \code{mask} is provided.
 #' @param bbox Optional geospatial fiter (rectangle).
 #' A bounding box (class \code{bbox}), or a vector of four named elements
 #' \code{xmin}, \code{xmax}, \code{ymin}, \code{ymax} defining the
@@ -99,7 +111,8 @@
 #'     st_transform(crs = 31370)
 #' get_locs(watina,
 #'          loc_validity = c("VLD", "ENT"),
-#'          mask = mymask)
+#'          mask = mymask,
+#'          buffer = 0)
 #'
 #' # Disconnect:
 #' DBI::dbDisconnect(watina)
@@ -116,6 +129,8 @@
 #' st_drop_geometry
 #' st_intersects
 #' st_crs
+#' st_join
+#' st_buffer
 #' @importFrom dplyr
 #' %>%
 #' tbl
@@ -128,6 +143,8 @@
 get_locs <- function(con,
                      max_filterdepth = 3,
                      mask = NULL,
+                     join_mask = FALSE,
+                     buffer = 10,
                      bbox = NULL,
                      area_codes = NULL,
                      loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"),
@@ -136,12 +153,14 @@ get_locs <- function(con,
                      collect = FALSE) {
 
     assert_that(is.number(max_filterdepth))
+    assert_that(is.number(buffer))
     assert_that(is.null(bbox) | all(sort(names(bbox)) ==
                                         c("xmax", "xmin", "ymax", "ymin")),
                 msg = "You did not correctly specify bbox.")
     assert_that(is.null(area_codes) | all(is.character(area_codes)))
     assert_that(is.null(loc_vec) | all(is.character(loc_vec)),
                 msg = "loc_vec must be a character vector.")
+    assert_that(is.flag(join_mask))
     assert_that(is.flag(collect))
 
     if (!is.null(mask) & !collect) {
@@ -245,8 +264,10 @@ get_locs <- function(con,
         nr_dropped_locs <-
             locs %>%
             filter(is.na(.data$x) | is.na(.data$y)) %>%
+            count %>%
             collect() %>%
-            nrow
+            .$n
+
 
         if (nr_dropped_locs > 0) {
             warning("Dropped ",
@@ -257,17 +278,39 @@ get_locs <- function(con,
         locs <-
             locs %>%
             select(-.data$loc_wid) %>%
-            collect %>%
             filter(!is.na(.data$x), !is.na(.data$y)) %>%
-            as_points %>%
-            filter(st_intersects(x = .,
-                                 y = mask,
-                                 sparse = FALSE)) %>%
-            st_drop_geometry
+            collect %>%
+            as_points
+
+        if (buffer != 0) {
+            mask_expand <-
+                mask %>%
+                st_buffer(dist = buffer)
+        } else {
+            mask_expand <-
+                mask
+        }
+
+        if (join_mask) {
+
+            locs <-
+                locs %>%
+                st_join(mask_expand,
+                        left = FALSE) %>%
+                st_drop_geometry
+
+        } else {
+
+            locs <-
+                locs %>%
+                .[mask_expand, ] %>%
+                st_drop_geometry
+
+        }
 
     }
 
-    if (collect) {
+    if (collect & is.null(mask)) {
         locs <-
             locs %>%
             select(-.data$loc_wid) %>%

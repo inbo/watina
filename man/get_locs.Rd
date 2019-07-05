@@ -4,10 +4,10 @@
 \alias{get_locs}
 \title{Get locations from the database}
 \usage{
-get_locs(con, max_filterdepth = 3, mask = NULL, bbox = NULL,
-  area_codes = NULL, loc_type = c("P", "S", "R", "N", "W", "D", "L",
-  "B"), loc_validity = c("VLD", "ENT", "DEL", "CLD"), loc_vec = NULL,
-  collect = FALSE)
+get_locs(con, max_filterdepth = 3, mask = NULL, join_mask = FALSE,
+  buffer = 10, bbox = NULL, area_codes = NULL, loc_type = c("P",
+  "S", "R", "N", "W", "D", "L", "B"), loc_validity = c("VLD", "ENT",
+  "DEL", "CLD"), loc_vec = NULL, collect = FALSE)
 }
 \arguments{
 \item{con}{A \code{DBIConnection} object to Watina.
@@ -18,9 +18,23 @@ Maximum depth of the filter bottom below soil surface, as meters.
 This condition is only applied to piezometers.}
 
 \item{mask}{An optional geospatial filter of class \code{sf}.
-If provided, only locations that intersect with \code{mask} will be returned.
+If provided, only locations that intersect with \code{mask} will be returned,
+with the value of \code{buffer} taken into account.
 The CRS must be Belgian Lambert 72 (EPSG-code
 \href{https://epsg.io/31370}{31370}).}
+
+\item{join_mask}{Logical.
+Do you want to spatially join the attribute columns of \code{mask} to the
+resulting tibble?
+The spatial join is executed with
+\code{\link[sf:st_intersects]{st_intersects()}} as the topological operator.
+Beware: if the same location intersects with more than one element of
+\code{mask} (taking into account the value of \code{buffer}), that location
+will occur multiple times in the result.
+\code{join_mask} is ignored if \code{mask} is not provided.}
+
+\item{buffer}{Number of meters taken as a buffer to enlarge
+\code{mask} (or shrink it, if \code{buffer < 0}) if \code{mask} is provided.}
 
 \item{bbox}{Optional geospatial fiter (rectangle).
 A bounding box (class \code{bbox}), or a vector of four named elements
@@ -117,7 +131,8 @@ mymask <-
     st_transform(crs = 31370)
 get_locs(watina,
          loc_validity = c("VLD", "ENT"),
-         mask = mymask)
+         mask = mymask,
+         buffer = 0)
 
 # Disconnect:
 DBI::dbDisconnect(watina)
