@@ -205,7 +205,7 @@ get_locs <- function(con,
             filter(.data$MeetpuntXCoordinaat >= bbox_xmin,
                    .data$MeetpuntXCoordinaat <= bbox_xmax,
                    .data$MeetpuntYCoordinaat >= bbox_ymin,
-                   .data$MeetpuntYCoordinaat >= bbox_ymax)
+                   .data$MeetpuntYCoordinaat <= bbox_ymax)
     }
 
     locs <-
