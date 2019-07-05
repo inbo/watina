@@ -4,16 +4,25 @@
 \alias{selectlocs_xg3}
 \title{Select locations based on XG3 availability and XG3 series' properties}
 \usage{
-selectlocs_xg3(data, xg3_type = c("L", "H", "V"), max_gap, min_dur,
+selectlocs_xg3(data, xg3_type = NULL, max_gap = NULL, min_dur = NULL,
   conditions, verbose = TRUE, list = FALSE)
 }
 \arguments{
-\item{data}{An object returned by \code{\link{get_xg3}}.}
+\item{data}{Either an object returned by \code{\link{get_xg3}},
+or a named list of two tibbles: \code{"avail"} and \code{"ser"}.
+In the latter case, \code{"avail"} must be the output of
+\code{\link{eval_xg3_avail}} and \code{"ser"} must be the output of
+\code{\link{eval_xg3_series}}, whereby each function was applied to the same
+dataset and used the same setting for the \code{xg3_type} argument.
+See Details.}
 
-\item{xg3_type}{Character vector of length 1, 2 or 3.
+\item{xg3_type}{Only relevant
+when data is an object formatted as returned by
+\code{\link{get_xg3}}.
+In that case, must be a character vector of length 1, 2 or 3,
+which will default to \code{"L"} if not specified.
 Defines the types of XG3 which are taken from \code{data}.
-Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
-Defaults to \code{"L"}.}
+Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.}
 
 \item{max_gap}{A positive integer (can be zero).
 It is part of what the user defines as 'an XG3 series':
@@ -134,23 +143,29 @@ is derived.}
 }
 }
 \description{
-For a dataset as returned by \code{\link{get_xg3}},
-select the locations that comply with user-specified conditions.
+Select locations that comply with user-specified conditions,
+from a dataset as returned by \code{\link{get_xg3}},
+\emph{or} from a list with the outputs of
+\code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}.
 Conditions can be specified for each of the summary statistics returned
 by \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}.
-\code{selectlocs_xg3} calls these functions by itself.
 }
 \details{
-\code{selectlocs_xg3} separately calls \code{\link{eval_xg3_avail}} and
-\code{\link{eval_xg3_series}} on \code{data}.
-See their documentation to learn more about how an 'XG3 variable'
+\code{selectlocs_xg3()} separately runs \code{eval_xg3_avail()} and
+\code{eval_xg3_series()} on the input (\code{data}) if the latter
+conforms to the output of \code{\link{get_xg3}}.
+See the documentation of
+\code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}
+to learn more about how an 'XG3 variable'
 and an 'XG3 series' are defined, and about the available summary statistics.
-Each condition for evaluation + selection of locations (see devoted section)
+Each condition for evaluation + selection of locations
 is specific to an XG3 \emph{variable}, which can also be
 the level 'combined'.
 Hence, the result will depend both on the XG3 \emph{types} (HG3, LG3 and/or
 VG3) for which statistics have been computed (specified by \code{xg3_type}),
 and on the conditions, specified by \code{conditions}.
+See the devoted section on the \code{conditions} dataframe.
+
 Only locations are returned:
 \itemize{
 \item{
@@ -165,7 +180,7 @@ which have at least one such XG3 variable available in \code{data}.
 As the conditions imposed by the \code{conditions} dataframe are always
 evaluated as a
 required combination of conditions ('and'), the user must make different
-calls to \code{selectlocs_xg3}
+calls to \code{selectlocs_xg3()}
 if different sets of conditions are to be allowed ('or').
 
 Regarding conditions that evaluate XG3 \emph{series}, it is taken into
@@ -176,13 +191,26 @@ XG3 variable, the condition(s) are regarded as fulfilled ('condition met')
 when \strong{at least one} series is present of that XG3 variable
 for which \strong{all} those conditions are met.
 
-\code{selectlocs_xg3} joins the long-formatted results of
+\code{selectlocs_xg3()} joins the long-formatted results of
 \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}
 with the \code{conditions} dataframe in order to evaluate the conditions.
 Often, this (inner) join in itself already leads to dropping specific
 combinations of \code{loc_code} and \code{xg3_variable}.
 At least the locations that are completely dropped in this step are reported
 when \code{verbose = TRUE}.
+
+For larger datasets \code{eval_xg3_series()} can take quite some time,
+whereas the user may want to repeatedly try different sets of conditions
+until a satisfying selection of locations is returned.
+However the output of both \code{eval_xg3_avail()} and
+\code{eval_xg3_series()} will not change as long as the data and the chosen
+values of \code{max_gap} and \code{min_dur} are not altered.
+For that reason, the user can also prepare a list object with the
+respective results of \code{eval_xg3_avail()} and \code{eval_xg3_series()},
+which must be named as \code{"avail"} and \code{"ser"}, respectively.
+This list can instead be used as data-input, and in that case
+\code{xg3_type}, \code{max_gap} and \code{min_dur} are not needed
+(they will be ignored).
 }
 \section{Specification of the conditions dataframe}{
 
@@ -264,6 +292,17 @@ result <-
                   min_dur = 5,
                   conditions = conditions_df,
                   list = TRUE)
+# or:
+# mystats <- list(avail = eval_xg3_avail(mydata,
+#                                        xg3_type = c("L", "H")),
+#                 ser =  eval_xg3_series(mydata,
+#                                        xg3_type = c("L", "H"),
+#                                        max_gap = 1,
+#                                        min_dur = 5))
+# result <-
+#   mystats \%>\%
+#   selectlocs_xg3(conditions = conditions_df,
+#                  list = TRUE)
 result$combined_result_filtered
 result[2:4]
 # Disconnect:
