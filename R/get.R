@@ -114,6 +114,7 @@
 #' @importFrom sf
 #' st_drop_geometry
 #' st_intersects
+#' st_crs
 #' @importFrom dplyr
 #' %>%
 #' tbl
