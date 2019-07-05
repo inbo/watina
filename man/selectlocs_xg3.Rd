@@ -12,7 +12,8 @@ selectlocs_xg3(data, xg3_type = c("L", "H", "V"), max_gap, min_dur,
 
 \item{xg3_type}{Character vector of length 1, 2 or 3.
 Defines the types of XG3 which are taken from \code{data}.
-Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.}
+Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
+Defaults to code{"L"}.}
 
 \item{max_gap}{A positive integer (can be zero).
 It is part of what the user defines as 'an XG3 series':
