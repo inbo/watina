@@ -16,6 +16,7 @@ Depends:
     R (>= 3.5.0)
 Imports:
     assertthat,
+    dbplyr (>= 1.4.2),
     dplyr,
     inborutils,
     KSgeneral,
