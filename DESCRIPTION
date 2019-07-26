@@ -6,9 +6,10 @@ Description: The R-package watina contains functions to query
     Nature and Forest (INBO). This database provides
     groundwater level and chemical data, mainly from natural 
     areas in Flanders (Belgium).
-Authors@R: 
+Authors@R: c(
     person("Floris", "Vanderhaeghe", role = c("aut", "cre"), email = "floris.vanderhaeghe@inbo.be", comment = c(ORCID = "0000-0002-6378-6229")),
-    person("Research Institute for Nature and Forest (INBO)", email = "info@inbo.be", role = "cph"))
+    person("Research Institute for Nature and Forest (INBO)", role = "cph", email = "info@inbo.be")
+    )
 License: GPL-3
 URL: https://github.com/inbo/watina, https://inbo.github.io/watina
 BugReports: https://github.com/inbo/watina/issues
