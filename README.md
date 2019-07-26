@@ -27,6 +27,9 @@ If you need a version from another branch, add the `ref` argument in the above f
 
 ## You are welcome to contribute!
 
+Please have a look at our [contributing guide](https://inbo.github.io/watina/CONTRIBUTING.html)!
+Those with write permissions to the [watina repository](https://github.com/inbo/watina) find more specific guidelines below!
+
 ### Coding tools: it's never too late for learning!
 
 When writing functions for `watina`:
