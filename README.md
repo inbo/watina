@@ -1,5 +1,7 @@
 ## Welcome
 
+[![Build Status](https://travis-ci.org/inbo/watina.svg?branch=master)](https://travis-ci.org/inbo/watina)
+
 The R-package `watina` contains functions to query
 and process data from the _Watina database_ at the Research Institute for
 Nature and Forest (INBO).
