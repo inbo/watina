@@ -232,7 +232,7 @@ get_locs <- function(con,
     locs <-
         locs %>%
         left_join(tbl(con, "vwDimPeilpunt") %>%
-                      select(.data$MeetpuntWID,
+                      distinct(.data$MeetpuntWID,
                              .data$PeilpuntStatusCode,
                              .data$PeilbuisLengte,
                              .data$ReferentieNiveauMaaiveld) %>%
