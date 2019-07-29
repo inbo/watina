@@ -1,5 +1,7 @@
 ## Welcome
 
+[![Build Status](https://travis-ci.org/inbo/watina.svg?branch=master)](https://travis-ci.org/inbo/watina)
+
 The R-package `watina` contains functions to query
 and process data from the _Watina database_ at the Research Institute for
 Nature and Forest (INBO).
@@ -24,6 +26,9 @@ Note that this will install the package from the `master` branch.
 If you need a version from another branch, add the `ref` argument in the above function to provide the branch name.
 
 ## You are welcome to contribute!
+
+Please have a look at our [contributing guide](.github/CONTRIBUTING.md)!
+Those with write permissions to the [watina repository](https://github.com/inbo/watina) find more specific guidelines below!
 
 ### Coding tools: it's never too late for learning!
 
