@@ -26,11 +26,19 @@ For contributing, see the README on
 Useful links:
 \itemize{
   \item \url{https://github.com/inbo/watina}
+  \item \url{https://inbo.github.io/watina}
+  \item Report bugs at \url{https://github.com/inbo/watina/issues}
 }
 
 }
 \author{
 \strong{Maintainer}: Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (0000-0002-6378-6229)
+
+Other contributors:
+\itemize{
+  \item Peter Desmet \email{peter.desmet@inbo.be} (0000-0002-8442-8025) [contributor]
+  \item Research Institute for Nature and Forest (INBO) \email{info@inbo.be} [copyright holder]
+}
 
 }
 \keyword{internal}
