@@ -1,3 +1,25 @@
 template:
   params:
     bootswatch: yeti
+
+reference:
+  - title: "Connect"
+    desc: "Make a connection to the Watina database"
+    contents:
+      - connect_watina
+  - title: "Get locations"
+    desc: "Get locations from the Watina database"
+    contents:
+      - get_locs
+  - title: "Processing XG3 (HG3, LG3, VG3)"
+    desc: "Get and evaluate XG3 values + filter locations"
+    contents:
+      - get_xg3
+      - eval_xg3_avail
+      - eval_xg3_series
+      - selectlocs_xg3
+  - title: "Utilities and helpers"
+    desc: "Handy stuff"
+    contents:
+      - as_points
+      - extract_xg3_series
