@@ -1,3 +1,33 @@
 template:
   params:
     bootswatch: yeti
+
+navbar:
+  title: ~
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Functions"
+      href: reference/index.html
+  right:
+    - icon: fa-github
+      href: https://github.com/inbo/watina
+
+reference:
+  - title: "Connect"
+    contents:
+      - connect_watina
+  - title: "Get locations"
+    contents:
+      - get_locs
+  - title: "Processing XG3 (HG3, LG3, VG3)"
+    contents:
+      - get_xg3
+      - eval_xg3_avail
+      - eval_xg3_series
+      - selectlocs_xg3
+  - title: "Utilities and helpers"
+    contents:
+      - as_points
+      - extract_xg3_series
