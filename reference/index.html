@@ -52,7 +52,7 @@
   <body>
     <div class="container template-reference-index">
       <header>
-      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
@@ -63,27 +63,24 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../reference/index.html">Functions</a>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/inbo/watina">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -114,22 +111,44 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-connect" class="hasAnchor"><a href="#section-connect" class="anchor"></a>Connect</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
       <tr>
         
         <td>
-          <p><code><a href="as_points.html">as_points()</a></code> </p>
-        </td>
-        <td><p>Convert a dataframe with X and Y coordinates to a geospatial points object</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="connect_watina.html">connect_watina()</a></code> </p>
         </td>
         <td><p>Connect to the INBO Watina database</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-get-locations" class="hasAnchor"><a href="#section-get-locations" class="anchor"></a>Get locations</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="get_locs.html">get_locs()</a></code> </p>
+        </td>
+        <td><p>Get locations from the database</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-processing-xg-hg-lg-vg-" class="hasAnchor"><a href="#section-processing-xg-hg-lg-vg-" class="anchor"></a>Processing XG3 (HG3, LG3, VG3)</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="get_xg3.html">get_xg3()</a></code> </p>
+        </td>
+        <td><p>Get XG3 values from the database</p></td>
       </tr><tr>
         
         <td>
@@ -145,27 +164,29 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="extract_xg3_series.html">extract_xg3_series()</a></code> </p>
-        </td>
-        <td><p>Identify XG3 series per location</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_locs.html">get_locs()</a></code> </p>
-        </td>
-        <td><p>Get locations from the database</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_xg3.html">get_xg3()</a></code> </p>
-        </td>
-        <td><p>Get XG3 values from the database</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="selectlocs_xg3.html">selectlocs_xg3()</a></code> </p>
         </td>
         <td><p>Select locations based on XG3 availability and XG3 series' properties</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-utilities-and-helpers" class="hasAnchor"><a href="#section-utilities-and-helpers" class="anchor"></a>Utilities and helpers</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="as_points.html">as_points()</a></code> </p>
+        </td>
+        <td><p>Convert a dataframe with X and Y coordinates to a geospatial points object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="extract_xg3_series.html">extract_xg3_series()</a></code> </p>
+        </td>
+        <td><p>Identify XG3 series per location</p></td>
       </tr>
     </tbody>
     </table>
@@ -174,7 +195,10 @@
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#section-connect">Connect</a></li>
+      <li><a href="#section-get-locations">Get locations</a></li>
+      <li><a href="#section-processing-xg-hg-lg-vg-">Processing XG3 (HG3, LG3, VG3)</a></li>
+      <li><a href="#section-utilities-and-helpers">Utilities and helpers</a></li>
     </ul>
   </div>
 </div>
