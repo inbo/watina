@@ -3,9 +3,16 @@ template:
     bootswatch: yeti
 
 navbar:
-    reference:
-      text: Functions
+  title: ~
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Functions"
       href: reference/index.html
+  right:
+    - icon: fa-github
+      href: https://github.com/inbo/watina
 
 reference:
   - title: "Connect"
