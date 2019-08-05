@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Connect to the INBO Watina database — connect_watina • watina</title>
+<title>Evaluate the availability of XG3 values per location — eval_xg3_avail • watina</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,10 +32,12 @@
 
 
 
-<meta property="og:title" content="Connect to the INBO Watina database — connect_watina" />
+<meta property="og:title" content="Evaluate the availability of XG3 values per location — eval_xg3_avail" />
 
-<meta property="og:description" content="Returns a connection to the INBO Watina database.
-The function can only be used from within the INBO network." />
+<meta property="og:description" content="For a dataset as returned by get_xg3,
+return for each location the first and
+last (hydro)year and the number of (hydro)years with available XG3 values
+of the specified type(s) (LG3, HG3 and/or VG3)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -104,46 +106,89 @@ The function can only be used from within the INBO network." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Connect to the INBO Watina database</h1>
-    <small class="dont-index">Source: <a href='https://github.com/inbo/watina/blob/master/R/connect_watina.R'><code>R/connect_watina.R</code></a></small>
-    <div class="hidden name"><code>connect_watina.Rd</code></div>
+    <h1>Evaluate the availability of XG3 values per location</h1>
+    <small class="dont-index">Source: <a href='https://github.com/inbo/watina/blob/master/R/eval.R'><code>R/eval.R</code></a></small>
+    <div class="hidden name"><code>eval_xg3_avail.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Returns a connection to the INBO <strong>Watina</strong> database.
-The function can only be used from within the INBO network.</p>
+    <p>For a dataset as returned by <code><a href='get_xg3.html'>get_xg3</a></code>,
+return for each location the first and
+last (hydro)year and the number of (hydro)years with available XG3 values
+of the specified type(s) (LG3, HG3 and/or VG3).</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>connect_watina</span>()</pre>
-        
+    <pre class="usage"><span class='fu'>eval_xg3_avail</span>(<span class='no'>data</span>, <span class='kw'>xg3_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"L"</span>, <span class='st'>"H"</span>, <span class='st'>"V"</span>))</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>An object returned by <code><a href='get_xg3.html'>get_xg3</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>xg3_type</th>
+      <td><p>Character vector of length 1, 2 or 3.
+Defines the types of XG3 which are taken from <code>data</code>.
+Specifies the 'X' in 'XG3': either <code>"L"</code>, <code>"H"</code> and/or <code>"V"</code>.
+Defaults to <code>"L"</code>.</p></td>
+    </tr>
+    </table>
+    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>DBIConnection</code> object.</p>
+    <p>A tibble with variables <code>loc_code</code> (see <code><a href='get_locs.html'>get_locs</a></code>),
+<code>xg3_variable</code> (character; see Details),
+<code>nryears</code>, <code>firstyear</code> and <code>lastyear</code>.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Don't forget to disconnect at the end of your R-script using
-<code><a href='https://rdrr.io/pkg/DBI/man/dbDisconnect.html'>DBI::dbDisconnect()</a></code>!</p>
+    <p>The column <code>xg3_variable</code> in the resulting tibble
+stands for the XG3 type + the vertical CRS (see <code><a href='get_xg3.html'>get_xg3</a></code>).
+<code>xg3_variable</code> is restricted to the requested XG3 types (LG3, HG3
+and/or VG3) via the <code>xg3_type</code> argument, but adds an extra level
+"<code>combined</code>" whenever the combination of <code>data</code> (which may have
+both
+vertical CRSes) and <code>xg3_type</code> implies more than one requested
+variable.
+The "<code>combined</code>" level evaluates the combined presence of all selected
+XG3 variables at each location.</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>Other functions to evaluate locations: <code><a href='eval_xg3_series.html'>eval_xg3_series</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>watina</span> <span class='kw'>&lt;-</span> <span class='fu'>connect_watina</span>()
-<span class='co'># Do your stuff.</span>
+<span class='no'>watina</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='connect_watina.html'>connect_watina</a></span>()
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
+<span class='no'>mylocs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_locs.html'>get_locs</a></span>(<span class='no'>watina</span>, <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='st'>"KAL"</span>)
+<span class='no'>mydata</span> <span class='kw'>&lt;-</span>
+ <span class='no'>mylocs</span> <span class='kw'>%&gt;%</span>
+ <span class='fu'><a href='get_xg3.html'>get_xg3</a></span>(<span class='no'>watina</span>, <span class='fl'>2014</span>)
+<span class='no'>mydata</span>
+<span class='fu'>eval_xg3_avail</span>(<span class='no'>mydata</span>,
+               <span class='kw'>xg3_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"L"</span>, <span class='st'>"V"</span>))
 <span class='co'># Disconnect:</span>
 <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/DBI/man/dbDisconnect.html'>dbDisconnect</a></span>(<span class='no'>watina</span>)
 <span class='co'># }</span><div class='input'>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>
+
+      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
