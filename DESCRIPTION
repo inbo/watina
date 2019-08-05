@@ -1,6 +1,6 @@
 Package: watina
 Title: Querying & Processing Data From The INBO Watina Database (mainly groundwater data)
-Version: 0.0.0.9000
+Version: 0.0.0.9003
 Description: The R-package watina contains functions to query
     and process data from the Watina database at the Research Institute for
     Nature and Forest (INBO). This database provides
@@ -17,7 +17,19 @@ BugReports: https://github.com/inbo/watina/issues
 Depends: 
     R (>= 3.5.0)
 Imports:
-    inborutils
+    assertthat,
+    dbplyr (>= 1.4.2),
+    dplyr,
+    inborutils (>= 0.1.0),
+    KSgeneral,
+    lubridate,
+    rlang,
+    sf,
+    stringr,
+    stats,
+    tidyr
+Suggests:
+    tibble
 Remotes:
     inbo/inborutils
 LazyData: true
