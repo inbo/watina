@@ -356,6 +356,8 @@ qualify_xg3 <- function(data,
 #' sd
 #' var
 #' ecdf
+#' @importFrom utils
+#' capture.output
 #' @importFrom dplyr
 #' %>%
 #' mutate
@@ -387,7 +389,9 @@ eval_xg3_series <- function(data,
                            min_dur = min_dur)
 
     # summarize series properties:
-    sink(tempfile()) # to suppress the many disc_ks_test() messages
+    tmpf <- tempfile()
+    file.create(tmpf)
+    capture.output({ # to suppress the many disc_ks_test() messages
     xg3_series_props <-
         series_memberyrs %>%
         group_by(.data$loc_code,
@@ -406,7 +410,8 @@ eval_xg3_series <- function(data,
                                 .$p.value
         ) %>%
         ungroup
-    sink()
+    },
+    file = tmpf)
 
     # calculation of standard errors
 
