@@ -18,8 +18,7 @@ Currently the R package won't work outside INBO.
 ## Installing, testing and using the _watina_ package
 
 ```r
-remotes::install_github("inbo/watina", 
-                        build_opts = c("--no-resave-data", "--no-manual"))
+remotes::install_github("inbo/watina", build_vignettes = TRUE)
 ```
 
 Note that this will install the package from the `master` branch.
