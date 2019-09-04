@@ -52,7 +52,8 @@ Further, given a dataset of XG3 values per year and location, XG3 series are
 always constructed \emph{as long as possible} given the aforementioned
 restrictions.
 For one location and XG3 variable, more than one such XG3 series may be
-available, which implies that they are separated by more years than the
+available, which implies that those XG3 series are separated by more years
+than the
 value of \code{max_gap}.
 
 The function returns the available XG3 series in the dataset for each
