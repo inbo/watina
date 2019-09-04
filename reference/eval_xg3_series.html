@@ -71,7 +71,7 @@ and calculate summary statistics for each series." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9017</span>
       </span>
     </div>
 
@@ -204,11 +204,13 @@ Further, given a dataset of XG3 values per year and location, XG3 series are
 always constructed <em>as long as possible</em> given the aforementioned
 restrictions.
 For one location and XG3 variable, more than one such XG3 series may be
-available, which implies that they are separated by more years than the
+available, which implies that those XG3 series are separated by more years
+than the
 value of <code>max_gap</code>.</p>
-<p>The function returns the available XG3 series in the dataset for each
-site and XG3 variable, and
-numbers them for each site as 'prefix_series1', 'prefix_series2' with the
+<p>The function returns summary statistics for the XG3 series that are available
+in the dataset.
+The XG3 series of each site
+are numbered as 'prefix_series1', 'prefix_series2' with the
 prefix being the value of <code>xg3_variable</code>.</p>
 <p>The column <code>xg3_variable</code> in the resulting tibble
 stands for the XG3 type + the vertical CRS (see <code><a href='get_xg3.html'>get_xg3</a></code>)
