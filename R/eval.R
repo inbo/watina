@@ -258,9 +258,10 @@ qualify_xg3 <- function(data,
 #' available, which implies that they are separated by more years than the
 #' value of \code{max_gap}.
 #'
-#' The function returns the available XG3 series in the dataset for each
-#' site and XG3 variable, and
-#' numbers them for each site as 'prefix_series1', 'prefix_series2' with the
+#' The function returns summary statistics for the XG3 series that are available
+#' in the dataset.
+#' The XG3 series of each site
+#' are numbered as 'prefix_series1', 'prefix_series2' with the
 #' prefix being the value of \code{xg3_variable}.
 #'
 #' The column \code{xg3_variable} in the resulting tibble
