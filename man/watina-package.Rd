@@ -25,8 +25,8 @@ For contributing, see the README on
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/inbo/watina}
   \item \url{https://inbo.github.io/watina}
+  \item \url{https://github.com/inbo/watina}
   \item Report bugs at \url{https://github.com/inbo/watina/issues}
 }
 
