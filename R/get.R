@@ -392,13 +392,16 @@ get_locs <- function(con,
 #' mylocs <- get_locs(watina, area_codes = "KAL")
 #' mylocs %>% get_xg3(watina, 2010)
 #' mylocs %>% get_xg3(watina, 2010, collect = TRUE)
+#' mylocs %>% get_xg3(watina, 2010, vert_crs = "ostend")
+#'
+#' # joining results to mylocs:
 #' mylocs %>%
 #'   get_xg3(watina, 2010) %>%
 #'   left_join(mylocs %>%
 #'             select(-loc_wid),
 #'             .) %>%
 #'   collect
-#' mylocs %>% get_xg3(watina, 2010, vert_crs = "ostend")
+#'
 #' # Disconnect:
 #' DBI::dbDisconnect(watina)
 #' }
