@@ -75,7 +75,7 @@ a local \code{\link[tibble]{tibble}} is returned.
 (TO BE ADDED: Explanation on the variable names of the returned object)
 
 (TO BE ADDED: Explanation on the different abbreviations in the column
-'variable')
+'chem_variable')
 }
 \description{
 Returns hydrochemical data from the \emph{Watina} database,

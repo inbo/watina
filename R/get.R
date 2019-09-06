@@ -587,7 +587,7 @@ get_xg3 <- function(locs,
 #' (TO BE ADDED: Explanation on the variable names of the returned object)
 #'
 #' (TO BE ADDED: Explanation on the different abbreviations in the column
-#' 'variable')
+#' 'chem_variable')
 #'
 #' @family functions to query the database
 #'
@@ -728,7 +728,7 @@ get_chem <- function(locs,
                date = .data$Datum,
                .data$lab_project_id,
                .data$lab_sample_id,
-               variable = .data$ChemVarCode,
+               chem_variable = .data$ChemVarCode,
                value_mass = .data$Meetwaarde,
                value_eq = .data$MeetwaardeMEQ,
                units = .data$ChemVarEenheid,
@@ -741,7 +741,7 @@ get_chem <- function(locs,
             provide_eq_unit = # when are value_eq units effectively meq/l ?
                 sql(
                  "CAST((CASE
-                 WHEN variable IN
+                 WHEN chem_variable IN
                  ('P-PO4', 'N-NO3', 'N-NO2', 'N-NH4', 'HCO3',
                  'SO4', 'Cl', 'Na', 'K', 'Ca', 'Mg',
                  'Fe', 'Mn', 'Si', 'Al') THEN 1
@@ -787,7 +787,7 @@ get_chem <- function(locs,
         mutate(units = ifelse(.data$units == "/", NA, units)) %>%
         arrange(.data$loc_code,
                 .data$date,
-                .data$variable)
+                .data$chem_variable)
 
     if (collect) {
         chem <-
