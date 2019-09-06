@@ -36,7 +36,7 @@ The units are always meters.}
 If \code{TRUE} (the default), the XG3 values are calculated after having set
 the underlying water level measurements that are above soil surface level
 to the soil surface level itself
-(which is zero in the case of the relative CRS).}
+(which is zero in the case of the local CRS).}
 
 \item{collect}{Should the data be retrieved as a local tibble?
 If \code{FALSE} (the default), a \code{tbl_lazy} object is returned
