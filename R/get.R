@@ -409,7 +409,6 @@ get_locs <- function(con,
 #' @export
 #' @importFrom assertthat
 #' assert_that
-#' has_name
 #' is.number
 #' is.flag
 #' @importFrom rlang .data
