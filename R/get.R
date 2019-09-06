@@ -519,3 +519,294 @@ get_xg3 <- function(locs,
 
 
 
+#' Get hydrochemical data from the database
+#'
+#' Returns hydrochemical data from the \emph{Watina} database,
+#' either as a lazy object or as a
+#' local tibble.
+#' The values must belong to selected locations
+#' and
+#' to a specified timeframe.
+#'
+#' The timeframe is a selection interval between
+#' a given \code{startdate} and \code{enddate}.
+#'
+#' The water samples must meet a specified electroneutrality
+#' condition, set by \code{en_range}.
+#' To retrieve data from all water samples, use \code{en_range = c(-1, 1)}.
+#'
+#' TO BE ADDED: What is electroneutrality and why is it used as a criterion?
+#'
+#' @param startdate First date of the timeframe, as a string.
+#' The string must use a formatting of the order 'day month year',
+#' i.e. a format which can be interpreted by \code{\link[lubridate]{dmy}}.
+#' Examples:
+#' \code{"16-1-2005"},
+#' \code{"16-01-2005"},
+#' \code{"1-01-2005"},
+#' \code{"16/1/2005"},
+#' \code{"16/1/05"},
+#' \code{"16/1/88"} (years 69 and higher are regarded as 19xy),
+#' \code{"16/1-2005"},
+#' \code{"23 Oct 99"},
+#' \code{"23 Okt 99"} (supposing this notation follows your system locale),
+#' \code{"16 1-!!-2005"},
+#' ......
+#' @param enddate Last date of the timeframe, as a string.
+#' The same formatting rule must be applied as in \code{startdate}.
+#' Defaults to a string representation of the current system date.
+#' @param conc_type A string defining the type of concentration in
+#' \emph{ionic concentration variables}.
+#' Either:
+#' \itemize{
+#' \item{\code{"mass"}:} mass concentration (the default);
+#' \item{\code{"eq"}:} equivalent concentration (= normality), referring to the
+#' electrical charge of the dissolved ion's main natural form.
+#' }
+#' Note that the argument has no effect on the value of non-ion-variables.
+#' @param en_range Numeric vector of length 2.
+#' Specifies the allowed range of
+#' water sample electroneutrality (see Details).
+#' Both vector elements must be within the range \code{c(-1, 1)}, with the
+#' second element not being smaller than the first.
+#' @param strict_en Logical.
+#' Should water samples with missing electroneutrality value be
+#' omitted?
+#' Defaults to FALSE.
+#' A missing electroneutrality value is the consequence of one or more missing
+#' values of ionic concentration variables that are needed for
+#' electroneutrality calculation of the water sample.
+#'
+#' @inheritParams get_xg3
+#'
+#' @return
+#' By default, a \code{tbl_lazy} object.
+#' With \code{collect = TRUE},
+#' a local \code{\link[tibble]{tibble}} is returned.
+#'
+#' (TO BE ADDED: Explanation on the variable names of the returned object)
+#'
+#' (TO BE ADDED: Explanation on the different abbreviations in the column
+#' 'variable')
+#'
+#' @family functions to query the database
+#'
+#' @examples
+#' \dontrun{
+#' watina <- connect_watina()
+#' library(dplyr)
+#' mylocs <- get_locs(watina, area_codes = "ZWA")
+#' mylocs %>% get_chem(watina, "1/1/2017")
+#' mylocs %>% get_chem(watina, "1/1/2017", collect = TRUE)
+#' mylocs %>% get_chem(watina, "1/1/2017", conc_type = "eq")
+#'
+#' # compare the number of returned rows:
+#' mylocs %>% get_chem(watina, "1/1/2017") %>% count
+#' mylocs %>% get_chem(watina, "1/1/2017", strict_en = TRUE) %>% count
+#' mylocs %>% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) %>% count
+#'
+#' # joining results to mylocs:
+#' mylocs %>%
+#' get_chem(watina, "1/1/2017") %>%
+#'     left_join(mylocs %>%
+#'                   select(-loc_wid),
+#'               .) %>%
+#'     collect
+#'
+#' # Disconnect:
+#' DBI::dbDisconnect(watina)
+#' }
+#'
+#' @export
+#' @importFrom assertthat
+#' assert_that
+#' is.number
+#' is.flag
+#' is.date
+#' @importFrom rlang .data
+#' @importFrom lubridate
+#' dmy
+#' today
+#' day
+#' month
+#' year
+#' @importFrom dplyr
+#' %>%
+#' copy_to
+#' db_drop_table
+#' filter
+#' left_join
+#' inner_join
+#' select
+#' collect
+#' contains
+#' arrange
+#' distinct
+#' sql
+get_chem <- function(locs,
+                     con,
+                     startdate,
+                     enddate = paste(day(today()),
+                                     month(today()),
+                                     year(today())),
+                     conc_type = c("mass", "eq"),
+                     en_range = c(-0.1, 0.1),
+                     strict_en = FALSE,
+                     collect = FALSE) {
+
+    conc_type <- match.arg(conc_type)
+
+    assert_that(is.string(startdate),
+                is.date(dmy(startdate)))
+    assert_that(is.string(enddate),
+                is.date(dmy(enddate)))
+    startdate <- dmy(startdate)
+    enddate <- dmy(enddate)
+    assert_that(enddate >= startdate,
+                msg = "startdate must not be larger than enddate.")
+
+    assert_that("loc_code" %in% colnames(locs),
+                msg = "locs does not have a column name 'loc_code'.")
+    assert_that(is.numeric(en_range),
+                length(en_range) == 2,
+                en_range[1] <= en_range[2],
+                en_range[1] >= -1,
+                en_range[2] <= 1
+                )
+    assert_that(is.flag(strict_en))
+    assert_that(is.flag(collect))
+
+    if (inherits(locs, "data.frame")) {
+        locs <-
+            locs %>%
+            distinct(.data$loc_code)
+
+        try(db_drop_table(con, "##locs"),
+            silent = TRUE)
+
+        locs <-
+            copy_to(con,
+                    locs) %>%
+            inner_join(tbl(con, "vwDimMeetpunt") %>%
+                           select(loc_wid = .data$MeetpuntWID,
+                                  loc_code = .data$MeetpuntCode),
+                       .,
+                       by = "loc_code")
+    }
+
+
+    chem <-
+        tbl(con, "FactChemischeMeting") %>%
+        select(.data$StaalID,
+               .data$DatumWID,
+               .data$ChemVarWID,
+               .data$MeetpuntWID,
+               .data$Meetwaarde,
+               .data$MeetwaardeMEQ,
+               .data$IsBelowLOQ) %>%
+        inner_join(tbl(con, "DimChemVar") %>%
+                       select(.data$ChemVarWID,
+                              .data$ChemVarCode,
+                              .data$ChemVarEenheid),
+                   by = "ChemVarWID") %>%
+        inner_join(tbl(con, "DimTijd") %>%
+                       select(.data$DatumWID,
+                              .data$Datum),
+                   by = "DatumWID") %>%
+        mutate(Datum = sql("CAST(Datum AS date)")) %>%
+        left_join(tbl(con, "ssrs_StaalEN") %>%
+                      select(.data$StaalID,
+                             .data$StaalEN),
+                  by = "StaalID") %>%
+        filter(.data$Datum >= startdate,
+               .data$Datum <= enddate) %>%
+        # temporary dummy values:
+        mutate(lab_project_id = "0",
+               lab_sample_id = "0",
+               loq = -99) %>%
+        select(loc_wid = .data$MeetpuntWID,
+               date = .data$Datum,
+               .data$lab_project_id,
+               .data$lab_sample_id,
+               variable = .data$ChemVarCode,
+               value_mass = .data$Meetwaarde,
+               value_eq = .data$MeetwaardeMEQ,
+               units = .data$ChemVarEenheid,
+               below_loq = .data$IsBelowLOQ,
+               .data$loq,
+               elneutr = .data$StaalEN
+        ) %>%
+        filter(!is.na(.data$value_mass)) %>%  # empty rows occur in the DWH!
+        mutate(
+            provide_eq_unit = # when are value_eq units effectively meq/l ?
+                sql(
+                 "CAST((CASE
+                 WHEN variable IN
+                 ('P-PO4', 'N-NO3', 'N-NO2', 'N-NH4', 'HCO3',
+                 'SO4', 'Cl', 'Na', 'K', 'Ca', 'Mg',
+                 'Fe', 'Mn', 'Si', 'Al') THEN 1
+                 ELSE 0
+                 END) AS bit)"
+                )
+        ) %>%
+        inner_join(locs %>%
+                       select(.data$loc_wid,
+                              .data$loc_code),
+                   .,
+                   by = "loc_wid") %>%
+        select(-.data$loc_wid)
+
+    sqlstring_en <-
+        paste0("elneutr BETWEEN ",
+               en_range[1],
+               " AND ",
+               en_range[2])
+
+    chem <-
+        if (strict_en) {
+        chem %>%
+                filter(!is.na(.data$elneutr),
+                       sql(sqlstring_en))
+        } else {
+            chem %>%
+                filter(is.na(.data$elneutr) |
+                           sql(sqlstring_en))
+        }
+
+    chem <-
+        switch(conc_type,
+               mass = chem %>%
+                        rename(value = .data$value_mass),
+               eq = chem %>%
+                        rename(value = .data$value_eq) %>%
+                        mutate(units = ifelse(.data$provide_eq_unit == "TRUE",
+                                              "meq/l",
+                                              units))
+        ) %>%
+        select(-contains("value_"), -.data$provide_eq_unit) %>%
+        mutate(units = ifelse(.data$units == "/", NA, units)) %>%
+        arrange(.data$loc_code,
+                .data$date,
+                .data$variable)
+
+    if (collect) {
+        chem <-
+            chem %>%
+            collect
+    }
+
+    return(chem)
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
