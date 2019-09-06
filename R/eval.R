@@ -71,11 +71,14 @@ eval_xg3_avail <- function(data,
                  .data$xg3_variable) %>%
         summarise(
             nryears = sum(.data$available),
-            firstyear = ifelse(.data$nryears > 0,
-                               min(.data$hydroyear),
+            firstyear = ifelse(first(.data$nryears) > 0,
+                               min(ifelse(.data$available,
+                                          .data$hydroyear,
+                                          NA),
+                                   na.rm = TRUE),
                                NA),
-            lastyear = ifelse(.data$nryears > 0,
-                              max(.data$hydroyear),
+            lastyear = ifelse(first(.data$nryears) > 0,
+                              max(.data$hydroyear * .data$available),
                               NA)
         ) %>%
         ungroup
