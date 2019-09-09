@@ -6,7 +6,8 @@
 \usage{
 eval_chem(data, chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4", "HCO3",
   "SO4", "Cl", "Na", "K", "Ca", "Mg", "Fe", "Mn", "Si", "Al", "CondF",
-  "CondL", "pHF", "pHL"), type = c("avail", "num", "both"))
+  "CondL", "pHF", "pHL"), type = c("avail", "num", "both"),
+  uniformity_test = FALSE)
 }
 \arguments{
 \item{data}{An object returned by \code{\link{get_chem}}.}
@@ -24,6 +25,11 @@ Either:
 \item{\code{"num"}:} numeric summary statistics;
 \item{\code{"both"}:} both types will be returned.
 }}
+
+\item{uniformity_test}{Should the availability statistic
+\code{pval_uniform_totalspan} be added (see section 'Value')?
+Defaults to \code{FALSE} as this takes much more time to calculate than
+everything else.}
 }
 \value{
 A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
@@ -51,8 +57,9 @@ the 'total span', which is the duration as years from the first to the last
 calendar year \emph{for the whole of \strong{\code{data}}}.
 \item{\code{nryears_totalspan_ratio}}: the ratio of \code{nryears} to
 the 'total span'
-\item{\code{pval_uniform_totalspan}}: p-value of an exact, one-sample
-two-sided
+\item{\code{pval_uniform_totalspan}}: Only returned with
+\code{uniformity_test = TRUE}.
+p-value of an exact, one-sample two-sided
 Kolmogorov-Smirnov test for the discrete uniform distribution of the calendar
 years \emph{with data of the chemical variable available} within the series
 of consecutive calendar years defined by the 'total span' (see above).

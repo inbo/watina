@@ -516,6 +516,10 @@ eval_xg3_series <- function(data,
 #' \item{\code{"num"}:} numeric summary statistics;
 #' \item{\code{"both"}:} both types will be returned.
 #' }
+#' @param uniformity_test Should the availability statistic
+#' \code{pval_uniform_totalspan} be added (see section 'Value')?
+#' Defaults to \code{FALSE} as this takes much more time to calculate than
+#' everything else.
 #'
 #' @return
 #' A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
@@ -543,8 +547,9 @@ eval_xg3_series <- function(data,
 #' calendar year \emph{for the whole of \strong{\code{data}}}.
 #' \item{\code{nryears_totalspan_ratio}}: the ratio of \code{nryears} to
 #' the 'total span'
-#' \item{\code{pval_uniform_totalspan}}: p-value of an exact, one-sample
-#' two-sided
+#' \item{\code{pval_uniform_totalspan}}: Only returned with
+#' \code{uniformity_test = TRUE}.
+#' p-value of an exact, one-sample two-sided
 #' Kolmogorov-Smirnov test for the discrete uniform distribution of the calendar
 #' years \emph{with data of the chemical variable available} within the series
 #' of consecutive calendar years defined by the 'total span' (see above).
@@ -599,6 +604,7 @@ eval_xg3_series <- function(data,
 #' @importFrom rlang .data
 #' @importFrom assertthat
 #' assert_that
+#' is.flag
 #' @importFrom dplyr
 #' %>%
 #' mutate
@@ -623,7 +629,8 @@ eval_chem <- function(data,
                                    "Na", "K", "Ca", "Mg",
                                    "Fe", "Mn", "Si", "Al",
                                    "CondF", "CondL", "pHF", "pHL"),
-                      type = c("avail", "num", "both")) {
+                      type = c("avail", "num", "both"),
+                      uniformity_test = FALSE) {
 
     type <- match.arg(type)
 
@@ -639,6 +646,8 @@ eval_chem <- function(data,
                 msg = "data must provide the following variables: loc_code,
 date, lab_sample_id, chem_variable, value, units, below_loq."
     )
+
+    assert_that(is.flag(uniformity_test))
 
     data <-
         data %>%
@@ -696,9 +705,6 @@ date, lab_sample_id, chem_variable, value, units, below_loq."
     lastyear <- chem_qualified$date %>% year %>% max
     total_span <- lastyear - firstyear + 1
 
-    tmpf <- tempfile()
-    file.create(tmpf)
-    capture.output({ # to suppress the many disc_ks_test() messages
     chem_avail <-
         chem_qualified %>%
         group_by(.data$loc_code,
@@ -722,25 +728,52 @@ date, lab_sample_id, chem_variable, value, units, below_loq."
             lastdate = last(.data$lastdate),
             available = any(.data$available)
         ) %>%
-        summarise(
-            nryears = sum(.data$available),
-            nrdates = first(.data$nrdates),
-            firstdate = first(.data$firstdate),
-            lastdate = last(.data$lastdate),
-            timespan_years = year(.data$lastdate) - year(.data$firstdate) + 1,
-            timespan_totalspan_ratio = .data$timespan_years / total_span,
-            nryears_totalspan_ratio = .data$nryears / total_span,
-            pval_uniform_totalspan = ifelse(.data$nryears > 0,
+
+        (function(df, unif = uniformity_test) {
+
+        df1 <-
+            df %>%
+            summarise(
+                nryears = sum(.data$available),
+                nrdates = first(.data$nrdates),
+                firstdate = first(.data$firstdate),
+                lastdate = last(.data$lastdate),
+                timespan_years = year(.data$lastdate) - year(.data$firstdate) + 1,
+                timespan_totalspan_ratio = .data$timespan_years / total_span,
+                nryears_totalspan_ratio = .data$nryears / total_span
+            ) %>%
+            ungroup
+
+        if (unif) {
+            tmpf <- tempfile()
+            file.create(tmpf)
+            capture.output({ # to suppress the many disc_ks_test() messages
+                df2 <-
+                df %>%
+                summarise(
+                    nryears = sum(.data$available),
+                    pval_uniform_totalspan = ifelse(.data$nryears > 0,
                                             disc_ks_test(.data$year[.data$available],
                                                         ecdf(seq(firstyear,
                                                                  lastyear)),
                                                         exact = TRUE) %>%
                                                 .$p.value,
                                             NA)
-        ) %>%
-        ungroup
-    },
-    file = tmpf)
+                ) %>%
+                select(-.data$nryears) %>%
+                ungroup
+            },
+            file = tmpf)
+            df1 %>%
+                left_join(df2,
+                          by = c("loc_code",
+                                 "chem_variable")) %>%
+                return
+        } else {
+            return(df1)
+        }
+
+            })
 
     }
 
