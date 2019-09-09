@@ -595,6 +595,10 @@ eval_xg3_series <- function(data,
 #' mydata %>%
 #'   eval_chem(chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4")) %>%
 #'   arrange(desc(loc_code))
+#' mydata %>%
+#'   eval_chem(chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4"),
+#'             type = "both") %>%
+#'   arrange(desc(loc_code))
 #' # Disconnect:
 #' DBI::dbDisconnect(watina)
 #' }
