@@ -720,9 +720,9 @@ get_chem <- function(locs,
                   by = "StaalID") %>%
         filter(.data$Datum >= startdate,
                .data$Datum <= enddate) %>%
-        # temporary dummy values:
+        # temporary values:
         mutate(lab_project_id = "0",
-               lab_sample_id = "0",
+               lab_sample_id = sql("CAST(StaalID AS varchar)"),
                loq = -99) %>%
         select(loc_wid = .data$MeetpuntWID,
                date = .data$Datum,
