@@ -38,7 +38,8 @@
 <meta property="og:title" content="Identify and evaluate XG3 series per location — eval_xg3_series" />
 <meta property="og:description" content="For a dataset as returned by get_xg3,
 determine for each location the available multi-year XG3 series
-and calculate summary statistics for each series." />
+and calculate summary statistics for each series.
+Note that 'years' in this context always refers to hydroyears." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -71,7 +72,7 @@ and calculate summary statistics for each series." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9021</span>
       </span>
     </div>
 
@@ -112,7 +113,8 @@ and calculate summary statistics for each series." />
     <div class="ref-description">
     <p>For a dataset as returned by <code><a href='get_xg3.html'>get_xg3</a></code>,
 determine for each location the available multi-year XG3 series
-and calculate summary statistics for each series.</p>
+and calculate summary statistics for each series.
+Note that 'years' in this context always refers to hydroyears.</p>
     </div>
 
     <pre class="usage"><span class='fu'>eval_xg3_series</span>(<span class='no'>data</span>, <span class='kw'>xg3_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"L"</span>, <span class='st'>"H"</span>, <span class='st'>"V"</span>), <span class='no'>max_gap</span>, <span class='no'>min_dur</span>)</pre>
@@ -136,7 +138,7 @@ Defaults to <code>"L"</code>.</p></td>
       <td><p>A positive integer (can be zero).
 It is part of what the user defines as 'an XG3 series':
 the maximum allowed time gap between two consecutive
-XG3 values, expressed as the number of years without XG3 value.</p></td>
+XG3 values in a series, expressed as the number of years without XG3 value.</p></td>
     </tr>
     <tr>
       <th>min_dur</th>

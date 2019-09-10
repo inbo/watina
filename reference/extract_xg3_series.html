@@ -40,7 +40,8 @@
 determine for each location the available multi-year XG3 series.
 The function is called by eval_xg3_series.
 Contrary to eval_xg3_series, it lists the member years of
-each series as separate lines." />
+each series as separate lines.
+Note that 'years' in this context always refers to hydroyears." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -73,7 +74,7 @@ each series as separate lines." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9020</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9021</span>
       </span>
     </div>
 
@@ -116,7 +117,8 @@ each series as separate lines." />
 determine for each location the available multi-year XG3 series.
 The function is called by <code><a href='eval_xg3_series.html'>eval_xg3_series</a></code>.
 Contrary to <code><a href='eval_xg3_series.html'>eval_xg3_series</a></code>, it lists the member years of
-each series as separate lines.</p>
+each series as separate lines.
+Note that 'years' in this context always refers to hydroyears.</p>
     </div>
 
     <pre class="usage"><span class='fu'>extract_xg3_series</span>(<span class='no'>data</span>, <span class='kw'>xg3_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"L"</span>, <span class='st'>"H"</span>, <span class='st'>"V"</span>), <span class='no'>max_gap</span>, <span class='no'>min_dur</span>)</pre>
@@ -140,7 +142,7 @@ Defaults to <code>"L"</code>.</p></td>
       <td><p>A positive integer (can be zero).
 It is part of what the user defines as 'an XG3 series':
 the maximum allowed time gap between two consecutive
-XG3 values, expressed as the number of years without XG3 value.</p></td>
+XG3 values in a series, expressed as the number of years without XG3 value.</p></td>
     </tr>
     <tr>
       <th>min_dur</th>
