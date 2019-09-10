@@ -248,6 +248,7 @@ qualify_xg3 <- function(data,
 #' For a dataset as returned by \code{\link{get_xg3}},
 #' determine for each location the available multi-year XG3 series
 #' and calculate summary statistics for each series.
+#' Note that 'years' in this context always refers to hydroyears.
 #'
 #' An XG3 series is a location-specific, multi-year series of
 #' LG3, HG3 and/or VG3 variables

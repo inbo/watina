@@ -17,7 +17,7 @@ Defaults to \code{"L"}.}
 \item{max_gap}{A positive integer (can be zero).
 It is part of what the user defines as 'an XG3 series':
 the maximum allowed time gap between two consecutive
-XG3 values, expressed as the number of years without XG3 value.}
+XG3 values in a series, expressed as the number of years without XG3 value.}
 
 \item{min_dur}{A strictly positive integer.
 It is part of what the user defines as 'an XG3 series':
@@ -75,6 +75,7 @@ i.e. excluding the 'combined' series}:
 For a dataset as returned by \code{\link{get_xg3}},
 determine for each location the available multi-year XG3 series
 and calculate summary statistics for each series.
+Note that 'years' in this context always refers to hydroyears.
 }
 \details{
 An XG3 series is a location-specific, multi-year series of
