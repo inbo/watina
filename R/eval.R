@@ -623,7 +623,6 @@ eval_xg3_series <- function(data,
 #' left_join
 #' filter
 #' first
-#' last
 #' @importFrom tidyr
 #' spread
 #' gather
@@ -733,7 +732,7 @@ date, lab_sample_id, chem_variable, value, units, below_loq."
         summarise(
             nrdates = first(.data$nrdates),
             firstdate = first(.data$firstdate),
-            lastdate = last(.data$lastdate),
+            lastdate = first(.data$lastdate),
             available = any(.data$available)
         ) %>%
 
@@ -745,7 +744,7 @@ date, lab_sample_id, chem_variable, value, units, below_loq."
                 nryears = sum(.data$available),
                 nrdates = first(.data$nrdates),
                 firstdate = first(.data$firstdate),
-                lastdate = last(.data$lastdate),
+                lastdate = first(.data$lastdate),
                 timespan_years = year(.data$lastdate) - year(.data$firstdate) + 1,
                 timespan_totalspan_ratio = .data$timespan_years / total_span,
                 nryears_totalspan_ratio = .data$nryears / total_span
