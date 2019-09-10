@@ -489,7 +489,7 @@ eval_xg3_series <- function(data,
 
 
 
-#' Evaluate the hydrochemical data per location
+#' Evaluate hydrochemical data per location
 #'
 #' For a dataset as returned by \code{\link{get_chem}},
 #' return summary statistics (data availability and/or

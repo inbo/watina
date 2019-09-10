@@ -2,7 +2,7 @@
 % Please edit documentation in R/eval.R
 \name{eval_chem}
 \alias{eval_chem}
-\title{Evaluate the hydrochemical data per location}
+\title{Evaluate hydrochemical data per location}
 \usage{
 eval_chem(data, chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4", "HCO3",
   "SO4", "Cl", "Na", "K", "Ca", "Mg", "Fe", "Mn", "Si", "Al", "CondF",
