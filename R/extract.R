@@ -5,6 +5,7 @@
 #' The function is called by \code{\link{eval_xg3_series}}.
 #' Contrary to \code{\link{eval_xg3_series}}, it lists the member years of
 #' each series as separate lines.
+#' Note that 'years' in this context always refers to hydroyears.
 #'
 #' An XG3 series is a location-specific, multi-year series of
 #' LG3, HG3 and/or VG3 variables

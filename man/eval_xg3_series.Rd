@@ -75,6 +75,7 @@ i.e. excluding the 'combined' series}:
 For a dataset as returned by \code{\link{get_xg3}},
 determine for each location the available multi-year XG3 series
 and calculate summary statistics for each series.
+Note that 'years' in this context always refers to hydroyears.
 }
 \details{
 An XG3 series is a location-specific, multi-year series of

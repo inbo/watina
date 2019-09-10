@@ -41,6 +41,7 @@ determine for each location the available multi-year XG3 series.
 The function is called by \code{\link{eval_xg3_series}}.
 Contrary to \code{\link{eval_xg3_series}}, it lists the member years of
 each series as separate lines.
+Note that 'years' in this context always refers to hydroyears.
 }
 \details{
 An XG3 series is a location-specific, multi-year series of
