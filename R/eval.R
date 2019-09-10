@@ -593,16 +593,23 @@ eval_xg3_series <- function(data,
 #'  get_chem(watina, "1/1/2010")
 #' mydata
 #' mydata %>%
+#'   pull(date) %>%
+#'   lubridate::year(.) %>%
+#'   (function(x) c(firstyear = min(x), lastyear = max(x)))
+#' mydata %>%
 #'   eval_chem(chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4")) %>%
 #'   arrange(desc(loc_code))
 #' mydata %>%
 #'   eval_chem(chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4"),
 #'             type = "both") %>%
-#'   arrange(desc(loc_code))
+#'   arrange(desc(loc_code)) %>%
+#'   as.data.frame() %>%
+#'   head(10)
 #' mydata %>%
 #'   eval_chem(chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4"),
 #'             uniformity_test = TRUE) %>%
-#'   arrange(desc(loc_code))
+#'   arrange(desc(loc_code)) %>%
+#'   select(loc_code, chem_variable, pval_uniform_totalspan)
 #' # Disconnect:
 #' DBI::dbDisconnect(watina)
 #' }
