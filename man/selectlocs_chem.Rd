@@ -88,8 +88,7 @@ by \code{\link{eval_chem}}.
 }
 \details{
 \code{selectlocs_chem()} separately runs \code{eval_chem} on the input
-(\code{data}) if the latter
-conforms to the output of \code{\link{get_chem}}.
+(\code{data}) if \code{data_type = "data"}.
 See the documentation of
 \code{\link{eval_chem}}
 to learn more about the available summary statistics.
@@ -128,10 +127,11 @@ when \code{verbose = TRUE}.
 
 The user may want to repeatedly try different sets of conditions
 until a satisfying selection of locations is returned.
-However the output of both \code{eval_chem}
+However the output of \code{\link{eval_chem}}
 will not change as long as the data are not altered.
 For that reason, the user can also feed the
-result of \code{eval_chem()} to the \code{data} argument.
+result of \code{eval_chem()} to the \code{data} argument,
+with \code{data_type = "summary"}.
 In that case the arguments \code{chem_var}, \code{type} and
 \code{uniformity_test} are ignored.
 }

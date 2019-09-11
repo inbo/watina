@@ -20,6 +20,7 @@ See \code{\link{connect_watina}} to generate one.}
 \item{startdate}{First date of the timeframe, as a string.
 The string must use a formatting of the order 'day month year',
 i.e. a format which can be interpreted by \code{\link[lubridate]{dmy}}.
+
 Examples:
 \code{"16-1-2005"},
 \code{"16-01-2005"},
