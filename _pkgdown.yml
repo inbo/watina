@@ -27,6 +27,11 @@ reference:
       - eval_xg3_avail
       - eval_xg3_series
       - selectlocs_xg3
+  - title: "Processing hydrochemical data"
+    contents:
+      - get_chem
+      - eval_chem
+      - selectlocs_chem
   - title: "Utilities and helpers"
     contents:
       - as_points
