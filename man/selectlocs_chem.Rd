@@ -27,19 +27,22 @@ statistics will be computed.
 To specify chemical variables, use the
 codes from the column \code{chem_variable} in \code{data}.}
 
-\item{type}{A string defining the requested type of summary statistics.
-See section 'Value'.
+\item{type}{A string defining the requested type of summary statistics to be
+calculated.
+Only needed when \code{data_type = "data"}.
 Either:
 \itemize{
 \item{\code{"avail"}:} availability statistics (the default);
 \item{\code{"num"}:} numeric summary statistics;
 \item{\code{"both"}:} both types will be returned.
-}}
+}
+See \code{\link{eval_chem}} for more information.}
 
 \item{uniformity_test}{Should the availability statistic
-\code{pval_uniform_totalspan} be added (see section 'Value')?
-Defaults to \code{FALSE} as this takes much more time to calculate than
-everything else.}
+\code{pval_uniform_totalspan} be added in the calculation of summary
+statistics?
+Only needed when \code{data_type = "data"}.
+See \code{\link{eval_chem}} for more information.}
 
 \item{conditions}{A dataframe.
 See the devoted section below.}

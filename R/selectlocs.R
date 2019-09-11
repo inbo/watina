@@ -837,6 +837,21 @@ selectlocs_xg3 <- function(data,
 #' statistics will be computed.
 #' To specify chemical variables, use the
 #' codes from the column \code{chem_variable} in \code{data}.
+#' @param type A string defining the requested type of summary statistics to be
+#' calculated.
+#' Only needed when \code{data_type = "data"}.
+#' Either:
+#' \itemize{
+#' \item{\code{"avail"}:} availability statistics (the default);
+#' \item{\code{"num"}:} numeric summary statistics;
+#' \item{\code{"both"}:} both types will be returned.
+#' }
+#' See \code{\link{eval_chem}} for more information.
+#' @param uniformity_test Should the availability statistic
+#' \code{pval_uniform_totalspan} be added in the calculation of summary
+#' statistics?
+#' Only needed when \code{data_type = "data"}.
+#' See \code{\link{eval_chem}} for more information.
 #' @param conditions A dataframe.
 #' See the devoted section below.
 #' @param verbose Logical.
@@ -849,7 +864,6 @@ selectlocs_xg3 <- function(data,
 #' intermediate results (see Value).
 #'
 #' @inheritParams selectlocs
-#' @inheritParams eval_chem
 #'
 #' @return
 #' If \code{list = FALSE}: a tibble with one column \code{loc_code} that
