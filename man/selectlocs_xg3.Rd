@@ -312,5 +312,7 @@ DBI::dbDisconnect(watina)
 }
 \seealso{
 \code{\link{eval_xg3_avail}}, \code{\link{eval_xg3_series}}
+
+Other functions to select locations: \code{\link{selectlocs_chem}}
 }
 \concept{functions to select locations}
