@@ -463,7 +463,8 @@ selectlocs_xg3 <- function(data,
                     distinct(.data$loc_code) %>%
                     pull(.data$loc_code)
 
-                message("For xg3_variable = ",
+                if (length(loclist) > 0) {
+                    message("For xg3_variable = ",
                         i,
                         ", no firstyear/lastyear testing was possible for ",
                         length(loclist),
@@ -471,6 +472,7 @@ selectlocs_xg3 <- function(data,
                         "because zero XG3 values are available: ",
                         paste(loclist, collapse = ", "),
                         "\n")
+                }
             }
         }
     }
@@ -544,7 +546,7 @@ selectlocs_xg3 <- function(data,
 
     if (verbose) {
         dropped_locs_avail <-
-            xg3_avail_full %>%
+            xg3_avail %>%
             distinct(.data$loc_code) %>%
             anti_join(combined_result_avail, by = "loc_code") %>%
             arrange(.data$loc_code) %>%
@@ -554,8 +556,9 @@ selectlocs_xg3 <- function(data,
             message("Dropped ",
                     length(dropped_locs_avail),
                     " locations in availability evaluation ",
-                    "because none of the given ",
-                    "availability conditions were available for the requested ",
+                    "because none of the summary statistics, ",
+                    "needed to test the ",
+                    "availability conditions, were available for the requested ",
                     "XG3 variables: ",
                     paste(dropped_locs_avail, collapse = ", "),
                     "\n"
@@ -592,8 +595,9 @@ selectlocs_xg3 <- function(data,
             message("Dropped ",
                     length(dropped_locs_ser2),
                     " locations in series evaluation ",
-                    "because none of the given ",
-                    "series conditions were available for the requested ",
+                    "because none of the summary statistics, ",
+                    "needed to test the ",
+                    "series conditions, were available for the requested ",
                     "XG3 variables: ",
                     paste(dropped_locs_ser2, collapse = ", "),
                     "\n"
