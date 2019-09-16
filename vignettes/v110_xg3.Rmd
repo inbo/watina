@@ -31,7 +31,7 @@ Let's suppose that we want to select locations (within an area, i.e. after havin
 However the user is free to choose this, using the `min_dur` and `max_gap` arguments.
 - the last year of the XG3 series must be 2015 or later.
 
-We can store specific conditions in a dataframe; the available conditions are explained by the documentation of `eval_xg3_avail()` and `eval_xg3_series()`:
+We can store specific conditions in a dataframe; the available statistics are explained by the documentation of `eval_xg3_avail()` and `eval_xg3_series()`:
 
 ```{r}
 conditions_df <-
@@ -39,6 +39,8 @@ conditions_df <-
   ~xg3_variable, ~statistic, ~criterion, ~direction,
   "combined", "ser_lastyear", 2015, "min"
   )
+conditions_df %>% 
+  kable
 ```
 
 The other aspects (which XG3 types?, `max_gap`, `min_dur`) are directly specified in the `selectlocs_xg3()` function:
@@ -55,7 +57,7 @@ get_locs(watina,
                   conditions = conditions_df)
 ```
 
-With the argument `list = TRUE` you can also obtain intermediate results of the test.
+With the argument `list = TRUE` you can also obtain intermediate test results.
 For further information, see the documentation of the `selectlocs_xg3()` function.
 
 
