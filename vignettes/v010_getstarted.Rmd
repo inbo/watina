@@ -1,0 +1,145 @@
+---
+title: "Getting started: connecting and selecting locations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Connecting and retrieving locations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(watina)
+library(sf)
+library(dplyr)
+library(stringr)
+library(knitr)
+```
+
+## Connecting
+
+You first need a connection object to connect to Watina; let's simply name it `watina`:
+
+```{r}
+watina <- connect_watina()
+```
+
+
+## Selecting locations
+
+Selecting locations is a typical starting point.
+Afterwards, you can use the returned object as input for other functions.
+
+By default, a `tbl_lazy` object is given (lazy query).^[
+See the [dbplyr](https://dbplyr.tidyverse.org/) package to get you started with that type of object.
+]
+The returned data include some essential metadata of the locations.
+The following example shows a few rows:
+
+```{r}
+get_locs(watina) %>% 
+  head(5) %>% 
+  collect %>% 
+  kable
+```
+
+Selections can be done in a variety of ways -- they can be combined:
+
+- by using area codes:
+
+```{r}
+get_locs(watina,
+         area_codes = c("KAL", "KBR"))
+```
+
+The number of involved locations is given by:
+
+```{r}
+get_locs(watina,
+         area_codes = c("KAL", "KBR")) %>% 
+  count
+```
+
+
+- you can specify the type of location (device):
+
+```{r}
+get_locs(watina,
+         area_codes = c("KAL", "KBR"),
+         loc_type = c("P", "S")) %>% 
+  count
+```
+
+- by using a spatial bounding box (rectangular area), using the Belgian Lambert 72 coordinate reference system (EPSG-code [31370](https://epsg.io/31370)):
+
+```{r}
+get_locs(watina,
+         bbox = c(xmin = 1.4e+5,
+                  xmax = 1.7e+5,
+                  ymin = 1.6e+5,
+                  ymax = 1.9e+5))
+```
+
+- if you already have specific location codes in mind, you can provide these directly as a vector:
+
+```{r}
+get_locs(watina,
+         loc_vec = c("KBRP081", "KBRP090", "KBRP095"))
+```
+
+- you can use a geospatial filter of class [sf](https://r-spatial.github.io/sf/) to make selections, by using the `mask` argument:
+
+```{r echo=FALSE, include=FALSE}
+data(BE_ADMIN_PROVINCE,
+     package = "BelgiumMaps.StatBel")
+westfl <-
+    st_as_sf(BE_ADMIN_PROVINCE) %>%
+    filter(str_detect(TX_PROV_DESCR_NL, "West")) %>%
+    st_transform(crs = 31370)
+```
+
+
+```{r}
+get_locs(watina,
+         mask = westfl,
+         buffer = 0)
+```
+
+Note that the default value for `buffer` is 10 meters; it is used to enlarge mask (or shrink it, if `buffer` < 0).
+
+By default, only locations are returned which have been validated, i.e. with `loc_validity = "VLD"`.
+This can however be relaxed, for example by also including locations that are not yet validated:
+
+```{r}
+get_locs(watina,
+         area_codes = c("KAL", "KBR"),
+         loc_type = c("P", "S"),
+         loc_validity = c("VLD", "ENT")
+         ) %>% 
+  count
+```
+
+Instead of leaving the output as a `tbl_lazy` object, you can also retrieve it as a tibble (i.e. an easier-to-use type of dataframe) by setting `collect = TRUE`.
+
+```{r}
+get_locs(watina,
+         area_codes = c("KAL", "KBR"),
+         loc_type = c("P", "S"),
+         loc_validity = c("VLD", "ENT"),
+         collect = TRUE
+         )
+```
+
+## Disconnecting
+
+At the end of your work (a script, a bookdown document etc.), close the connection:
+
+```{r}
+DBI::dbDisconnect(watina)
+```
+
+
+

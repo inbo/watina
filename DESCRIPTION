@@ -29,9 +29,12 @@ Imports:
     stats,
     tidyr
 Suggests:
-    tibble
+    tibble,
+    knitr,
+    rmarkdown
 Remotes:
     inbo/inborutils
 LazyData: true
 Encoding: UTF-8
 RoxygenNote: 6.1.1
+VignetteBuilder: knitr
