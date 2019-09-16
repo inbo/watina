@@ -2,7 +2,7 @@
 title: "Getting started: connecting and selecting locations"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Connecting and retrieving locations}
+  %\VignetteIndexEntry{Getting started: connecting and selecting locations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -2,7 +2,7 @@
 title: "Using XG3 values to characterize and select locations"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Connecting and retrieving locations}
+  %\VignetteIndexEntry{Using XG3 values to characterize and select locations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
