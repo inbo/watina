@@ -10,6 +10,15 @@ navbar:
       href: index.html
     - text: "Functions"
       href: reference/index.html
+    - text: "Tutorials"
+      href: articles/index.html
+      menu:
+      - text: Getting started - connecting and selecting locations
+        href: articles/v010_getstarted.html
+      - text: Using XG3 values to characterize and select locations
+        href: articles/v110_xg3.html
+      - text: Using hydrochemical data to characterize and select locations
+        href: articles/v210_chem.html
   right:
     - icon: fa-github
       href: https://github.com/inbo/watina
