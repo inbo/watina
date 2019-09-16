@@ -115,7 +115,7 @@ This can however be relaxed, for example by also including locations that are no
 
 ```{r}
 get_locs(watina,
-         area_codes = c("KAL", "KBR"),
+         area_codes = c("ZWA"),
          loc_type = c("P", "S"),
          loc_validity = c("VLD", "ENT")
          ) %>% 
@@ -132,6 +132,10 @@ get_locs(watina,
          collect = TRUE
          )
 ```
+
+Note that the lazy object contains a `loc_wid` column, which is an internal database variable to identify locations and make relations between tables.
+It should not be regarded as a stable ID; hence don't store it for later use (note that lazy objects don't store data).
+Consequently, the `loc_wid` column is omitted when using `collect = TRUE`.
 
 ## Disconnecting
 
