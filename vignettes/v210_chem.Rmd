@@ -1,0 +1,150 @@
+---
+title: "Using hydrochemical data to characterize and select locations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Connecting and retrieving locations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(watina)
+library(sf)
+library(dplyr)
+library(stringr)
+library(knitr)
+```
+
+## Overview
+
+Let's have a look at how chemical data, retrieved from Watina, look like.
+The below example requests available hydrochemical data since 2010 from locations in the area 'Zwarte Beek':
+
+```{r}
+watina <- connect_watina()
+mydata <-
+    get_locs(watina, area_codes = "ZWA") %>% 
+    get_chem(watina, "1/1/2010")
+mydata %>% 
+  count
+class(mydata)
+mydata %>% 
+  head(15) %>% 
+  collect %>% 
+  kable
+```
+
+The first and last year of the dataset are:
+
+```{r}
+mydata %>%
+    pull(date) %>%
+    lubridate::year(.) %>%
+    (function(x) c(firstyear = min(x), lastyear = max(x)))
+```
+
+Let's suppose that we now want to select locations for which:
+
+- both N-NO3 (nitrate nitrogen) and P-PO4 (orthophosphate phosphorus) have at least two measurement dates;
+- the first date of P-PO4 is not later than 1/1/2014;
+- the first and last year with P-PO4 data are at least 4 years apart, i.e. they span at least 5 calendar years
+
+To express criteria, we need the numerical value of a date:
+
+```{r}
+as.numeric(lubridate::dmy("1/1/2014"))
+```
+
+We can store specific conditions in a dataframe; the available statistics are explained by the documentation of `eval_chem()`:
+
+```{r}
+conditions_df <-
+    tribble(
+        ~chem_variable, ~statistic, ~criterion, ~direction,
+        "N-NO3", "nrdates", 2, "min",
+        "P-PO4", "nrdates", 2, "min",
+        "P-PO4", "firstdate", 16071, "max",
+        "P-PO4", "timespan_years", 5, "min"
+    )
+conditions_df %>% 
+  kable
+```
+
+You can also separately limit the chemical variables to be evaluated with the `chem_var` argument in the `selectlocs_chem()` function:
+
+```{r}
+myresult <-
+    mydata %>%
+    selectlocs_chem(data_type = "data",
+                    chem_var = c("N-NO3", "P-PO4"),
+                    conditions = conditions_df)
+myresult
+```
+
+With the argument `list = TRUE` you can also obtain intermediate test results.
+For further information, see the documentation of the `selectlocs_chem()` function.
+
+
+## The basics: obtaining hydrochemical data
+
+The `get_chem()` function in the above example retrieved hydrochemical data, from given locations, as a lazy object (unless `collect = TRUE`).
+A timeframe is used to filter hydrochemical data in Watina (with arguments `startdate` and `enddate`).
+By default, the `enddate` argument is set as _today_.
+Here we only provide the `startdate`:
+
+```{r}
+mylocs <- get_locs(watina, area_codes = "ZWA")
+mylocs %>% get_chem(watina, "1/1/2017")
+```
+
+Retrieving the data locally:
+
+```{r}
+mylocs %>% get_chem(watina, "1/1/2017", collect = TRUE)
+```
+
+Note below, the different number of results when using non-default settings for filtering according to _electroneutrality_!
+The default range of electroneutrality is from -0.1 to 0.1 (argument `en_range`).
+
+```{r}
+mylocs %>% get_chem(watina, "1/1/2017") %>% count
+mylocs %>% get_chem(watina, "1/1/2017", strict_en = TRUE) %>% count
+mylocs %>% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) %>% count
+```
+
+With `strict_en = TRUE`, samples for which no electroneutrality could be calculated are discarded!
+
+Equivalence concentrations instead of mass concentrations can be returned with `conc_type = "eq"`:
+
+```{r}
+mylocs %>% get_chem(watina, "1/1/2017", conc_type = "eq")
+```
+
+Joining results to `mylocs`:
+
+```{r}
+mylocs %>%
+get_chem(watina, "1/1/2017") %>%
+    left_join(mylocs %>%
+                  select(-loc_wid),
+              .) %>%
+    collect
+```
+
+
+## Processing hydrochemical data and selecting locations
+
+You can characterize the locations of a dataset of hydrochemical data, using the `eval_chem()` function.
+You are invited to read its documentation and try its examples!
+
+The `selectlocs_chem()` function, of which we saw a demonstration above, calls `eval_chem()` by itself.
+Alternatively the user can provide the result of those functions as input to `selectlocs_chem()`.
+
+```{r include=FALSE}
+DBI::dbDisconnect(watina)
+```
+
