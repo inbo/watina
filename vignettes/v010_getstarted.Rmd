@@ -200,30 +200,12 @@ get_locs(watina,
 
 Note that the default value for `buffer` is 10 meters; it is used to enlarge mask (or shrink it, if `buffer` < 0).
 
-By default, only locations are returned which have been validated, i.e. with `loc_validity = "VLD"`.
-This can however be relaxed, for example by also including locations that are not yet validated:
-
-```{r}
-get_locs(watina,
-         area_codes = c("ZWA"),
-         loc_type = c("P", "S"),
-         loc_validity = c("VLD", "ENT")
-         ) %>% 
-  count
-#> # Source:   lazy query [?? x 1]
-#> # Database: Microsoft SQL Server
-#>       n
-#>   <int>
-#> 1   222
-```
-
 Instead of leaving the output as a `tbl_lazy` object, you can also retrieve it as a tibble (i.e. an easier-to-use type of dataframe) by setting `collect = TRUE`.
 
 ```{r}
 get_locs(watina,
          area_codes = c("KAL", "KBR"),
          loc_type = c("P", "S"),
-         loc_validity = c("VLD", "ENT"),
          collect = TRUE
          )
 #> # A tibble: 223 x 9
