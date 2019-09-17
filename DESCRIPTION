@@ -9,6 +9,9 @@ Description: The R-package watina contains functions to query
 Authors@R: c(
     person("Floris", "Vanderhaeghe", role = c("aut", "cre"), email = "floris.vanderhaeghe@inbo.be", comment = c(ORCID = "0000-0002-6378-6229")),
     person("Peter", "Desmet", role = c("ctb"), email = "peter.desmet@inbo.be", comment = c(ORCID = "0000-0002-8442-8025")),
+    person("Jan", "Wouters", email = "jan.wouters@inbo.be", role = c("ctb"), comment = c(ORCID = "0000-0001-8200-9102")), 
+    person("Frederic", "Piesschaert", email = "frederic.piesschaert@inbo.be", role = c("ctb"), comment = c(ORCID = "0000-0001-6934-9241")), 
+    person("Mathias", "Wackenier", email = "mathias.wackenier@inbo.be", role = c("ctb"), comment = c(ORCID = "0000-0001-6934-9241")), 
     person("Research Institute for Nature and Forest (INBO)", role = "cph", email = "info@inbo.be")
     )
 License: GPL-3
