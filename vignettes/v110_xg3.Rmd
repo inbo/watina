@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 library(watina)
 library(sf)
@@ -18,6 +19,9 @@ library(dplyr)
 library(stringr)
 library(knitr)
 ```
+
+_General note: the below vignette contains frozen output of 16 Sep 2019._
+_This makes it possible to build the package with vignettes without access to the Watina database._
 
 ## Overview
 
@@ -33,7 +37,7 @@ However the user is free to choose this, using the `min_dur` and `max_gap` argum
 
 We can store specific conditions in a dataframe; the available statistics are explained by the documentation of `eval_xg3_avail()` and `eval_xg3_series()`:
 
-```{r}
+```{r eval=TRUE}
 conditions_df <-
   tribble(
   ~xg3_variable, ~statistic, ~criterion, ~direction,
@@ -55,6 +59,26 @@ get_locs(watina,
                   max_gap = 1,
                   min_dur = 5,
                   conditions = conditions_df)
+#> Dropped 19 locations in series evaluation because no XG3 series are available at those locations, for the requested XG3 variables: TORP012, TORP013, TORP019, TORP023, TORP025, TORP026, TORP027, TORP030, TORP031, TORS001, TORS002, TORS003, TORS004, TORS005, TORS006, TORS007, TORS008, TORS010, TORS012
+#> # A tibble: 16 x 1
+#>    loc_code
+#>    <chr>   
+#>  1 TORP001 
+#>  2 TORP002 
+#>  3 TORP004 
+#>  4 TORP005 
+#>  5 TORP010 
+#>  6 TORP011 
+#>  7 TORP014 
+#>  8 TORP015 
+#>  9 TORP016 
+#> 10 TORP018 
+#> 11 TORP020 
+#> 12 TORP022 
+#> 13 TORP024 
+#> 14 TORP028 
+#> 15 TORP029 
+#> 16 TORS009
 ```
 
 With the argument `list = TRUE` you can also obtain intermediate test results.
@@ -71,18 +95,64 @@ Here we only provide the `startyear`:
 ```{r}
 mylocs <- get_locs(watina, area_codes = "KAL")
 mylocs %>% get_xg3(watina, 2010)
+#> # Source:     lazy query [?? x 5]
+#> # Database:   Microsoft SQL Server
+#> # Ordered by: area_code, loc_code, loc_code, hydroyear
+#>    loc_code hydroyear lg3_lcl hg3_lcl vg3_lcl
+#>    <chr>        <int>   <dbl>   <dbl>   <dbl>
+#>  1 KALP022       2014  -0.948  -0.135  -0.473
+#>  2 KALP022       2015  -1.05   -0.112  -0.340
+#>  3 KALP022       2016  -1.07   -0.124  -0.269
+#>  4 KALP022       2017  NA      NA      -0.326
+#>  5 KALP079       2010  NA      NA      -0.873
+#>  6 KALP079       2011  NA      NA      -0.747
+#>  7 KALP079       2012  NA      NA      -0.773
+#>  8 KALP079       2013  NA      NA      -0.64 
+#>  9 KALP081       2010  NA      NA      -0.557
+#> 10 KALP081       2013  NA      NA      -0.413
+#> # … with more rows
 ```
 
 Retrieving the data locally:
 
 ```{r}
 mylocs %>% get_xg3(watina, 2010, collect = TRUE)
+#> # A tibble: 46 x 5
+#>    loc_code hydroyear lg3_lcl hg3_lcl vg3_lcl
+#>    <chr>        <int>   <dbl>   <dbl>   <dbl>
+#>  1 KALP022       2014  -0.948  -0.135  -0.473
+#>  2 KALP022       2015  -1.05   -0.112  -0.340
+#>  3 KALP022       2016  -1.07   -0.124  -0.269
+#>  4 KALP022       2017  NA      NA      -0.326
+#>  5 KALP079       2010  NA      NA      -0.873
+#>  6 KALP079       2011  NA      NA      -0.747
+#>  7 KALP079       2012  NA      NA      -0.773
+#>  8 KALP079       2013  NA      NA      -0.64 
+#>  9 KALP081       2010  NA      NA      -0.557
+#> 10 KALP081       2013  NA      NA      -0.413
+#> # … with 36 more rows
 ```
 
 By default, the "local" vertical coordinate reference system (CRS) is used to express water levels, but also the CRS Ostend height (EPSG [5710](https://epsg.io/5710), also known as 'TAW' or 'DNG') is available from the database by setting `vert_crs = "ostend"`.
 
 ```{r}
 mylocs %>% get_xg3(watina, 2010, vert_crs = "ostend")
+#> # Source:     lazy query [?? x 5]
+#> # Database:   Microsoft SQL Server
+#> # Ordered by: area_code, loc_code, loc_code, hydroyear
+#>    loc_code hydroyear lg3_ost hg3_ost vg3_ost
+#>    <chr>        <int>   <dbl>   <dbl>   <dbl>
+#>  1 KALP022       2014    22.5    23.4    23.0
+#>  2 KALP022       2015    22.4    23.4    23.1
+#>  3 KALP022       2016    22.4    23.4    23.2
+#>  4 KALP022       2017    NA      NA      23.2
+#>  5 KALP079       2010    NA      NA      19.6
+#>  6 KALP079       2011    NA      NA      19.7
+#>  7 KALP079       2012    NA      NA      19.7
+#>  8 KALP079       2013    NA      NA      19.8
+#>  9 KALP081       2010    NA      NA      20.9
+#> 10 KALP081       2013    NA      NA      21.0
+#> # … with more rows
 ```
 
 Joining results to `mylocs`:
@@ -94,6 +164,23 @@ mylocs %>%
             select(-loc_wid),
             .) %>%
   collect
+#> Joining, by = "loc_code"
+#> # A tibble: 109 x 13
+#>    loc_code area_code area_name      x      y loc_validitycode loc_validity
+#>    <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>            <chr>       
+#>  1 KALP030  KAL       Kalmthou… 152990 238600 VLD              Gevalideerd 
+#>  2 KALP035  KAL       Kalmthou… 153000 236850 VLD              Gevalideerd 
+#>  3 KALP039  KAL       Kalmthou… 160940 235060 VLD              Gevalideerd 
+#>  4 KALP052  KAL       Kalmthou… 153822 233761 VLD              Gevalideerd 
+#>  5 KALP053  KAL       Kalmthou… 153781 233736 VLD              Gevalideerd 
+#>  6 KALP059  KAL       Kalmthou… 154754 232459 VLD              Gevalideerd 
+#>  7 KALP060  KAL       Kalmthou… 154702 232476 VLD              Gevalideerd 
+#>  8 KALP061  KAL       Kalmthou… 154559 230477 VLD              Gevalideerd 
+#>  9 KALP062  KAL       Kalmthou… 154553 230423 VLD              Gevalideerd 
+#> 10 KALP063  KAL       Kalmthou… 154669 230340 VLD              Gevalideerd 
+#> # … with 99 more rows, and 6 more variables: loc_typecode <chr>,
+#> #   loc_typename <chr>, hydroyear <int>, lg3_lcl <dbl>, hg3_lcl <dbl>,
+#> #   vg3_lcl <dbl>
 ```
 
 
