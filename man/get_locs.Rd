@@ -4,10 +4,11 @@
 \alias{get_locs}
 \title{Get locations from the database}
 \usage{
-get_locs(con, max_filterdepth = 3, mask = NULL, join_mask = FALSE,
-  buffer = 10, bbox = NULL, area_codes = NULL, loc_type = c("P",
-  "S", "R", "N", "W", "D", "L", "B"), loc_validity = c("VLD", "ENT",
-  "DEL", "CLD"), loc_vec = NULL, collect = FALSE)
+get_locs(con, max_filterdepth = 3, obswells = FALSE, mask = NULL,
+  join_mask = FALSE, buffer = 10, bbox = NULL, area_codes = NULL,
+  loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"),
+  loc_validity = c("VLD", "ENT", "DEL", "CLD"), loc_vec = NULL,
+  collect = FALSE)
 }
 \arguments{
 \item{con}{A \code{DBIConnection} object to Watina.
@@ -15,7 +16,25 @@ See \code{\link{connect_watina}} to generate one.}
 
 \item{max_filterdepth}{Numeric.
 Maximum depth of the filter bottom below soil surface, as meters.
-This condition is only applied to piezometers.}
+This condition is only applied to groundwater piezometers.
+With \code{obswells = FALSE}, a location is kept whenever one observation
+well fulfills the criterion.}
+
+\item{obswells}{Logical.
+If \code{TRUE}, the returned object distinguishes all observation wells that
+meet the \code{max_filterdepth} criterion.
+If \code{FALSE} (the default), the returned object just distinguishes
+locations.
+Please note the meaning of observation well in Watina: if there are multiple
+observation wells attached to one location, these belong to
+\emph{other timeframes}!
+So one location always coincides with exactly one observation well at
+one moment in time.
+Multiple observation wells can succeed one another because of physical
+alterations (e.g. damage of a piezometer).
+Here, the term 'observation well' is used to refer to a fixed installed
+device in the field (groundwater piezometer, surface water level
+measurement device).}
 
 \item{mask}{An optional geospatial filter of class \code{sf}.
 If provided, only locations that intersect with \code{mask} will be returned,
@@ -74,7 +93,8 @@ a local \code{\link[tibble]{tibble}} is returned.
 (TO BE ADDED: Explanation on the variable names of the returned object)
 }
 \description{
-Returns locations from the \emph{Watina} database that meet
+Returns locations (and optionally, observation wells) from the \emph{Watina}
+database that meet
 several criteria (spatial or non-spatial), either as a lazy object or as a
 local tibble.
 Essential metadata are included in the result.
@@ -88,6 +108,13 @@ The lazy object returns a \code{loc_wid} variable, for further use in
 However, don't use it in local objects: \code{loc_wid} is not to be
 regarded as stable.
 Therefore, \code{collect = TRUE} does not return \code{loc_wid}.
+
+The result contains also contains metadata at the level of the observation
+well, even when \code{obswells = FALSE}.
+In the latter case, this refers to the variables \code{filterdepth} and
+\code{soilsurf_ost}.
+In that case they correspond to the most recent observation well
+(per location) that meets the criteria on filterdepth.
 }
 \examples{
 \dontrun{
@@ -117,6 +144,13 @@ get_locs(watina,
   get_locs(watina,
            loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
            collect = TRUE)
+
+# Returning all individual observation wells:
+get_locs(watina,
+         obswells = TRUE,
+         area_codes = c("KAL", "KBR"),
+         loc_type = c("P", "S"),
+         collect = TRUE)
 
 # Selecting all piezometers with status VLD of the
 # province "West-Vlaanderen":

@@ -1,6 +1,7 @@
 #' Get locations from the database
 #'
-#' Returns locations from the \emph{Watina} database that meet
+#' Returns locations (and optionally, observation wells) from the \emph{Watina}
+#' database that meet
 #' several criteria (spatial or non-spatial), either as a lazy object or as a
 #' local tibble.
 #' Essential metadata are included in the result.
@@ -14,11 +15,36 @@
 #' regarded as stable.
 #' Therefore, \code{collect = TRUE} does not return \code{loc_wid}.
 #'
+#' The result contains also contains metadata at the level of the observation
+#' well, even when \code{obswells = FALSE}.
+#' In the latter case, this refers to the variables \code{filterdepth} and
+#' \code{soilsurf_ost}.
+#' In that case they correspond to the most recent observation well
+#' (per location) that meets the criteria on filterdepth.
+#'
+#'
 #' @param con A \code{DBIConnection} object to Watina.
 #' See \code{\link{connect_watina}} to generate one.
 #' @param max_filterdepth Numeric.
 #' Maximum depth of the filter bottom below soil surface, as meters.
-#' This condition is only applied to piezometers.
+#' This condition is only applied to groundwater piezometers.
+#' With \code{obswells = FALSE}, a location is kept whenever one observation
+#' well fulfills the criterion.
+#' @param obswells Logical.
+#' If \code{TRUE}, the returned object distinguishes all observation wells that
+#' meet the \code{max_filterdepth} criterion.
+#' If \code{FALSE} (the default), the returned object just distinguishes
+#' locations.
+#' Please note the meaning of observation well in Watina: if there are multiple
+#' observation wells attached to one location, these belong to
+#' \emph{other timeframes}!
+#' So one location always coincides with exactly one observation well at
+#' one moment in time.
+#' Multiple observation wells can succeed one another because of physical
+#' alterations (e.g. damage of a piezometer).
+#' Here, the term 'observation well' is used to refer to a fixed installed
+#' device in the field (groundwater piezometer, surface water level
+#' measurement device).
 #' @param mask An optional geospatial filter of class \code{sf}.
 #' If provided, only locations that intersect with \code{mask} will be returned,
 #' with the value of \code{buffer} taken into account.
@@ -98,6 +124,13 @@
 #'            loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
 #'            collect = TRUE)
 #'
+#' # Returning all individual observation wells:
+#' get_locs(watina,
+#'          obswells = TRUE,
+#'          area_codes = c("KAL", "KBR"),
+#'          loc_type = c("P", "S"),
+#'          collect = TRUE)
+#'
 #' # Selecting all piezometers with status VLD of the
 #' # province "West-Vlaanderen":
 #' data(BE_ADMIN_PROVINCE,
@@ -140,8 +173,10 @@
 #' collect
 #' distinct
 #' arrange
+#' group_by
 get_locs <- function(con,
                      max_filterdepth = 3,
+                     obswells = FALSE,
                      mask = NULL,
                      join_mask = FALSE,
                      buffer = 10,
@@ -162,6 +197,7 @@ get_locs <- function(con,
                 msg = "loc_vec must be a character vector.")
     assert_that(is.flag(join_mask))
     assert_that(is.flag(collect))
+    assert_that(is.flag(obswells))
 
     if (!is.null(mask) & !collect) {
         message("As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.")
@@ -264,6 +300,25 @@ get_locs <- function(con,
         arrange(.data$area_code,
                 .data$loc_code,
                 .data$obswell_rank)
+
+    if (!obswells) {
+        obswell_sel <-
+            locs %>%
+            group_by(.data$loc_code) %>%
+            summarise(obswell_count = n(),
+                      obswell_maxrank = max(.data$obswell_rank, na.rm = TRUE))
+
+        locs <-
+            locs %>%
+            left_join(obswell_sel, by = c("loc_code")) %>%
+            filter(.data$obswell_count == 1 |
+                       .data$obswell_rank == .data$obswell_maxrank) %>%
+            select(-.data$obswell_code,
+                   -.data$obswell_rank,
+                   -.data$obswell_count,
+                   -.data$obswell_maxrank)
+
+    }
 
     if (!is.null(mask)) {
 
