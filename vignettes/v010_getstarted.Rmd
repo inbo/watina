@@ -31,10 +31,10 @@ watina <- connect_watina()
 ## Selecting locations
 
 Selecting locations is a typical starting point.
-Afterwards, you can use the returned object as input for other functions.
+Afterwards, you can use the returned object as input to other functions.
 
 By default, a `tbl_lazy` object is given (lazy query).^[
-See the [dbplyr](https://dbplyr.tidyverse.org/) package to get you started with that type of object.
+See the [dbplyr](https://dbplyr.tidyverse.org/) package to get you started with this type of object.
 ]
 The returned data include some essential metadata of the locations.
 The following example shows a few rows:
@@ -46,7 +46,7 @@ get_locs(watina) %>%
   kable
 ```
 
-Selections can be done in a variety of ways -- they can be combined:
+Selections can be done in a variety of ways -- and these ways can be combined:
 
 - by using area codes:
 
