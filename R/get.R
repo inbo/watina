@@ -338,8 +338,9 @@ get_locs <- function(con,
 #' The timeframe is a selection interval between
 #' a given first and last hydroyear.
 #'
-#' Note: the argument \code{truncated} is currently not used.
-#' Currently, non-truncated values are returned!
+#' Note: the arguments \code{truncated} and \code{with_estimated} are currently
+#' not used.
+#' Currently, non-truncated values are returned, with usage of estimated values.
 #'
 #' (TO BE ADDED: What are XG3 values? What is a hydroyear?
 #' Why truncate, and why truncate by default?
@@ -366,6 +367,9 @@ get_locs <- function(con,
 #' the underlying water level measurements that are above soil surface level
 #' to the soil surface level itself
 #' (which is zero in the case of the local CRS).
+#' @param with_estimated Logical.
+#' If \code{TRUE} (the default), the XG3 values calculations also use estimated
+#' (i.e. non-measured) water level data that are available in the database.
 #'
 #' @inheritParams get_locs
 #'
@@ -432,6 +436,7 @@ get_xg3 <- function(locs,
                                  "ostend",
                                  "both"),
                     truncated = TRUE,
+                    with_estimated = TRUE,
                     collect = FALSE) {
 
     vert_crs <- match.arg(vert_crs)
