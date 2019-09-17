@@ -325,7 +325,9 @@ get_locs <- function(con,
             select(-.data$obswell_code,
                    -.data$obswell_rank,
                    -.data$obswell_count,
-                   -.data$obswell_maxrank)
+                   -.data$obswell_maxrank) %>%
+            arrange(.data$area_code,
+                    .data$loc_code)
 
     }
 
