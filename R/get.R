@@ -230,16 +230,20 @@ get_locs <- function(con,
         locs %>%
         left_join(tbl(con, "vwDimPeilpunt") %>%
                       distinct(.data$MeetpuntWID,
-                             .data$PeilpuntStatusCode,
+                               .data$PeilpuntCode,
+                               .data$PeilpuntVersie,
+                               .data$PeilpuntStatusCode,
                              .data$PeilbuisLengte,
-                             .data$ReferentieNiveauMaaiveld) %>%
+                             .data$ReferentieNiveauMaaiveld,
+                             .data$ReferentieNiveauTAW) %>%
                       filter(.data$PeilpuntStatusCode %in% c("VLD",
                                                        "ENT",
                                                        "CLD")),
                   by = "MeetpuntWID") %>%
+        mutate(filterdepth = .data$PeilbuisLengte -
+                                .data$ReferentieNiveauMaaiveld) %>%
         filter(.data$MeetpuntTypeCode == "P" &
-                   (.data$PeilbuisLengte - .data$ReferentieNiveauMaaiveld) <=
-                     max_filterdepth |
+                   .data$filterdepth <= max_filterdepth |
                    .data$MeetpuntTypeCode != "P"
                ) %>%
         select(loc_wid = .data$MeetpuntWID,
@@ -251,10 +255,15 @@ get_locs <- function(con,
                loc_validitycode = .data$MeetpuntStatusCode,
                loc_validity = .data$MeetpuntStatus,
                loc_typecode = .data$MeetpuntTypeCode,
-               loc_typename = .data$MeetpuntType) %>%
+               loc_typename = .data$MeetpuntType,
+               obswell_code = .data$PeilpuntCode,
+               obswell_rank = .data$PeilpuntVersie,
+               .data$filterdepth,
+               soilsurf_ost = .data$ReferentieNiveauTAW) %>%
         distinct %>%
         arrange(.data$area_code,
-                .data$loc_code)
+                .data$loc_code,
+                .data$obswell_rank)
 
     if (!is.null(mask)) {
 
@@ -486,7 +495,8 @@ get_xg3 <- function(locs,
                .data$hydroyear <= endyear) %>%
         inner_join(locs %>%
                        select(.data$loc_wid,
-                              .data$loc_code),
+                              .data$loc_code) %>%
+                       distinct,
                    .,
                    by = "loc_wid") %>%
         select(-.data$loc_wid)
@@ -754,7 +764,8 @@ get_chem <- function(locs,
         ) %>%
         inner_join(locs %>%
                        select(.data$loc_wid,
-                              .data$loc_code),
+                              .data$loc_code) %>%
+                       distinct,
                    .,
                    by = "loc_wid") %>%
         select(-.data$loc_wid)
