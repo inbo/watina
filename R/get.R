@@ -49,9 +49,9 @@
 #' default.
 #' Can be a vector with multiple selected values.
 #' @param loc_validity Validation status of the location.
-#' Defaults to \code{"VLD"}, i.e. only validated locations are returned by
-#' default.
-#' Can be a vector with multiple selected values.
+#' Can be a vector with multiple selected values, which must belong to
+#' \code{"VLD"}, \code{"ENT"}, \code{"DEL"} or \code{"CLD"}.
+#' Defaults to \code{c("VLD", "ENT")}.
 #' @param loc_vec An optional vector with location codes.
 #' If provided, only locations are returned that are present in this vector.
 #' @param collect Should the data be retrieved as a local tibble?
@@ -98,7 +98,7 @@
 #'            loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
 #'            collect = TRUE)
 #'
-#' # Selecting all piezometers with status VLD or ENT of the
+#' # Selecting all piezometers with status VLD of the
 #' # province "West-Vlaanderen":
 #' data(BE_ADMIN_PROVINCE,
 #'      package = "BelgiumMaps.StatBel")
@@ -110,7 +110,7 @@
 #'     filter(str_detect(TX_PROV_DESCR_NL, "West")) %>%
 #'     st_transform(crs = 31370)
 #' get_locs(watina,
-#'          loc_validity = c("VLD", "ENT"),
+#'          loc_validity = "VLD",
 #'          mask = mymask,
 #'          buffer = 0)
 #'
@@ -186,12 +186,9 @@ get_locs <- function(con,
                         msg = "You specified at least one unknown loc_type.")
         }
 
-    if (missing(loc_validity)) {
-        loc_validity <- match.arg(loc_validity)} else {
-            assert_that(all(loc_validity %in%
-                                c("VLD", "ENT", "DEL", "CLD")),
-                        msg = "You specified at least one unknown loc_validity.")
-        }
+    assert_that(all(loc_validity %in%
+                        c("VLD", "ENT", "DEL", "CLD")),
+                msg = "You specified at least one unknown loc_validity.")
 
     locs <-
         tbl(con, "vwDimMeetpunt") %>%

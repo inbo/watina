@@ -53,9 +53,9 @@ default.
 Can be a vector with multiple selected values.}
 
 \item{loc_validity}{Validation status of the location.
-Defaults to \code{"VLD"}, i.e. only validated locations are returned by
-default.
-Can be a vector with multiple selected values.}
+Can be a vector with multiple selected values, which must belong to
+\code{"VLD"}, \code{"ENT"}, \code{"DEL"} or \code{"CLD"}.
+Defaults to \code{c("VLD", "ENT")}.}
 
 \item{loc_vec}{An optional vector with location codes.
 If provided, only locations are returned that are present in this vector.}
@@ -118,7 +118,7 @@ get_locs(watina,
            loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
            collect = TRUE)
 
-# Selecting all piezometers with status VLD or ENT of the
+# Selecting all piezometers with status VLD of the
 # province "West-Vlaanderen":
 data(BE_ADMIN_PROVINCE,
      package = "BelgiumMaps.StatBel")
@@ -130,7 +130,7 @@ mymask <-
     filter(str_detect(TX_PROV_DESCR_NL, "West")) \%>\%
     st_transform(crs = 31370)
 get_locs(watina,
-         loc_validity = c("VLD", "ENT"),
+         loc_validity = "VLD",
          mask = mymask,
          buffer = 0)
 
