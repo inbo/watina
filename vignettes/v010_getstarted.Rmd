@@ -20,7 +20,7 @@ library(stringr)
 library(knitr)
 ```
 
-_General note: the below vignette contains frozen output of 16 Sep 2019._
+_General note: the below vignette contains frozen output of 17 Sep 2019._
 _This makes it possible to build the package with vignettes without access to the Watina database._
 
 ## Connecting
@@ -54,12 +54,12 @@ get_locs(watina) %>%
 #> 3     678  AABP014       AAB    Aabeek 178310 209590              VLD
 #> 4     681  AABP017       AAB    Aabeek 178370 209461              VLD
 #> 5     682  AABP018       AAB    Aabeek 178379 209418              VLD
-#>   loc_validity loc_typecode        loc_typename
-#> 1  Gevalideerd            P Peilbuis/Piëzometer
-#> 2  Gevalideerd            P Peilbuis/Piëzometer
-#> 3  Gevalideerd            P Peilbuis/Piëzometer
-#> 4  Gevalideerd            P Peilbuis/Piëzometer
-#> 5  Gevalideerd            P Peilbuis/Piëzometer
+#>   loc_validity loc_typecode        loc_typename filterdepth soilsurf_ost
+#> 1  Gevalideerd            P Peilbuis/Piëzometer        2.90        10.34
+#> 2  Gevalideerd            P Peilbuis/Piëzometer        2.71        10.34
+#> 3  Gevalideerd            P Peilbuis/Piëzometer        2.74         9.41
+#> 4  Gevalideerd            P Peilbuis/Piëzometer        2.72         9.31
+#> 5  Gevalideerd            P Peilbuis/Piëzometer        2.58         9.50
 ```
 
 Selections can be done in a variety of ways -- and these ways can be combined:
@@ -69,9 +69,9 @@ Selections can be done in a variety of ways -- and these ways can be combined:
 ```{r}
 get_locs(watina,
          area_codes = c("KAL", "KBR"))
-#> # Source:     lazy query [?? x 10]
+#> # Source:     lazy query [?? x 12]
 #> # Database:   Microsoft SQL Server
-#> # Ordered by: area_code, loc_code
+#> # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code
 #>    loc_wid loc_code area_code area_name      x      y loc_validitycode
 #>      <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>           
 #>  1    2824 KALP022  KAL       Kalmthou… 155350 230813 VLD             
@@ -84,8 +84,9 @@ get_locs(watina,
 #>  8    1562 KALP052  KAL       Kalmthou… 153822 233761 VLD             
 #>  9    1563 KALP053  KAL       Kalmthou… 153781 233736 VLD             
 #> 10    6180 KALP054  KAL       Kalmthou… 154689 232426 VLD             
-#> # … with more rows, and 3 more variables: loc_validity <chr>,
-#> #   loc_typecode <chr>, loc_typename <chr>
+#> # … with more rows, and 5 more variables: loc_validity <chr>,
+#> #   loc_typecode <chr>, loc_typename <chr>, filterdepth <dbl>,
+#> #   soilsurf_ost <dbl>
 ```
 
 The number of involved locations is given by:
@@ -124,9 +125,9 @@ get_locs(watina,
                   xmax = 1.7e+5,
                   ymin = 1.6e+5,
                   ymax = 1.9e+5))
-#> # Source:     lazy query [?? x 10]
+#> # Source:     lazy query [?? x 12]
 #> # Database:   Microsoft SQL Server
-#> # Ordered by: area_code, loc_code
+#> # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code
 #>    loc_wid loc_code area_code area_name      x      y loc_validitycode
 #>      <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>           
 #>  1   10261 ATGP002  ATG       Antitank… 169572 186043 VLD             
@@ -139,9 +140,9 @@ get_locs(watina,
 #>  8    5587 DORP023  DOR       Dorent    154284 182533 VLD             
 #>  9    6420 DORP024  DOR       Dorent    154823 182431 VLD             
 #> 10    5580 DORP027  DOR       Dorent    155151 182190 VLD             
-#> # … with more rows, and 3 more variables: loc_validity <chr>,
-#> #   loc_typecode <chr>, loc_typename <chr>
-
+#> # … with more rows, and 5 more variables: loc_validity <chr>,
+#> #   loc_typecode <chr>, loc_typename <chr>, filterdepth <dbl>,
+#> #   soilsurf_ost <dbl>
 ```
 
 - if you already have specific location codes in mind, you can provide these directly as a vector:
@@ -149,17 +150,16 @@ get_locs(watina,
 ```{r}
 get_locs(watina,
          loc_vec = c("KBRP081", "KBRP090", "KBRP095"))
-#> # Source:     lazy query [?? x 10]
+#> # Source:     lazy query [?? x 12]
 #> # Database:   Microsoft SQL Server
-#> # Ordered by: area_code, loc_code
+#> # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code
 #>   loc_wid loc_code area_code area_name      x      y loc_validitycode
 #>     <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>           
 #> 1     664 KBRP081  KBR       Potpolde… 145846 204871 VLD             
 #> 2     698 KBRP090  KBR       Potpolde… 145988 204702 VLD             
 #> 3     709 KBRP095  KBR       Potpolde… 145949 204712 VLD             
-#> # … with 3 more variables: loc_validity <chr>, loc_typecode <chr>,
-#> #   loc_typename <chr>
-
+#> # … with 5 more variables: loc_validity <chr>, loc_typecode <chr>,
+#> #   loc_typename <chr>, filterdepth <dbl>, soilsurf_ost <dbl>
 ```
 
 - you can use a geospatial filter of class [sf](https://r-spatial.github.io/sf/) to make selections, by using the `mask` argument:
@@ -179,23 +179,23 @@ get_locs(watina,
          mask = westfl,
          buffer = 0)
 #> As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.
-#> Warning in get_locs(watina, mask = westfl, buffer = 0): Dropped 34
+#> Warning in get_locs(watina, mask = westfl, buffer = 0): Dropped 40
 #> locations from which x or y coordinates were missing.
-#> # A tibble: 740 x 9
+#> # A tibble: 781 x 11
 #>    loc_code area_code area_name     x      y loc_validitycode loc_validity
 #>  * <chr>    <chr>     <chr>     <dbl>  <dbl> <chr>            <chr>       
-#>  1 BELP009  BEL       de Belvé… 28145 199761 VLD              Gevalideerd 
-#>  2 BELP010  BEL       de Belvé… 27947 199669 VLD              Gevalideerd 
-#>  3 OSKP043  OSK       Oostends… 54040 210979 VLD              Gevalideerd 
-#>  4 DHEP002  DHE       D' Heye   53635 216178 VLD              Gevalideerd 
-#>  5 DHEP003  DHE       D' Heye   53596 215858 VLD              Gevalideerd 
-#>  6 DHEP004  DHE       D' Heye   53841 216470 VLD              Gevalideerd 
-#>  7 ZEBP032  ZEB       Zeebrugge 72142 218026 VLD              Gevalideerd 
-#>  8 KEMP002  KEM       Kemmelbe… 39912 163431 VLD              Gevalideerd 
-#>  9 KEMP003  KEM       Kemmelbe… 40561 163750 VLD              Gevalideerd 
-#> 10 KEMP005  KEM       Kemmelbe… 39947 164778 VLD              Gevalideerd 
-#> # … with 730 more rows, and 2 more variables: loc_typecode <chr>,
-#> #   loc_typename <chr>
+#>  1 ASSP001  ASS       Assebroe… 74324 208838 VLD              Gevalideerd 
+#>  2 ASSP002  ASS       Assebroe… 74526 208787 VLD              Gevalideerd 
+#>  3 ASSP003  ASS       Assebroe… 74169 208790 VLD              Gevalideerd 
+#>  4 ASSP004  ASS       Assebroe… 74108 208605 VLD              Gevalideerd 
+#>  5 ASSP005  ASS       Assebroe… 73910 208646 VLD              Gevalideerd 
+#>  6 ASSP006  ASS       Assebroe… 74033 208916 VLD              Gevalideerd 
+#>  7 ASSP007  ASS       Assebroe… 73609 208954 VLD              Gevalideerd 
+#>  8 ASSP008  ASS       Assebroe… 73948 209104 VLD              Gevalideerd 
+#>  9 ASSP009  ASS       Assebroe… 73613 208584 VLD              Gevalideerd 
+#> 10 ASSP010  ASS       Assebroe… 73583 208390 VLD              Gevalideerd 
+#> # … with 771 more rows, and 4 more variables: loc_typecode <chr>,
+#> #   loc_typename <chr>, filterdepth <dbl>, soilsurf_ost <dbl>
 ```
 
 Note that the default value for `buffer` is 10 meters; it is used to enlarge mask (or shrink it, if `buffer` < 0).
@@ -208,7 +208,7 @@ get_locs(watina,
          loc_type = c("P", "S"),
          collect = TRUE
          )
-#> # A tibble: 223 x 9
+#> # A tibble: 223 x 11
 #>    loc_code area_code area_name      x      y loc_validitycode loc_validity
 #>    <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>            <chr>       
 #>  1 KBRP081  KBR       Potpolde… 145846 204871 VLD              Gevalideerd 
@@ -221,8 +221,8 @@ get_locs(watina,
 #>  8 KALP052  KAL       Kalmthou… 153822 233761 VLD              Gevalideerd 
 #>  9 KALP053  KAL       Kalmthou… 153781 233736 VLD              Gevalideerd 
 #> 10 KALP059  KAL       Kalmthou… 154754 232459 VLD              Gevalideerd 
-#> # … with 213 more rows, and 2 more variables: loc_typecode <chr>,
-#> #   loc_typename <chr>
+#> # … with 213 more rows, and 4 more variables: loc_typecode <chr>,
+#> #   loc_typename <chr>, filterdepth <dbl>, soilsurf_ost <dbl>
 ```
 
 Note that the lazy object contains a `loc_wid` column, which is an internal database variable to identify locations and make relations between tables.
@@ -236,6 +236,24 @@ get_locs(watina,
          obswells = TRUE,
          area_codes = c("KAL", "KBR"),
          loc_type = c("P", "S"))
+#> # Source:     lazy query [?? x 14]
+#> # Database:   Microsoft SQL Server
+#> # Ordered by: area_code, loc_code, obswell_rank
+#>    loc_wid loc_code area_code area_name      x      y loc_validitycode
+#>      <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>           
+#>  1    2824 KALP022  KAL       Kalmthou… 155350 230813 VLD             
+#>  2    1546 KALP030  KAL       Kalmthou… 152990 238600 VLD             
+#>  3   10069 KALP034  KAL       Kalmthou… 152962 231345 VLD             
+#>  4    1549 KALP035  KAL       Kalmthou… 153000 236850 VLD             
+#>  5    1552 KALP039  KAL       Kalmthou… 160940 235060 VLD             
+#>  6    4327 KALP050  KAL       Kalmthou… 153881 233802 VLD             
+#>  7    6210 KALP051  KAL       Kalmthou… 153822 233761 VLD             
+#>  8    1562 KALP052  KAL       Kalmthou… 153822 233761 VLD             
+#>  9    1563 KALP053  KAL       Kalmthou… 153781 233736 VLD             
+#> 10    6180 KALP054  KAL       Kalmthou… 154689 232426 VLD             
+#> # … with more rows, and 7 more variables: loc_validity <chr>,
+#> #   loc_typecode <chr>, loc_typename <chr>, obswell_code <chr>,
+#> #   obswell_rank <int>, filterdepth <dbl>, soilsurf_ost <dbl>
 ```
 
 
