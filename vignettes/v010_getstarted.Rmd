@@ -229,6 +229,16 @@ Note that the lazy object contains a `loc_wid` column, which is an internal data
 It should not be regarded as a stable ID; hence don't store it for later use (note that lazy objects don't store data).
 Consequently, the `loc_wid` column is omitted when using `collect = TRUE`.
 
+Optionally, you can also retrieve the individual observation wells that are linked to each location (where each observation well is from a different timeframe):
+
+```{r}
+get_locs(watina,
+         obswells = TRUE,
+         area_codes = c("KAL", "KBR"),
+         loc_type = c("P", "S"))
+```
+
+
 ## Disconnecting
 
 At the end of your work (a script, a bookdown document etc.), close the connection:
