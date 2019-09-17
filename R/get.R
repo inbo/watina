@@ -1,6 +1,7 @@
 #' Get locations from the database
 #'
-#' Returns locations from the \emph{Watina} database that meet
+#' Returns locations (and optionally, observation wells) from the \emph{Watina}
+#' database that meet
 #' several criteria (spatial or non-spatial), either as a lazy object or as a
 #' local tibble.
 #' Essential metadata are included in the result.
@@ -14,11 +15,38 @@
 #' regarded as stable.
 #' Therefore, \code{collect = TRUE} does not return \code{loc_wid}.
 #'
+#' The result contains also contains metadata at the level of the observation
+#' well, even when \code{obswells = FALSE}.
+#' In the latter case, this refers to the variables \code{filterdepth} and
+#' \code{soilsurf_ost}.
+#' In that case they correspond to the most recent observation well
+#' (per location) that meets the criteria on filterdepth.
+#'
+#'
 #' @param con A \code{DBIConnection} object to Watina.
 #' See \code{\link{connect_watina}} to generate one.
-#' @param max_filterdepth Numeric.
-#' Maximum depth of the filter bottom below soil surface, as meters.
-#' This condition is only applied to piezometers.
+#' @param filterdepth_range Numeric vector of length 2.
+#' Specifies the allowed range of the depth of the filter bottom below soil
+#' surface, as meters (minimum and maximum allowed filterdepth, respectively).
+#' This condition is only applied to groundwater piezometers.
+#' The second vector element cannot be smaller than the first.
+#' With \code{obswells = FALSE}, a location is kept whenever one observation
+#' well fulfills the criterion.
+#' @param obswells Logical.
+#' If \code{TRUE}, the returned object distinguishes all observation wells that
+#' meet the \code{filterdepth_range} criterion.
+#' If \code{FALSE} (the default), the returned object just distinguishes
+#' locations.
+#' Please note the meaning of observation well in Watina: if there are multiple
+#' observation wells attached to one location, these belong to
+#' \emph{other timeframes}!
+#' So one location always coincides with exactly one observation well at
+#' one moment in time.
+#' Multiple observation wells can succeed one another because of physical
+#' alterations (e.g. damage of a piezometer).
+#' Here, the term 'observation well' is used to refer to a fixed installed
+#' device in the field (groundwater piezometer, surface water level
+#' measurement device).
 #' @param mask An optional geospatial filter of class \code{sf}.
 #' If provided, only locations that intersect with \code{mask} will be returned,
 #' with the value of \code{buffer} taken into account.
@@ -49,9 +77,9 @@
 #' default.
 #' Can be a vector with multiple selected values.
 #' @param loc_validity Validation status of the location.
-#' Defaults to \code{"VLD"}, i.e. only validated locations are returned by
-#' default.
-#' Can be a vector with multiple selected values.
+#' Can be a vector with multiple selected values, which must belong to
+#' \code{"VLD"}, \code{"ENT"}, \code{"DEL"} or \code{"CLD"}.
+#' Defaults to \code{c("VLD", "ENT")}.
 #' @param loc_vec An optional vector with location codes.
 #' If provided, only locations are returned that are present in this vector.
 #' @param collect Should the data be retrieved as a local tibble?
@@ -98,7 +126,14 @@
 #'            loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
 #'            collect = TRUE)
 #'
-#' # Selecting all piezometers with status VLD or ENT of the
+#' # Returning all individual observation wells:
+#' get_locs(watina,
+#'          obswells = TRUE,
+#'          area_codes = c("KAL", "KBR"),
+#'          loc_type = c("P", "S"),
+#'          collect = TRUE)
+#'
+#' # Selecting all piezometers with status VLD of the
 #' # province "West-Vlaanderen":
 #' data(BE_ADMIN_PROVINCE,
 #'      package = "BelgiumMaps.StatBel")
@@ -110,7 +145,7 @@
 #'     filter(str_detect(TX_PROV_DESCR_NL, "West")) %>%
 #'     st_transform(crs = 31370)
 #' get_locs(watina,
-#'          loc_validity = c("VLD", "ENT"),
+#'          loc_validity = "VLD",
 #'          mask = mymask,
 #'          buffer = 0)
 #'
@@ -140,8 +175,10 @@
 #' collect
 #' distinct
 #' arrange
+#' group_by
 get_locs <- function(con,
-                     max_filterdepth = 3,
+                     filterdepth_range = c(0, 3),
+                     obswells = FALSE,
                      mask = NULL,
                      join_mask = FALSE,
                      buffer = 10,
@@ -152,7 +189,10 @@ get_locs <- function(con,
                      loc_vec = NULL,
                      collect = FALSE) {
 
-    assert_that(is.number(max_filterdepth))
+    assert_that(is.numeric(filterdepth_range),
+                length(filterdepth_range) == 2,
+                filterdepth_range[1] <= filterdepth_range[2])
+
     assert_that(is.number(buffer))
     assert_that(is.null(bbox) | all(sort(names(bbox)) ==
                                         c("xmax", "xmin", "ymax", "ymin")),
@@ -162,6 +202,7 @@ get_locs <- function(con,
                 msg = "loc_vec must be a character vector.")
     assert_that(is.flag(join_mask))
     assert_that(is.flag(collect))
+    assert_that(is.flag(obswells))
 
     if (!is.null(mask) & !collect) {
         message("As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.")
@@ -186,12 +227,12 @@ get_locs <- function(con,
                         msg = "You specified at least one unknown loc_type.")
         }
 
-    if (missing(loc_validity)) {
-        loc_validity <- match.arg(loc_validity)} else {
-            assert_that(all(loc_validity %in%
-                                c("VLD", "ENT", "DEL", "CLD")),
-                        msg = "You specified at least one unknown loc_validity.")
-        }
+    assert_that(all(loc_validity %in%
+                        c("VLD", "ENT", "DEL", "CLD")),
+                msg = "You specified at least one unknown loc_validity.")
+
+    min_filterdepth <- filterdepth_range[1]
+    max_filterdepth <- filterdepth_range[2]
 
     locs <-
         tbl(con, "vwDimMeetpunt") %>%
@@ -233,16 +274,21 @@ get_locs <- function(con,
         locs %>%
         left_join(tbl(con, "vwDimPeilpunt") %>%
                       distinct(.data$MeetpuntWID,
-                             .data$PeilpuntStatusCode,
+                               .data$PeilpuntCode,
+                               .data$PeilpuntVersie,
+                               .data$PeilpuntStatusCode,
                              .data$PeilbuisLengte,
-                             .data$ReferentieNiveauMaaiveld) %>%
+                             .data$ReferentieNiveauMaaiveld,
+                             .data$ReferentieNiveauTAW) %>%
                       filter(.data$PeilpuntStatusCode %in% c("VLD",
                                                        "ENT",
                                                        "CLD")),
                   by = "MeetpuntWID") %>%
+        mutate(filterdepth = .data$PeilbuisLengte -
+                                .data$ReferentieNiveauMaaiveld) %>%
         filter(.data$MeetpuntTypeCode == "P" &
-                   (.data$PeilbuisLengte - .data$ReferentieNiveauMaaiveld) <=
-                     max_filterdepth |
+                   .data$filterdepth <= max_filterdepth &
+                   .data$filterdepth >= min_filterdepth |
                    .data$MeetpuntTypeCode != "P"
                ) %>%
         select(loc_wid = .data$MeetpuntWID,
@@ -254,10 +300,34 @@ get_locs <- function(con,
                loc_validitycode = .data$MeetpuntStatusCode,
                loc_validity = .data$MeetpuntStatus,
                loc_typecode = .data$MeetpuntTypeCode,
-               loc_typename = .data$MeetpuntType) %>%
+               loc_typename = .data$MeetpuntType,
+               obswell_code = .data$PeilpuntCode,
+               obswell_rank = .data$PeilpuntVersie,
+               .data$filterdepth,
+               soilsurf_ost = .data$ReferentieNiveauTAW) %>%
         distinct %>%
         arrange(.data$area_code,
-                .data$loc_code)
+                .data$loc_code,
+                .data$obswell_rank)
+
+    if (!obswells) {
+        obswell_sel <-
+            locs %>%
+            group_by(.data$loc_code) %>%
+            summarise(obswell_count = n(),
+                      obswell_maxrank = max(.data$obswell_rank, na.rm = TRUE))
+
+        locs <-
+            locs %>%
+            left_join(obswell_sel, by = c("loc_code")) %>%
+            filter(.data$obswell_count == 1 |
+                       .data$obswell_rank == .data$obswell_maxrank) %>%
+            select(-.data$obswell_code,
+                   -.data$obswell_rank,
+                   -.data$obswell_count,
+                   -.data$obswell_maxrank)
+
+    }
 
     if (!is.null(mask)) {
 
@@ -341,8 +411,9 @@ get_locs <- function(con,
 #' The timeframe is a selection interval between
 #' a given first and last hydroyear.
 #'
-#' Note: the argument \code{truncated} is currently not used.
-#' Currently, non-truncated values are returned!
+#' Note: the arguments \code{truncated} and \code{with_estimated} are currently
+#' not used.
+#' Currently, non-truncated values are returned, with usage of estimated values.
 #'
 #' (TO BE ADDED: What are XG3 values? What is a hydroyear?
 #' Why truncate, and why truncate by default?
@@ -369,6 +440,9 @@ get_locs <- function(con,
 #' the underlying water level measurements that are above soil surface level
 #' to the soil surface level itself
 #' (which is zero in the case of the local CRS).
+#' @param with_estimated Logical.
+#' If \code{TRUE} (the default), the XG3 values calculations also use estimated
+#' (i.e. non-measured) water level data that are available in the database.
 #'
 #' @inheritParams get_locs
 #'
@@ -435,6 +509,7 @@ get_xg3 <- function(locs,
                                  "ostend",
                                  "both"),
                     truncated = TRUE,
+                    with_estimated = TRUE,
                     collect = FALSE) {
 
     vert_crs <- match.arg(vert_crs)
@@ -484,7 +559,8 @@ get_xg3 <- function(locs,
                .data$hydroyear <= endyear) %>%
         inner_join(locs %>%
                        select(.data$loc_wid,
-                              .data$loc_code),
+                              .data$loc_code) %>%
+                       distinct,
                    .,
                    by = "loc_wid") %>%
         select(-.data$loc_wid)
@@ -752,7 +828,8 @@ get_chem <- function(locs,
         ) %>%
         inner_join(locs %>%
                        select(.data$loc_wid,
-                              .data$loc_code),
+                              .data$loc_code) %>%
+                       distinct,
                    .,
                    by = "loc_wid") %>%
         select(-.data$loc_wid)

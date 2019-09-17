@@ -40,6 +40,9 @@ Useful links:
 Other contributors:
 \itemize{
   \item Peter Desmet \email{peter.desmet@inbo.be} (0000-0002-8442-8025) [contributor]
+  \item Jan Wouters \email{jan.wouters@inbo.be} (0000-0001-8200-9102) [contributor]
+  \item Frederic Piesschaert \email{frederic.piesschaert@inbo.be} (0000-0002-5843-646X) [contributor]
+  \item Mathias Wackenier \email{mathias.wackenier@inbo.be} (0000-0001-6934-9241) [contributor]
   \item Research Institute for Nature and Forest (INBO) \email{info@inbo.be} [copyright holder]
 }
 
