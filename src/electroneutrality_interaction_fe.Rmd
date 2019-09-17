@@ -1,0 +1,166 @@
+---
+title: "Electroneutrality interaction with Fe"
+author: "Jan Wouters"
+date: "17 september 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	cache = FALSE,
+	cache.path = "cache/",
+	dpi = 300,
+	include = TRUE
+)
+
+options(stringsAsFactors = FALSE)
+
+library(watina)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+
+```
+We willen hier nagaan of onvoldoende electroneutraal staal toch niet (deels) bruikbaar is voor (sommige) analyses. Meer bepaald de invloed van ijzer op de electroneutraliteit zal hier bekeken worden, omdat het bekend is dat vooral in ionenarme wateren neerslag van dit element (door oxidatie) voor een onevenwicht kan zorgen. In dat geval betekent gebrek aan electroneutraliteit (en), een te hoge en,  nog niet dat heel het staal kwalitatief slecht is. Het en-criterium is in dit geval niet goed toepasbaar. 
+De vraag die we hier willen beantwoorden, is of er een drempelwaarde van Fe is, waarboven de kans op een te hoge en veroorzaakt door Fe reëel is. 
+
+Volgende stappen werden gezet:
+
+### selectie van data (meetpunten en chemische data) op de SQL-server
+
+De chemische data worden in equivalenten weergegeven.
+```{r inlezen data, echo=TRUE}
+watina <- connect_watina()
+
+tubes_watina <- get_locs(watina, loc_type = "P", loc_validity = c("VLD", "ENT"), collect = FALSE)
+#loc_type = "P": enkel grondwatermeetpunten
+tubes_watina %>% count()
+
+chem.all <- get_chem(tubes_watina,watina,"1/1/1900", conc_type = "eq", collect = FALSE, strict_en = FALSE, en_range = c(-1, 1))
+
+getwd()
+```
+Overzicht van de chemische variabelen
+```{r chemische variabelen, eval=FALSE, include=TRUE}
+#om een voor mij onbekende reden werkt deze code niet in Markdown, wel in een gewoon R-script.
+
+chem_var <- chem.all %>%
+    select(chem_variable) %>%
+    distinct %>%
+    collect()
+
+chem_var
+```
+
+De functie get_chem resulteert in een lange tabel-versie van alle chemische data. De electroneutraliteit is een metadata-gegeven op het niveau van labostaal.
+Uit deze tabel filteren we de Fe- en de conductiviteitsmetingen (in het labo uitgevoerd). Deze data worden geïmporteerd en omgezet naar een brede  ('tidy')tabel.
+```{r filter fe cond, eval=FALSE, include=TRUE}
+#om een voor mij onbekende reden werkt deze code niet in Markdown, wel in een gewoon R-script.
+chem_fe_cond_basis <- chem.all %>%
+    filter(chem_variable == "Fe"| chem_variable == "CondL" ) %>% 
+    collect
+
+```
+```{r inlezen van chemische data, echo=TRUE}
+chem_fe_cond_basis <- git2rdata::read_vc("/data/chem_fe_cond_basis", root =  "C:/R/Repositories/watina")
+
+```
+```{r chemdata breed, echo=TRUE}
+chem.fe_cond <- reshape::cast(chem_fe_cond_basis,
+                              formula = loc_code + lab_sample_id + date + elneutr~
+                                  chem_variable, value = "value", length)
+```
+
+Er zijn enkele stalen waar voor Fe en/of condL er twee meetwaarden bestaan. Omdat niet kan uitgemaakt worden welke van de twee meetwaarden juist is, worden deze stalen uitgesloten.
+
+```{r dubbels weren, echo=TRUE}
+chem_weg <- chem.fe_cond %>%
+    filter(CondL > 1 | Fe >1) %>%
+    select(lab_sample_id)
+
+chem.fe_cond <- reshape::cast(chem_fe_cond_basis %>%
+                              anti_join(chem_weg, by = "lab_sample_id"),
+                              formula = loc_code + lab_sample_id + date +elneutr~
+                                  chem_variable, value = "value", first)
+
+```
+
+Berekenen van de verhouding Fe/CondL
+
+```{r Fe-CondL-verhouding, echo=TRUE}
+chem.fe_cond <- chem.fe_cond %>%
+    mutate(fe.cond = Fe / CondL)
+```
+Een eerste ruwe plot
+```{r ruwe plot, echo=TRUE}
+graf <- ggplot(chem.fe_cond %>% filter(elneutr > 0.1), aes(x = fe.cond, y = elneutr)) +
+    geom_line()
+graf
+```
+Hier zie je een stijging van de en-afwijking bij toename van het Fe-gehalte in de totale ionenconcentratie.
+
+In een volgende grafiek wordt de verhouding van electroneutrale stalen tov het totaal aantal stalen per fe/cond-verhouding getoond. Deze grafiek houdt geen rekening met het aantal stalen dat bij een bep. fe/cond-verhouding hoort.
+
+```{r plot goed tov fe-cond, echo=TRUE}
+chem.fec_en <- chem.fe_cond %>%
+    mutate(fe.cond.round = signif(fe.cond,2)) %>%
+    filter(!is.na(elneutr) & fe.cond>0) %>%
+    group_by(fe.cond.round) %>%
+    mutate(aantal = n()) %>%
+    mutate(good = sum(ifelse(abs(elneutr) <= 0.1,1,0))/aantal) %>%
+    ungroup()
+
+graf.good <- ggplot(chem.fec_en , aes(x = fe.cond, y = good)) +
+    geom_line()
+graf.good
+
+#x-waarden op de grafiek beperken tot 0.02
+
+graf.good <- ggplot(chem.fec_en %>% filter(fe.cond<0.02), aes(x = fe.cond, y = good)) +
+    geom_line() + geom_smooth()
+graf.good
+```
+Hier zie je toch wel twee opmerkelijke punten.
+
+1. Er is een duidelijk negatief verband tussen het percentage en-stalen en de fe-cond-verhouding.
+1. Bij een lage fe-cond verhouding hebben de waterstalen meestal een goede en !
+
+Als drempelwaarde kan Fe/Cond = `r drempel <- 0.0023; drempel` voorgesteld worden. Deze drempelwaarde is wat door trial en error bepaald. Gezocht werd naar de waarde waarbij de gemiddelde en = 0.1
+Beperken we de grafiek tot de stalen die boven deze drempelwaarde zitten.
+```{r plot fe-cond boven drempel}
+graf.good <- ggplot(chem.fec_en %>% filter(fe.cond<0.05 & fe.cond >= drempel), aes(x= fe.cond, y= good)) +
+    geom_line() + geom_smooth()
+graf.good
+```
+Een tabel met een kleine basisstatistiek voor twee groepen: een groep met fe/cond < drempel en een groep met een fe/cond >= drempel
+```{r stat, echo=TRUE}
+basisstat <- chem.fec_en %>%
+    mutate(felaag = ifelse(fe.cond <drempel, 1,0)) %>%
+    group_by(felaag) %>%
+    summarise(en.mean = mean(elneutr),
+              en.sd = sd(elneutr)) %>% 
+    kable()
+basisstat
+```
+
+Klopt de stelling dat de meeste van deze punten op Diestiaanzanden gelegen zijn ?
+Onderstaande tabel onderschrijft deze stelling. Er zijn ook wel enkele mogelijke afwijkingen (bijv. DYL?).
+
+
+```{r check gebieden}
+check.gebieden <- chem.fec_en %>%
+    filter(fe.cond >= drempel) %>%
+    mutate(gebied = substr(loc_code,1,3)) %>%
+    group_by(gebied) %>%
+    count() %>%
+    arrange(desc(n)) %>% 
+    rename(aantal_stalen_groter_of_gelijk_aan_drempel = n) %>% 
+    kable(      caption = "Aantal stalen met fe/cond boven de drempelwaarde ", format = "html") %>% 
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
+                  full_width = FALSE, 
+                  position = "left",
+                  font_size = 12,
+                  fixed_thead = T) 
+check.gebieden
+```
+

@@ -1,0 +1,29 @@
+..generic:
+  git2rdata: '0.1'
+  optimize: yes
+  NA string: NA
+  sorting:
+  - lab_sample_id
+  - chem_variable
+  hash: 43a6b2e9419e3045b4bb9d0c1e8ba81220f46ba1
+  data_hash: e1b9aef5df5a0334243d09ffb8bc079b59e6999b
+loc_code:
+  class: character
+date:
+  class: character
+lab_project_id:
+  class: character
+lab_sample_id:
+  class: character
+chem_variable:
+  class: character
+value:
+  class: numeric
+units:
+  class: character
+below_loq:
+  class: logical
+loq:
+  class: numeric
+elneutr:
+  class: numeric
