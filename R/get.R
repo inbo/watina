@@ -25,14 +25,16 @@
 #'
 #' @param con A \code{DBIConnection} object to Watina.
 #' See \code{\link{connect_watina}} to generate one.
-#' @param max_filterdepth Numeric.
-#' Maximum depth of the filter bottom below soil surface, as meters.
+#' @param filterdepth_range Numeric vector of length 2.
+#' Specifies the allowed range of the depth of the filter bottom below soil
+#' surface, as meters (minimum and maximum allowed filterdepth, respectively).
 #' This condition is only applied to groundwater piezometers.
+#' The second vector element cannot be smaller than the first.
 #' With \code{obswells = FALSE}, a location is kept whenever one observation
 #' well fulfills the criterion.
 #' @param obswells Logical.
 #' If \code{TRUE}, the returned object distinguishes all observation wells that
-#' meet the \code{max_filterdepth} criterion.
+#' meet the \code{filterdepth_range} criterion.
 #' If \code{FALSE} (the default), the returned object just distinguishes
 #' locations.
 #' Please note the meaning of observation well in Watina: if there are multiple
@@ -175,7 +177,7 @@
 #' arrange
 #' group_by
 get_locs <- function(con,
-                     max_filterdepth = 3,
+                     filterdepth_range = c(0, 3),
                      obswells = FALSE,
                      mask = NULL,
                      join_mask = FALSE,
@@ -187,7 +189,10 @@ get_locs <- function(con,
                      loc_vec = NULL,
                      collect = FALSE) {
 
-    assert_that(is.number(max_filterdepth))
+    assert_that(is.numeric(filterdepth_range),
+                length(filterdepth_range) == 2,
+                filterdepth_range[1] <= filterdepth_range[2])
+
     assert_that(is.number(buffer))
     assert_that(is.null(bbox) | all(sort(names(bbox)) ==
                                         c("xmax", "xmin", "ymax", "ymin")),
@@ -225,6 +230,9 @@ get_locs <- function(con,
     assert_that(all(loc_validity %in%
                         c("VLD", "ENT", "DEL", "CLD")),
                 msg = "You specified at least one unknown loc_validity.")
+
+    min_filterdepth <- filterdepth_range[1]
+    max_filterdepth <- filterdepth_range[2]
 
     locs <-
         tbl(con, "vwDimMeetpunt") %>%
@@ -279,7 +287,8 @@ get_locs <- function(con,
         mutate(filterdepth = .data$PeilbuisLengte -
                                 .data$ReferentieNiveauMaaiveld) %>%
         filter(.data$MeetpuntTypeCode == "P" &
-                   .data$filterdepth <= max_filterdepth |
+                   .data$filterdepth <= max_filterdepth &
+                   .data$filterdepth >= min_filterdepth |
                    .data$MeetpuntTypeCode != "P"
                ) %>%
         select(loc_wid = .data$MeetpuntWID,

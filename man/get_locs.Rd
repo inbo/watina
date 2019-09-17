@@ -4,25 +4,27 @@
 \alias{get_locs}
 \title{Get locations from the database}
 \usage{
-get_locs(con, max_filterdepth = 3, obswells = FALSE, mask = NULL,
-  join_mask = FALSE, buffer = 10, bbox = NULL, area_codes = NULL,
-  loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"),
-  loc_validity = c("VLD", "ENT", "DEL", "CLD"), loc_vec = NULL,
+get_locs(con, filterdepth_range = c(0, 3), obswells = FALSE,
+  mask = NULL, join_mask = FALSE, buffer = 10, bbox = NULL,
+  area_codes = NULL, loc_type = c("P", "S", "R", "N", "W", "D", "L",
+  "B"), loc_validity = c("VLD", "ENT", "DEL", "CLD"), loc_vec = NULL,
   collect = FALSE)
 }
 \arguments{
 \item{con}{A \code{DBIConnection} object to Watina.
 See \code{\link{connect_watina}} to generate one.}
 
-\item{max_filterdepth}{Numeric.
-Maximum depth of the filter bottom below soil surface, as meters.
+\item{filterdepth_range}{Numeric vector of length 2.
+Specifies the allowed range of the depth of the filter bottom below soil
+surface, as meters (minimum and maximum allowed filterdepth, respectively).
 This condition is only applied to groundwater piezometers.
+The second vector element cannot be smaller than the first.
 With \code{obswells = FALSE}, a location is kept whenever one observation
 well fulfills the criterion.}
 
 \item{obswells}{Logical.
 If \code{TRUE}, the returned object distinguishes all observation wells that
-meet the \code{max_filterdepth} criterion.
+meet the \code{filterdepth_range} criterion.
 If \code{FALSE} (the default), the returned object just distinguishes
 locations.
 Please note the meaning of observation well in Watina: if there are multiple
