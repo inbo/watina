@@ -208,7 +208,7 @@ mylocs %>% get_chem(watina, "1/1/2017") %>% count
 #>       n
 #>   <int>
 #> 1   493
-mylocs %>% get_chem(watina, "1/1/2017", strict_en = TRUE) %>% count
+mylocs %>% get_chem(watina, "1/1/2017", exclude_en_na = TRUE) %>% count
 #> # Source:   lazy query [?? x 1]
 #> # Database: Microsoft SQL Server
 #>       n
@@ -222,7 +222,7 @@ mylocs %>% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) %>% count
 #> 1   674
 ```
 
-With `strict_en = TRUE`, samples for which no electroneutrality could be calculated are discarded!
+With `exclude_en_na = TRUE`, samples for which no electroneutrality could be calculated are discarded!
 
 Equivalence concentrations instead of mass concentrations can be returned with `conc_type = "eq"`:
 

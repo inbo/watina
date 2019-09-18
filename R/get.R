@@ -648,7 +648,7 @@ get_xg3 <- function(locs,
 #' water sample electroneutrality (see Details).
 #' Both vector elements must be within the range \code{c(-1, 1)}, with the
 #' second element not being smaller than the first.
-#' @param strict_en Logical.
+#' @param exclude_en_na Logical.
 #' Should water samples with missing electroneutrality value be
 #' omitted?
 #' Defaults to FALSE.
@@ -681,7 +681,7 @@ get_xg3 <- function(locs,
 #'
 #' # compare the number of returned rows:
 #' mylocs %>% get_chem(watina, "1/1/2017") %>% count
-#' mylocs %>% get_chem(watina, "1/1/2017", strict_en = TRUE) %>% count
+#' mylocs %>% get_chem(watina, "1/1/2017", exclude_en_na = TRUE) %>% count
 #' mylocs %>% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) %>% count
 #'
 #' # joining results to mylocs:
@@ -730,7 +730,7 @@ get_chem <- function(locs,
                                      year(today())),
                      conc_type = c("mass", "eq"),
                      en_range = c(-0.1, 0.1),
-                     strict_en = FALSE,
+                     exclude_en_na = FALSE,
                      collect = FALSE) {
 
     conc_type <- match.arg(conc_type)
@@ -752,7 +752,7 @@ get_chem <- function(locs,
                 en_range[1] >= -1,
                 en_range[2] <= 1
                 )
-    assert_that(is.flag(strict_en))
+    assert_that(is.flag(exclude_en_na))
     assert_that(is.flag(collect))
 
     if (inherits(locs, "data.frame")) {
@@ -843,7 +843,7 @@ get_chem <- function(locs,
                en_range[2])
 
     chem <-
-        if (strict_en) {
+        if (exclude_en_na) {
         chem %>%
                 filter(!is.na(.data$elneutr),
                        sql(sqlstring_en))

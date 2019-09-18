@@ -6,7 +6,7 @@
 \usage{
 get_chem(locs, con, startdate, enddate = paste(day(today()),
   month(today()), year(today())), conc_type = c("mass", "eq"),
-  en_range = c(-0.1, 0.1), strict_en = FALSE, collect = FALSE)
+  en_range = c(-0.1, 0.1), exclude_en_isna = FALSE, collect = FALSE)
 }
 \arguments{
 \item{locs}{A \code{tbl_lazy} object or a dataframe, with at least a column
@@ -54,7 +54,7 @@ water sample electroneutrality (see Details).
 Both vector elements must be within the range \code{c(-1, 1)}, with the
 second element not being smaller than the first.}
 
-\item{strict_en}{Logical.
+\item{exclude_en_isna}{Logical.
 Should water samples with missing electroneutrality value be
 omitted?
 Defaults to FALSE.
@@ -107,7 +107,7 @@ mylocs \%>\% get_chem(watina, "1/1/2017", conc_type = "eq")
 
 # compare the number of returned rows:
 mylocs \%>\% get_chem(watina, "1/1/2017") \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017", strict_en = TRUE) \%>\% count
+mylocs \%>\% get_chem(watina, "1/1/2017", exclude_en_isna = TRUE) \%>\% count
 mylocs \%>\% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) \%>\% count
 
 # joining results to mylocs:
