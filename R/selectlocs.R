@@ -126,6 +126,7 @@
 #' which will default to \code{"L"} if not specified.
 #' Defines the types of XG3 which are taken from \code{data}.
 #' Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
+#' Defaults to the XG3 types present in the \code{conditions} dataframe.
 #' @param conditions A dataframe.
 #' See the devoted section below.
 #' @param verbose Logical.
@@ -319,7 +320,7 @@
 #' rowwise
 #' n
 selectlocs_xg3 <- function(data,
-                           xg3_type = NULL,
+                           xg3_type = substr(unique(conditions$xg3_variable), 1, 1),
                            max_gap = NULL,
                            min_dur = NULL,
                            conditions,
@@ -837,6 +838,8 @@ selectlocs_xg3 <- function(data,
 #' statistics will be computed.
 #' To specify chemical variables, use the
 #' codes from the column \code{chem_variable} in \code{data}.
+#' Defaults to the chemical variables present in the \code{conditions}
+#' dataframe.
 #' @param type A string defining the requested type of summary statistics to be
 #' calculated.
 #' Only needed when \code{data_type = "data"}.
@@ -965,11 +968,7 @@ selectlocs_xg3 <- function(data,
 #' %>%
 selectlocs_chem <- function(data,
                             data_type = c("data", "summary"),
-                            chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4",
-                                         "HCO3", "SO4", "Cl",
-                                         "Na", "K", "Ca", "Mg",
-                                         "Fe", "Mn", "Si", "Al",
-                                         "CondF", "CondL", "pHF", "pHL"),
+                            chem_var = unique(conditions$chem_variable),
                             type = c("avail", "num", "both"),
                             uniformity_test = FALSE,
                             conditions,

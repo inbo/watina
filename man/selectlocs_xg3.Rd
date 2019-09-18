@@ -4,8 +4,9 @@
 \alias{selectlocs_xg3}
 \title{Select locations based on XG3 availability and XG3 series' properties}
 \usage{
-selectlocs_xg3(data, xg3_type = NULL, max_gap = NULL, min_dur = NULL,
-  conditions, verbose = TRUE, list = FALSE)
+selectlocs_xg3(data, xg3_type = substr(unique(conditions$xg3_variable),
+  1, 1), max_gap = NULL, min_dur = NULL, conditions, verbose = TRUE,
+  list = FALSE)
 }
 \arguments{
 \item{data}{Either an object returned by \code{\link{get_xg3}},
@@ -22,7 +23,8 @@ when data is an object formatted as returned by
 In that case, must be a character vector of length 1, 2 or 3,
 which will default to \code{"L"} if not specified.
 Defines the types of XG3 which are taken from \code{data}.
-Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.}
+Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
+Defaults to the XG3 types present in the \code{conditions} dataframe.}
 
 \item{max_gap}{A positive integer (can be zero).
 It is part of what the user defines as 'an XG3 series':
