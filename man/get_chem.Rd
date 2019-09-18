@@ -6,7 +6,7 @@
 \usage{
 get_chem(locs, con, startdate, enddate = paste(day(today()),
   month(today()), year(today())), conc_type = c("mass", "eq"),
-  en_range = c(-0.1, 0.1), exclude_en_na = FALSE, collect = FALSE)
+  en_range = c(-0.1, 0.1), en_exclude_na = FALSE, collect = FALSE)
 }
 \arguments{
 \item{locs}{A \code{tbl_lazy} object or a dataframe, with at least a column
@@ -58,7 +58,7 @@ ionic concentration variables, not for non-ion variables such as pH and
 electrical conductivity.
 Measurements of non-ion variables are always returned.}
 
-\item{exclude_en_na}{Logical.
+\item{en_exclude_na}{Logical.
 Should ion-variable measurements of water samples with missing
 electroneutrality value be omitted?
 Defaults to FALSE.
@@ -113,7 +113,7 @@ mylocs \%>\% get_chem(watina, "1/1/2017", conc_type = "eq")
 
 # compare the number of returned rows:
 mylocs \%>\% get_chem(watina, "1/1/2017") \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017", exclude_en_na = TRUE) \%>\% count
+mylocs \%>\% get_chem(watina, "1/1/2017", en_exclude_na = TRUE) \%>\% count
 mylocs \%>\% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) \%>\% count
 
 # joining results to mylocs:

@@ -652,7 +652,7 @@ get_xg3 <- function(locs,
 #' ionic concentration variables, not for non-ion variables such as pH and
 #' electrical conductivity.
 #' Measurements of non-ion variables are always returned.
-#' @param exclude_en_na Logical.
+#' @param en_exclude_na Logical.
 #' Should ion-variable measurements of water samples with missing
 #' electroneutrality value be omitted?
 #' Defaults to FALSE.
@@ -687,7 +687,7 @@ get_xg3 <- function(locs,
 #'
 #' # compare the number of returned rows:
 #' mylocs %>% get_chem(watina, "1/1/2017") %>% count
-#' mylocs %>% get_chem(watina, "1/1/2017", exclude_en_na = TRUE) %>% count
+#' mylocs %>% get_chem(watina, "1/1/2017", en_exclude_na = TRUE) %>% count
 #' mylocs %>% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) %>% count
 #'
 #' # joining results to mylocs:
@@ -736,7 +736,7 @@ get_chem <- function(locs,
                                      year(today())),
                      conc_type = c("mass", "eq"),
                      en_range = c(-0.1, 0.1),
-                     exclude_en_na = FALSE,
+                     en_exclude_na = FALSE,
                      collect = FALSE) {
 
     conc_type <- match.arg(conc_type)
@@ -758,7 +758,7 @@ get_chem <- function(locs,
                 en_range[1] >= -1,
                 en_range[2] <= 1
                 )
-    assert_that(is.flag(exclude_en_na))
+    assert_that(is.flag(en_exclude_na))
     assert_that(is.flag(collect))
 
     if (inherits(locs, "data.frame")) {
@@ -849,7 +849,7 @@ get_chem <- function(locs,
                en_range[2])
 
     chem <-
-        if (exclude_en_na) {
+        if (en_exclude_na) {
         chem %>%
                 filter(!is.na(.data$elneutr) | .data$provide_eq_unit == "FALSE",
                        sql(sqlstring_en) | .data$provide_eq_unit == "FALSE")
