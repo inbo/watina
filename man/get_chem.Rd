@@ -6,7 +6,7 @@
 \usage{
 get_chem(locs, con, startdate, enddate = paste(day(today()),
   month(today()), year(today())), conc_type = c("mass", "eq"),
-  en_range = c(-0.1, 0.1), exclude_en_isna = FALSE, collect = FALSE)
+  en_range = c(-0.1, 0.1), exclude_en_na = FALSE, collect = FALSE)
 }
 \arguments{
 \item{locs}{A \code{tbl_lazy} object or a dataframe, with at least a column
@@ -50,17 +50,23 @@ Note that the argument has no effect on the value of non-ion-variables.}
 
 \item{en_range}{Numeric vector of length 2.
 Specifies the allowed range of
-water sample electroneutrality (see Details).
+water sample electroneutrality for ion-variable measurements (see Details).
 Both vector elements must be within the range \code{c(-1, 1)}, with the
-second element not being smaller than the first.}
+second element not being smaller than the first.
+Note that this argument only affects the selection of water samples for
+ionic concentration variables, not for non-ion variables such as pH and
+electrical conductivity.
+Measurements of non-ion variables are always returned.}
 
-\item{exclude_en_isna}{Logical.
-Should water samples with missing electroneutrality value be
-omitted?
+\item{exclude_en_na}{Logical.
+Should ion-variable measurements of water samples with missing
+electroneutrality value be omitted?
 Defaults to FALSE.
 A missing electroneutrality value is the consequence of one or more missing
 values of ionic concentration variables that are needed for
-electroneutrality calculation of the water sample.}
+electroneutrality calculation of the water sample.
+Note that this argument has no effect on the selection of non-ion variable
+measurements, which are always returned.}
 
 \item{collect}{Should the data be retrieved as a local tibble?
 If \code{FALSE} (the default), a \code{tbl_lazy} object is returned
@@ -107,7 +113,7 @@ mylocs \%>\% get_chem(watina, "1/1/2017", conc_type = "eq")
 
 # compare the number of returned rows:
 mylocs \%>\% get_chem(watina, "1/1/2017") \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017", exclude_en_isna = TRUE) \%>\% count
+mylocs \%>\% get_chem(watina, "1/1/2017", exclude_en_na = TRUE) \%>\% count
 mylocs \%>\% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) \%>\% count
 
 # joining results to mylocs:

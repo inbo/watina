@@ -645,16 +645,22 @@ get_xg3 <- function(locs,
 #' Note that the argument has no effect on the value of non-ion-variables.
 #' @param en_range Numeric vector of length 2.
 #' Specifies the allowed range of
-#' water sample electroneutrality (see Details).
+#' water sample electroneutrality for ion-variable measurements (see Details).
 #' Both vector elements must be within the range \code{c(-1, 1)}, with the
 #' second element not being smaller than the first.
+#' Note that this argument only affects the selection of water samples for
+#' ionic concentration variables, not for non-ion variables such as pH and
+#' electrical conductivity.
+#' Measurements of non-ion variables are always returned.
 #' @param exclude_en_na Logical.
-#' Should water samples with missing electroneutrality value be
-#' omitted?
+#' Should ion-variable measurements of water samples with missing
+#' electroneutrality value be omitted?
 #' Defaults to FALSE.
 #' A missing electroneutrality value is the consequence of one or more missing
 #' values of ionic concentration variables that are needed for
 #' electroneutrality calculation of the water sample.
+#' Note that this argument has no effect on the selection of non-ion variable
+#' measurements, which are always returned.
 #'
 #' @inheritParams get_xg3
 #'
@@ -845,12 +851,12 @@ get_chem <- function(locs,
     chem <-
         if (exclude_en_na) {
         chem %>%
-                filter(!is.na(.data$elneutr),
-                       sql(sqlstring_en))
+                filter(!is.na(.data$elneutr) | .data$provide_eq_unit == "FALSE",
+                       sql(sqlstring_en) | .data$provide_eq_unit == "FALSE")
         } else {
             chem %>%
                 filter(is.na(.data$elneutr) |
-                           sql(sqlstring_en))
+                           sql(sqlstring_en) | .data$provide_eq_unit == "FALSE")
         }
 
     chem <-
