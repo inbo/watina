@@ -35,7 +35,7 @@ if \code{data} is a dataset.}
 It must have the
 following columns:
 \describe{
-\item{\code{chem_variable}}{Can be any chemical variable code,
+\item{\code{variable}}{Can be any variable,
 including \code{"combined"}.}
 \item{\code{statistic}}{Name of the statistic to be evaluated.}
 \item{\code{criterion}}{Numeric. Defines the value of the statistic on which
