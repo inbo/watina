@@ -25,12 +25,13 @@
 #' Only locations are returned:
 #' \itemize{
 #' \item{
-#' for which \strong{all}
-#' conditions are met, i.e. for the XG3 variables implied by \code{xg3_type}
-#' and which occur in \code{conditions};
+#' which have \strong{all} XG3 variables, implied by \code{xg3_type} and
+#' present in \code{conditions}, available in \code{data}.
+#' (In other words, all conditions must be testable.)
 #' }
 #' \item{
-#' which have at least one such XG3 variable available in \code{data}.
+#' for which \strong{all}
+#' conditions are met;
 #' }
 #' }
 #' As the conditions imposed by the \code{conditions} dataframe are always
@@ -50,7 +51,7 @@
 #' \code{selectlocs_xg3()} joins the long-formatted results of
 #' \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}
 #' with the \code{conditions} dataframe in order to evaluate the conditions.
-#' Often, this (inner) join in itself already leads to dropping specific
+#' Often, this join in itself already leads to dropping specific
 #' combinations of \code{loc_code} and \code{xg3_variable}.
 #' At least the locations that are completely dropped in this step are reported
 #' when \code{verbose = TRUE}.
@@ -301,6 +302,8 @@
 #' str_detect
 #' @importFrom tidyr
 #' gather
+#' complete
+#' nesting
 #' @importFrom dplyr
 #' %>%
 #' tribble
@@ -308,6 +311,7 @@
 #' count
 #' distinct
 #' inner_join
+#' right_join
 #' anti_join
 #' semi_join
 #' pull
@@ -449,41 +453,6 @@ selectlocs_xg3 <- function(data,
                -.data$loc_code,
                -.data$xg3_variable)
 
-    if (verbose) {
-        if (any(c("firstyear", "lastyear") %in% conditions$statistic)) {
-            nope <-
-                xg3_avail_full %>%
-                filter(.data$statistic %in% c("firstyear", "lastyear"),
-                       is.na(.data$value)) %>%
-                semi_join(conditions,
-                           by = c("xg3_variable",
-                                  "statistic"))
-
-            for (i in unique(nope$xg3_variable)) {
-                loclist <-
-                    nope %>%
-                    filter(.data$xg3_variable == i) %>%
-                    distinct(.data$loc_code) %>%
-                    pull(.data$loc_code)
-
-                if (length(loclist) > 0) {
-                    message("For xg3_variable = ",
-                        i,
-                        ", no firstyear/lastyear testing was possible for ",
-                        length(loclist),
-                        " locations, ",
-                        "because zero XG3 values are available: ",
-                        paste(loclist, collapse = ", "),
-                        "\n")
-                }
-            }
-        }
-    }
-
-    xg3_avail <-
-        xg3_avail_full %>%
-        filter(!is.na(.data$value))
-
     # 1.2 Series
 
     xg3_series <-
@@ -531,14 +500,15 @@ selectlocs_xg3 <- function(data,
     if (cond_has_avail) {
 
     result_avail <-
-        xg3_avail %>%
+        xg3_avail_full %>%
         inner_join(conditions,
                    by = c("xg3_variable",
                           "statistic")) %>%
         mutate(cond_met =
                    ifelse(.data$direction == "min", .data$value >= .data$criterion,
                           ifelse(.data$direction == "max", .data$value <= .data$criterion,
-                                 .data$value == .data$criterion)))
+                                 .data$value == .data$criterion)),
+               cond_met = ifelse(is.na(.data$cond_met), FALSE, .data$cond_met))
 
     combined_result_avail <-
         result_avail %>%
@@ -549,7 +519,7 @@ selectlocs_xg3 <- function(data,
 
     if (verbose) {
         dropped_locs_avail <-
-            xg3_avail %>%
+            xg3_avail_full %>%
             distinct(.data$loc_code) %>%
             anti_join(combined_result_avail, by = "loc_code") %>%
             arrange(.data$loc_code) %>%
@@ -578,13 +548,19 @@ selectlocs_xg3 <- function(data,
 
     result_series <-
         xg3_series %>%
-        inner_join(conditions,
+        right_join(conditions %>%
+                       filter(str_detect(.data$statistic, "ser_")),
                    by = c("xg3_variable",
                           "statistic")) %>%
+        complete(.data$loc_code, nesting(.data$xg3_variable,
+                                         .data$statistic,
+                                         .data$criterion,
+                                         .data$direction)) %>%
         mutate(cond_met =
                    ifelse(.data$direction == "min", .data$value >= .data$criterion,
                           ifelse(.data$direction == "max", .data$value <= .data$criterion,
-                                 .data$value == .data$criterion)))
+                                 .data$value == .data$criterion)),
+               cond_met = ifelse(is.na(.data$cond_met), FALSE, .data$cond_met))
 
     if (verbose) {
         dropped_locs_ser2 <-
@@ -757,12 +733,13 @@ selectlocs_xg3 <- function(data,
 #' Only locations are returned:
 #' \itemize{
 #' \item{
-#' for which \strong{all}
-#' conditions are met, i.e. for the chemical variables implied by
-#' \code{chem_var} and which occur in \code{conditions};
+#' which have \strong{all} chemical variables, implied by
+#' \code{chem_var} and present in \code{conditions}, available in \code{data}.
+#' (In other words, all conditions must be testable.)
 #' }
 #' \item{
-#' which have at least one such chemical variable available in \code{data}.
+#' for which \strong{all}
+#' conditions are met;
 #' }
 #' }
 #' As the conditions imposed by the \code{conditions} dataframe are always
@@ -779,7 +756,7 @@ selectlocs_xg3 <- function(data,
 #' \code{selectlocs_chem()} joins the long-formatted results of
 #' \code{\link{eval_chem}}
 #' with the \code{conditions} dataframe in order to evaluate the conditions.
-#' Often, this (inner) join in itself already leads to dropping specific
+#' Often, this join in itself already leads to dropping specific
 #' combinations of \code{loc_code} and \code{chem_variable}.
 #' At least the locations that are completely dropped in this step are reported
 #' when \code{verbose = TRUE}.
@@ -1137,11 +1114,14 @@ selectlocs_chem <- function(data,
 #' has_args
 #' @importFrom tidyr
 #' gather
+#' complete
+#' nesting
 #' @importFrom dplyr
 #' %>%
 #' count
 #' distinct
 #' inner_join
+#' right_join
 #' anti_join
 #' semi_join
 #' pull
@@ -1234,53 +1214,23 @@ selectlocs <- function(data,
         rename(variable = 2)
     )
 
-    if (verbose) {
-            nope <-
-                stats_full %>%
-                filter(is.na(.data$value)) %>%
-                semi_join(conditions,
-                          by = c("variable",
-                                 "statistic")) %>%
-                distinct(.data$loc_code,
-                         .data$variable)
-
-            for (i in unique(nope$variable)) {
-                loclist <-
-                    nope %>%
-                    filter(.data$variable == i) %>%
-                    distinct(.data$loc_code) %>%
-                    pull(.data$loc_code)
-
-            if (length(loclist) > 0) {
-                message("For variable = ",
-                        i,
-                        ", no testing was possible for ",
-                        length(loclist),
-                        " locations, ",
-                        "because no summary statistic was available: ",
-                        paste(loclist, collapse = ", "),
-                        "\n")
-                }
-            }
-
-    }
-
-    stats_def <-
-        stats_full %>%
-        filter(!is.na(.data$value))
-
 
     ## 2. Calculating test results
 
         result <-
-            stats_def %>%
-            inner_join(conditions,
+            stats_full %>%
+            right_join(conditions,
                        by = c("variable",
                               "statistic")) %>%
+            complete(.data$loc_code, nesting(.data$variable,
+                                             .data$statistic,
+                                             .data$criterion,
+                                             .data$direction)) %>%
             mutate(cond_met =
                        ifelse(.data$direction == "min", .data$value >= .data$criterion,
                               ifelse(.data$direction == "max", .data$value <= .data$criterion,
-                                     .data$value == .data$criterion))) %>%
+                                     .data$value == .data$criterion)),
+                   cond_met = ifelse(is.na(.data$cond_met), FALSE, .data$cond_met)) %>%
             arrange(.data$loc_code)
 
         combined_result <-
@@ -1292,7 +1242,7 @@ selectlocs <- function(data,
 
         if (verbose) {
             dropped_locs <-
-                stats_def %>%
+                stats_full %>%
                 distinct(.data$loc_code) %>%
                 anti_join(combined_result, by = "loc_code") %>%
                 arrange(.data$loc_code) %>%

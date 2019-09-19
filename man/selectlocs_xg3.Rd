@@ -172,12 +172,13 @@ See the devoted section on the \code{conditions} dataframe.
 Only locations are returned:
 \itemize{
 \item{
-for which \strong{all}
-conditions are met, i.e. for the XG3 variables implied by \code{xg3_type}
-and which occur in \code{conditions};
+which have \strong{all} XG3 variables, implied by \code{xg3_type} and
+present in \code{conditions}, available in \code{data}.
+(In other words, all conditions must be testable.)
 }
 \item{
-which have at least one such XG3 variable available in \code{data}.
+for which \strong{all}
+conditions are met;
 }
 }
 As the conditions imposed by the \code{conditions} dataframe are always
@@ -197,7 +198,7 @@ for which \strong{all} those conditions are met.
 \code{selectlocs_xg3()} joins the long-formatted results of
 \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}
 with the \code{conditions} dataframe in order to evaluate the conditions.
-Often, this (inner) join in itself already leads to dropping specific
+Often, this join in itself already leads to dropping specific
 combinations of \code{loc_code} and \code{xg3_variable}.
 At least the locations that are completely dropped in this step are reported
 when \code{verbose = TRUE}.

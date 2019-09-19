@@ -90,12 +90,13 @@ See the devoted section on the \code{conditions} dataframe.
 Only locations are returned:
 \itemize{
 \item{
-for which \strong{all}
-conditions are met, i.e. for the chemical variables implied by
-\code{chem_var} and which occur in \code{conditions};
+which have \strong{all} chemical variables, implied by
+\code{chem_var} and present in \code{conditions}, available in \code{data}.
+(In other words, all conditions must be testable.)
 }
 \item{
-which have at least one such chemical variable available in \code{data}.
+for which \strong{all}
+conditions are met;
 }
 }
 As the conditions imposed by the \code{conditions} dataframe are always
@@ -112,7 +113,7 @@ user-specified \code{conditions} dataframe.
 \code{selectlocs_chem()} joins the long-formatted results of
 \code{\link{eval_chem}}
 with the \code{conditions} dataframe in order to evaluate the conditions.
-Often, this (inner) join in itself already leads to dropping specific
+Often, this join in itself already leads to dropping specific
 combinations of \code{loc_code} and \code{chem_variable}.
 At least the locations that are completely dropped in this step are reported
 when \code{verbose = TRUE}.
