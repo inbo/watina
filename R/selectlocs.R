@@ -124,8 +124,11 @@
 #' \code{\link{get_xg3}}.
 #' In that case, must be a character vector of length 1, 2 or 3,
 #' which will default to \code{"L"} if not specified.
-#' Defines the types of XG3 which are taken from \code{data}.
+#' Defines the types of XG3 which are taken from \code{data} for the
+#' \code{eval_xg3_xxx()} functions.
 #' Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
+#' Together with the available variables in \code{data},
+#' \code{xg3_type} determines the meaning of the variable \code{"combined"}.
 #' @param conditions A dataframe.
 #' See the devoted section below.
 #' @param verbose Logical.

@@ -21,8 +21,11 @@ when data is an object formatted as returned by
 \code{\link{get_xg3}}.
 In that case, must be a character vector of length 1, 2 or 3,
 which will default to \code{"L"} if not specified.
-Defines the types of XG3 which are taken from \code{data}.
-Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.}
+Defines the types of XG3 which are taken from \code{data} for the
+\code{eval_xg3_xxx()} functions.
+Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
+Together with the available variables in \code{data},
+\code{xg3_type} determines the meaning of the variable \code{"combined"}.}
 
 \item{max_gap}{A positive integer (can be zero).
 It is part of what the user defines as 'an XG3 series':
