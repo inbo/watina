@@ -771,6 +771,11 @@ selectlocs_xg3 <- function(data,
 #' calls to \code{selectlocs_chem()}
 #' if different sets of conditions are to be allowed ('or').
 #'
+#' If \code{data_type = "data"}, \code{selectlocs_chem()} calls
+#' \code{\link{eval_chem}}.
+#' Its \code{type} and \code{uniformity_test} arguments are derived from the
+#' user-specified \code{conditions} dataframe.
+#'
 #' \code{selectlocs_chem()} joins the long-formatted results of
 #' \code{\link{eval_chem}}
 #' with the \code{conditions} dataframe in order to evaluate the conditions.
@@ -786,8 +791,7 @@ selectlocs_xg3 <- function(data,
 #' For that reason, the user can also feed the
 #' result of \code{eval_chem()} to the \code{data} argument,
 #' with \code{data_type = "summary"}.
-#' In that case the arguments \code{chem_var}, \code{type} and
-#' \code{uniformity_test} are ignored.
+#' In that case the argument \code{chem_var} is ignored.
 #'
 #' @section Specification of the conditions dataframe:
 #' Conditions can be specified for each of the summary statistics returned
@@ -840,21 +844,8 @@ selectlocs_xg3 <- function(data,
 #' statistics will be computed.
 #' To specify chemical variables, use the
 #' codes from the column \code{chem_variable} in \code{data}.
-#' @param type A string defining the requested type of summary statistics to be
-#' calculated.
-#' Only needed when \code{data_type = "data"}.
-#' Either:
-#' \itemize{
-#' \item{\code{"avail"}:} availability statistics (the default);
-#' \item{\code{"num"}:} numeric summary statistics;
-#' \item{\code{"both"}:} both types will be returned.
-#' }
-#' See \code{\link{eval_chem}} for more information.
-#' @param uniformity_test Should the availability statistic
-#' \code{pval_uniform_totalspan} be added in the calculation of summary
-#' statistics?
-#' Only needed when \code{data_type = "data"}.
-#' See \code{\link{eval_chem}} for more information.
+#' Together with the available variables in \code{data},
+#' \code{chem_var} determines the meaning of the variable \code{"combined"}.
 #' @param conditions A dataframe.
 #' See the devoted section below.
 #' @param verbose Logical.
@@ -952,7 +943,6 @@ selectlocs_xg3 <- function(data,
 #' mydata %>%
 #'     selectlocs_chem(data_type = "data",
 #'                     chem_var = c("pHF", "CondF"),
-#'                     type = "both",
 #'                     conditions = conditions_df)
 #'
 #' # Disconnect:
@@ -973,14 +963,11 @@ selectlocs_chem <- function(data,
                                          "Na", "K", "Ca", "Mg",
                                          "Fe", "Mn", "Si", "Al",
                                          "CondF", "CondL", "pHF", "pHL"),
-                            type = c("avail", "num", "both"),
-                            uniformity_test = FALSE,
                             conditions,
                             verbose = TRUE,
                             list = FALSE) {
 
     data_type <- match.arg(data_type)
-    type <- match.arg(type)
 
     if (data_type == "data") {
         assert_that(inherits(data, c("data.frame", "tbl_lazy")),
@@ -1003,13 +990,29 @@ selectlocs_chem <- function(data,
     assert_that(is.flag(verbose))
     assert_that(is.flag(list))
 
+    assert_that(all(c("chem_variable",
+                      "statistic",
+                      "criterion",
+                      "direction") %in%
+                        colnames(conditions)),
+                msg = "The conditions dataframe does not have the required column names.")
+
+    assert_that(nrow(conditions) > 0,
+                msg = "You must at least provide one condition in the conditions dataframe.")
+
     selectlocs(data = data,
                data_type = data_type,
                eval_fun = eval_chem,
                eval_args = list(data = data,
                                 chem_var = chem_var,
-                                type = type,
-                                uniformity_test = uniformity_test),
+                                type = if (any(str_detect(conditions$statistic, "^val_")) |
+                                           "prop_below_loq" %in% conditions$statistic) {
+                                            if (sum(str_detect(conditions$statistic, "^val_") |
+                                                    conditions$statistic == "prop_below_loq") <
+                                                nrow(conditions)) "both" else "num"
+                                } else "avail",
+                                uniformity_test = str_detect(conditions$statistic, "pval_uniform") %>%
+                                                    any),
                conditions = conditions %>%
                                 rename(variable = .data$chem_variable),
                verbose = verbose,

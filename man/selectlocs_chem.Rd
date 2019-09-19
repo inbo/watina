@@ -7,8 +7,7 @@
 selectlocs_chem(data, data_type = c("data", "summary"),
   chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4", "HCO3", "SO4", "Cl",
   "Na", "K", "Ca", "Mg", "Fe", "Mn", "Si", "Al", "CondF", "CondL", "pHF",
-  "pHL"), type = c("avail", "num", "both"), uniformity_test = FALSE,
-  conditions, verbose = TRUE, list = FALSE)
+  "pHL"), conditions, verbose = TRUE, list = FALSE)
 }
 \arguments{
 \item{data}{An object as returned by either \code{\link{get_chem}}
@@ -25,24 +24,9 @@ when data is an object formatted as returned by
 Is a character vector to select chemical variables for which
 statistics will be computed.
 To specify chemical variables, use the
-codes from the column \code{chem_variable} in \code{data}.}
-
-\item{type}{A string defining the requested type of summary statistics to be
-calculated.
-Only needed when \code{data_type = "data"}.
-Either:
-\itemize{
-\item{\code{"avail"}:} availability statistics (the default);
-\item{\code{"num"}:} numeric summary statistics;
-\item{\code{"both"}:} both types will be returned.
-}
-See \code{\link{eval_chem}} for more information.}
-
-\item{uniformity_test}{Should the availability statistic
-\code{pval_uniform_totalspan} be added in the calculation of summary
-statistics?
-Only needed when \code{data_type = "data"}.
-See \code{\link{eval_chem}} for more information.}
+codes from the column \code{chem_variable} in \code{data}.
+Together with the available variables in \code{data},
+\code{chem_var} determines the meaning of the variable \code{"combined"}.}
 
 \item{conditions}{A dataframe.
 See the devoted section below.}
@@ -120,6 +104,11 @@ required combination of conditions ('and'), the user must make different
 calls to \code{selectlocs_chem()}
 if different sets of conditions are to be allowed ('or').
 
+If \code{data_type = "data"}, \code{selectlocs_chem()} calls
+\code{\link{eval_chem}}.
+Its \code{type} and \code{uniformity_test} arguments are derived from the
+user-specified \code{conditions} dataframe.
+
 \code{selectlocs_chem()} joins the long-formatted results of
 \code{\link{eval_chem}}
 with the \code{conditions} dataframe in order to evaluate the conditions.
@@ -135,8 +124,7 @@ will not change as long as the data are not altered.
 For that reason, the user can also feed the
 result of \code{eval_chem()} to the \code{data} argument,
 with \code{data_type = "summary"}.
-In that case the arguments \code{chem_var}, \code{type} and
-\code{uniformity_test} are ignored.
+In that case the argument \code{chem_var} is ignored.
 }
 \section{Specification of the conditions dataframe}{
 
@@ -235,7 +223,6 @@ conditions_df
 mydata \%>\%
     selectlocs_chem(data_type = "data",
                     chem_var = c("pHF", "CondF"),
-                    type = "both",
                     conditions = conditions_df)
 
 # Disconnect:
