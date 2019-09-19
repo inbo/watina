@@ -818,7 +818,8 @@ date, lab_sample_id, chem_variable, value, units, below_loq."
                                     sum(.data$below_loq[!is.na(.data$below_loq)]) /
                                     sum(!is.na(.data$below_loq)),
                                     NA)
-        )
+        ) %>%
+        ungroup
 
     }
 
