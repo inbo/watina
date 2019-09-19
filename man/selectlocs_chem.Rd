@@ -5,9 +5,10 @@
 \title{Select locations based on hydrochemical data properties}
 \usage{
 selectlocs_chem(data, data_type = c("data", "summary"),
-  chem_var = unique(conditions$chem_variable), type = c("avail", "num",
-  "both"), uniformity_test = FALSE, conditions, verbose = TRUE,
-  list = FALSE)
+  chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4", "HCO3", "SO4", "Cl",
+  "Na", "K", "Ca", "Mg", "Fe", "Mn", "Si", "Al", "CondF", "CondL", "pHF",
+  "pHL"), type = c("avail", "num", "both"), uniformity_test = FALSE,
+  conditions, verbose = TRUE, list = FALSE)
 }
 \arguments{
 \item{data}{An object as returned by either \code{\link{get_chem}}
@@ -24,9 +25,7 @@ when data is an object formatted as returned by
 Is a character vector to select chemical variables for which
 statistics will be computed.
 To specify chemical variables, use the
-codes from the column \code{chem_variable} in \code{data}.
-Defaults to the chemical variables present in the \code{conditions}
-dataframe.}
+codes from the column \code{chem_variable} in \code{data}.}
 
 \item{type}{A string defining the requested type of summary statistics to be
 calculated.
