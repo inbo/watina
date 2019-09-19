@@ -320,7 +320,7 @@
 #' rowwise
 #' n
 selectlocs_xg3 <- function(data,
-                           xg3_type = toupper(substr(unique(conditions$xg3_variable), 1, 1)),
+                           xg3_type = substr(unique(conditions$xg3_variable), 1, 1),
                            max_gap = NULL,
                            min_dur = NULL,
                            conditions,
@@ -332,8 +332,9 @@ selectlocs_xg3 <- function(data,
                          !is.null(min_dur)),
                 msg = "When data is not a list, you must specify max_gap and min_dur.")
 
-    if (!missing(xg3_type) & !inherits(data, "list")) {
-        assert_that(all(xg3_type %in%
+    if (missing(xg3_type) & !inherits(data, "list")) {
+        xg3_type <- "L"} else {
+            assert_that(all(xg3_type %in%
                                 c("L", "H", "V")),
                         msg = "You specified at least one unknown xg3_type.")
         }
