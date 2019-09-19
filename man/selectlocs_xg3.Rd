@@ -4,8 +4,9 @@
 \alias{selectlocs_xg3}
 \title{Select locations based on XG3 availability and XG3 series' properties}
 \usage{
-selectlocs_xg3(data, xg3_type = substr(unique(conditions$xg3_variable),
-  1, 1), max_gap = NULL, min_dur = NULL, conditions, verbose = TRUE,
+selectlocs_xg3(data,
+  xg3_type = toupper(substr(unique(conditions$xg3_variable), 1, 1)),
+  max_gap = NULL, min_dur = NULL, conditions, verbose = TRUE,
   list = FALSE)
 }
 \arguments{
