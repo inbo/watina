@@ -611,7 +611,17 @@ get_xg3 <- function(locs,
 #'
 #' The water samples must meet a specified electroneutrality
 #' condition, set by \code{en_range}.
-#' To retrieve data from all water samples, use \code{en_range = c(-1, 1)}.
+#' \itemize{
+#' \item This condition is however ignored when the sample's iron (meq/l) /
+#' conductivity (µS/cm) ratio exceeds \code{en_fecond_threshold} (use
+#' \code{en_fecond_threshold = NA} if you don't want this to happen).
+#' \item Further, water samples are included by default if their
+#' electroneutrality is \code{NA} (this is controlled by the
+#' \code{en_exclude_na} argument).
+#' \item Finally, please note that measurements of non-ion variables are
+#' \emph{always} returned!
+#' }
+#' To retrieve all data from all water samples, use \code{en_range = c(-1, 1)}.
 #'
 #' TO BE ADDED: What is electroneutrality and why is it used as a criterion?
 #'
@@ -661,6 +671,21 @@ get_xg3 <- function(locs,
 #' electroneutrality calculation of the water sample.
 #' Note that this argument has no effect on the selection of non-ion variable
 #' measurements, which are always returned.
+#' @param en_fecond_threshold A number (with a sensible default).
+#' May be set to \code{NA} or \code{NULL} by the user.
+#' \itemize{
+#' \item If \code{en_fecond_threshold} is a number (numeric scalar), all
+#' measurements from water samples with an iron (meq/l) /
+#' conductivity (µS/cm) ratio
+#' (\code{Fe/CondL}) equal to or larger than \code{en_fecond_threshold} are
+#' returned, regardless of the \code{en_range} and \code{en_exclude_na}
+#' arguments.
+#' \item If \code{en_fecond_threshold} is set to \code{NA} or \code{NULL},
+#' the iron / conductivity ratio is ignored.
+#' Hence, no exceptions are made to
+#' the conditions imposed by \code{en_range} and \code{en_exclude_na}
+#' (except for measurements of non-ion variables, which are always returned).
+#' }
 #'
 #' @inheritParams get_xg3
 #'
@@ -687,8 +712,15 @@ get_xg3 <- function(locs,
 #'
 #' # compare the number of returned rows:
 #' mylocs %>% get_chem(watina, "1/1/2017") %>% count
-#' mylocs %>% get_chem(watina, "1/1/2017", en_exclude_na = TRUE) %>% count
-#' mylocs %>% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) %>% count
+#' mylocs %>% get_chem(watina, "1/1/2017",
+#'                     en_fecond_threshold = NA) %>% count
+#' mylocs %>% get_chem(watina, "1/1/2017",
+#'                     en_exclude_na = TRUE) %>% count
+#' mylocs %>% get_chem(watina, "1/1/2017",
+#'                     en_exclude_na = TRUE,
+#'                     en_fecond_threshold = NA) %>% count
+#' mylocs %>% get_chem(watina, "1/1/2017",
+#'                     en_range = c(-1, 1)) %>% count
 #'
 #' # joining results to mylocs:
 #' mylocs %>%
@@ -737,6 +769,7 @@ get_chem <- function(locs,
                      conc_type = c("mass", "eq"),
                      en_range = c(-0.1, 0.1),
                      en_exclude_na = FALSE,
+                     en_fecond_threshold = 0.0023,
                      collect = FALSE) {
 
     conc_type <- match.arg(conc_type)
@@ -760,6 +793,11 @@ get_chem <- function(locs,
                 )
     assert_that(is.flag(en_exclude_na))
     assert_that(is.flag(collect))
+
+    if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
+        assert_that(is.number(en_fecond_threshold),
+                    en_fecond_threshold > 0)
+    }
 
     if (inherits(locs, "data.frame")) {
         locs <-
@@ -848,15 +886,75 @@ get_chem <- function(locs,
                " AND ",
                en_range[2])
 
+    # preparing for the application of the en_fecond_threshold:
+    # this step slows down the performance. PIVOT should be used.
+    if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
+            samples_fe <-
+                chem %>%
+                filter(.data$chem_variable == "Fe") %>%
+                select(.data$lab_sample_id,
+                       fe = .data$value_eq) %>%
+                group_by(.data$lab_sample_id) %>%
+                summarise(fe = mean(.data$fe))
+            samples_cond <-
+                chem %>%
+                filter(.data$chem_variable == "CondL") %>%
+                select(.data$lab_sample_id,
+                       cond = .data$value_eq) %>%
+                group_by(.data$lab_sample_id) %>%
+                summarise(cond = mean(.data$cond))
+            samples_fecond <-
+                samples_fe %>%
+                inner_join(samples_cond, by = "lab_sample_id") %>%
+                mutate(fecond = .data$fe / .data$cond) %>%
+                select(.data$lab_sample_id,
+                       .data$fecond) %>%
+                filter(!is.na(.data$fecond))
+    }
+
+    # filtering chem according to sample characteristics
     chem <-
+        # all cases return all non-ion measurements, regardless of settings
+
+            # I. don't allow samples with elneutr = NA, except when
+            # en_fecond_threshold is exceeded:
         if (en_exclude_na) {
-        chem %>%
-                filter(!is.na(.data$elneutr) | .data$provide_eq_unit == "FALSE",
-                       sql(sqlstring_en) | .data$provide_eq_unit == "FALSE")
+
+            if (is.na(en_fecond_threshold) | is.null(en_fecond_threshold)) {
+                # I.1 applying the en_range condition:
+                chem %>%
+                    filter((!is.na(.data$elneutr) & sql(sqlstring_en)) |
+                               .data$provide_eq_unit == "FALSE")
+            } else {
+                # I.2 applying the en_fecond_threshold OR the en_range condition:
+                chem %>%
+                    left_join(samples_fecond, by = "lab_sample_id") %>%
+                    filter((!is.na(.data$elneutr) & sql(sqlstring_en)) |
+                               .data$fecond >= en_fecond_threshold |
+                               .data$provide_eq_unit == "FALSE") %>%
+                    select(-.data$fecond)
+            }
+
         } else {
-            chem %>%
-                filter(is.na(.data$elneutr) |
-                           sql(sqlstring_en) | .data$provide_eq_unit == "FALSE")
+
+            # II. here, all samples with elneutr = NA are kept as well:
+            if (is.na(en_fecond_threshold) | is.null(en_fecond_threshold)) {
+                # II.1 applying the en_range condition:
+                chem %>%
+                    filter(is.na(.data$elneutr) |
+                               sql(sqlstring_en) |
+                               .data$provide_eq_unit == "FALSE")
+            } else {
+                # II.2 applying the en_fecond_threshold OR the en_range condition:
+                chem %>%
+                    left_join(samples_fecond, by = "lab_sample_id") %>%
+                    filter(is.na(.data$elneutr) |
+                               sql(sqlstring_en) |
+                               .data$fecond >= en_fecond_threshold |
+                               .data$provide_eq_unit == "FALSE") %>%
+                    select(-.data$fecond)
+            }
+
         }
 
     chem <-

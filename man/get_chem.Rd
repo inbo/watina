@@ -6,7 +6,8 @@
 \usage{
 get_chem(locs, con, startdate, enddate = paste(day(today()),
   month(today()), year(today())), conc_type = c("mass", "eq"),
-  en_range = c(-0.1, 0.1), en_exclude_na = FALSE, collect = FALSE)
+  en_range = c(-0.1, 0.1), en_exclude_na = FALSE,
+  en_fecond_threshold = 0.0023, collect = FALSE)
 }
 \arguments{
 \item{locs}{A \code{tbl_lazy} object or a dataframe, with at least a column
@@ -68,6 +69,22 @@ electroneutrality calculation of the water sample.
 Note that this argument has no effect on the selection of non-ion variable
 measurements, which are always returned.}
 
+\item{en_fecond_threshold}{A number (with a sensible default).
+May be set to \code{NA} or \code{NULL} by the user.
+\itemize{
+\item If \code{en_fecond_threshold} is a number (numeric scalar), all
+measurements from water samples with an iron (meq/l) /
+conductivity (µS/cm) ratio
+(\code{Fe/CondL}) equal to or larger than \code{en_fecond_threshold} are
+returned, regardless of the \code{en_range} and \code{en_exclude_na}
+arguments.
+\item If \code{en_fecond_threshold} is set to \code{NA} or \code{NULL},
+the iron / conductivity ratio is ignored.
+Hence, no exceptions are made to
+the conditions imposed by \code{en_range} and \code{en_exclude_na}
+(except for measurements of non-ion variables, which are always returned).
+}}
+
 \item{collect}{Should the data be retrieved as a local tibble?
 If \code{FALSE} (the default), a \code{tbl_lazy} object is returned
 (lazy query).
@@ -98,7 +115,17 @@ a given \code{startdate} and \code{enddate}.
 
 The water samples must meet a specified electroneutrality
 condition, set by \code{en_range}.
-To retrieve data from all water samples, use \code{en_range = c(-1, 1)}.
+\itemize{
+\item This condition is however ignored when the sample's iron (meq/l) /
+conductivity (µS/cm) ratio exceeds \code{en_fecond_threshold} (use
+\code{en_fecond_threshold = NA} if you don't want this to happen).
+\item Further, water samples are included by default if their
+electroneutrality is \code{NA} (this is controlled by the
+\code{en_exclude_na} argument).
+\item Finally, please note that measurements of non-ion variables are
+\emph{always} returned!
+}
+To retrieve all data from all water samples, use \code{en_range = c(-1, 1)}.
 
 TO BE ADDED: What is electroneutrality and why is it used as a criterion?
 }
@@ -113,8 +140,15 @@ mylocs \%>\% get_chem(watina, "1/1/2017", conc_type = "eq")
 
 # compare the number of returned rows:
 mylocs \%>\% get_chem(watina, "1/1/2017") \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017", en_exclude_na = TRUE) \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) \%>\% count
+mylocs \%>\% get_chem(watina, "1/1/2017",
+                    en_fecond_threshold = NA) \%>\% count
+mylocs \%>\% get_chem(watina, "1/1/2017",
+                    en_exclude_na = TRUE) \%>\% count
+mylocs \%>\% get_chem(watina, "1/1/2017",
+                    en_exclude_na = TRUE,
+                    en_fecond_threshold = NA) \%>\% count
+mylocs \%>\% get_chem(watina, "1/1/2017",
+                    en_range = c(-1, 1)) \%>\% count
 
 # joining results to mylocs:
 mylocs \%>\%
