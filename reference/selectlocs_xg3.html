@@ -74,23 +74,44 @@ by eval_xg3_avail and eval_xg3_series." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">Home</a>
+  <a href="../index.html">
+    <span class="fas fa fas fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../reference/index.html">Functions</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/v010_getstarted.html">Getting started: connecting and selecting locations</a>
+    </li>
+    <li>
+      <a href="../articles/v110_xg3.html">Using XG3 values to characterize and select locations</a>
+    </li>
+    <li>
+      <a href="../articles/v210_chem.html">Using hydrochemical data to characterize and select locations</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/inbo/watina">
-    <span class="fa fa-github"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -144,8 +165,11 @@ when data is an object formatted as returned by
 <code><a href='get_xg3.html'>get_xg3</a></code>.
 In that case, must be a character vector of length 1, 2 or 3,
 which will default to <code>"L"</code> if not specified.
-Defines the types of XG3 which are taken from <code>data</code>.
-Specifies the 'X' in 'XG3': either <code>"L"</code>, <code>"H"</code> and/or <code>"V"</code>.</p></td>
+Defines the types of XG3 which are taken from <code>data</code> for the
+<code>eval_xg3_xxx()</code> functions.
+Specifies the 'X' in 'XG3': either <code>"L"</code>, <code>"H"</code> and/or <code>"V"</code>.
+Together with the available variables in <code>data</code>,
+<code>xg3_type</code> determines the meaning of the variable <code>"combined"</code>.</p></td>
     </tr>
     <tr>
       <th>max_gap</th>
@@ -282,10 +306,11 @@ VG3) for which statistics have been computed (specified by <code>xg3_type</code>
 and on the conditions, specified by <code>conditions</code>.
 See the devoted section on the <code>conditions</code> dataframe.</p>
 <p>Only locations are returned:</p><ul>
+<li><p>which have <strong>all</strong> XG3 variables, implied by <code>xg3_type</code> and
+present in <code>conditions</code>, available in <code>data</code>.
+(In other words, all conditions must be testable.)</p></li>
 <li><p>for which <strong>all</strong>
-conditions are met, i.e. for the XG3 variables implied by <code>xg3_type</code>
-and which occur in <code>conditions</code>;</p></li>
-<li><p>which have at least one such XG3 variable available in <code>data</code>.</p></li>
+conditions are met;</p></li>
 </ul><p>As the conditions imposed by the <code>conditions</code> dataframe are always
 evaluated as a
 required combination of conditions ('and'), the user must make different
@@ -301,7 +326,7 @@ for which <strong>all</strong> those conditions are met.</p>
 <p><code>selectlocs_xg3()</code> joins the long-formatted results of
 <code><a href='eval_xg3_avail.html'>eval_xg3_avail</a></code> and <code><a href='eval_xg3_series.html'>eval_xg3_series</a></code>
 with the <code>conditions</code> dataframe in order to evaluate the conditions.
-Often, this (inner) join in itself already leads to dropping specific
+Often, this join in itself already leads to dropping specific
 combinations of <code>loc_code</code> and <code>xg3_variable</code>.
 At least the locations that are completely dropped in this step are reported
 when <code>verbose = TRUE</code>.</p>
@@ -361,7 +386,8 @@ ser_rel_se_6y_lcl</em>. The last six are not defined for the XG3 variable
 vertical CRS.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='eval_xg3_avail.html'>eval_xg3_avail</a></code>, <code><a href='eval_xg3_series.html'>eval_xg3_series</a></code></p></div>
+    <div class='dont-index'><p><code><a href='eval_xg3_avail.html'>eval_xg3_avail</a></code>, <code><a href='eval_xg3_series.html'>eval_xg3_series</a></code></p>
+<p>Other functions to select locations: <code><a href='selectlocs_chem.html'>selectlocs_chem</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
@@ -435,7 +461,7 @@ vertical CRS.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

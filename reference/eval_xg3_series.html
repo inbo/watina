@@ -72,23 +72,44 @@ Note that 'years' in this context always refers to hydroyears." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">Home</a>
+  <a href="../index.html">
+    <span class="fas fa fas fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../reference/index.html">Functions</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/v010_getstarted.html">Getting started: connecting and selecting locations</a>
+    </li>
+    <li>
+      <a href="../articles/v110_xg3.html">Using XG3 values to characterize and select locations</a>
+    </li>
+    <li>
+      <a href="../articles/v210_chem.html">Using hydrochemical data to characterize and select locations</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/inbo/watina">
-    <span class="fa fa-github"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -165,7 +186,7 @@ XG3 variable is available</p></li>
 <li><p><code>ser_lastyear</code>: last year in the series with XG3 variable</p></li>
 <li><p><code>ser_pval_uniform</code>: p-value of an exact, one-sample two-sided
 Kolmogorov-Smirnov test for the discrete uniform distribution of the member
-years withing the XG3 series.
+years within the XG3 series.
 The smaller the p-value,
 the less uniform the member years are spread within a series.
 A perfectly uniform spread results in a p-value of 1.
@@ -228,7 +249,8 @@ This 'combined' level defines an XG3 series as an XG3 series where each
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='extract_xg3_series.html'>extract_xg3_series</a></code></p>
-<p>Other functions to evaluate locations: <code><a href='eval_xg3_avail.html'>eval_xg3_avail</a></code></p></div>
+<p>Other functions to evaluate locations: <code><a href='eval_chem.html'>eval_chem</a></code>,
+  <code><a href='eval_xg3_avail.html'>eval_xg3_avail</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
@@ -267,7 +289,7 @@ This 'combined' level defines an XG3 series as an XG3 series where each
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>

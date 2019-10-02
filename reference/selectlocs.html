@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Filter XG3 data per location x hydroyear — filter_xg3 • watina</title>
+<title>Select locations based on summary statistics (generic function) — selectlocs • watina</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,11 @@
 
 
 
-<meta property="og:title" content="Filter XG3 data per location x hydroyear — filter_xg3" />
-<meta property="og:description" content="Helper function to select the specified XG3 columns per location x hydroyear." />
+<meta property="og:title" content="Select locations based on summary statistics (generic function) — selectlocs" />
+<meta property="og:description" content="Generic (helper) function to select locations that comply with
+user-specified conditions,
+from either a dataset (dataframe or lazy object) with the variable's values or
+from a dataframe with summary statistics." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -123,37 +126,110 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Filter XG3 data per location x hydroyear</h1>
-    <small class="dont-index">Source: <a href='https://github.com/inbo/watina/blob/master/R/eval.R'><code>R/eval.R</code></a></small>
-    <div class="hidden name"><code>filter_xg3.Rd</code></div>
+    <h1>Select locations based on summary statistics (generic function)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/inbo/watina/blob/master/R/selectlocs.R'><code>R/selectlocs.R</code></a></small>
+    <div class="hidden name"><code>selectlocs.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Helper function to select the specified XG3 columns per location x hydroyear.</p>
+    <p>Generic (helper) function to select locations that comply with
+user-specified conditions,
+from either a dataset (dataframe or lazy object) with the variable's values or
+from a dataframe with summary statistics.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>filter_xg3</span>(<span class='no'>data</span>, <span class='no'>xg3_type</span>)</pre>
+    <pre class="usage"><span class='fu'>selectlocs</span>(<span class='no'>data</span>, <span class='kw'>data_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"data"</span>, <span class='st'>"summary"</span>), <span class='kw'>eval_fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>eval_args</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>conditions</span>, <span class='no'>verbose</span>, <span class='no'>list</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>An object returned by <code><a href='get_xg3.html'>get_xg3</a></code>.</p></td>
+      <td><p>Either:</p><ul>
+<li><p>a dataset (dataframe or lazy object) with the variable's values:
+with at least a column <code>loc_code</code>, a column with the variable name,
+and a column <code>value</code>;</p></li>
+<li><p>a dataframe with summary statistics:
+with a first column <code>loc_code</code> and a second column with the evaluated
+variable names or codes.
+The column name of the second column can vary.
+All other columns should have the name of the summary statistic, and hold
+its value for <code>loc_code</code> x variable.</p></li>
+</ul></td>
     </tr>
     <tr>
-      <th>xg3_type</th>
-      <td><p>Character vector of length 1, 2 or 3.
-Defines the types of XG3 which are taken from <code>data</code>.
-Specifies the 'X' in 'XG3': either <code>"L"</code>, <code>"H"</code> and/or <code>"V"</code>.
-Defaults to <code>"L"</code>.</p></td>
+      <th>data_type</th>
+      <td><p>A string.
+Either <code>"data"</code> (the default) or <code>"summary"</code>, in correspondence
+with the choice made for <code>data</code>.</p></td>
+    </tr>
+    <tr>
+      <th>eval_fun</th>
+      <td><p>The evaluation function to be run, if <code>data</code> is a
+dataset.</p></td>
+    </tr>
+    <tr>
+      <th>eval_args</th>
+      <td><p>The arguments of the evaluation function, as a named list,
+if <code>data</code> is a dataset.</p></td>
+    </tr>
+    <tr>
+      <th>conditions</th>
+      <td><p>A dataframe.
+It must have the
+following columns:</p><dl class='dl-horizontal'>
+<dt><code>variable</code></dt><dd><p>Can be any variable,
+including <code>"combined"</code>.</p></dd>
+<dt><code>statistic</code></dt><dd><p>Name of the statistic to be evaluated.</p></dd>
+<dt><code>criterion</code></dt><dd><p>Numeric. Defines the value of the statistic on which
+the
+condition will be based.</p></dd>
+<dt><code>direction</code></dt><dd><p>One of: <code>"min","max","equal"</code>.
+Together with <code>criterion</code>, this completes the condition which will
+be evaluated with respect to the specific <code>chem_variable</code>:
+for <code>direction = "min"</code>, the statistic must be the criterion
+value or larger; for <code>direction = "max"</code>, the statistic must be
+the criterion value or lower; for <code>direction = "equal"</code>,
+the statistic must be equal to the criterion value.</p></dd>
+
+</dl>
+
+<p>Each condition is one row of the dataframe.
+The dataframe should have at least one, and may have many.
+Each combination of <code>chem_variable</code> and <code>statistic</code> must be
+unique.
+Conditions on chemical variables, absent from <code>data</code> or not implied by
+<code>chem_var</code>, will be dropped without warning.
+Hence, it is up to the user to do sensible things.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Logical.
+If <code>TRUE</code>, give feedback on dropped locations because of
+(specific) unused conditions and other 'mismatch' reasons.</p></td>
+    </tr>
+    <tr>
+      <th>list</th>
+      <td><p>Logical.
+If <code>FALSE</code> (the default), the function only returns the end-result
+(a tibble with selected location codes).
+If <code>TRUE</code>, the function returns a list with the end-result plus useful
+intermediate results.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>tbl_lazy</code> object or a tibble, which is like <code>data</code> but with
-non-requested XG3 variables discarded.</p>
+    <p>If <code>list = FALSE</code>: a tibble with one column <code>loc_code</code> that
+provides the locations selected by the conditions.</p>
+<p>If <code>list = TRUE</code>: a list of tibbles that extends the previous end-result
+with intermediate results.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The result of the evaluation function (<code>eval_fun</code>) must produce a
+dataframe, formatted as declared by the second bullet under the
+<code>data</code> argument.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -161,6 +237,7 @@ non-requested XG3 variables discarded.</p>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
     </ul>
 
   </div>

@@ -74,23 +74,44 @@ to a specified timeframe." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">Home</a>
+  <a href="../index.html">
+    <span class="fas fa fas fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../reference/index.html">Functions</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/v010_getstarted.html">Getting started: connecting and selecting locations</a>
+    </li>
+    <li>
+      <a href="../articles/v110_xg3.html">Using XG3 values to characterize and select locations</a>
+    </li>
+    <li>
+      <a href="../articles/v210_chem.html">Using hydrochemical data to characterize and select locations</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/inbo/watina">
-    <span class="fa fa-github"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -123,7 +144,7 @@ to a specified timeframe.</p>
 
     <pre class="usage"><span class='fu'>get_xg3</span>(<span class='no'>locs</span>, <span class='no'>con</span>, <span class='no'>startyear</span>, <span class='kw'>endyear</span> <span class='kw'>=</span> <span class='fu'>year</span>(<span class='fu'>now</span>()) - <span class='fl'>1</span>,
   <span class='kw'>vert_crs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"local"</span>, <span class='st'>"ostend"</span>, <span class='st'>"both"</span>), <span class='kw'>truncated</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>with_estimated</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,7 +188,13 @@ The units are always meters.</p></td>
 If <code>TRUE</code> (the default), the XG3 values are calculated after having set
 the underlying water level measurements that are above soil surface level
 to the soil surface level itself
-(which is zero in the case of the relative CRS).</p></td>
+(which is zero in the case of the local CRS).</p></td>
+    </tr>
+    <tr>
+      <th>with_estimated</th>
+      <td><p>Logical.
+If <code>TRUE</code> (the default), the XG3 values calculations also use estimated
+(i.e. non-measured) water level data that are available in the database.</p></td>
     </tr>
     <tr>
       <th>collect</th>
@@ -192,14 +219,16 @@ a local <code><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibbl
 
     <p>The timeframe is a selection interval between
 a given first and last hydroyear.</p>
-<p>Note: the argument <code>truncated</code> is currently not used.
-Currently, non-truncated values are returned!</p>
+<p>Note: the arguments <code>truncated</code> and <code>with_estimated</code> are currently
+not used.
+Currently, non-truncated values are returned, with usage of estimated values.</p>
 <p>(TO BE ADDED: What are XG3 values? What is a hydroyear?
 Why truncate, and why truncate by default?
 When to choose which <code>vert_crs</code>?)</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other functions to query the database: <code><a href='get_locs.html'>get_locs</a></code></p></div>
+    <div class='dont-index'><p>Other functions to query the database: <code><a href='get_chem.html'>get_chem</a></code>,
+  <code><a href='get_locs.html'>get_locs</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
@@ -208,13 +237,16 @@ When to choose which <code>vert_crs</code>?)</p>
 <span class='no'>mylocs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_locs.html'>get_locs</a></span>(<span class='no'>watina</span>, <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='st'>"KAL"</span>)
 <span class='no'>mylocs</span> <span class='kw'>%&gt;%</span> <span class='fu'>get_xg3</span>(<span class='no'>watina</span>, <span class='fl'>2010</span>)
 <span class='no'>mylocs</span> <span class='kw'>%&gt;%</span> <span class='fu'>get_xg3</span>(<span class='no'>watina</span>, <span class='fl'>2010</span>, <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>mylocs</span> <span class='kw'>%&gt;%</span> <span class='fu'>get_xg3</span>(<span class='no'>watina</span>, <span class='fl'>2010</span>, <span class='kw'>vert_crs</span> <span class='kw'>=</span> <span class='st'>"ostend"</span>)
+
+<span class='co'># joining results to mylocs:</span>
 <span class='no'>mylocs</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>get_xg3</span>(<span class='no'>watina</span>, <span class='fl'>2010</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/join.html'>left_join</a></span>(<span class='no'>mylocs</span> <span class='kw'>%&gt;%</span>
             <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(-<span class='no'>loc_wid</span>),
             <span class='no'>.</span>) <span class='kw'>%&gt;%</span>
   <span class='no'>collect</span>
-<span class='no'>mylocs</span> <span class='kw'>%&gt;%</span> <span class='fu'>get_xg3</span>(<span class='no'>watina</span>, <span class='fl'>2010</span>, <span class='kw'>vert_crs</span> <span class='kw'>=</span> <span class='st'>"ostend"</span>)
+
 <span class='co'># Disconnect:</span>
 <span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/DBI/man/dbDisconnect.html'>dbDisconnect</a></span>(<span class='no'>watina</span>)
 }</div></pre>
@@ -239,7 +271,7 @@ When to choose which <code>vert_crs</code>?)</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
 </div>
 
       </footer>
