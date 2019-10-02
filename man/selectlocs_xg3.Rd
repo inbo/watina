@@ -21,8 +21,11 @@ when data is an object formatted as returned by
 \code{\link{get_xg3}}.
 In that case, must be a character vector of length 1, 2 or 3,
 which will default to \code{"L"} if not specified.
-Defines the types of XG3 which are taken from \code{data}.
-Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.}
+Defines the types of XG3 which are taken from \code{data} for the
+\code{eval_xg3_xxx()} functions.
+Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
+Together with the available variables in \code{data},
+\code{xg3_type} determines the meaning of the variable \code{"combined"}.}
 
 \item{max_gap}{A positive integer (can be zero).
 It is part of what the user defines as 'an XG3 series':
@@ -169,12 +172,13 @@ See the devoted section on the \code{conditions} dataframe.
 Only locations are returned:
 \itemize{
 \item{
-for which \strong{all}
-conditions are met, i.e. for the XG3 variables implied by \code{xg3_type}
-and which occur in \code{conditions};
+which have \strong{all} XG3 variables, implied by \code{xg3_type} and
+present in \code{conditions}, available in \code{data}.
+(In other words, all conditions must be testable.)
 }
 \item{
-which have at least one such XG3 variable available in \code{data}.
+for which \strong{all}
+conditions are met;
 }
 }
 As the conditions imposed by the \code{conditions} dataframe are always
@@ -194,7 +198,7 @@ for which \strong{all} those conditions are met.
 \code{selectlocs_xg3()} joins the long-formatted results of
 \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}
 with the \code{conditions} dataframe in order to evaluate the conditions.
-Often, this (inner) join in itself already leads to dropping specific
+Often, this join in itself already leads to dropping specific
 combinations of \code{loc_code} and \code{xg3_variable}.
 At least the locations that are completely dropped in this step are reported
 when \code{verbose = TRUE}.
@@ -312,5 +316,7 @@ DBI::dbDisconnect(watina)
 }
 \seealso{
 \code{\link{eval_xg3_avail}}, \code{\link{eval_xg3_series}}
+
+Other functions to select locations: \code{\link{selectlocs_chem}}
 }
 \concept{functions to select locations}

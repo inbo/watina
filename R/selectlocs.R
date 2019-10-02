@@ -25,12 +25,13 @@
 #' Only locations are returned:
 #' \itemize{
 #' \item{
-#' for which \strong{all}
-#' conditions are met, i.e. for the XG3 variables implied by \code{xg3_type}
-#' and which occur in \code{conditions};
+#' which have \strong{all} XG3 variables, implied by \code{xg3_type} and
+#' present in \code{conditions}, available in \code{data}.
+#' (In other words, all conditions must be testable.)
 #' }
 #' \item{
-#' which have at least one such XG3 variable available in \code{data}.
+#' for which \strong{all}
+#' conditions are met;
 #' }
 #' }
 #' As the conditions imposed by the \code{conditions} dataframe are always
@@ -50,7 +51,7 @@
 #' \code{selectlocs_xg3()} joins the long-formatted results of
 #' \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}
 #' with the \code{conditions} dataframe in order to evaluate the conditions.
-#' Often, this (inner) join in itself already leads to dropping specific
+#' Often, this join in itself already leads to dropping specific
 #' combinations of \code{loc_code} and \code{xg3_variable}.
 #' At least the locations that are completely dropped in this step are reported
 #' when \code{verbose = TRUE}.
@@ -124,8 +125,11 @@
 #' \code{\link{get_xg3}}.
 #' In that case, must be a character vector of length 1, 2 or 3,
 #' which will default to \code{"L"} if not specified.
-#' Defines the types of XG3 which are taken from \code{data}.
+#' Defines the types of XG3 which are taken from \code{data} for the
+#' \code{eval_xg3_xxx()} functions.
 #' Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
+#' Together with the available variables in \code{data},
+#' \code{xg3_type} determines the meaning of the variable \code{"combined"}.
 #' @param conditions A dataframe.
 #' See the devoted section below.
 #' @param verbose Logical.
@@ -298,6 +302,8 @@
 #' str_detect
 #' @importFrom tidyr
 #' gather
+#' complete
+#' nesting
 #' @importFrom dplyr
 #' %>%
 #' tribble
@@ -305,6 +311,7 @@
 #' count
 #' distinct
 #' inner_join
+#' right_join
 #' anti_join
 #' semi_join
 #' pull
@@ -446,39 +453,6 @@ selectlocs_xg3 <- function(data,
                -.data$loc_code,
                -.data$xg3_variable)
 
-    if (verbose) {
-        if (any(c("firstyear", "lastyear") %in% conditions$statistic)) {
-            nope <-
-                xg3_avail_full %>%
-                filter(.data$statistic %in% c("firstyear", "lastyear"),
-                       is.na(.data$value)) %>%
-                semi_join(conditions,
-                           by = c("xg3_variable",
-                                  "statistic"))
-
-            for (i in unique(nope$xg3_variable)) {
-                loclist <-
-                    nope %>%
-                    filter(.data$xg3_variable == i) %>%
-                    distinct(.data$loc_code) %>%
-                    pull(.data$loc_code)
-
-                message("For xg3_variable = ",
-                        i,
-                        ", no firstyear/lastyear testing was possible for ",
-                        length(loclist),
-                        " locations, ",
-                        "because zero XG3 values are available: ",
-                        paste(loclist, collapse = ", "),
-                        "\n")
-            }
-        }
-    }
-
-    xg3_avail <-
-        xg3_avail_full %>%
-        filter(!is.na(.data$value))
-
     # 1.2 Series
 
     xg3_series <-
@@ -526,14 +500,15 @@ selectlocs_xg3 <- function(data,
     if (cond_has_avail) {
 
     result_avail <-
-        xg3_avail %>%
+        xg3_avail_full %>%
         inner_join(conditions,
                    by = c("xg3_variable",
                           "statistic")) %>%
         mutate(cond_met =
                    ifelse(.data$direction == "min", .data$value >= .data$criterion,
                           ifelse(.data$direction == "max", .data$value <= .data$criterion,
-                                 .data$value == .data$criterion)))
+                                 .data$value == .data$criterion)),
+               cond_met = ifelse(is.na(.data$cond_met), FALSE, .data$cond_met))
 
     combined_result_avail <-
         result_avail %>%
@@ -554,8 +529,9 @@ selectlocs_xg3 <- function(data,
             message("Dropped ",
                     length(dropped_locs_avail),
                     " locations in availability evaluation ",
-                    "because none of the given ",
-                    "availability conditions were available for the requested ",
+                    "because none of the summary statistics, ",
+                    "needed to test the ",
+                    "availability conditions, were available for the requested ",
                     "XG3 variables: ",
                     paste(dropped_locs_avail, collapse = ", "),
                     "\n"
@@ -572,13 +548,19 @@ selectlocs_xg3 <- function(data,
 
     result_series <-
         xg3_series %>%
-        inner_join(conditions,
+        right_join(conditions %>%
+                       filter(str_detect(.data$statistic, "ser_")),
                    by = c("xg3_variable",
                           "statistic")) %>%
+        complete(.data$loc_code, nesting(.data$xg3_variable,
+                                         .data$statistic,
+                                         .data$criterion,
+                                         .data$direction)) %>%
         mutate(cond_met =
                    ifelse(.data$direction == "min", .data$value >= .data$criterion,
                           ifelse(.data$direction == "max", .data$value <= .data$criterion,
-                                 .data$value == .data$criterion)))
+                                 .data$value == .data$criterion)),
+               cond_met = ifelse(is.na(.data$cond_met), FALSE, .data$cond_met))
 
     if (verbose) {
         dropped_locs_ser2 <-
@@ -592,8 +574,9 @@ selectlocs_xg3 <- function(data,
             message("Dropped ",
                     length(dropped_locs_ser2),
                     " locations in series evaluation ",
-                    "because none of the given ",
-                    "series conditions were available for the requested ",
+                    "because none of the summary statistics, ",
+                    "needed to test the ",
+                    "series conditions, were available for the requested ",
                     "XG3 variables: ",
                     paste(dropped_locs_ser2, collapse = ", "),
                     "\n"
@@ -708,3 +691,596 @@ selectlocs_xg3 <- function(data,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#' Select locations based on hydrochemical data properties
+#'
+#' Select locations that comply with user-specified conditions,
+#' from a dataset as returned by either \code{\link{get_chem}} or
+#' \code{\link{eval_chem}}.
+#' Conditions can be specified for each of the summary statistics returned
+#' by \code{\link{eval_chem}}.
+#'
+#' \code{selectlocs_chem()} separately runs \code{eval_chem} on the input
+#' (\code{data}) if \code{data_type = "data"}.
+#' See the documentation of
+#' \code{\link{eval_chem}}
+#' to learn more about the available summary statistics.
+#' Each condition for evaluation + selection of locations
+#' is specific to a chemical \emph{variable}, which can also be
+#' the level 'combined'.
+#' Hence, the result will depend both on the \emph{chemical variables} for
+#' which statistics have been computed (specified by \code{chem_var}),
+#' and on the conditions, specified by \code{conditions}.
+#' See the devoted section on the \code{conditions} dataframe.
+#'
+#' Only locations are returned:
+#' \itemize{
+#' \item{
+#' which have \strong{all} chemical variables, implied by
+#' \code{chem_var} and present in \code{conditions}, available in \code{data}.
+#' (In other words, all conditions must be testable.)
+#' }
+#' \item{
+#' for which \strong{all}
+#' conditions are met;
+#' }
+#' }
+#' As the conditions imposed by the \code{conditions} dataframe are always
+#' evaluated as a
+#' required combination of conditions ('and'), the user must make different
+#' calls to \code{selectlocs_chem()}
+#' if different sets of conditions are to be allowed ('or').
+#'
+#' If \code{data_type = "data"}, \code{selectlocs_chem()} calls
+#' \code{\link{eval_chem}}.
+#' Its \code{type} and \code{uniformity_test} arguments are derived from the
+#' user-specified \code{conditions} dataframe.
+#'
+#' \code{selectlocs_chem()} joins the long-formatted results of
+#' \code{\link{eval_chem}}
+#' with the \code{conditions} dataframe in order to evaluate the conditions.
+#' Often, this join in itself already leads to dropping specific
+#' combinations of \code{loc_code} and \code{chem_variable}.
+#' At least the locations that are completely dropped in this step are reported
+#' when \code{verbose = TRUE}.
+#'
+#' The user may want to repeatedly try different sets of conditions
+#' until a satisfying selection of locations is returned.
+#' However the output of \code{\link{eval_chem}}
+#' will not change as long as the data are not altered.
+#' For that reason, the user can also feed the
+#' result of \code{eval_chem()} to the \code{data} argument,
+#' with \code{data_type = "summary"}.
+#' In that case the argument \code{chem_var} is ignored.
+#'
+#' @section Specification of the conditions dataframe:
+#' Conditions can be specified for each of the summary statistics returned
+#' by \code{\link{eval_chem}}.
+#'
+#' The \code{conditions} parameter takes a dataframe that must have the
+#' following columns:
+#' \describe{
+#' \item{\code{chem_variable}}{Can be any chemical variable code,
+#' including \code{"combined"}.}
+#' \item{\code{statistic}}{Name of the statistic to be evaluated.}
+#' \item{\code{criterion}}{Numeric. Defines the value of the statistic on which
+#' the
+#' condition will be based.
+#'
+#' For condition testing on statistics of type 'date', provide the numeric date
+#' representation, i.e. the number of days since 1 Jan 1970 (older dates are
+#' negative).
+#' This can be easily calculated for a given '\code{datestring}'
+#' (e.g. "18-5-2020") with:
+#' \code{as.numeric(lubridate::dmy(datestring))}.}
+#' \item{\code{direction}}{One of: \code{"min","max","equal"}.
+#' Together with \code{criterion}, this completes the condition which will
+#' be evaluated with respect to the specific \code{chem_variable}:
+#' for \code{direction = "min"}, the statistic must be the criterion
+#' value or larger; for \code{direction = "max"}, the statistic must be
+#' the criterion value or lower; for \code{direction = "equal"},
+#' the statistic must be equal to the criterion value.
+#' }
+#' }
+#'
+#' Each condition is one row of the dataframe.
+#' The dataframe should have at least one, and may have many.
+#' Each combination of \code{chem_variable} and \code{statistic} must be
+#' unique.
+#' Conditions on chemical variables, absent from \code{data} or not implied by
+#' \code{chem_var}, will be dropped without warning.
+#' Hence, it is up to the user to do sensible things.
+#'
+#' The possible statistics for conditions on chemical variables are documented
+#' by \code{\link{eval_chem}}.
+#'
+#' @param data An object as returned by either \code{\link{get_chem}}
+#' (the object corresponds to real 'data') or
+#' \code{\link{eval_chem}} (the object contains summary values).
+#' @param chem_var Only relevant
+#' when data is an object formatted as returned by
+#' \code{\link{get_chem}}.
+#' Is a character vector to select chemical variables for which
+#' statistics will be computed.
+#' To specify chemical variables, use the
+#' codes from the column \code{chem_variable} in \code{data}.
+#' Together with the available variables in \code{data},
+#' \code{chem_var} determines the meaning of the variable \code{"combined"}.
+#' @param conditions A dataframe.
+#' See the devoted section below.
+#' @param verbose Logical.
+#' If \code{TRUE}, give feedback on dropped locations because of
+#' (specific) unused conditions and other 'mismatch' reasons.
+#' @param list Logical.
+#' If \code{FALSE} (the default), the function only returns the end-result
+#' (a tibble with selected location codes).
+#' If \code{TRUE}, the function returns a list with the end-result plus useful
+#' intermediate results (see Value).
+#'
+#' @inheritParams selectlocs
+#'
+#' @return
+#' If \code{list = FALSE}: a tibble with one column \code{loc_code} that
+#' provides the locations selected by the conditions.
+#'
+#' If \code{list = TRUE}: a list of tibbles that extends the previous end-result
+#' with intermediate results.
+#' All list elements are named:
+#' \enumerate{
+#' \item{\code{combined_result_filtered}}:
+#' the end-result, same as given by \code{list = FALSE}.
+#'
+#' \item{\code{result}}:
+#' the test result of
+#' each computed and tested statistic for each location and
+#' chemical variable: 'condition met' (\code{cond_met}) is TRUE or FALSE.
+#'
+#' \item{\code{combined_result}}:
+#' aggregation of \code{result} \strong{per location}.
+#' Specific columns:
+#' \code{all_cond_met} is \code{TRUE} if \emph{all} conditions
+#' for that location were \code{TRUE}, and is \code{FALSE} in all other cases.
+#' \code{pct_cond_met} is the percentage of 'met' availability conditions
+#' per location.
+#' }
+#'
+#' @seealso
+#' \code{\link{eval_chem}}
+#'
+#' @family functions to select locations
+#'
+#' @examples
+#' \dontrun{
+#' watina <- connect_watina()
+#' library(dplyr)
+#' mylocs <- get_locs(watina, area_codes = "ZWA")
+#' mydata <-
+#'     mylocs %>%
+#'     get_chem(watina, "1/1/2010")
+#' mydata
+#' mydata %>%
+#'     pull(date) %>%
+#'     lubridate::year(.) %>%
+#'     (function(x) c(firstyear = min(x), lastyear = max(x)))
+#'
+#' ## EXAMPLE 1
+#' # to prepare a condition on 'firstdate', we need its numerical value:
+#' as.numeric(lubridate::dmy("1/1/2014"))
+#' conditions_df <-
+#'     tribble(
+#'         ~chem_variable, ~statistic, ~criterion, ~direction,
+#'         "N-NO3", "nrdates", 2, "min",
+#'         "P-PO4", "nrdates", 2, "min",
+#'         "P-PO4", "firstdate", 16071, "max",
+#'         "P-PO4", "timespan_years", 5, "min"
+#'     )
+#' conditions_df
+#' myresult <-
+#'     mydata %>%
+#'     selectlocs_chem(data_type = "data",
+#'                     chem_var = c("N-NO3", "P-PO4"),
+#'                     conditions = conditions_df,
+#'                     list = TRUE)
+#' myresult
+#' # or:
+#' # mystats <- eval_chem(mydata, chem_var = c("N-NO3", "P-PO4"))
+#' # myresult <-
+#' #   mystats %>%
+#' #   selectlocs_chem(data_type = "summary",
+#' #                   conditions = conditions_df,
+#' #                   list = TRUE)
+#' myresult$combined_result_filtered
+#'
+#' ## EXAMPLE 2
+#' # An example based on numeric statistics:
+#' conditions_df <-
+#'     tribble(
+#'         ~chem_variable, ~statistic, ~criterion, ~direction,
+#'         "pHF", "val_mean", 5, "max",
+#'         "CondF", "val_pct50", 100, "min"
+#'     )
+#' conditions_df
+#' mydata %>%
+#'     selectlocs_chem(data_type = "data",
+#'                     chem_var = c("pHF", "CondF"),
+#'                     conditions = conditions_df)
+#'
+#' # Disconnect:
+#' DBI::dbDisconnect(watina)
+#' }
+#'
+#' @export
+#' @importFrom rlang .data
+#' @importFrom assertthat
+#' assert_that
+#' is.flag
+#' @importFrom dplyr
+#' %>%
+selectlocs_chem <- function(data,
+                            data_type = c("data", "summary"),
+                            chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4",
+                                         "HCO3", "SO4", "Cl",
+                                         "Na", "K", "Ca", "Mg",
+                                         "Fe", "Mn", "Si", "Al",
+                                         "CondF", "CondL", "pHF", "pHL"),
+                            conditions,
+                            verbose = TRUE,
+                            list = FALSE) {
+
+    data_type <- match.arg(data_type)
+
+    if (data_type == "data") {
+        assert_that(inherits(data, c("data.frame", "tbl_lazy")),
+                    all(c("loc_code", "chem_variable", "value") %in%
+                            colnames(data)),
+                    ncol(data) > 3,
+                    msg = "data does not have the required format (with data_type = 'data')."
+        )
+    }
+
+    if (data_type == "summary") {
+        assert_that(inherits(data, "data.frame"),
+                    all(c("loc_code", "chem_variable") %in% colnames(data)),
+                    ncol(data) > 2,
+                    msg = "data does not have the required format (with data_type = 'summary')."
+        )
+    }
+
+    assert_that(inherits(conditions, "data.frame"))
+    assert_that(is.flag(verbose))
+    assert_that(is.flag(list))
+
+    assert_that(all(c("chem_variable",
+                      "statistic",
+                      "criterion",
+                      "direction") %in%
+                        colnames(conditions)),
+                msg = "The conditions dataframe does not have the required column names.")
+
+    assert_that(nrow(conditions) > 0,
+                msg = "You must at least provide one condition in the conditions dataframe.")
+
+    selectlocs(data = data,
+               data_type = data_type,
+               eval_fun = eval_chem,
+               eval_args = list(data = data,
+                                chem_var = chem_var,
+                                type = if (any(str_detect(conditions$statistic, "^val_")) |
+                                           "prop_below_loq" %in% conditions$statistic) {
+                                            if (sum(str_detect(conditions$statistic, "^val_") |
+                                                    conditions$statistic == "prop_below_loq") <
+                                                nrow(conditions)) "both" else "num"
+                                } else "avail",
+                                uniformity_test = str_detect(conditions$statistic, "pval_uniform") %>%
+                                                    any),
+               conditions = conditions %>%
+                                rename(variable = .data$chem_variable),
+               verbose = verbose,
+               list = list)
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#' Select locations based on summary statistics (generic function)
+#'
+#' Generic (helper) function to select locations that comply with
+#' user-specified conditions,
+#' from either a dataset (dataframe or lazy object) with the variable's values or
+#' from a dataframe with summary statistics.
+#'
+#' The result of the evaluation function (\code{eval_fun}) must produce a
+#' dataframe, formatted as declared by the second bullet under the
+#' \code{data} argument.
+#'
+#' @param data Either:
+#' \itemize{
+#' \item{a dataset (dataframe or lazy object) with the variable's values}:
+#' with at least a column \code{loc_code}, a column with the variable name,
+#' and a column \code{value};
+#' \item{a dataframe with summary statistics}:
+#' with a first column \code{loc_code} and a second column with the evaluated
+#' variable names or codes.
+#' The column name of the second column can vary.
+#' All other columns should have the name of the summary statistic, and hold
+#' its value for \code{loc_code} x variable.
+#' }
+#' @param data_type A string.
+#' Either \code{"data"} (the default) or \code{"summary"}, in correspondence
+#' with the choice made for \code{data}.
+#' @param eval_fun The evaluation function to be run, if \code{data} is a
+#' dataset.
+#' @param eval_args The arguments of the evaluation function, as a named list,
+#' if \code{data} is a dataset.
+#' @param conditions A dataframe.
+#' It must have the
+#' following columns:
+#' \describe{
+#' \item{\code{variable}}{Can be any variable,
+#' including \code{"combined"}.}
+#' \item{\code{statistic}}{Name of the statistic to be evaluated.}
+#' \item{\code{criterion}}{Numeric. Defines the value of the statistic on which
+#' the
+#' condition will be based.}
+#' \item{\code{direction}}{One of: \code{"min","max","equal"}.
+#' Together with \code{criterion}, this completes the condition which will
+#' be evaluated with respect to the specific \code{chem_variable}:
+#' for \code{direction = "min"}, the statistic must be the criterion
+#' value or larger; for \code{direction = "max"}, the statistic must be
+#' the criterion value or lower; for \code{direction = "equal"},
+#' the statistic must be equal to the criterion value.
+#' }
+#' }
+#'
+#' Each condition is one row of the dataframe.
+#' The dataframe should have at least one, and may have many.
+#' Each combination of \code{chem_variable} and \code{statistic} must be
+#' unique.
+#' Conditions on chemical variables, absent from \code{data} or not implied by
+#' \code{chem_var}, will be dropped without warning.
+#' Hence, it is up to the user to do sensible things.
+#' @param verbose Logical.
+#' If \code{TRUE}, give feedback on dropped locations because of
+#' (specific) unused conditions and other 'mismatch' reasons.
+#' @param list Logical.
+#' If \code{FALSE} (the default), the function only returns the end-result
+#' (a tibble with selected location codes).
+#' If \code{TRUE}, the function returns a list with the end-result plus useful
+#' intermediate results.
+#'
+#' @return
+#' If \code{list = FALSE}: a tibble with one column \code{loc_code} that
+#' provides the locations selected by the conditions.
+#'
+#' If \code{list = TRUE}: a list of tibbles that extends the previous end-result
+#' with intermediate results.
+#'
+#' @keywords internal
+#'
+#' @importFrom rlang .data
+#' @importFrom assertthat
+#' assert_that
+#' is.flag
+#' is.string
+#' has_args
+#' @importFrom tidyr
+#' gather
+#' complete
+#' nesting
+#' @importFrom dplyr
+#' %>%
+#' count
+#' distinct
+#' inner_join
+#' right_join
+#' anti_join
+#' semi_join
+#' pull
+#' mutate
+#' group_by
+#' summarise
+#' arrange
+#' filter
+#' select
+#' rename
+#' n
+selectlocs <- function(data,
+                       data_type = c("data", "summary"),
+                       eval_fun = NULL,
+                       eval_args = NULL,
+                       conditions,
+                       verbose,
+                       list) {
+
+    data_type <- match.arg(data_type)
+
+    if (data_type == "data") {
+        assert_that(inherits(data, c("data.frame", "tbl_lazy")),
+                    all(c("loc_code", "value") %in% colnames(data)),
+                    ncol(data) > 2,
+                    msg = "data does not have the required format (with data_type = 'data')."
+                    )
+        assert_that(is.function(eval_fun))
+        assert_that(inherits(eval_args, "list"))
+        assert_that(has_args(eval_fun, names(eval_args)))
+    }
+
+    if (data_type == "summary") {
+        assert_that(inherits(data, "data.frame"),
+                    "loc_code" %in% colnames(data),
+                    ncol(data) > 2,
+                    msg = "data does not have the required format (with data_type = 'summary')."
+        )
+    }
+
+    assert_that(inherits(conditions, "data.frame"))
+    assert_that(is.flag(verbose))
+    assert_that(is.flag(list))
+
+    assert_that(all(c("variable",
+                      "statistic",
+                      "criterion",
+                      "direction") %in%
+                        colnames(conditions)),
+                msg = "The conditions dataframe does not have the required column names.")
+
+    assert_that(nrow(conditions) > 0,
+                msg = "You must at least provide one condition in the conditions dataframe.")
+
+    assert_that(all(!is.na(conditions)),
+                msg = "You must not leave empty cells in the conditions dataframe.")
+
+    assert_that(is.numeric(conditions$criterion),
+                msg = "The 'criterion' variable of the conditions dataframe must be numeric. Please fix.")
+
+    assert_that(all(conditions$direction %in% c("min",
+                                                "max",
+                                                "equal")),
+                msg = "Directions in the conditions dataframe must be 'min', 'max' or 'equal'. Please fix.")
+
+    assert_that({
+        conditions %>%
+            count(.data$variable, .data$statistic) %>%
+            filter(.data$n > 1) %>%
+            nrow(.) == 0},
+        msg = "You cannot repeat the same combination of variable and statistic in the conditions dataframe.")
+
+    ## 1. Collecting statistics
+
+    suppressWarnings(
+    stats_full <-
+        (if (data_type == "summary") {
+            data %>%
+                mutate_at(.vars = 3:ncol(.),
+                          .funs = as.numeric)
+        } else {
+            do.call(eval_fun,
+                    args = eval_args) %>%
+                mutate_at(.vars = 3:ncol(.),
+                          .funs = as.numeric)
+        }) %>%
+        gather(key = "statistic",
+               value = "value",
+               -1, -2) %>%
+        rename(variable = 2)
+    )
+
+
+    ## 2. Calculating test results
+
+        result <-
+            stats_full %>%
+            right_join(conditions,
+                       by = c("variable",
+                              "statistic")) %>%
+            complete(.data$loc_code, nesting(.data$variable,
+                                             .data$statistic,
+                                             .data$criterion,
+                                             .data$direction)) %>%
+            mutate(cond_met =
+                       ifelse(.data$direction == "min", .data$value >= .data$criterion,
+                              ifelse(.data$direction == "max", .data$value <= .data$criterion,
+                                     .data$value == .data$criterion)),
+                   cond_met = ifelse(is.na(.data$cond_met), FALSE, .data$cond_met)) %>%
+            arrange(.data$loc_code)
+
+        combined_result <-
+            result %>%
+            group_by(.data$loc_code) %>%
+            summarise(all_cond_met = all(.data$cond_met),
+                      pct_cond_met =
+                          round(100 * sum(.data$cond_met) / n(), 0))
+
+        if (verbose) {
+            dropped_locs <-
+                stats_full %>%
+                distinct(.data$loc_code) %>%
+                anti_join(combined_result, by = "loc_code") %>%
+                arrange(.data$loc_code) %>%
+                pull(.data$loc_code)
+
+            if (length(dropped_locs) > 0) {
+                message("Dropped ",
+                        length(dropped_locs),
+                        " locations in availability evaluation ",
+                        "because none of the summary statistics, ",
+                        "needed to test the ",
+                        "conditions, were available for the requested ",
+                        "variables: ",
+                        paste(dropped_locs, collapse = ", "),
+                        "\n"
+                )
+            }
+        }
+
+
+    combined_result_filtered <-
+        combined_result %>%
+        filter(.data$all_cond_met) %>%
+        select(.data$loc_code)
+
+    ## 3. Return
+
+    if (!list) return(combined_result_filtered)
+
+    if (list) {
+
+        result <-
+                list(combined_result_filtered = combined_result_filtered,
+                     result = result,
+                     combined_result = combined_result
+                )
+
+        return(result)
+    }
+
+}

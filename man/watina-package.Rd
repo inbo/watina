@@ -19,6 +19,9 @@ Basic data retrieval functions start with "\code{get_}".
 \code{\link{selectlocs_xg3}} is a top-level function that allows to select
 locations based on user-specified conditions on XG3 availability and XG3 series.
 
+\code{\link{selectlocs_chem}} is a top-level function that allows to select
+locations based on user-specified conditions on chemical data availability and properties.
+
 For contributing, see the README on
 \href{https://github.com/inbo/watina/blob/master/README.md}{GitHub}.
 }
@@ -37,6 +40,9 @@ Useful links:
 Other contributors:
 \itemize{
   \item Peter Desmet \email{peter.desmet@inbo.be} (0000-0002-8442-8025) [contributor]
+  \item Jan Wouters \email{jan.wouters@inbo.be} (0000-0001-8200-9102) [contributor]
+  \item Frederic Piesschaert \email{frederic.piesschaert@inbo.be} (0000-0002-5843-646X) [contributor]
+  \item Mathias Wackenier \email{mathias.wackenier@inbo.be} (0000-0001-6934-9241) [contributor]
   \item Research Institute for Nature and Forest (INBO) \email{info@inbo.be} [copyright holder]
 }
 

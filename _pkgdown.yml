@@ -3,16 +3,7 @@ template:
     bootswatch: yeti
 
 navbar:
-  title: ~
-  type: inverse
-  left:
-    - text: "Home"
-      href: index.html
-    - text: "Functions"
-      href: reference/index.html
-  right:
-    - icon: fa-github
-      href: https://github.com/inbo/watina
+    type: inverse
 
 reference:
   - title: "Connect"
@@ -27,6 +18,11 @@ reference:
       - eval_xg3_avail
       - eval_xg3_series
       - selectlocs_xg3
+  - title: "Processing hydrochemical data"
+    contents:
+      - get_chem
+      - eval_chem
+      - selectlocs_chem
   - title: "Utilities and helpers"
     contents:
       - as_points

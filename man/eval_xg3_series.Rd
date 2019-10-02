@@ -40,7 +40,7 @@ XG3 variable is available
 \item{\code{ser_lastyear}}: last year in the series with XG3 variable
 \item{\code{ser_pval_uniform}}: p-value of an exact, one-sample two-sided
 Kolmogorov-Smirnov test for the discrete uniform distribution of the member
-years withing the XG3 series.
+years within the XG3 series.
 The smaller the p-value,
 the less uniform the member years are spread within a series.
 A perfectly uniform spread results in a p-value of 1.
@@ -130,6 +130,7 @@ DBI::dbDisconnect(watina)
 \seealso{
 \code{\link{extract_xg3_series}}
 
-Other functions to evaluate locations: \code{\link{eval_xg3_avail}}
+Other functions to evaluate locations: \code{\link{eval_chem}},
+  \code{\link{eval_xg3_avail}}
 }
 \concept{functions to evaluate locations}

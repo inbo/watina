@@ -1,0 +1,318 @@
+---
+title: "Using hydrochemical data to characterize and select locations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using hydrochemical data to characterize and select locations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+library(watina)
+library(sf)
+library(dplyr)
+library(stringr)
+library(knitr)
+```
+
+_General note: the below vignette contains frozen output of 2 Oct 2019._
+_This makes it possible to build the package with vignettes without access to the Watina database._
+
+## Overview
+
+Let's have a look at how chemical data, retrieved from Watina, look like.
+The below example requests available hydrochemical data since 2010 from locations in the area 'Zwarte Beek':
+
+```{r}
+watina <- connect_watina()
+mydata <-
+    get_locs(watina, area_codes = "ZWA") %>% 
+    get_chem(watina, "1/1/2010")
+mydata %>% 
+  count
+#> # Source:   lazy query [?? x 1]
+#> # Database: Microsoft SQL Server
+#>       n
+#>   <int>
+#> 1  1916
+class(mydata)
+#> [1] "tbl_Microsoft SQL Server" "tbl_dbi"                 
+#> [3] "tbl_sql"                  "tbl_lazy"                
+#> [5] "tbl"
+mydata %>% 
+  head(15) %>% 
+  collect %>% 
+  as.data.frame
+#>    loc_code       date lab_project_id lab_sample_id chem_variable   value
+#> 1   ZWAP033 2011-04-14              0         10431            Ca  19.690
+#> 2   ZWAP033 2011-04-14              0         10431            Cl  19.582
+#> 3   ZWAP033 2011-04-14              0         10431         CondF 425.000
+#> 4   ZWAP033 2011-04-14              0         10431         CondL 372.000
+#> 5   ZWAP033 2011-04-14              0         10431            Fe  60.809
+#> 6   ZWAP033 2011-04-14              0         10431          HCO3  25.169
+#> 7   ZWAP033 2011-04-14              0         10431             K   2.530
+#> 8   ZWAP033 2011-04-14              0         10431            Mg   7.000
+#> 9   ZWAP033 2011-04-14              0         10431            Na   5.330
+#> 10  ZWAP033 2011-04-14              0         10431         N-NH4   0.318
+#> 11  ZWAP033 2011-04-14              0         10431         N-NO2   0.015
+#> 12  ZWAP033 2011-04-14              0         10431         N-NO3   0.041
+#> 13  ZWAP033 2011-04-14              0         10431           pHF   6.297
+#> 14  ZWAP033 2011-04-14              0         10431           pHL   5.830
+#> 15  ZWAP033 2011-04-14              0         10431         P-PO4   0.016
+#>    units below_loq loq  elneutr
+#> 1   mg/l        NA -99 0.610484
+#> 2   mg/l        NA -99 0.610484
+#> 3  µS/cm        NA -99 0.610484
+#> 4  µS/cm        NA -99 0.610484
+#> 5   mg/l        NA -99 0.610484
+#> 6   mg/l        NA -99 0.610484
+#> 7   mg/l        NA -99 0.610484
+#> 8   mg/l        NA -99 0.610484
+#> 9   mg/l        NA -99 0.610484
+#> 10  mg/l        NA -99 0.610484
+#> 11  mg/l        NA -99 0.610484
+#> 12  mg/l        NA -99 0.610484
+#> 13  <NA>        NA -99 0.610484
+#> 14  <NA>        NA -99 0.610484
+#> 15  mg/l        NA -99 0.610484
+```
+
+The first and last year of the dataset are:
+
+```{r}
+mydata %>%
+    pull(date) %>%
+    lubridate::year(.) %>%
+    (function(x) c(firstyear = min(x), lastyear = max(x)))
+#> firstyear  lastyear 
+#>      2011      2019
+```
+
+Let's suppose that we now want to select locations for which:
+
+- both N-NO3 (nitrate nitrogen) and P-PO4 (orthophosphate phosphorus) have at least two measurement dates;
+- the first date of P-PO4 is not later than 1/1/2014;
+- the first and last year with P-PO4 data are at least 4 years apart, i.e. they span at least 5 calendar years
+
+To express criteria, we need the numerical value of a date:
+
+```{r}
+as.numeric(lubridate::dmy("1/1/2014"))
+#> [1] 16071
+```
+
+We can store specific conditions in a dataframe; the available statistics are explained by the documentation of `eval_chem()`:
+
+```{r eval=TRUE}
+conditions_df <-
+    tribble(
+        ~chem_variable, ~statistic, ~criterion, ~direction,
+        "N-NO3", "nrdates", 2, "min",
+        "P-PO4", "nrdates", 2, "min",
+        "P-PO4", "firstdate", 16071, "max",
+        "P-PO4", "timespan_years", 5, "min"
+    )
+conditions_df %>% 
+  kable
+```
+
+You can also separately limit the chemical variables to be evaluated with the `chem_var` argument in the `selectlocs_chem()` function:
+
+```{r}
+myresult <-
+    mydata %>%
+    selectlocs_chem(data_type = "data",
+                    chem_var = c("N-NO3", "P-PO4"),
+                    conditions = conditions_df)
+myresult
+#> # A tibble: 18 x 1
+#>    loc_code
+#>    <chr>   
+#>  1 ZWAP034 
+#>  2 ZWAP041 
+#>  3 ZWAP042 
+#>  4 ZWAP051 
+#>  5 ZWAP063 
+#>  6 ZWAP064 
+#>  7 ZWAP067 
+#>  8 ZWAP129 
+#>  9 ZWAP165 
+#> 10 ZWAP170 
+#> 11 ZWAP196 
+#> 12 ZWAP205 
+#> 13 ZWAP208 
+#> 14 ZWAP214 
+#> 15 ZWAP215 
+#> 16 ZWAP216 
+#> 17 ZWAP220 
+#> 18 ZWAP221
+```
+
+With the argument `list = TRUE` you can also obtain intermediate test results.
+For further information, see the documentation of the `selectlocs_chem()` function.
+
+
+## The basics: obtaining hydrochemical data
+
+The `get_chem()` function in the above example retrieved hydrochemical data, from given locations, as a lazy object (unless `collect = TRUE`).
+A timeframe is used to filter hydrochemical data in Watina (with arguments `startdate` and `enddate`).
+By default, the `enddate` argument is set as _today_.
+Here we only provide the `startdate`:
+
+```{r}
+mylocs <- get_locs(watina, area_codes = "ZWA")
+mylocs %>% get_chem(watina, "1/1/2017")
+#> # Source:     lazy query [?? x 10]
+#> # Database:   Microsoft SQL Server
+#> # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code,
+#> #   loc_code, date, chem_variable
+#>    loc_code date       lab_project_id lab_sample_id chem_variable  value
+#>    <chr>    <date>     <chr>          <chr>         <chr>          <dbl>
+#>  1 ZWAP034  2018-10-29 0              40121         Al              0.05
+#>  2 ZWAP034  2018-10-29 0              40121         Ca              4.24
+#>  3 ZWAP034  2018-10-29 0              40121         Cl             14.4 
+#>  4 ZWAP034  2018-10-29 0              40121         CondF         135   
+#>  5 ZWAP034  2018-10-29 0              40121         CondL         120.  
+#>  6 ZWAP034  2018-10-29 0              40121         Fe             19.9 
+#>  7 ZWAP034  2018-10-29 0              40121         HCO3            5.97
+#>  8 ZWAP034  2018-10-29 0              40121         K               1.98
+#>  9 ZWAP034  2018-10-29 0              40121         Mg              1.36
+#> 10 ZWAP034  2018-10-29 0              40121         Mn              0.05
+#> # … with more rows, and 4 more variables: units <chr>, below_loq <lgl>,
+#> #   loq <dbl>, elneutr <dbl>
+```
+
+Retrieving the data locally:
+
+```{r}
+mylocs %>% get_chem(watina, "1/1/2017", collect = TRUE)
+#> # A tibble: 608 x 10
+#>    loc_code date       lab_project_id lab_sample_id chem_variable  value
+#>    <chr>    <date>     <chr>          <chr>         <chr>          <dbl>
+#>  1 ZWAP034  2018-10-29 0              40121         Al              0.05
+#>  2 ZWAP034  2018-10-29 0              40121         Ca              4.24
+#>  3 ZWAP034  2018-10-29 0              40121         Cl             14.4 
+#>  4 ZWAP034  2018-10-29 0              40121         CondF         135   
+#>  5 ZWAP034  2018-10-29 0              40121         CondL         120.  
+#>  6 ZWAP034  2018-10-29 0              40121         Fe             19.9 
+#>  7 ZWAP034  2018-10-29 0              40121         HCO3            5.97
+#>  8 ZWAP034  2018-10-29 0              40121         K               1.98
+#>  9 ZWAP034  2018-10-29 0              40121         Mg              1.36
+#> 10 ZWAP034  2018-10-29 0              40121         Mn              0.05
+#> # … with 598 more rows, and 4 more variables: units <chr>,
+#> #   below_loq <lgl>, loq <dbl>, elneutr <dbl>
+```
+
+Note below, the different number of results when using non-default settings for filtering according to _electroneutrality_!
+The default range of electroneutrality is from -0.1 to 0.1 (argument `en_range`).
+
+```{r}
+mylocs %>% get_chem(watina, "1/1/2017") %>% count
+#> # Source:   lazy query [?? x 1]
+#> # Database: Microsoft SQL Server
+#>       n
+#>   <int>
+#> 1   608
+mylocs %>% get_chem(watina, "1/1/2017", en_exclude_na = TRUE) %>% count
+#> # Source:   lazy query [?? x 1]
+#> # Database: Microsoft SQL Server
+#>       n
+#>   <int>
+#> 1   602
+mylocs %>% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) %>% count
+#> # Source:   lazy query [?? x 1]
+#> # Database: Microsoft SQL Server
+#>       n
+#>   <int>
+#> 1   674
+```
+
+With `en_exclude_na = TRUE`, samples for which no electroneutrality could be calculated are discarded!
+
+By default, all measurements from water samples with a high iron / conductivity ratio are returned (hence,
+in these cases the `en_range` and `en_exclude_na` arguments are ignored).
+This is controlled by the `en_fecond_threshold` argument.
+If you want the `en_range` and `en_exclude_na` arguments to take effect also in these relatively iron-rich water samples,
+set `en_fecond_threshold = NA`:
+
+```{r}
+mylocs %>% get_chem(watina, "1/1/2017", en_fecond_threshold = NA) %>% count
+#> # Source:   lazy query [?? x 1]
+#> # Database: Microsoft SQL Server
+#>       n
+#>   <int>
+#> 1   524
+```
+
+Equivalence concentrations instead of mass concentrations can be returned with `conc_type = "eq"`:
+
+```{r}
+mylocs %>% get_chem(watina, "1/1/2017", conc_type = "eq")
+#> # Source:     lazy query [?? x 10]
+#> # Database:   Microsoft SQL Server
+#> # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code,
+#> #   loc_code, date, chem_variable
+#>    loc_code date       lab_project_id lab_sample_id chem_variable   value
+#>    <chr>    <date>     <chr>          <chr>         <chr>           <dbl>
+#>  1 ZWAP034  2018-10-29 0              40121         Al            5.00e-2
+#>  2 ZWAP034  2018-10-29 0              40121         Ca            2.12e-1
+#>  3 ZWAP034  2018-10-29 0              40121         Cl            4.07e-1
+#>  4 ZWAP034  2018-10-29 0              40121         CondF         1.35e+2
+#>  5 ZWAP034  2018-10-29 0              40121         CondL         1.20e+2
+#>  6 ZWAP034  2018-10-29 0              40121         Fe            7.14e-1
+#>  7 ZWAP034  2018-10-29 0              40121         HCO3          9.78e-2
+#>  8 ZWAP034  2018-10-29 0              40121         K             5.07e-2
+#>  9 ZWAP034  2018-10-29 0              40121         Mg            1.12e-1
+#> 10 ZWAP034  2018-10-29 0              40121         Mn            5.00e-2
+#> # … with more rows, and 4 more variables: units <chr>, below_loq <lgl>,
+#> #   loq <dbl>, elneutr <dbl>
+```
+
+Joining results to `mylocs`:
+
+```{r}
+mylocs %>%
+get_chem(watina, "1/1/2017") %>%
+    left_join(mylocs %>%
+                  select(-loc_wid),
+              .) %>%
+    collect
+#> Joining, by = "loc_code"
+#> # A tibble: 765 x 20
+#>    loc_code area_code area_name      x      y loc_validitycode loc_validity
+#>    <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>            <chr>       
+#>  1 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
+#>  2 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
+#>  3 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
+#>  4 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
+#>  5 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
+#>  6 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
+#>  7 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
+#>  8 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
+#>  9 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
+#> 10 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
+#> # … with 755 more rows, and 13 more variables: loc_typecode <chr>,
+#> #   loc_typename <chr>, filterdepth <dbl>, soilsurf_ost <dbl>,
+#> #   date <date>, lab_project_id <chr>, lab_sample_id <chr>,
+#> #   chem_variable <chr>, value <dbl>, units <chr>, below_loq <lgl>,
+#> #   loq <dbl>, elneutr <dbl>
+```
+
+
+## Processing hydrochemical data and selecting locations
+
+You can characterize the locations of a dataset of hydrochemical data, using the `eval_chem()` function.
+You are invited to read its documentation and try its examples!
+
+The `selectlocs_chem()` function, of which we saw a demonstration above, calls `eval_chem()` by itself.
+Alternatively the user can provide the result of those functions as input to `selectlocs_chem()`.
+
+```{r include=FALSE}
+DBI::dbDisconnect(watina)
+```
+

@@ -298,7 +298,7 @@ qualify_xg3 <- function(data,
 #' \item{\code{ser_lastyear}}: last year in the series with XG3 variable
 #' \item{\code{ser_pval_uniform}}: p-value of an exact, one-sample two-sided
 #' Kolmogorov-Smirnov test for the discrete uniform distribution of the member
-#' years withing the XG3 series.
+#' years within the XG3 series.
 #' The smaller the p-value,
 #' the less uniform the member years are spread within a series.
 #' A perfectly uniform spread results in a p-value of 1.
@@ -478,6 +478,365 @@ eval_xg3_series <- function(data,
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+#' Evaluate hydrochemical data per location
+#'
+#' For a dataset as returned by \code{\link{get_chem}},
+#' return summary statistics (data availability and/or
+#' numeric properties) of
+#' the specified hydrochemical variables, for each location.
+#'
+#' For the availability statistics, an extra level
+#' "\code{combined}" is added in the column \code{chem_variable} whenever the
+#' arguments \code{data} and
+#' \code{chem_var} imply more than one
+#' chemical variable to be investigated.
+#' This 'combined' level defines data availability for a water sample as the
+#' availability of data for \strong{all} corresponding chemical variables.
+#'
+#' @param data An object returned by \code{\link{get_chem}}.
+#' @param chem_var A character vector to select chemical variables for which
+#' statistics will be computed.
+#' To specify chemical variables, use the
+#' codes from the column \code{chem_variable} in \code{data}.
+#' @param type A string defining the requested type of summary statistics.
+#' See section 'Value'.
+#' Either:
+#' \itemize{
+#' \item{\code{"avail"}:} availability statistics (the default);
+#' \item{\code{"num"}:} numeric summary statistics;
+#' \item{\code{"both"}:} both types will be returned.
+#' }
+#' @param uniformity_test Should the availability statistic
+#' \code{pval_uniform_totalspan} be added (see section 'Value')?
+#' Defaults to \code{FALSE} as this takes much more time to calculate than
+#' everything else.
+#'
+#' @return
+#' A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
+#' \code{chem_variable} (character; see Details)
+#' and summary statistics (\emph{at the level
+#' of \code{loc_code} x \code{chem_variable}}) depending on the state of
+#' \code{type}
+#' (\code{type = "both"} combines both cases):
+#'
+#' With \code{type = "avail"} (the default):
+#' \itemize{
+#' \item{\code{nryears}}: number of calendar years for which the
+#' chemical variable is available (on one date at least)
+#' \item{\code{nrdates}}: number of dates at which the
+#' chemical variable is available
+#' \item{\code{firstdate}}: earliest date at which the
+#' chemical variable is available
+#' \item{\code{lastdate}}: latest date at which the
+#' chemical variable is available
+#' \item{\code{timespan_years}}: duration as years from the first calendar year
+#' (year of \code{firstdate}) to the last calendar year
+#' (year of \code{lastdate}) with data available
+#' \item{\code{timespan_totalspan_ratio}}: the ratio of \code{timespan_years} to
+#' the 'total span', which is the duration as years from the first to the last
+#' calendar year \emph{for the whole of \strong{\code{data}}}.
+#' \item{\code{nryears_totalspan_ratio}}: the ratio of \code{nryears} to
+#' the 'total span'
+#' \item{\code{pval_uniform_totalspan}}: Only returned with
+#' \code{uniformity_test = TRUE}.
+#' p-value of an exact, one-sample two-sided
+#' Kolmogorov-Smirnov test for the discrete uniform distribution of the calendar
+#' years \emph{with data of the chemical variable available} within the series
+#' of consecutive calendar years defined by the 'total span' (see above).
+#' The smaller the p-value,
+#' the less uniform the years are spread within the total span.
+#' A perfectly uniform spread results in a p-value of 1.
+#' }
+#'
+#' With \code{type = "num"}: summary statistics based on the chemical values,
+#' i.e. excluding the 'combined' level:
+#' \itemize{
+#' \item{\code{val_min}}: minimum value
+#' \item{\code{val_pct10}, \code{val_pct25}, \code{val_pct50},
+#' \code{val_pct75}, \code{val_pct90}}: percentiles
+#' \item{\code{val_max}}: maximum value
+#' \item{\code{val_range}}: range
+#' \item{\code{val_mean}}: mean
+#' \item{\code{val_geometric_mean}}: geometric mean.
+#' Only calculated when
+#' all values are strictly positive.
+#' \item{\code{units}}
+#' \item{\code{prop_below_loq}}: the proportion of measurements below the limit
+#' of quantification (as derived from \code{below_loq == TRUE}),
+#' i.e. relative to the total number of measurements
+#' \emph{for which \code{below_loq} is not \code{NA}}.
+#' This statistic neglects measurements with value \code{NA} for
+#' \code{below_loq}!
+#' If all measurements have value \code{NA} for
+#' \code{below_loq}, this statistic is set to \code{NA}.
+#' }
+#'
+#' @family functions to evaluate locations
+#'
+#' @examples
+#' \dontrun{
+#' watina <- connect_watina()
+#' library(dplyr)
+#' mylocs <- get_locs(watina, area_codes = "ZWA")
+#' mydata <-
+#'  mylocs %>%
+#'  get_chem(watina, "1/1/2010")
+#' mydata
+#' mydata %>%
+#'   pull(date) %>%
+#'   lubridate::year(.) %>%
+#'   (function(x) c(firstyear = min(x), lastyear = max(x)))
+#' mydata %>%
+#'   eval_chem(chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4")) %>%
+#'   arrange(desc(loc_code))
+#' mydata %>%
+#'   eval_chem(chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4"),
+#'             type = "both") %>%
+#'   arrange(desc(loc_code)) %>%
+#'   as.data.frame() %>%
+#'   head(10)
+#' mydata %>%
+#'   eval_chem(chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4"),
+#'             uniformity_test = TRUE) %>%
+#'   arrange(desc(loc_code)) %>%
+#'   select(loc_code, chem_variable, pval_uniform_totalspan)
+#' # Disconnect:
+#' DBI::dbDisconnect(watina)
+#' }
+#'
+#'
+#' @export
+#' @importFrom rlang .data
+#' @importFrom assertthat
+#' assert_that
+#' is.flag
+#' @importFrom dplyr
+#' %>%
+#' mutate
+#' mutate_at
+#' group_by
+#' summarise
+#' ungroup
+#' left_join
+#' filter
+#' first
+#' @importFrom tidyr
+#' spread
+#' gather
+#' @importFrom lubridate
+#' as_date
+#' @importFrom stats
+#' quantile
+eval_chem <- function(data,
+                      chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4",
+                                   "HCO3", "SO4", "Cl",
+                                   "Na", "K", "Ca", "Mg",
+                                   "Fe", "Mn", "Si", "Al",
+                                   "CondF", "CondL", "pHF", "pHL"),
+                      type = c("avail", "num", "both"),
+                      uniformity_test = FALSE) {
+
+    type <- match.arg(type)
+
+    assert_that(inherits(data, what = c("tbl_lazy", "data.frame")),
+                msg = "data must be a lazy object or a dataframe.")
+    assert_that(all(c("loc_code",
+                      "date",
+                      "lab_sample_id",
+                      "chem_variable",
+                      "value",
+                      "units",
+                      "below_loq") %in% colnames(data)),
+                msg = "data must provide the following variables: loc_code,
+date, lab_sample_id, chem_variable, value, units, below_loq."
+    )
+
+    assert_that(is.flag(uniformity_test))
+
+    data <-
+        data %>%
+        select(.data$loc_code,
+               .data$date,
+               .data$lab_sample_id,
+               .data$chem_variable,
+               .data$value,
+               .data$units,
+               .data$below_loq) %>%
+        filter(.data$chem_variable %in% chem_var)
+
+    if (inherits(data, "tbl_lazy")) {
+        data <- collect(data)
+    }
+
+    if (!missing(chem_var)) {
+        new <- chem_var[!(chem_var %in% unique(data$chem_variable))]
+        if (length(new) > 0) {
+            warning("You specified chemical variables not present in data: ",
+                    paste(new, collapse = ", "), ".")
+        }
+    }
+
+    # 1. AVAILABILITY CALCULATIONS
+
+    if (type != "num") {
+
+    chem_qualified <-
+        data %>%
+        select(-.data$below_loq,
+               -.data$units) %>%
+        spread(key = .data$chem_variable,
+               value = .data$value) %>%
+        mutate_at(.vars = vars(4:ncol(.)),
+                  .funs = (function(x) !is.na(x)))
+
+    if (ncol(chem_qualified) > 4) {
+        chem_qualified <-
+            chem_qualified %>%
+            mutate(combined = select(., 4:ncol(.)) %>%
+                                apply(1, function(x) all(x))
+        )
+    }
+
+    chem_qualified <-
+        chem_qualified %>%
+        gather(key = "chem_variable",
+               value = "available",
+               -.data$loc_code,
+               -.data$date,
+               -.data$lab_sample_id)
+
+    firstyear <- chem_qualified$date %>% year %>% min
+    lastyear <- chem_qualified$date %>% year %>% max
+    total_span <- lastyear - firstyear + 1
+
+    chem_avail <-
+        chem_qualified %>%
+        group_by(.data$loc_code,
+                 .data$chem_variable) %>%
+        mutate(
+            year = year(.data$date),
+            nrdates = sum(.data$available),
+            firstdate = as_date(ifelse(.data$nrdates > 0,
+                                       min(.data$date[.data$available]),
+                                       NA)),
+            lastdate = as_date(ifelse(.data$nrdates > 0,
+                                      max(.data$date[.data$available]),
+                                      NA))
+        ) %>%
+        group_by(.data$loc_code,
+                 .data$chem_variable,
+                 .data$year) %>%
+        summarise(
+            nrdates = first(.data$nrdates),
+            firstdate = first(.data$firstdate),
+            lastdate = first(.data$lastdate),
+            available = any(.data$available)
+        ) %>%
+
+        (function(df, unif = uniformity_test) {
+
+        df1 <-
+            df %>%
+            summarise(
+                nryears = sum(.data$available),
+                nrdates = first(.data$nrdates),
+                firstdate = first(.data$firstdate),
+                lastdate = first(.data$lastdate),
+                timespan_years = year(.data$lastdate) - year(.data$firstdate) + 1,
+                timespan_totalspan_ratio = .data$timespan_years / total_span,
+                nryears_totalspan_ratio = .data$nryears / total_span
+            ) %>%
+            ungroup
+
+        if (unif) {
+            tmpf <- tempfile()
+            file.create(tmpf)
+            capture.output({ # to suppress the many disc_ks_test() messages
+                df2 <-
+                df %>%
+                summarise(
+                    nryears = sum(.data$available),
+                    pval_uniform_totalspan = ifelse(.data$nryears > 0,
+                                            disc_ks_test(.data$year[.data$available],
+                                                        ecdf(seq(firstyear,
+                                                                 lastyear)),
+                                                        exact = TRUE) %>%
+                                                .$p.value,
+                                            NA)
+                ) %>%
+                select(-.data$nryears) %>%
+                ungroup
+            },
+            file = tmpf)
+            df1 %>%
+                left_join(df2,
+                          by = c("loc_code",
+                                 "chem_variable")) %>%
+                return
+        } else {
+            return(df1)
+        }
+
+            })
+
+    }
+
+    # 2. NUMERIC SUMMARY
+
+    if (type != "avail") {
+
+    chem_num <-
+        data %>%
+        group_by(.data$loc_code,
+                 .data$chem_variable) %>%
+        summarise(
+            val_min = min(.data$value),
+            val_pct10 = quantile(.data$value, 0.1),
+            val_pct25 = quantile(.data$value, 0.25),
+            val_pct50 = quantile(.data$value, 0.5),
+            val_pct75 = quantile(.data$value, 0.75),
+            val_pct90 = quantile(.data$value, 0.9),
+            val_max = max(.data$value),
+            val_range = .data$val_max - .data$val_min,
+            val_mean = mean(.data$value),
+            val_geometric_mean = ifelse(all(.data$value > 0),
+                                        exp(mean(log(.data$value))),
+                                        NA),
+            units = first(.data$units),
+            prop_below_loq = ifelse(sum(!is.na(.data$below_loq)) > 0,
+                                    sum(.data$below_loq[!is.na(.data$below_loq)]) /
+                                    sum(!is.na(.data$below_loq)),
+                                    NA)
+        ) %>%
+        ungroup
+
+    }
+
+    # 3. COMBINE BOTH
+
+    chem_eval <-
+        switch(type,
+               "avail" = chem_avail,
+               "num" = chem_num,
+               "both" = chem_avail %>%
+                            left_join(chem_num,
+                                      by = c("loc_code",
+                                             "chem_variable"))
+        )
+
+    return(chem_eval)
+}
 
 
 

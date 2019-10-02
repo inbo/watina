@@ -1,6 +1,6 @@
 Package: watina
 Title: Querying & Processing Data From The INBO Watina Database (mainly groundwater data)
-Version: 0.1.0.9021
+Version: 0.2.0
 Description: The R-package watina contains functions to query
     and process data from the Watina database at the Research Institute for
     Nature and Forest (INBO). This database provides
@@ -9,6 +9,9 @@ Description: The R-package watina contains functions to query
 Authors@R: c(
     person("Floris", "Vanderhaeghe", role = c("aut", "cre"), email = "floris.vanderhaeghe@inbo.be", comment = c(ORCID = "0000-0002-6378-6229")),
     person("Peter", "Desmet", role = c("ctb"), email = "peter.desmet@inbo.be", comment = c(ORCID = "0000-0002-8442-8025")),
+    person("Jan", "Wouters", email = "jan.wouters@inbo.be", role = c("ctb"), comment = c(ORCID = "0000-0001-8200-9102")), 
+    person("Frederic", "Piesschaert", email = "frederic.piesschaert@inbo.be", role = c("ctb"), comment = c(ORCID = "0000-0002-5843-646X")), 
+    person("Mathias", "Wackenier", email = "mathias.wackenier@inbo.be", role = c("ctb"), comment = c(ORCID = "0000-0001-6934-9241")), 
     person("Research Institute for Nature and Forest (INBO)", role = "cph", email = "info@inbo.be")
     )
 License: GPL-3
@@ -29,9 +32,13 @@ Imports:
     stats,
     tidyr
 Suggests:
-    tibble
+    tibble,
+    knitr,
+    rmarkdown
 Remotes:
-    inbo/inborutils
+    inbo/inborutils,
+    edgararuiz/dbplyr@pivot_wider
 LazyData: true
 Encoding: UTF-8
 RoxygenNote: 6.1.1
+VignetteBuilder: knitr
