@@ -36,7 +36,8 @@ Suggests:
     knitr,
     rmarkdown
 Remotes:
-    inbo/inborutils
+    inbo/inborutils,
+    edgararuiz/dbplyr@pivot_wider
 LazyData: true
 Encoding: UTF-8
 RoxygenNote: 6.1.1

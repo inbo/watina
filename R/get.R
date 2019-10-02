@@ -747,6 +747,8 @@ get_xg3 <- function(locs,
 #' day
 #' month
 #' year
+#' @importFrom dbplyr
+#' db_pivot_wider
 #' @importFrom dplyr
 #' %>%
 #' copy_to
@@ -887,29 +889,37 @@ get_chem <- function(locs,
                en_range[2])
 
     # preparing for the application of the en_fecond_threshold:
-    # this step slows down the performance. PIVOT should be used.
     if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
-            samples_fe <-
-                chem %>%
-                filter(.data$chem_variable == "Fe") %>%
-                select(.data$lab_sample_id,
-                       fe = .data$value_eq) %>%
-                group_by(.data$lab_sample_id) %>%
-                summarise(fe = mean(.data$fe))
-            samples_cond <-
-                chem %>%
-                filter(.data$chem_variable == "CondL") %>%
-                select(.data$lab_sample_id,
-                       cond = .data$value_eq) %>%
-                group_by(.data$lab_sample_id) %>%
-                summarise(cond = mean(.data$cond))
-            samples_fecond <-
-                samples_fe %>%
-                inner_join(samples_cond, by = "lab_sample_id") %>%
-                mutate(fecond = .data$fe / .data$cond) %>%
-                select(.data$lab_sample_id,
-                       .data$fecond) %>%
-                filter(!is.na(.data$fecond))
+        samples_fecond <-
+            tbl(con, "FactChemischeMeting") %>%
+            select(.data$StaalID,
+                   .data$DatumWID,
+                   .data$ChemVarWID,
+                   .data$MeetwaardeMEQ) %>%
+            inner_join(tbl(con, "DimChemVar") %>%
+                           select(.data$ChemVarWID,
+                                  .data$ChemVarCode),
+                       by = "ChemVarWID") %>%
+            inner_join(tbl(con, "DimTijd") %>%
+                           select(.data$DatumWID,
+                                  .data$Datum),
+                       by = "DatumWID") %>%
+            mutate(Datum = sql("CAST(Datum AS date)")) %>%
+            filter(.data$Datum >= startdate,
+                   .data$Datum <= enddate) %>%
+            # temporary value:
+            mutate(lab_sample_id = sql("CAST(StaalID AS varchar)")) %>%
+            select(.data$lab_sample_id,
+                   chem_variable = .data$ChemVarCode,
+                   value_eq = .data$MeetwaardeMEQ) %>%
+            filter(!is.na(.data$value_eq),
+                   .data$chem_variable %in% c("Fe", "CondL")) %>%
+            db_pivot_wider(names_from = .data$chem_variable,
+                           values_from = .data$value_eq) %>%
+            mutate(fecond = .data$Fe / .data$CondL) %>%
+            select(.data$lab_sample_id,
+                   .data$fecond) %>%
+            filter(!is.na(.data$fecond))
     }
 
     # filtering chem according to sample characteristics
