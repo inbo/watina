@@ -46,7 +46,7 @@ If \code{TRUE} (the default), the XG3 values calculations also use estimated
 If \code{FALSE} (the default), a \code{tbl_lazy} object is returned
 (lazy query).
 Hence the result can be further built upon before retrieving data with
-\code{\link[dplyr:collect]{collect()}}.}
+\code{\link[dplyr:compute]{collect()}}.}
 }
 \value{
 By default, a \code{tbl_lazy} object.
