@@ -48,7 +48,7 @@ The CRS must be Belgian Lambert 72 (EPSG-code
 Do you want to spatially join the attribute columns of \code{mask} to the
 resulting tibble?
 The spatial join is executed with
-\code{\link[sf:st_intersects]{st_intersects()}} as the topological operator.
+\code{\link[sf:geos_binary_pred]{st_intersects()}} as the topological operator.
 Beware: if the same location intersects with more than one element of
 \code{mask} (taking into account the value of \code{buffer}), that location
 will occur multiple times in the result.
@@ -85,7 +85,7 @@ If provided, only locations are returned that are present in this vector.}
 If \code{FALSE} (the default), a \code{tbl_lazy} object is returned
 (lazy query).
 Hence the result can be further built upon before retrieving data with
-\code{\link[dplyr:collect]{collect()}}.}
+\code{\link[dplyr:compute]{collect()}}.}
 }
 \value{
 By default, a \code{tbl_lazy} object.

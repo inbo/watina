@@ -32,7 +32,7 @@ It converts the dataframe into an \code{sf} points object in the same CRS.
 As locations in Watina are typically defined by their X/Y coordinates,
 this function eases the conversion to spatial data.
 To later remove all spatial information from the result, you can use
-\code{\link[sf:st_drop_geometry]{sf::st_drop_geometry()}}.
+\code{\link[sf:st_geometry]{sf::st_drop_geometry()}}.
 }
 \examples{
 library(tibble)

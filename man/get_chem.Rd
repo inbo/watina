@@ -20,7 +20,7 @@ See \code{\link{connect_watina}} to generate one.}
 
 \item{startdate}{First date of the timeframe, as a string.
 The string must use a formatting of the order 'day month year',
-i.e. a format which can be interpreted by \code{\link[lubridate]{dmy}}.
+i.e. a format which can be interpreted by \code{\link[lubridate:ymd]{dmy}}.
 
 Examples:
 \code{"16-1-2005"},
@@ -89,7 +89,7 @@ the conditions imposed by \code{en_range} and \code{en_exclude_na}
 If \code{FALSE} (the default), a \code{tbl_lazy} object is returned
 (lazy query).
 Hence the result can be further built upon before retrieving data with
-\code{\link[dplyr:collect]{collect()}}.}
+\code{\link[dplyr:compute]{collect()}}.}
 }
 \value{
 By default, a \code{tbl_lazy} object.
