@@ -7,7 +7,7 @@
 get_locs(con, filterdepth_range = c(0, 3), obswells = FALSE,
   mask = NULL, join_mask = FALSE, buffer = 10, bbox = NULL,
   area_codes = NULL, loc_type = c("P", "S", "R", "N", "W", "D", "L",
-  "B"), loc_validity = c("VLD", "ENT", "DEL", "CLD"), loc_vec = NULL,
+  "B"), loc_validity = c("VLD", "ENT"), loc_vec = NULL,
   collect = FALSE)
 }
 \arguments{
