@@ -18,6 +18,11 @@ by this package will convert character and factor
 variables of dataframes to \code{UTF-8} encoding.
 }
 \details{
+The functions in this package that \emph{collect} a \code{tbl_lazy} object,
+e.g. when \code{collect = TRUE}, do so by using this function.
+As a convenience to the user, the function is exported to allow manual
+implementation.
+
 The function \code{\link[=convertdf_enc]{convertdf_enc()}} is the workhorse
 for the encoding conversion.
 }
