@@ -1,15 +1,13 @@
 #' Convert encoding of character and factor variables in a dataframe
 #'
-#'
-#'
 #' @param x A dataframe.
 #' @param to Encoding string to convert to.
 #' All \code{R} platforms support \code{""} (for the encoding of the current
 #' locale), \code{"latin1"} and \code{"UTF-8"}.
-#' See \code{\link{iconv}} for more information.
+#' See \code{\link[base]{iconv}} for more information.
 #'
 #' @return
-#' The dataframe is returned with character variables (and levels of
+#' The original dataframe, with character variables (and levels of
 #' (character) factor variables) converted to the specified encoding.
 #'
 #' @export
