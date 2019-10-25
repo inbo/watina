@@ -2,7 +2,7 @@
 
 export(as_points)
 export(connect_watina)
-export(convertdf_utf8)
+export(convertdf_enc)
 export(eval_chem)
 export(eval_xg3_avail)
 export(eval_xg3_series)

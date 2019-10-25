@@ -17,9 +17,8 @@
 #' @importFrom assertthat
 #' assert_that
 #' is.string
-#' @importFrom rlang .data
-convertdf_utf8 <- function(x,
-                           to = "UTF-8") {
+convertdf_enc <- function(x,
+                          to = "UTF-8") {
 
     assert_that(inherits(x, "data.frame"))
     assert_that(is.string(to))
