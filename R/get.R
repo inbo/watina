@@ -172,7 +172,6 @@
 #' filter
 #' left_join
 #' select
-#' collect
 #' distinct
 #' arrange
 #' group_by
@@ -499,7 +498,6 @@ get_locs <- function(con,
 #' left_join
 #' inner_join
 #' select
-#' collect
 #' contains
 #' arrange
 #' distinct
@@ -757,7 +755,6 @@ get_xg3 <- function(locs,
 #' left_join
 #' inner_join
 #' select
-#' collect
 #' contains
 #' arrange
 #' distinct

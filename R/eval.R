@@ -197,7 +197,6 @@ filter_xg3 <- function(data,
 #' @importFrom dplyr
 #' %>%
 #' select
-#' collect
 #' contains
 #' vars
 #' mutate_at
