@@ -27,3 +27,5 @@ reference:
     contents:
       - as_points
       - extract_xg3_series
+      - collect
+      - convertdf_enc
