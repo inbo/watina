@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • watina</title>
+<title>Changelog • watina</title>
 
 
 <!-- jquery -->
@@ -29,13 +29,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Authors" />
+<meta property="og:title" content="Changelog" />
 
 
 
@@ -54,7 +54,7 @@
   </head>
 
   <body>
-    <div class="container template-authors">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -66,7 +66,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">watina</a>
+        <a class="navbar-link" href="../index.html">watina</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
       </span>
     </div>
@@ -74,13 +74,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -90,18 +90,18 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="articles/v010_getstarted.html">Getting started: connecting and selecting locations</a>
+      <a href="../articles/v010_getstarted.html">Getting started: connecting and selecting locations</a>
     </li>
     <li>
-      <a href="articles/v110_xg3.html">Using XG3 values to characterize and select locations</a>
+      <a href="../articles/v110_xg3.html">Using XG3 values to characterize and select locations</a>
     </li>
     <li>
-      <a href="articles/v210_chem.html">Using hydrochemical data to characterize and select locations</a>
+      <a href="../articles/v210_chem.html">Using hydrochemical data to characterize and select locations</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="news/index.html">Changelog</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -122,42 +122,54 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Authors</h1>
+      <h1>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/inbo/watina/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <ul class="list-unstyled">
-      <li>
-        <p><strong>Floris Vanderhaeghe</strong>. Author, maintainer. <a href='https://orcid.org/0000-0002-6378-6229' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Peter Desmet</strong>. Contributor. <a href='https://orcid.org/0000-0002-8442-8025' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Jan Wouters</strong>. Contributor. <a href='https://orcid.org/0000-0001-8200-9102' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Frederic Piesschaert</strong>. Contributor. <a href='https://orcid.org/0000-0002-5843-646X' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Mathias Wackenier</strong>. Contributor. <a href='https://orcid.org/0000-0001-6934-9241' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Research Institute for Nature and Forest (INBO)</strong>. Copyright holder. 
-        </p>
-      </li>
-    </ul>
+    <div id="watina-0-2-2" class="section level1">
+<h1 class="page-header">
+<a href="#watina-0-2-2" class="anchor"></a>watina 0.2.2</h1>
+<ul>
+<li>On Windows, the functions now convert ‘weird’ characters from the database to proper UTF-8.</li>
+<li>Bugfix (<a href='https://github.com/inbo/watina/issues/29'>#29</a>) in <code><a href="../reference/get_locs.html">get_locs()</a></code> regarding the default implementation of the <code>loc_validity</code> argument.</li>
+</ul>
+</div>
+    <div id="watina-0-2-1" class="section level1">
+<h1 class="page-header">
+<a href="#watina-0-2-1" class="anchor"></a>watina 0.2.1</h1>
+<ul>
+<li>Fixed bug in some hyperlinks in function documentation, affecting the installation process on Windows (warnings were thrown).</li>
+</ul>
+</div>
+    <div id="watina-0-2-0" class="section level1">
+<h1 class="page-header">
+<a href="#watina-0-2-0" class="anchor"></a>watina 0.2.0</h1>
+<div id="new-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>New features</h2>
+<ul>
+<li>Several functions have been added to query and process chemical data.</li>
+<li>Three vignettes have been added.</li>
+<li>Improved various existing functionalities from version 0.1.0, based on user’s feedback.</li>
+</ul>
+</div>
+</div>
+  </div>
 
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <div id="tocnav">
+      <h2>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="#watina-0-2-2">0.2.2</a></li>
+        <li><a href="#watina-0-2-1">0.2.1</a></li>
+        <li><a href="#watina-0-2-0">0.2.0</a></li>
+      </ul>
+    </div>
   </div>
 
 </div>
-
 
 
       <footer>
