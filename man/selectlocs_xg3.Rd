@@ -4,8 +4,15 @@
 \alias{selectlocs_xg3}
 \title{Select locations based on XG3 availability and XG3 series' properties}
 \usage{
-selectlocs_xg3(data, xg3_type = NULL, max_gap = NULL, min_dur = NULL,
-  conditions, verbose = TRUE, list = FALSE)
+selectlocs_xg3(
+  data,
+  xg3_type = NULL,
+  max_gap = NULL,
+  min_dur = NULL,
+  conditions,
+  verbose = TRUE,
+  list = FALSE
+)
 }
 \arguments{
 \item{data}{Either an object returned by \code{\link{get_xg3}},
@@ -317,6 +324,7 @@ DBI::dbDisconnect(watina)
 \seealso{
 \code{\link{eval_xg3_avail}}, \code{\link{eval_xg3_series}}
 
-Other functions to select locations: \code{\link{selectlocs_chem}}
+Other functions to select locations: 
+\code{\link{selectlocs_chem}()}
 }
 \concept{functions to select locations}

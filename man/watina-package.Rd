@@ -35,14 +35,14 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (0000-0002-6378-6229)
+\strong{Maintainer}: Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (\href{https://orcid.org/0000-0002-6378-6229}{ORCID})
 
 Other contributors:
 \itemize{
-  \item Peter Desmet \email{peter.desmet@inbo.be} (0000-0002-8442-8025) [contributor]
-  \item Jan Wouters \email{jan.wouters@inbo.be} (0000-0001-8200-9102) [contributor]
-  \item Frederic Piesschaert \email{frederic.piesschaert@inbo.be} (0000-0002-5843-646X) [contributor]
-  \item Mathias Wackenier \email{mathias.wackenier@inbo.be} (0000-0001-6934-9241) [contributor]
+  \item Peter Desmet \email{peter.desmet@inbo.be} (\href{https://orcid.org/0000-0002-8442-8025}{ORCID}) [contributor]
+  \item Jan Wouters \email{jan.wouters@inbo.be} (\href{https://orcid.org/0000-0001-8200-9102}{ORCID}) [contributor]
+  \item Frederic Piesschaert \email{frederic.piesschaert@inbo.be} (\href{https://orcid.org/0000-0002-5843-646X}{ORCID}) [contributor]
+  \item Mathias Wackenier \email{mathias.wackenier@inbo.be} (\href{https://orcid.org/0000-0001-6934-9241}{ORCID}) [contributor]
   \item Research Institute for Nature and Forest (INBO) \email{info@inbo.be} [copyright holder]
 }
 

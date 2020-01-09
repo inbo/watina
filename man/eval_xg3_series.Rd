@@ -130,7 +130,8 @@ DBI::dbDisconnect(watina)
 \seealso{
 \code{\link{extract_xg3_series}}
 
-Other functions to evaluate locations: \code{\link{eval_chem}},
-  \code{\link{eval_xg3_avail}}
+Other functions to evaluate locations: 
+\code{\link{eval_chem}()},
+\code{\link{eval_xg3_avail}()}
 }
 \concept{functions to evaluate locations}

@@ -4,8 +4,15 @@
 \alias{selectlocs}
 \title{Select locations based on summary statistics (generic function)}
 \usage{
-selectlocs(data, data_type = c("data", "summary"), eval_fun = NULL,
-  eval_args = NULL, conditions, verbose, list)
+selectlocs(
+  data,
+  data_type = c("data", "summary"),
+  eval_fun = NULL,
+  eval_args = NULL,
+  conditions,
+  verbose,
+  list
+)
 }
 \arguments{
 \item{data}{Either:
