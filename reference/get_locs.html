@@ -73,7 +73,7 @@ Essential metadata are included in the result." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
       </span>
     </div>
 
@@ -143,11 +143,20 @@ local tibble.
 Essential metadata are included in the result.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_locs</span>(<span class='no'>con</span>, <span class='kw'>filterdepth_range</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>3</span>), <span class='kw'>obswells</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>join_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>loc_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P"</span>, <span class='st'>"S"</span>, <span class='st'>"R"</span>, <span class='st'>"N"</span>, <span class='st'>"W"</span>, <span class='st'>"D"</span>, <span class='st'>"L"</span>,
-  <span class='st'>"B"</span>), <span class='kw'>loc_validity</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"VLD"</span>, <span class='st'>"ENT"</span>), <span class='kw'>loc_vec</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>get_locs</span>(
+  <span class='no'>con</span>,
+  <span class='kw'>filterdepth_range</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>3</span>),
+  <span class='kw'>obswells</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>join_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>loc_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P"</span>, <span class='st'>"S"</span>, <span class='st'>"R"</span>, <span class='st'>"N"</span>, <span class='st'>"W"</span>, <span class='st'>"D"</span>, <span class='st'>"L"</span>, <span class='st'>"B"</span>),
+  <span class='kw'>loc_validity</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"VLD"</span>, <span class='st'>"ENT"</span>),
+  <span class='kw'>loc_vec</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -277,8 +286,9 @@ In that case they correspond to the most recent observation well
 (per location) that meets the criteria on filterdepth.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other functions to query the database: <code><a href='get_chem.html'>get_chem</a></code>,
-  <code><a href='get_xg3.html'>get_xg3</a></code></p></div>
+    <div class='dont-index'><p>Other functions to query the database: 
+<code><a href='get_chem.html'>get_chem</a>()</code>,
+<code><a href='get_xg3.html'>get_xg3</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
@@ -333,10 +343,10 @@ In that case they correspond to the most recent observation well
          <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>)
 
 <span class='co'># Disconnect:</span>
-<span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/DBI/man/dbDisconnect.html'>dbDisconnect</a></span>(<span class='no'>watina</span>)
+<span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span>(<span class='no'>watina</span>)
 }</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
