@@ -4,10 +4,17 @@
 \alias{get_chem}
 \title{Get hydrochemical data from the database}
 \usage{
-get_chem(locs, con, startdate, enddate = paste(day(today()),
-  month(today()), year(today())), conc_type = c("mass", "eq"),
-  en_range = c(-0.1, 0.1), en_exclude_na = FALSE,
-  en_fecond_threshold = 0.0023, collect = FALSE)
+get_chem(
+  locs,
+  con,
+  startdate,
+  enddate = paste(day(today()), month(today()), year(today())),
+  conc_type = c("mass", "eq"),
+  en_range = c(-0.1, 0.1),
+  en_exclude_na = FALSE,
+  en_fecond_threshold = 0.0023,
+  collect = FALSE
+)
 }
 \arguments{
 \item{locs}{A \code{tbl_lazy} object or a dataframe, with at least a column
@@ -164,7 +171,8 @@ DBI::dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to query the database: \code{\link{get_locs}},
-  \code{\link{get_xg3}}
+Other functions to query the database: 
+\code{\link{get_locs}()},
+\code{\link{get_xg3}()}
 }
 \concept{functions to query the database}

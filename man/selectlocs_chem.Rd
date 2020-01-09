@@ -4,10 +4,15 @@
 \alias{selectlocs_chem}
 \title{Select locations based on hydrochemical data properties}
 \usage{
-selectlocs_chem(data, data_type = c("data", "summary"),
-  chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4", "HCO3", "SO4", "Cl",
-  "Na", "K", "Ca", "Mg", "Fe", "Mn", "Si", "Al", "CondF", "CondL", "pHF",
-  "pHL"), conditions, verbose = TRUE, list = FALSE)
+selectlocs_chem(
+  data,
+  data_type = c("data", "summary"),
+  chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4", "HCO3", "SO4", "Cl", "Na", "K", "Ca",
+    "Mg", "Fe", "Mn", "Si", "Al", "CondF", "CondL", "pHF", "pHL"),
+  conditions,
+  verbose = TRUE,
+  list = FALSE
+)
 }
 \arguments{
 \item{data}{An object as returned by either \code{\link{get_chem}}
@@ -234,6 +239,7 @@ DBI::dbDisconnect(watina)
 \seealso{
 \code{\link{eval_chem}}
 
-Other functions to select locations: \code{\link{selectlocs_xg3}}
+Other functions to select locations: 
+\code{\link{selectlocs_xg3}()}
 }
 \concept{functions to select locations}

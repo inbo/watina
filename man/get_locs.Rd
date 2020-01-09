@@ -4,11 +4,20 @@
 \alias{get_locs}
 \title{Get locations from the database}
 \usage{
-get_locs(con, filterdepth_range = c(0, 3), obswells = FALSE,
-  mask = NULL, join_mask = FALSE, buffer = 10, bbox = NULL,
-  area_codes = NULL, loc_type = c("P", "S", "R", "N", "W", "D", "L",
-  "B"), loc_validity = c("VLD", "ENT"), loc_vec = NULL,
-  collect = FALSE)
+get_locs(
+  con,
+  filterdepth_range = c(0, 3),
+  obswells = FALSE,
+  mask = NULL,
+  join_mask = FALSE,
+  buffer = 10,
+  bbox = NULL,
+  area_codes = NULL,
+  loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"),
+  loc_validity = c("VLD", "ENT"),
+  loc_vec = NULL,
+  collect = FALSE
+)
 }
 \arguments{
 \item{con}{A \code{DBIConnection} object to Watina.
@@ -176,7 +185,8 @@ DBI::dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to query the database: \code{\link{get_chem}},
-  \code{\link{get_xg3}}
+Other functions to query the database: 
+\code{\link{get_chem}()},
+\code{\link{get_xg3}()}
 }
 \concept{functions to query the database}

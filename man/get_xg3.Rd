@@ -4,9 +4,16 @@
 \alias{get_xg3}
 \title{Get XG3 values from the database}
 \usage{
-get_xg3(locs, con, startyear, endyear = year(now()) - 1,
-  vert_crs = c("local", "ostend", "both"), truncated = TRUE,
-  with_estimated = TRUE, collect = FALSE)
+get_xg3(
+  locs,
+  con,
+  startyear,
+  endyear = year(now()) - 1,
+  vert_crs = c("local", "ostend", "both"),
+  truncated = TRUE,
+  with_estimated = TRUE,
+  collect = FALSE
+)
 }
 \arguments{
 \item{locs}{A \code{tbl_lazy} object or a dataframe, with at least a column
@@ -102,7 +109,8 @@ DBI::dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to query the database: \code{\link{get_chem}},
-  \code{\link{get_locs}}
+Other functions to query the database: 
+\code{\link{get_chem}()},
+\code{\link{get_locs}()}
 }
 \concept{functions to query the database}

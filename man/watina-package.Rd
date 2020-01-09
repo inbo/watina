@@ -16,6 +16,9 @@ The R-package watina contains functions to query
 See the \href{00Index.html}{Index} for an overview of the available functions.
 Basic data retrieval functions start with "\code{get_}".
 
+Read the vignettes (linked by the \href{00Index.html}{Index}) to get
+started with the package.
+
 \code{\link{selectlocs_xg3}} is a top-level function that allows to select
 locations based on user-specified conditions on XG3 availability and XG3 series.
 
@@ -35,14 +38,14 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (0000-0002-6378-6229)
+\strong{Maintainer}: Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (\href{https://orcid.org/0000-0002-6378-6229}{ORCID})
 
 Other contributors:
 \itemize{
-  \item Peter Desmet \email{peter.desmet@inbo.be} (0000-0002-8442-8025) [contributor]
-  \item Jan Wouters \email{jan.wouters@inbo.be} (0000-0001-8200-9102) [contributor]
-  \item Frederic Piesschaert \email{frederic.piesschaert@inbo.be} (0000-0002-5843-646X) [contributor]
-  \item Mathias Wackenier \email{mathias.wackenier@inbo.be} (0000-0001-6934-9241) [contributor]
+  \item Peter Desmet \email{peter.desmet@inbo.be} (\href{https://orcid.org/0000-0002-8442-8025}{ORCID}) [contributor]
+  \item Jan Wouters \email{jan.wouters@inbo.be} (\href{https://orcid.org/0000-0001-8200-9102}{ORCID}) [contributor]
+  \item Frederic Piesschaert \email{frederic.piesschaert@inbo.be} (\href{https://orcid.org/0000-0002-5843-646X}{ORCID}) [contributor]
+  \item Mathias Wackenier \email{mathias.wackenier@inbo.be} (\href{https://orcid.org/0000-0001-6934-9241}{ORCID}) [contributor]
   \item Research Institute for Nature and Forest (INBO) \email{info@inbo.be} [copyright holder]
 }
 
