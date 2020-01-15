@@ -114,46 +114,7 @@
 <div id="you-are-welcome-to-contribute" class="section level2">
 <h2 class="hasAnchor">
 <a href="#you-are-welcome-to-contribute" class="anchor"></a>You are welcome to contribute!</h2>
-<p>Please have a look at our <a href="CONTRIBUTING.html">contributing guide</a>! Those with write permissions to the <a href="https://github.com/inbo/watina">watina repository</a> find more specific guidelines below!</p>
-<div id="coding-tools-its-never-too-late-for-learning" class="section level3">
-<h3 class="hasAnchor">
-<a href="#coding-tools-its-never-too-late-for-learning" class="anchor"></a>Coding tools: it’s never too late for learning!</h3>
-<p>When writing functions for <code>watina</code>:</p>
-<ul>
-<li>please use <code>tidyverse</code>, <code>sf</code> and <code>raster</code> packages for data reading. Discover the human-friendly way of coding a data processing pipeline through the use of <a href="https://r4ds.had.co.nz/pipes.html">pipes</a>! Organise data in R in a <a href="https://r4ds.had.co.nz/tidy-data.html#tidy-data-1">tidy</a> way in order to avoid troubles later on. Recommended resources to get started are:
-<ul>
-<li><a href="https://r4ds.had.co.nz/">R for Data Science</a></li>
-<li><a href="https://geocompr.robinlovelace.net">Geocomputation with R</a></li>
-<li>
-<a href="http://r-pkgs.had.co.nz/">R packages</a> (by Hadley Wickham 2015; an extended/updated <a href="https://r-pkgs.org/">version</a> is still under development)</li>
-<li>
-<code>vignette("formatting", package = "roxygen2")</code> for documentation syntax</li>
-</ul>
-</li>
-<li>have a quick look at the <a href="https://style.tidyverse.org/">tidyverse style guide</a>. There you see how to style object, variable and function names, as well as the documentation. At least keep in mind: <strong>use lower case and ‘snake_case’</strong> for object, variable and function names.</li>
-</ul>
-<p>If your function returns data:</p>
-<ul>
-<li>return data in a <a href="https://r4ds.had.co.nz/tidy-data.html#tidy-data-1">tidy</a> way.</li>
-<li>use <code><a href="https://dplyr.tidyverse.org/reference/reexports.html">dplyr::as_tibble()</a></code> to return a dataframe as a tibble. A tibble is a dataframe that makes working in the tidyverse a little <a href="https://r4ds.had.co.nz/tibbles.html">easier</a>.</li>
-<li>return data as much as possible internationalized: use English names for dataframe variables!</li>
-</ul>
-</div>
-<div id="how-can-i-contribute-code" class="section level3">
-<h3 class="hasAnchor">
-<a href="#how-can-i-contribute-code" class="anchor"></a>How can I contribute code?</h3>
-<p>More detailed info on git workflows at INBO: <a href="https://inbo.github.io/tutorials/tags/git/" class="uri">https://inbo.github.io/tutorials/tags/git/</a>. See also <a href="https://inbo.github.io/git-course/index.html">these git workshop materials</a>.</p>
-<ol>
-<li>Make commits (in your local clone of the remote repo on Github) <em>in your own git branch</em>, branched off from the <code>master</code> branch. (But see this in a relative manner: exactly the same process can be repeated by someone else in turn, relative to your branch. So ‘<code>master</code>’ in this protocol can be replaced by another branch name!) You can push your branch to the remote as often as you like, as it will not influence other branches (first time: do <code>git push -u origin yourbranchname</code>; afterwards <code>git push</code> suffices). It serves as a backup and enables others to work with you on that branch.</li>
-<li>Meanwhile, make sure that your branch stays up to date with evolutions in <code>master</code> (i.e. in your local repo, update <code>master</code> with <code>git checkout master &amp;&amp; git pull</code> and then, with your own branch checked out again, do <code>git merge --no-ff master</code>), in order to prevent merge conflicts with <code>master</code> later on. At this stage, you need to resolve any merge conflicts that may arise in your own branch.</li>
-<li>Propose to merge your commits into <code>master</code>: this starts with making a ‘pull request’ (PR; actually this is a merge request) and assign at least one reviewer before a merge can be decided. At that moment, open online discussion in the repo is possible on your changes (for other open discussion that you want to start, make an <em>issue</em>). As long as no merge is performed, more commits can be added to this PR with <code>git push</code>, e.g. to implement requested changes by others.
-<ul>
-<li>note that, if you branched off another (reference) branch than <code>master</code>, make sure to change the reference branch in the pull request (the default reference is <code>master</code>).</li>
-</ul>
-</li>
-<li>After your PR is merged, pull the reference branch (usually <code>master</code>) and clean up your local repo in order to keep up with the remote.</li>
-</ol>
-</div>
+<p>Please have a look at our <a href="CONTRIBUTING.html">contributing guide</a>!</p>
 </div>
 
   </div>
