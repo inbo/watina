@@ -24,7 +24,7 @@ convertdf_enc <- function(x,
     assert_that(is.string(to))
 
     is_chfact <- function(vec) {
-            if (is.factor(x)) {
+        if (is.factor(vec)) {
             is.character(levels(vec))
         } else FALSE
     }
@@ -32,6 +32,7 @@ convertdf_enc <- function(x,
     conv_levels <- function(fact, to) {
         levels(fact) <- iconv(levels(fact),
                               to = to)
+        return(fact)
     }
 
     x %>%
