@@ -15,11 +15,11 @@
 #' regarded as stable.
 #' Therefore, \code{collect = TRUE} does not return \code{loc_wid}.
 #'
-#' The result contains also contains metadata at the level of the observation
+#' The result also provides metadata at the level of the observation
 #' well, even when \code{obswells = FALSE}.
 #' In the latter case, this refers to the variables \code{filterdepth} and
-#' \code{soilsurf_ost}.
-#' In that case they correspond to the most recent observation well
+#' \code{soilsurf_ost}, which then
+#' correspond to the most recent observation well
 #' (per location) that meets the criteria on filterdepth.
 #'
 #'
