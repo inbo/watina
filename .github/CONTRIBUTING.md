@@ -89,7 +89,7 @@ At least keep in mind: **use lower case and 'snake_case'** for object, variable 
 A tibble is a dataframe that makes working in the tidyverse a little [easier](https://r4ds.had.co.nz/tibbles.html).
 - functions that read or process data should return data as much as possible internationalized:
     - availability of English names for types, environmental pressures, ...
-    Other languages can be accomodated as well;
+    Other languages can be accommodated as well;
     - English names for table headings (dataframe variables).
 
 
