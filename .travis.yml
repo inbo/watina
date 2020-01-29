@@ -1,11 +1,13 @@
 language: r
 cache: packages
 
+r_packages:
+  - pkgdown
+
 r_binary_packages:
- - rgdal # For inborutils
+  - rgdal # For inborutils
 
 r_github_packages:
-  - r-lib/pkgdown
   - inbo/inborutils
 
 apt_packages:
