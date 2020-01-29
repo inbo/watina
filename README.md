@@ -1,6 +1,9 @@
 ## Welcome
 
+<!-- badges: start -->
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3630532.svg)](https://doi.org/10.5281/zenodo.3630532)
 [![Build Status](https://travis-ci.org/inbo/watina.svg?branch=master)](https://travis-ci.org/inbo/watina)
+<!-- badges: end -->
 
 The R-package `watina` contains functions to query
 and process data from the _Watina database_ at the Research Institute for
