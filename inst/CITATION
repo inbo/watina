@@ -9,6 +9,6 @@ citEntry(
 
   textVersion = paste("Vanderhaeghe F (2020).",
   "watina: an R package for querying & processing data from the INBO Watina database.",
-  "<https://inbo.github.io/watina>."
+  "https://inbo.github.io/watina."
   )
 )
