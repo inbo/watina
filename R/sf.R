@@ -1,6 +1,6 @@
 #' Convert a dataframe with X and Y coordinates to a geospatial points object
 #'
-#' \code{as.points} is a convenience function which accepts as input a dataframe
+#' \code{as_points} is a convenience function which accepts as input a dataframe
 #' with X/Y coordinates (in meters), assumed to come from the coordinate
 #' reference system (CRS)
 #' 'Belge 1972 / Belgian Lambert 72' (EPSG \href{https://epsg.io/31370}{31370}).
