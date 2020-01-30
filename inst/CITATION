@@ -2,13 +2,13 @@ citHeader("To cite watina in publications use:")
 
 citEntry(
   entry    = "Manual",
-  title    = "watina: an R package for querying & processing data from the INBO Watina database",
+  title    = "watina: an R package for querying and processing data from the INBO Watina database",
   author   = "Floris Vanderhaeghe",
   year     = "2020",
   url      = "https://inbo.github.io/watina",
 
   textVersion = paste("Vanderhaeghe F (2020).",
-  "watina: an R package for querying & processing data from the INBO Watina database.",
+  "watina: an R package for querying and processing data from the INBO Watina database.",
   "https://inbo.github.io/watina."
   )
 )
