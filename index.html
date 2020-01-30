@@ -5,15 +5,15 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Querying &amp; Processing Data From The INBO Watina Database (mainly groundwater data) • watina</title>
+<title>Querying And Processing Data From The INBO Watina Database • watina</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Querying &amp; Processing Data From The INBO Watina Database (mainly groundwater data)">
+<script src="pkgdown.js"></script><meta property="og:title" content="Querying And Processing Data From The INBO Watina Database">
 <meta property="og:description" content="The R-package watina contains functions to query
     and process data from the Watina database at the Research Institute for
-    Nature and Forest (INBO). This database provides
+    Nature and Forest (INBO). This database primarily provides
     groundwater level and chemical data, mainly from natural 
     areas in Flanders (Belgium).">
 <meta name="twitter:card" content="summary">
@@ -109,7 +109,7 @@
 <h2 class="hasAnchor">
 <a href="#installing-testing-and-using-the-watina-package" class="anchor"></a>Installing, testing and using the <em>watina</em> package</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">remotes<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/remotes/man/install_github.html">install_github</a></span>(<span class="st">"inbo/watina"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
-<p>Note that this will install the package from the <code>master</code> branch. If you need a version from another branch, add the <code>ref</code> argument in the above function to provide the branch name.</p>
+<p>Note that this will install the package from the <code>master</code> branch. In case of an installation error because existing dependencies (already installed packages) are too old, add the argument <code>upgrade = TRUE</code>. If you need a version from another branch, add the <code>ref</code> argument in the above function to provide the branch name.</p>
 </div>
 <div id="you-are-welcome-to-contribute" class="section level2">
 <h2 class="hasAnchor">
@@ -161,6 +161,7 @@
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://doi.org/10.5281/zenodo.3630532"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.3630532.svg" alt="DOI"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
 <li><a href="https://travis-ci.org/inbo/watina"><img src="https://travis-ci.org/inbo/watina.svg?branch=master" alt="Build Status"></a></li>
 </ul>
 </div>
