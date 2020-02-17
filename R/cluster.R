@@ -54,11 +54,11 @@
 #'     y = rnorm(10, 132693, 2)
 #'   )
 #' cluster_locs(mydata) %>%
-#'   arrange(cluster)
+#'   arrange(cluster_id)
 #' mydata %>%
 #'   as_points(remove = TRUE) %>%
 #'   cluster_locs %>%
-#'   arrange(cluster)
+#'   arrange(cluster_id)
 #'
 #' \dontrun{
 #' watina <- connect_watina()
@@ -71,12 +71,12 @@
 #'
 #' # inspect result:
 #' clusters %>%
-#'   select(loc_code, x, y, cluster) %>%
-#'   arrange(cluster)
+#'   select(loc_code, x, y, cluster_id) %>%
+#'   arrange(cluster_id)
 #'
 #' # frequency of cluster sizes:
 #' clusters %>%
-#'   count(cluster) %>%
+#'   count(cluster_id) %>%
 #'   pull(n) %>%
 #'   table
 #'
