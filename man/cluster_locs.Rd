@@ -7,7 +7,7 @@
 cluster_locs(
   input,
   max_dist = 2,
-  output_var = "cluster",
+  output_var = "cluster_id",
   xvar = "x",
   yvar = "y"
 )
@@ -39,7 +39,8 @@ dataframe.
 Defaults to \code{"y"}.}
 }
 \value{
-The original object with an extra variable added to define
+The original object with an extra variable added (by default:
+\code{cluster_id}) to define
 cluster membership.
 }
 \description{

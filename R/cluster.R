@@ -40,7 +40,8 @@
 #' Defaults to \code{"y"}.
 #'
 #' @return
-#' The original object with an extra variable added to define
+#' The original object with an extra variable added (by default:
+#' \code{cluster_id}) to define
 #' cluster membership.
 #'
 #' @examples
@@ -103,7 +104,7 @@
 #' cutree
 cluster_locs <- function(input,
                           max_dist = 2,
-                          output_var = "cluster",
+                          output_var = "cluster_id",
                           xvar = "x",
                           yvar = "y") {
 
