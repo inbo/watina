@@ -1,3 +1,9 @@
+# watina 0.3.0
+
+## New feature
+
+- New function `cluster_locs()` to spatially cluster locations (well clusters)
+
 # watina 0.2.4
 
 - Bugfix in `convertdf_enc()` (#34)
