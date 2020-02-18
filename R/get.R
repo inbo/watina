@@ -32,6 +32,9 @@
 #' The second vector element cannot be smaller than the first.
 #' With \code{obswells = FALSE}, a location is kept whenever one observation
 #' well fulfills the criterion.
+#' @param filterdepth_na Logical.
+#' Are observation wells with missing filterdepth value to be included?
+#' Defaults to \code{FALSE}.
 #' @param obswells Logical.
 #' If \code{TRUE}, the returned object distinguishes all observation wells that
 #' meet the \code{filterdepth_range} criterion.
@@ -177,6 +180,7 @@
 #' group_by
 get_locs <- function(con,
                      filterdepth_range = c(0, 3),
+                     filterdepth_na = FALSE,
                      obswells = FALSE,
                      mask = NULL,
                      join_mask = FALSE,
@@ -202,6 +206,7 @@ get_locs <- function(con,
     assert_that(is.flag(join_mask))
     assert_that(is.flag(collect))
     assert_that(is.flag(obswells))
+    assert_that(is.flag(filterdepth_na))
 
     if (!is.null(mask) & !collect) {
         message("As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.")
@@ -284,12 +289,30 @@ get_locs <- function(con,
                                                        "CLD")),
                   by = "MeetpuntWID") %>%
         mutate(filterdepth = .data$PeilbuisLengte -
-                                .data$ReferentieNiveauMaaiveld) %>%
-        filter(.data$MeetpuntTypeCode == "P" &
-                   .data$filterdepth <= max_filterdepth &
-                   .data$filterdepth >= min_filterdepth |
-                   .data$MeetpuntTypeCode != "P"
-               ) %>%
+                                .data$ReferentieNiveauMaaiveld)
+
+    if (filterdepth_na) {
+        locs <-
+            locs %>%
+            filter(
+                (.data$MeetpuntTypeCode == "P" &
+                       (.data$filterdepth <= max_filterdepth &
+                       .data$filterdepth >= min_filterdepth |
+                           is.na(.data$filterdepth))) |
+                       .data$MeetpuntTypeCode != "P"
+            )
+    } else {
+        locs <-
+            locs %>%
+            filter(.data$MeetpuntTypeCode == "P" &
+                       .data$filterdepth <= max_filterdepth &
+                       .data$filterdepth >= min_filterdepth |
+                       .data$MeetpuntTypeCode != "P"
+            )
+    }
+
+    locs <-
+        locs %>%
         select(loc_wid = .data$MeetpuntWID,
                loc_code = .data$MeetpuntCode,
                area_code = .data$GebiedCode,

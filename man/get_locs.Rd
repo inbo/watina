@@ -7,6 +7,7 @@
 get_locs(
   con,
   filterdepth_range = c(0, 3),
+  filterdepth_na = FALSE,
   obswells = FALSE,
   mask = NULL,
   join_mask = FALSE,
@@ -30,6 +31,10 @@ This condition is only applied to groundwater piezometers.
 The second vector element cannot be smaller than the first.
 With \code{obswells = FALSE}, a location is kept whenever one observation
 well fulfills the criterion.}
+
+\item{filterdepth_na}{Logical.
+Are observation wells with missing filterdepth value to be included?
+Defaults to \code{FALSE}.}
 
 \item{obswells}{Logical.
 If \code{TRUE}, the returned object distinguishes all observation wells that
