@@ -7,6 +7,7 @@
 get_locs(
   con,
   filterdepth_range = c(0, 3),
+  filterdepth_na = FALSE,
   obswells = FALSE,
   mask = NULL,
   join_mask = FALSE,
@@ -30,6 +31,10 @@ This condition is only applied to groundwater piezometers.
 The second vector element cannot be smaller than the first.
 With \code{obswells = FALSE}, a location is kept whenever one observation
 well fulfills the criterion.}
+
+\item{filterdepth_na}{Logical.
+Are observation wells with missing filterdepth value to be included?
+Defaults to \code{FALSE}.}
 
 \item{obswells}{Logical.
 If \code{TRUE}, the returned object distinguishes all observation wells that
@@ -126,6 +131,9 @@ In the latter case, this refers to the variables \code{filterdepth} and
 \code{soilsurf_ost}, which then
 correspond to the most recent observation well
 (per location) that meets the criteria on filterdepth.
+Mind that \code{obswells = FALSE} and \code{filterdepth_na = TRUE} may lead
+to missing filterdepth values at locations which do have a
+value for an older observation well, but not for the most recent one.
 }
 \examples{
 \dontrun{
@@ -144,6 +152,12 @@ get_locs(watina,
 get_locs(watina,
          area_codes = c("KAL", "KBR"),
          loc_type = c("P", "S"),
+         collect = TRUE)
+
+get_locs(watina,
+         area_codes = c("KAL", "KBR"),
+         loc_type = c("P", "S"),
+         filterdepth_na = TRUE,
          collect = TRUE)
 
 # Mark the different output of:
