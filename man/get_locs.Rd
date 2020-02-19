@@ -131,6 +131,9 @@ In the latter case, this refers to the variables \code{filterdepth} and
 \code{soilsurf_ost}, which then
 correspond to the most recent observation well
 (per location) that meets the criteria on filterdepth.
+Mind that \code{obswells = FALSE} and \code{filterdepth_na = TRUE} may lead
+to missing filterdepth values at locations which do have a
+value for an older observation well, but not for the most recent one.
 }
 \examples{
 \dontrun{
