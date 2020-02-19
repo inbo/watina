@@ -122,6 +122,12 @@
 #'          loc_type = c("P", "S"),
 #'          collect = TRUE)
 #'
+#' get_locs(watina,
+#'          area_codes = c("KAL", "KBR"),
+#'          loc_type = c("P", "S"),
+#'          filterdepth_na = TRUE,
+#'          collect = TRUE)
+#'
 #' # Mark the different output of:
 #'   get_locs(watina,
 #'            loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
