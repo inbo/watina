@@ -9,7 +9,7 @@ watina is an open source project, maintained by people who care. We are not dire
 [new_issue]: https://github.com/inbo/watina/issues/new
 [website]: https://inbo.github.io/watina
 [citation]: https://inbo.github.io/watina/authors.html
-[email]: floris.vanderhaeghe@inbo.be
+[email]: mailto:floris.vanderhaeghe@inbo.be
 
 ## Code of conduct
 
