@@ -23,7 +23,7 @@ Imports:
     assertthat,
     dbplyr (>= 1.4.2),
     dplyr,
-    inborutils (>= 0.1.0),
+    inborutils (>= 0.1.0.9072),
     KSgeneral,
     lubridate,
     rlang,
