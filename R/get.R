@@ -172,6 +172,7 @@
 #' assert_that
 #' is.number
 #' is.flag
+#' noNA
 #' @importFrom sf
 #' st_drop_geometry
 #' st_intersects
@@ -212,10 +213,10 @@ get_locs <- function(con,
     assert_that(is.null(area_codes) | all(is.character(area_codes)))
     assert_that(is.null(loc_vec) | all(is.character(loc_vec)),
                 msg = "loc_vec must be a character vector.")
-    assert_that(is.flag(join_mask))
-    assert_that(is.flag(collect))
-    assert_that(is.flag(obswells))
-    assert_that(is.flag(filterdepth_na))
+    assert_that(is.flag(join_mask), noNA(join_mask))
+    assert_that(is.flag(collect), noNA(collect))
+    assert_that(is.flag(obswells), noNA(obswells))
+    assert_that(is.flag(filterdepth_na), noNA(filterdepth_na))
 
     if (!is.null(mask) & !collect) {
         message("As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.")
@@ -518,6 +519,7 @@ get_locs <- function(con,
 #' assert_that
 #' is.number
 #' is.flag
+#' noNA
 #' @importFrom rlang .data
 #' @importFrom lubridate
 #' year
@@ -551,8 +553,8 @@ get_xg3 <- function(locs,
                 msg = "startyear must not be larger than endyear.")
     assert_that("loc_code" %in% colnames(locs),
                 msg = "locs does not have a column name 'loc_code'.")
-    assert_that(is.flag(truncated))
-    assert_that(is.flag(collect))
+    assert_that(is.flag(truncated), noNA(truncated))
+    assert_that(is.flag(collect), noNA(collect))
 
     if (inherits(locs, "data.frame")) {
         locs <-
@@ -769,6 +771,7 @@ get_xg3 <- function(locs,
 #' assert_that
 #' is.number
 #' is.flag
+#' noNA
 #' is.date
 #' @importFrom rlang .data
 #' @importFrom lubridate
@@ -822,8 +825,8 @@ get_chem <- function(locs,
                 en_range[1] >= -1,
                 en_range[2] <= 1
                 )
-    assert_that(is.flag(en_exclude_na))
-    assert_that(is.flag(collect))
+    assert_that(is.flag(en_exclude_na), noNA(en_exclude_na))
+    assert_that(is.flag(collect), noNA(collect))
 
     if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
         assert_that(is.number(en_fecond_threshold),
