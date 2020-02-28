@@ -35,6 +35,19 @@
 #' The second vector element cannot be smaller than the first.
 #' With \code{obswells = FALSE}, a location is kept whenever one observation
 #' well fulfills the criterion.
+#' @param filterdepth_guess Logical.
+#' Only relevant for groundwater piezometers.
+#' Defaults to \code{FALSE}.
+#' For observation wells of which tube length is known, but not the height of
+#' the tube top (measurement reference) above soil surface,
+#' filterdepth cannot be calculated and is missing.
+#' However, filterdepth will never be larger than tube length; hence a maximum
+#' possible (i.e. conservative) value for filterdepth is given by tube length.
+#' With \code{filterdepth_guess = TRUE}, filterdepth is filled with tube length
+#' when it cannot be calculated and tube length is available.
+#' To mark these cases, a logical variable \code{filterdepth_guessed} is added
+#' to the result (\code{TRUE} for wells where filterdepth was replaced by tube
+#' length; \code{FALSE} in all other rows).
 #' @param filterdepth_na Logical.
 #' Are observation wells with missing filterdepth value to be included?
 #' Defaults to \code{FALSE}.
@@ -190,6 +203,7 @@
 #' group_by
 get_locs <- function(con,
                      filterdepth_range = c(0, 3),
+                     filterdepth_guess = FALSE,
                      filterdepth_na = FALSE,
                      obswells = FALSE,
                      mask = NULL,
@@ -216,6 +230,7 @@ get_locs <- function(con,
     assert_that(is.flag(join_mask), noNA(join_mask))
     assert_that(is.flag(collect), noNA(collect))
     assert_that(is.flag(obswells), noNA(obswells))
+    assert_that(is.flag(filterdepth_guess), noNA(filterdepth_guess))
     assert_that(is.flag(filterdepth_na), noNA(filterdepth_na))
 
     if (!is.null(mask) & !collect) {
@@ -325,6 +340,17 @@ get_locs <- function(con,
         arrange(.data$area_code,
                 .data$loc_code,
                 .data$obswell_rank)
+
+    if (filterdepth_guess) {
+        locs <-
+            locs %>%
+            mutate(filterdepth_guessed =
+                       is.na(.data$filterdepth) &
+                       !is.na(.data$tubelength),
+                   filterdepth = ifelse(is.na(.data$filterdepth),
+                                        .data$tubelength,
+                                        .data$filterdepth))
+    }
 
     if (filterdepth_na) {
         locs <-

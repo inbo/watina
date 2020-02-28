@@ -7,6 +7,7 @@
 get_locs(
   con,
   filterdepth_range = c(0, 3),
+  filterdepth_guess = FALSE,
   filterdepth_na = FALSE,
   obswells = FALSE,
   mask = NULL,
@@ -31,6 +32,20 @@ This condition is only applied to groundwater piezometers.
 The second vector element cannot be smaller than the first.
 With \code{obswells = FALSE}, a location is kept whenever one observation
 well fulfills the criterion.}
+
+\item{filterdepth_guess}{Logical.
+Only relevant for groundwater piezometers.
+Defaults to \code{FALSE}.
+For observation wells of which tube length is known, but not the height of
+the tube top (measurement reference) above soil surface,
+filterdepth cannot be calculated and is missing.
+However, filterdepth will never be larger than tube length; hence a maximum
+possible (i.e. conservative) value for filterdepth is given by tube length.
+With \code{filterdepth_guess = TRUE}, filterdepth is filled with tube length
+when it cannot be calculated and tube length is available.
+To mark these cases, a logical variable \code{filterdepth_guessed} is added
+to the result (\code{TRUE} for wells where filterdepth was replaced by tube
+length; \code{FALSE} in all other rows).}
 
 \item{filterdepth_na}{Logical.
 Are observation wells with missing filterdepth value to be included?
