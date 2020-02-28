@@ -1,3 +1,7 @@
+# watina 0.2.6
+
+- Redo fix `get_locs()`: calculation of `soilsurf_ost` (#43)
+
 # watina 0.2.5
 
 - Bugfix in `get_locs()`: calculation of `soilsurf_ost` (#42)
