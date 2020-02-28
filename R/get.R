@@ -295,7 +295,9 @@ get_locs <- function(con,
                                .data$PeilpuntVersie,
                                .data$PeilbuisLengte,
                                .data$ReferentieNiveauMaaiveld,
-                               .data$ReferentieNiveauTAW),
+                               .data$ReferentieNiveauTAW,
+                               .data$PeilpuntToestandCode,
+                               .data$PeilpuntToestandNaam),
                   by = "MeetpuntWID") %>%
         mutate(filterdepth = .data$PeilbuisLengte -
                                 .data$ReferentieNiveauMaaiveld)
@@ -338,7 +340,10 @@ get_locs <- function(con,
                obswell_code = .data$PeilpuntCode,
                obswell_rank = .data$PeilpuntVersie,
                .data$filterdepth,
-               .data$soilsurf_ost) %>%
+               .data$soilsurf_ost,
+               tube_length = .data$PeilbuisLengte,
+               obswell_statecode = .data$PeilpuntToestandCode,
+               obswell_state = .data$PeilpuntToestandNaam) %>%
         distinct %>%
         arrange(.data$area_code,
                 .data$loc_code,
