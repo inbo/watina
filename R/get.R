@@ -290,6 +290,9 @@ get_locs <- function(con,
                    .data$filterdepth >= min_filterdepth |
                    .data$MeetpuntTypeCode != "P"
                ) %>%
+        mutate(soilsurf_ost =
+                   .data$ReferentieNiveauTAW -
+                   .data$ReferentieNiveauMaaiveld) %>%
         select(loc_wid = .data$MeetpuntWID,
                loc_code = .data$MeetpuntCode,
                area_code = .data$GebiedCode,
@@ -303,9 +306,7 @@ get_locs <- function(con,
                obswell_code = .data$PeilpuntCode,
                obswell_rank = .data$PeilpuntVersie,
                .data$filterdepth,
-               soilsurf_ost =
-                   .data$ReferentieNiveauTAW -
-                   .data$ReferentieNiveauMaaiveld) %>%
+               .data$soilsurf_ost) %>%
         distinct %>%
         arrange(.data$area_code,
                 .data$loc_code,
