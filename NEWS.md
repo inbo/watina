@@ -4,6 +4,10 @@
 
 - New function `cluster_locs()` to spatially cluster locations (well clusters)
 
+# watina 0.2.5
+
+- Bugfix in `get_locs()`: calculation of `soilsurf_ost` (#42)
+
 # watina 0.2.4
 
 - Bugfix in `convertdf_enc()` (#34)
