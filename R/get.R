@@ -318,7 +318,7 @@ get_locs <- function(con,
                obswell_rank = .data$PeilpuntVersie,
                .data$filterdepth,
                .data$soilsurf_ost,
-               tube_length = .data$PeilbuisLengte,
+               tubelength = .data$PeilbuisLengte,
                obswell_statecode = .data$PeilpuntToestandCode,
                obswell_state = .data$PeilpuntToestandNaam) %>%
         distinct %>%
