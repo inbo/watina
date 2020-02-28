@@ -287,16 +287,15 @@ get_locs <- function(con,
     locs <-
         locs %>%
         left_join(tbl(con, "vwDimPeilpunt") %>%
+                      filter(.data$PeilpuntStatusCode %in% c("VLD",
+                                                       "ENT",
+                                                       "CLD")) %>%
                       distinct(.data$MeetpuntWID,
                                .data$PeilpuntCode,
                                .data$PeilpuntVersie,
-                               .data$PeilpuntStatusCode,
-                             .data$PeilbuisLengte,
-                             .data$ReferentieNiveauMaaiveld,
-                             .data$ReferentieNiveauTAW) %>%
-                      filter(.data$PeilpuntStatusCode %in% c("VLD",
-                                                       "ENT",
-                                                       "CLD")),
+                               .data$PeilbuisLengte,
+                               .data$ReferentieNiveauMaaiveld,
+                               .data$ReferentieNiveauTAW),
                   by = "MeetpuntWID") %>%
         mutate(filterdepth = .data$PeilbuisLengte -
                                 .data$ReferentieNiveauMaaiveld)
