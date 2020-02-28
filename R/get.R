@@ -300,31 +300,8 @@ get_locs <- function(con,
                                .data$PeilpuntToestandNaam),
                   by = "MeetpuntWID") %>%
         mutate(filterdepth = .data$PeilbuisLengte -
-                                .data$ReferentieNiveauMaaiveld)
-
-    if (filterdepth_na) {
-        locs <-
-            locs %>%
-            filter(
-                (.data$MeetpuntTypeCode == "P" &
-                       (.data$filterdepth <= max_filterdepth &
-                       .data$filterdepth >= min_filterdepth |
-                           is.na(.data$filterdepth))) |
-                       .data$MeetpuntTypeCode != "P"
-            )
-    } else {
-        locs <-
-            locs %>%
-            filter(.data$MeetpuntTypeCode == "P" &
-                       .data$filterdepth <= max_filterdepth &
-                       .data$filterdepth >= min_filterdepth |
-                       .data$MeetpuntTypeCode != "P"
-            )
-    }
-
-    locs <-
-        locs %>%
-        mutate(soilsurf_ost =
+                                .data$ReferentieNiveauMaaiveld,
+               soilsurf_ost =
                    .data$ReferentieNiveauTAW -
                    .data$ReferentieNiveauMaaiveld) %>%
         select(loc_wid = .data$MeetpuntWID,
@@ -348,6 +325,26 @@ get_locs <- function(con,
         arrange(.data$area_code,
                 .data$loc_code,
                 .data$obswell_rank)
+
+    if (filterdepth_na) {
+        locs <-
+            locs %>%
+            filter(
+                (.data$loc_typecode == "P" &
+                     (.data$filterdepth <= max_filterdepth &
+                          .data$filterdepth >= min_filterdepth |
+                          is.na(.data$filterdepth))) |
+                    .data$loc_typecode != "P"
+            )
+    } else {
+        locs <-
+            locs %>%
+            filter(.data$loc_typecode == "P" &
+                       .data$filterdepth <= max_filterdepth &
+                       .data$filterdepth >= min_filterdepth |
+                       .data$loc_typecode != "P"
+            )
+    }
 
     if (!obswells) {
         obswell_sel <-
