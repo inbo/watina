@@ -20,7 +20,7 @@ A typical input dataframe is the collected output of \code{\link{get_locs}}.}
 \item{max_dist}{The maximum geospatial distance between two points to make
 them belong to the same cluster.
 The default value is sensible for many usecases,
-supposing using \emph{meter} is the unit of the
+supposing \emph{meter} is the unit of the
 coordinate reference system, as is the case for the
 'Belge 1972 / Belgian Lambert 72' CRS
 (EPSG \href{https://epsg.io/31370}{31370}).}
