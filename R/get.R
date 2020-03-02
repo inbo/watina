@@ -373,6 +373,12 @@ get_locs <- function(con,
             )
     }
 
+    locs <-
+        locs %>%
+        arrange(.data$area_code,
+                .data$loc_code,
+                .data$obswell_rank)
+
     if (!obswells) {
         obswell_sel <-
             locs %>%
