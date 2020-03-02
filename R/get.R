@@ -347,7 +347,8 @@ get_locs <- function(con,
             mutate(filterdepth_guessed =
                        is.na(.data$filterdepth) &
                        !is.na(.data$tubelength),
-                   filterdepth = ifelse(is.na(.data$filterdepth),
+                   filterdepth = ifelse(.data$filterdepth_guessed == 1,
+                                                # (sql: logical stored as bit)
                                         .data$tubelength,
                                         .data$filterdepth))
     }
