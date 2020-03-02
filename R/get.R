@@ -331,11 +331,11 @@ get_locs <- function(con,
                loc_typename = .data$MeetpuntType,
                obswell_code = .data$PeilpuntCode,
                obswell_rank = .data$PeilpuntVersie,
-               .data$filterdepth,
+               obswell_statecode = .data$PeilpuntToestandCode,
+               obswell_state = .data$PeilpuntToestandNaam,
                .data$soilsurf_ost,
                tubelength = .data$PeilbuisLengte,
-               obswell_statecode = .data$PeilpuntToestandCode,
-               obswell_state = .data$PeilpuntToestandNaam) %>%
+               .data$filterdepth) %>%
         distinct %>%
         arrange(.data$area_code,
                 .data$loc_code,
