@@ -312,7 +312,12 @@ get_locs <- function(con,
                                                        "ENT",
                                                        "CLD"),
                              .data$PeilpuntOpenbaarheidTypeCode == "PLME",
-                             .data$PeilpuntOpenbaarheidCode == "UNKWN"),
+                             .data$PeilpuntOpenbaarheidCode == "UNKWN") %>%
+                      mutate(PeilpuntPlaatsing =
+                                 sql("CAST(PeilpuntPlaatsing AS date)"),
+                             PeilpuntStopzetting =
+                                 sql("CAST(PeilpuntStopzetting AS date)")
+                             ),
                   by = "MeetpuntWID") %>%
         mutate(filterdepth = .data$PeilbuisLengte -
                                 .data$ReferentieNiveauMaaiveld,
@@ -333,7 +338,10 @@ get_locs <- function(con,
                obswell_rank = .data$PeilpuntVersie,
                obswell_statecode = .data$PeilpuntToestandCode,
                obswell_state = .data$PeilpuntToestandNaam,
+               obswell_installdate = .data$PeilpuntPlaatsing,
+               obswell_stopdate = .data$PeilpuntStopzetting,
                .data$soilsurf_ost,
+               measuringreference_ost = .data$ReferentieNiveauTAW,
                tubelength = .data$PeilbuisLengte,
                .data$filterdepth) %>%
         arrange(.data$area_code,
