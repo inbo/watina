@@ -126,8 +126,10 @@ a local \code{\link[tibble]{tibble}} is returned.
 \description{
 Returns locations (and optionally, observation wells) from the \emph{Watina}
 database that meet
-several criteria (spatial or non-spatial), either as a lazy object or as a
+several criteria, either as a lazy object or as a
 local tibble.
+Criteria refer to spatial or non-spatial physical attributes of the
+location or a location's observation wells.
 Essential metadata are included in the result.
 }
 \details{
