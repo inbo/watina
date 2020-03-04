@@ -387,15 +387,12 @@ get_locs <- function(con,
                 .data$obswell_rank)
 
     if (!obswells) {
-        obswell_sel <-
-            locs %>%
-            group_by(.data$loc_code) %>%
-            summarise(obswell_count = n(),
-                      obswell_maxrank = max(.data$obswell_rank, na.rm = TRUE))
-
         locs <-
             locs %>%
-            left_join(obswell_sel, by = c("loc_code")) %>%
+            group_by(.data$loc_code) %>%
+            mutate(obswell_count = n(),
+                   obswell_maxrank = max(.data$obswell_rank, na.rm = TRUE)
+                   ) %>%
             filter(.data$obswell_count == 1 |
                        .data$obswell_rank == .data$obswell_maxrank) %>%
             select(-.data$obswell_code,
