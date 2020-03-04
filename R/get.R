@@ -27,6 +27,18 @@
 #' to missing filterdepth values at locations which do have a
 #' value for an older observation well, but not for the most recent one.
 #'
+#' Please note the meaning of observation well in Watina: if there are multiple
+#' observation wells attached to one location, these belong to
+#' \emph{other timeframes}!
+#' So one location always coincides with exactly one observation well at
+#' one moment in time.
+#' Multiple observation wells can succeed one another because of physical
+#' alterations (e.g. damage of a piezometer).
+#' Here, the term 'observation well' is used to refer to a fixed installed
+#' device in the field (groundwater piezometer, surface water level
+#' measurement device).
+
+#'
 #'
 #' @param con A \code{DBIConnection} object to Watina.
 #' See \code{\link{connect_watina}} to generate one.
@@ -54,20 +66,12 @@
 #' Are observation wells with missing filterdepth value to be included?
 #' Defaults to \code{FALSE}.
 #' @param obswells Logical.
-#' If \code{TRUE}, the returned object distinguishes all observation wells that
-#' meet the \code{filterdepth_range} criterion.
+#' If \code{TRUE}, the returned object distinguishes all observation wells
+#' (see \emph(Details)) that
+#' meet the \code{filterdepth_range} criterion (or have missing filterdepth, if
+#' \code{filterdepth_na = TRUE}).
 #' If \code{FALSE} (the default), the returned object just distinguishes
 #' locations.
-#' Please note the meaning of observation well in Watina: if there are multiple
-#' observation wells attached to one location, these belong to
-#' \emph{other timeframes}!
-#' So one location always coincides with exactly one observation well at
-#' one moment in time.
-#' Multiple observation wells can succeed one another because of physical
-#' alterations (e.g. damage of a piezometer).
-#' Here, the term 'observation well' is used to refer to a fixed installed
-#' device in the field (groundwater piezometer, surface water level
-#' measurement device).
 #' @param mask An optional geospatial filter of class \code{sf}.
 #' If provided, only locations that intersect with \code{mask} will be returned,
 #' with the value of \code{buffer} taken into account.
