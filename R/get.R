@@ -344,7 +344,7 @@ get_locs <- function(con,
                obswell_installdate = .data$PeilpuntPlaatsing,
                obswell_stopdate = .data$PeilpuntStopzetting,
                .data$soilsurf_ost,
-               measuringreference_ost = .data$ReferentieNiveauTAW,
+               measuringref_ost = .data$ReferentieNiveauTAW,
                tubelength = .data$PeilbuisLengte,
                .data$filterdepth) %>%
         arrange(.data$area_code,
