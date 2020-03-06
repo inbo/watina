@@ -10,6 +10,7 @@ get_locs(
   filterdepth_guess = FALSE,
   filterdepth_na = FALSE,
   obswells = FALSE,
+  obswell_aggr = c("latest", "latest_fd", "latest_sso", "mean"),
   mask = NULL,
   join_mask = FALSE,
   buffer = 10,
@@ -60,7 +61,49 @@ If \code{TRUE}, the returned object distinguishes all observation wells
 meet the \code{filterdepth_range} criterion (or have missing filterdepth, if
 \code{filterdepth_na = TRUE}).
 If \code{FALSE} (the default), the returned object just distinguishes
-locations.}
+locations.
+In the latter case, the variables \code{obswell_installdate} and
+\code{obswell_stopdate} are not returned.}
+
+\item{obswell_aggr}{String.
+Defines how the attributes of multiple observation wells per location that
+fulfill the \code{filterdepth_range} and
+\code{filterdepth_na} criteria (after filterdepth adjustment if
+\code{filterdepth_guess = TRUE}), are
+aggregated into one record \strong{per location}:
+\itemize{
+
+\item \code{"latest"}: return attributes of the most recent observation well
+that fulfills the \code{filterdepth_range} and
+\code{filterdepth_na} criteria;
+
+\item \code{"latest_fd"}: return attributes of the most recent observation well
+that fulfills the \code{filterdepth_range} criterion, i.e.
+filterdepth will not be missing unless \emph{all} retained wells have missing
+filterdepth and \code{filterdepth_na = TRUE};
+
+\item \code{"latest_sso"}: return attributes of the most recent observation well
+that fulfills the \code{filterdepth_range} and
+\code{filterdepth_na} criteria \emph{and} for which \code{soilsurf_ost}
+(soil surface level in the
+\href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend height}
+CRS (EPSG \href{https://epsg.io/5710}{5710}) is not missing (unless
+\emph{all} retained wells have missing \code{soilsurf_ost});
+
+\item \code{"mean"}: aggregation not by selecting an individual observation
+well, but by averaging the values of the associated variables
+\code{soilsurf_ost},
+\code{measuringref_ost},
+\code{tubelength},
+\code{filterdepth}
+for the observation wells with non-missing values (different
+wells may be involved for each variable, depending on the presence of
+missing values).
+}
+\strong{In all cases} the returned value of \code{obswell_statecode} and
+\code{obswell_state} corresponds to the \code{"latest"} approach.
+The \code{obswell_aggr} argument has no effect on locations with a single
+retained observation well.}
 
 \item{mask}{An optional geospatial filter of class \code{sf}.
 If provided, only locations that intersect with \code{mask} will be returned,

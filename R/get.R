@@ -75,6 +75,49 @@
 #' \code{filterdepth_na = TRUE}).
 #' If \code{FALSE} (the default), the returned object just distinguishes
 #' locations.
+#' In the latter case, the variables \code{obswell_installdate} and
+#' \code{obswell_stopdate} are not returned.
+#'
+#' @param obswell_aggr String.
+#' Defines how the attributes of multiple observation wells per location that
+#' fulfill the \code{filterdepth_range} and
+#' \code{filterdepth_na} criteria (after filterdepth adjustment if
+#' \code{filterdepth_guess = TRUE}), are
+#' aggregated into one record \strong{per location}:
+#' \itemize{
+#'
+#' \item \code{"latest"}: return attributes of the most recent observation well
+#' that fulfills the \code{filterdepth_range} and
+#' \code{filterdepth_na} criteria;
+#'
+#' \item \code{"latest_fd"}: return attributes of the most recent observation well
+#' that fulfills the \code{filterdepth_range} criterion, i.e.
+#' filterdepth will not be missing unless \emph{all} retained wells have missing
+#' filterdepth and \code{filterdepth_na = TRUE};
+#'
+#' \item \code{"latest_sso"}: return attributes of the most recent observation well
+#' that fulfills the \code{filterdepth_range} and
+#' \code{filterdepth_na} criteria \emph{and} for which \code{soilsurf_ost}
+#' (soil surface level in the
+#' \href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend height}
+#' CRS (EPSG \href{https://epsg.io/5710}{5710}) is not missing (unless
+#' \emph{all} retained wells have missing \code{soilsurf_ost});
+#'
+#' \item \code{"mean"}: aggregation not by selecting an individual observation
+#' well, but by averaging the values of the associated variables
+#' \code{soilsurf_ost},
+#' \code{measuringref_ost},
+#' \code{tubelength},
+#' \code{filterdepth}
+#' for the observation wells with non-missing values (different
+#' wells may be involved for each variable, depending on the presence of
+#' missing values).
+#' }
+#' \strong{In all cases} the returned value of \code{obswell_statecode} and
+#' \code{obswell_state} corresponds to the \code{"latest"} approach.
+#' The \code{obswell_aggr} argument has no effect on locations with a single
+#' retained observation well.
+#'
 #' @param mask An optional geospatial filter of class \code{sf}.
 #' If provided, only locations that intersect with \code{mask} will be returned,
 #' with the value of \code{buffer} taken into account.
@@ -210,11 +253,18 @@
 #' distinct
 #' arrange
 #' group_by
+#' row_number
+#' ungroup
+#' sql
 get_locs <- function(con,
                      filterdepth_range = c(0, 3),
                      filterdepth_guess = FALSE,
                      filterdepth_na = FALSE,
                      obswells = FALSE,
+                     obswell_aggr = c("latest",
+                                      "latest_fd",
+                                      "latest_sso",
+                                      "mean"),
                      mask = NULL,
                      join_mask = FALSE,
                      buffer = 10,
@@ -241,6 +291,8 @@ get_locs <- function(con,
     assert_that(is.flag(obswells), noNA(obswells))
     assert_that(is.flag(filterdepth_guess), noNA(filterdepth_guess))
     assert_that(is.flag(filterdepth_na), noNA(filterdepth_na))
+
+    obswell_aggr <- match.arg(obswell_aggr)
 
     if (!is.null(mask) & !collect) {
         message("As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.")
@@ -390,18 +442,102 @@ get_locs <- function(con,
                 .data$obswell_rank)
 
     if (!obswells) {
+
         locs <-
             locs %>%
             group_by(.data$loc_code) %>%
             mutate(obswell_count = n(),
-                   obswell_maxrank = max(.data$obswell_rank, na.rm = TRUE)
+                   obswell_maxrank = max(.data$obswell_rank,
+                                         na.rm = TRUE),
+                   obswell_maxrank_fd =
+                       max(ifelse(is.na(.data$filterdepth),
+                                         NA,
+                                         .data$obswell_rank),
+                                  na.rm = TRUE),
+                   obswell_maxrank_sso =
+                       max(ifelse(is.na(.data$soilsurf_ost),
+                                         NA,
+                                         .data$obswell_rank),
+                                  na.rm = TRUE),
+                   obswell_statecode =
+                       max(ifelse(.data$obswell_rank ==
+                                             .data$obswell_maxrank,
+                                         .data$obswell_statecode,
+                                         NA),
+                                  na.rm = TRUE),
+                   obswell_state =
+                       max(ifelse(.data$obswell_rank ==
+                                             .data$obswell_maxrank,
+                                         .data$obswell_state,
+                                         NA),
+                                  na.rm = TRUE)
+                   )
+
+        locs <-
+            switch(obswell_aggr,
+
+                   "latest" =
+                       locs %>%
+                       ungroup() %>%
+                       filter(.data$obswell_count == 1 |
+                                  .data$obswell_rank == .data$obswell_maxrank),
+
+                   "latest_fd" =
+                       locs %>%
+                       ungroup() %>%
+                       filter(.data$obswell_count == 1 |
+                                  (.data$obswell_rank ==
+                                       .data$obswell_maxrank_fd) |
+                                  (is.na(.data$obswell_maxrank_fd) &
+                                       (.data$obswell_rank ==
+                                            .data$obswell_maxrank))
+                       ),
+
+                   "latest_sso" =
+                       locs %>%
+                       ungroup() %>%
+                       filter(.data$obswell_count == 1 |
+                                  (.data$obswell_rank ==
+                                       .data$obswell_maxrank_sso) |
+                                  (is.na(.data$obswell_maxrank_sso) &
+                                       (.data$obswell_rank ==
+                                            .data$obswell_maxrank))
+                       ),
+
+                   "mean" =
+                       locs %>%
+                       mutate(soilsurf_ost = mean(.data$soilsurf_ost,
+                                                  na.rm = TRUE),
+                              measuringref_ost = mean(.data$measuringref_ost,
+                                                  na.rm = TRUE),
+                              filterdepth = mean(.data$filterdepth,
+                                                  na.rm = TRUE),
+                              tubelength = mean(.data$tubelength,
+                                                  na.rm = TRUE)) %>%
+                       {if ("filterdepth_guessed" %in% colnames(.)) {
+                           mutate(.,
+                                  filterdepth_guessed =
+                                      max(ifelse(.data$filterdepth_guessed == 1,
+                                                 # (sql: logical stored as bit)
+                                                 1,
+                                                 0),
+                                          na.rm = TRUE)) %>%
+                               mutate(filterdepth_guessed =
+                                          sql("CAST(
+                                              filterdepth_guessed AS bit)"))
+                       } else .} %>%
+                       filter(row_number() == 1L) %>%
+                       ungroup()
+
                    ) %>%
-            filter(.data$obswell_count == 1 |
-                       .data$obswell_rank == .data$obswell_maxrank) %>%
             select(-.data$obswell_code,
                    -.data$obswell_rank,
+                   -.data$obswell_installdate,
+                   -.data$obswell_stopdate,
                    -.data$obswell_count,
-                   -.data$obswell_maxrank) %>%
+                   -.data$obswell_maxrank,
+                   -.data$obswell_maxrank_fd,
+                   -.data$obswell_maxrank_sso) %>%
             arrange(.data$area_code,
                     .data$loc_code)
 
