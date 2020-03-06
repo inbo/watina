@@ -107,7 +107,8 @@ if at least one of the location's observation wells has
 \strong{In all cases} the returned value of \code{obswell_statecode} and
 \code{obswell_state} corresponds to the \code{"latest"} approach.
 The \code{obswell_aggr} argument has no effect on locations with a single
-retained observation well.}
+retained observation well.
+It is ignored if \code{obswells = TRUE}.}
 
 \item{mask}{An optional geospatial filter of class \code{sf}.
 If provided, only locations that intersect with \code{mask} will be returned,

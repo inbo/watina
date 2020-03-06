@@ -121,6 +121,7 @@
 #' \code{obswell_state} corresponds to the \code{"latest"} approach.
 #' The \code{obswell_aggr} argument has no effect on locations with a single
 #' retained observation well.
+#' It is ignored if \code{obswells = TRUE}.
 #'
 #' @param mask An optional geospatial filter of class \code{sf}.
 #' If provided, only locations that intersect with \code{mask} will be returned,
