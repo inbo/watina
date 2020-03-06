@@ -43,17 +43,20 @@ However, filterdepth will never be larger than tube length; hence a maximum
 possible (i.e. conservative) value for filterdepth is given by tube length.
 With \code{filterdepth_guess = TRUE}, filterdepth is filled with tube length
 when it cannot be calculated and tube length is available.
+This is done before applying the \code{filterdepth_range} criterion.
 To mark these cases, a logical variable \code{filterdepth_guessed} is added
 to the result (\code{TRUE} for wells where filterdepth was replaced by tube
 length; \code{FALSE} in all other rows).}
 
 \item{filterdepth_na}{Logical.
 Are observation wells with missing filterdepth value to be included?
-Defaults to \code{FALSE}.}
+Defaults to \code{FALSE}.
+With \code{filterdepth_guess = TRUE}, this has only effect on the
+\emph{remaining} observation wells with missing filterdepth value.}
 
 \item{obswells}{Logical.
 If \code{TRUE}, the returned object distinguishes all observation wells
-(see \emph(Details)) that
+(see \emph{Details}) that
 meet the \code{filterdepth_range} criterion (or have missing filterdepth, if
 \code{filterdepth_na = TRUE}).
 If \code{FALSE} (the default), the returned object just distinguishes
