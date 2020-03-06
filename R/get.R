@@ -5,7 +5,7 @@
 #' several criteria, either as a lazy object or as a
 #' local tibble.
 #' Criteria refer to spatial or non-spatial physical attributes of the
-#' location or a location's observation wells.
+#' location or the location's observation wells.
 #' Essential metadata are included in the result.
 #'
 #' (TO BE ADDED: Explanation on the different available values of loc_type
@@ -48,7 +48,7 @@
 #' This condition is only applied to groundwater piezometers.
 #' The second vector element cannot be smaller than the first.
 #' With \code{obswells = FALSE}, a location is kept whenever one observation
-#' well fulfills the criterion.
+#' well fulfills the condition.
 #' @param filterdepth_guess Logical.
 #' Only relevant for groundwater piezometers.
 #' Defaults to \code{FALSE}.
@@ -59,7 +59,7 @@
 #' possible (i.e. conservative) value for filterdepth is given by tube length.
 #' With \code{filterdepth_guess = TRUE}, filterdepth is filled with tube length
 #' when it cannot be calculated and tube length is available.
-#' This is done before applying the \code{filterdepth_range} criterion.
+#' This is done before applying the \code{filterdepth_range} condition.
 #' To mark these cases, a logical variable \code{filterdepth_guessed} is added
 #' to the result (\code{TRUE} for wells where filterdepth was replaced by tube
 #' length; \code{FALSE} in all other rows).
@@ -71,7 +71,7 @@
 #' @param obswells Logical.
 #' If \code{TRUE}, the returned object distinguishes all observation wells
 #' (see \emph{Details}) that
-#' meet the \code{filterdepth_range} criterion (or have missing filterdepth, if
+#' meet the \code{filterdepth_range} condition (or have missing filterdepth, if
 #' \code{filterdepth_na = TRUE}).
 #' If \code{FALSE} (the default), the returned object just distinguishes
 #' locations.
@@ -91,9 +91,9 @@
 #' \code{filterdepth_na} criteria;
 #'
 #' \item \code{"latest_fd"}: return attributes of the most recent observation well
-#' that fulfills the \code{filterdepth_range} criterion, i.e.
+#' that fulfills the \code{filterdepth_range} condition, i.e.
 #' filterdepth will not be missing unless \emph{all} retained wells have missing
-#' filterdepth and \code{filterdepth_na = TRUE};
+#' filterdepth \emph{and} \code{filterdepth_na = TRUE};
 #'
 #' \item \code{"latest_sso"}: return attributes of the most recent observation well
 #' that fulfills the \code{filterdepth_range} and
@@ -110,8 +110,12 @@
 #' \code{tubelength},
 #' \code{filterdepth}
 #' for the observation wells with non-missing values (different
-#' wells may be involved for each variable, depending on the presence of
+#' wells may be involved for each variable, depending on the distribution of
 #' missing values).
+#' With \code{filterdepth_guess = TRUE}, the extra variabele
+#' \code{filterdepth_guessed} is summarised as \code{TRUE} for a location
+#' if at least one of the location's observation wells has
+#' \code{filterdepth_guessed = TRUE}.
 #' }
 #' \strong{In all cases} the returned value of \code{obswell_statecode} and
 #' \code{obswell_state} corresponds to the \code{"latest"} approach.
