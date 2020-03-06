@@ -209,6 +209,8 @@ measurement device).
 \dontrun{
 watina <- connect_watina()
 
+library(dplyr)
+
 get_locs(watina,
          bbox = c(xmin = 1.4e+5,
                   xmax = 1.7e+5,
@@ -223,6 +225,15 @@ get_locs(watina,
          area_codes = c("KAL", "KBR"),
          loc_type = c("P", "S"),
          collect = TRUE)
+
+get_locs(watina,
+         area_codes = "WES") \%>\%
+    count()
+
+get_locs(watina,
+         area_codes = "WES",
+         filterdepth_guess = TRUE) \%>\%
+    count()
 
 get_locs(watina,
          area_codes = c("KAL", "KBR"),
@@ -247,11 +258,29 @@ get_locs(watina,
          loc_type = c("P", "S"),
          collect = TRUE)
 
+# Different examples of aggregating observation wells at location level:
+get_locs(watina,
+         area_codes = "WES",
+         filterdepth_na = TRUE,
+         filterdepth_guess = TRUE,
+         obswell_aggr = "latest",
+         collect = TRUE) \%>\%
+    select(loc_code, contains("ost"), contains("filterdepth")) \%>\%
+    head(12)
+
+get_locs(watina,
+         area_codes = "WES",
+         filterdepth_na = TRUE,
+         filterdepth_guess = TRUE,
+         obswell_aggr = "mean",
+         collect = TRUE) \%>\%
+    select(loc_code, contains("ost"), contains("filterdepth")) \%>\%
+    head(12)
+
 # Selecting all piezometers with status VLD of the
 # province "West-Vlaanderen":
 data(BE_ADMIN_PROVINCE,
      package = "BelgiumMaps.StatBel")
-library(dplyr)
 library(sf)
 library(stringr)
 mymask <-
