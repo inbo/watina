@@ -405,11 +405,13 @@ get_locs <- function(con,
                       mutate(PeilpuntPlaatsing =
                                  sql("CAST(PeilpuntPlaatsing AS date)"),
                              PeilpuntStopzetting =
-                                 sql("CAST(PeilpuntStopzetting AS date)")
+                                 sql("CAST(PeilpuntStopzetting AS date)"),
+                             filterlength =
+                                 ifelse(is.na(.data$FilterLengte), 0.3, .data$FilterLengte)
                              ),
                   by = "MeetpuntWID") %>%
         mutate(filterdepth = .data$PeilbuisLengte -
-                                .data$ReferentieNiveauMaaiveld,
+                                .data$ReferentieNiveauMaaiveld - .data$filterlength,
                soilsurf_ost =
                    .data$ReferentieNiveauTAW -
                    .data$ReferentieNiveauMaaiveld) %>%
@@ -564,6 +566,9 @@ get_locs <- function(con,
                        ungroup()
 
                    ) %>%
+            arrange(.data$area_code,
+                    .data$loc_code,
+                    .data$obswell_rank) %>%
             select(-.data$obswell_code,
                    -.data$obswell_rank,
                    -.data$obswell_installdate,
@@ -571,10 +576,7 @@ get_locs <- function(con,
                    -.data$obswell_count,
                    -.data$obswell_maxrank,
                    -.data$obswell_maxrank_fd,
-                   -.data$obswell_maxrank_sso) %>%
-            arrange(.data$area_code,
-                    .data$loc_code)
-
+                   -.data$obswell_maxrank_sso)
     }
 
     if (!is.null(mask)) {
@@ -633,6 +635,9 @@ get_locs <- function(con,
             locs %>%
             select(-.data$loc_wid) %>%
             collect
+        locs <-  locs %>%
+            arrange(.data$area_code,
+                 .data$loc_code)
     }
 
     return(locs)
