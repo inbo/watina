@@ -406,14 +406,13 @@ get_locs <- function(con,
                       mutate(PeilpuntPlaatsing =
                                  sql("CAST(PeilpuntPlaatsing AS date)"),
                              PeilpuntStopzetting =
-                                 sql("CAST(PeilpuntStopzetting AS date)"),
-                             filterlength =
-                                 ifelse(is.na(.data$FilterLengte),
-                                        0.3,
-                                        .data$FilterLengte)
+                                 sql("CAST(PeilpuntStopzetting AS date)")
                              ),
                   by = "MeetpuntWID") %>%
-        mutate(filterdepth = .data$PeilbuisLengte -
+        mutate(filterlength = ifelse(is.na(.data$FilterLengte),
+                                     0.3,
+                                     .data$FilterLengte),
+               filterdepth = .data$PeilbuisLengte -
                                 .data$ReferentieNiveauMaaiveld -
                                 .data$filterlength,
                soilsurf_ost =
