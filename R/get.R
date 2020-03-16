@@ -409,10 +409,13 @@ get_locs <- function(con,
                                  sql("CAST(PeilpuntStopzetting AS date)")
                              ),
                   by = "MeetpuntWID") %>%
-        mutate(filterlength = ifelse(is.na(.data$FilterLengte),
+        mutate(tubelength = ifelse(.data$PeilbuisLengte <= 0,
+                                   NA,
+                                   .data$PeilbuisLengte),
+               filterlength = ifelse(is.na(.data$FilterLengte),
                                      0.3,
                                      .data$FilterLengte),
-               filterdepth = .data$PeilbuisLengte -
+               filterdepth = .data$tubelength -
                                 .data$ReferentieNiveauMaaiveld -
                                 .data$filterlength,
                soilsurf_ost =
@@ -436,7 +439,7 @@ get_locs <- function(con,
                obswell_stopdate = .data$PeilpuntStopzetting,
                .data$soilsurf_ost,
                measuringref_ost = .data$ReferentieNiveauTAW,
-               tubelength = .data$PeilbuisLengte,
+               .data$tubelength,
                .data$filterlength,
                .data$filterdepth) %>%
         arrange(.data$area_code,
