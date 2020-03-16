@@ -437,6 +437,7 @@ get_locs <- function(con,
                .data$soilsurf_ost,
                measuringref_ost = .data$ReferentieNiveauTAW,
                tubelength = .data$PeilbuisLengte,
+               .data$filterlength,
                .data$filterdepth) %>%
         arrange(.data$area_code,
                 .data$loc_code,
