@@ -95,6 +95,7 @@ well, but by averaging the values of the associated variables
 \code{soilsurf_ost},
 \code{measuringref_ost},
 \code{tubelength},
+\code{filterlength},
 \code{filterdepth}
 for the observation wells with non-missing values (different
 wells may be involved for each variable, depending on the distribution of

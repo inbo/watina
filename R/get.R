@@ -108,6 +108,7 @@
 #' \code{soilsurf_ost},
 #' \code{measuringref_ost},
 #' \code{tubelength},
+#' \code{filterlength},
 #' \code{filterdepth}
 #' for the observation wells with non-missing values (different
 #' wells may be involved for each variable, depending on the distribution of
@@ -552,6 +553,8 @@ get_locs <- function(con,
                                                   na.rm = TRUE),
                               filterdepth = mean(.data$filterdepth,
                                                   na.rm = TRUE),
+                              filterlength = mean(.data$filterlength,
+                                                 na.rm = TRUE),
                               tubelength = mean(.data$tubelength,
                                                   na.rm = TRUE)) %>%
                        {if ("filterdepth_guessed" %in% colnames(.)) {
