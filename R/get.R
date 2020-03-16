@@ -573,9 +573,6 @@ get_locs <- function(con,
                        ungroup()
 
                    ) %>%
-            arrange(.data$area_code,
-                    .data$loc_code,
-                    .data$obswell_rank) %>%
             select(-.data$obswell_code,
                    -.data$obswell_rank,
                    -.data$obswell_installdate,
@@ -583,7 +580,9 @@ get_locs <- function(con,
                    -.data$obswell_count,
                    -.data$obswell_maxrank,
                    -.data$obswell_maxrank_fd,
-                   -.data$obswell_maxrank_sso)
+                   -.data$obswell_maxrank_sso) %>%
+            arrange(.data$area_code,
+                    .data$loc_code)
     }
 
     if (!is.null(mask)) {
@@ -607,6 +606,8 @@ get_locs <- function(con,
             select(-.data$loc_wid) %>%
             filter(!is.na(.data$x), !is.na(.data$y)) %>%
             collect %>%
+            arrange(.data$area_code,
+                    .data$loc_code) %>%
             as_points
 
         if (buffer != 0) {
@@ -641,10 +642,9 @@ get_locs <- function(con,
         locs <-
             locs %>%
             select(-.data$loc_wid) %>%
-            collect
-        locs <-  locs %>%
+            collect %>%
             arrange(.data$area_code,
-                 .data$loc_code)
+                    .data$loc_code)
     }
 
     return(locs)
