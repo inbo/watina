@@ -76,8 +76,8 @@
 #' when it cannot be calculated and tubelength is available.
 #' This is done before applying the \code{filterdepth_range} condition.
 #' To mark these cases, a logical variable \code{filterdepth_guessed} is added
-#' to the result: (\code{TRUE} for wells where filterdepth was replaced;
-#' \code{FALSE} in all other rows).
+#' to the result: \code{TRUE} for wells where filterdepth was replaced;
+#' \code{FALSE} in all other rows.
 #' @param filterdepth_na Logical.
 #' Are observation wells with missing filterdepth value to be included?
 #' Defaults to \code{FALSE}.
