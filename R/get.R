@@ -19,9 +19,15 @@
 #'
 #' The result also provides metadata at the level of the observation
 #' well, even when \code{obswells = FALSE}.
-#' In the latter case, this refers to the variables \code{filterdepth} and
-#' \code{soilsurf_ost}, which then
-#' correspond to the most recent observation well
+#' In the latter case, this refers to the variables
+#' \code{soilsurf_ost},
+#' \code{measuringref_ost},
+#' \code{tubelength},
+#' \code{filterlength},
+#' \code{filterdepth}.
+#' See the argument \code{obswell_aggr} for options of how to aggregate this
+#' information at the location level;
+#' by default the latest observation well is used
 #' (per location) that meets the criteria on filterdepth.
 #' Mind that \code{obswells = FALSE} and \code{filterdepth_na = TRUE} may lead
 #' to missing filterdepth values at locations which do have a
@@ -43,26 +49,35 @@
 #' @param con A \code{DBIConnection} object to Watina.
 #' See \code{\link{connect_watina}} to generate one.
 #' @param filterdepth_range Numeric vector of length 2.
-#' Specifies the allowed range of the depth of the filter bottom below soil
+#' Specifies the allowed range of the depth of the filter below soil
 #' surface, as meters (minimum and maximum allowed filterdepth, respectively).
 #' This condition is only applied to groundwater piezometers.
 #' The second vector element cannot be smaller than the first.
+#' Note that 'filterdepth' takes into account \emph{half} the length of the
+#' filter.
+#' It is always assumed that filters are at the bottom of the tube.
+#' Hence
+#' \code{filterdepth = tubelength - filterlength / 2 -
+#' [tubelength part above soil surface]}.
+#' If filterlength is missing, it is assumed to be 0.3 m.
 #' With \code{obswells = FALSE}, a location is kept whenever one observation
 #' well fulfills the condition.
 #' @param filterdepth_guess Logical.
 #' Only relevant for groundwater piezometers.
 #' Defaults to \code{FALSE}.
-#' For observation wells of which tube length is known, but not the height of
-#' the tube top (measurement reference) above soil surface,
+#' For observation wells of which tubelength is known, but not
+#' the part of the tubelength above soil surface (height of measuring point),
 #' filterdepth cannot be calculated and is missing.
-#' However, filterdepth will never be larger than tube length; hence a maximum
-#' possible (i.e. conservative) value for filterdepth is given by tube length.
-#' With \code{filterdepth_guess = TRUE}, filterdepth is filled with tube length
-#' when it cannot be calculated and tube length is available.
+#' However, filterdepth will never be larger than tubelength minus half the
+#' filterlength; hence a maximum
+#' possible (i.e. conservative) value for filterdepth is given by
+#' \code{tubelength - filterlength / 2}.
+#' With \code{filterdepth_guess = TRUE}, filterdepth is replaced by this value
+#' when it cannot be calculated and tubelength is available.
 #' This is done before applying the \code{filterdepth_range} condition.
 #' To mark these cases, a logical variable \code{filterdepth_guessed} is added
-#' to the result (\code{TRUE} for wells where filterdepth was replaced by tube
-#' length; \code{FALSE} in all other rows).
+#' to the result: (\code{TRUE} for wells where filterdepth was replaced;
+#' \code{FALSE} in all other rows).
 #' @param filterdepth_na Logical.
 #' Are observation wells with missing filterdepth value to be included?
 #' Defaults to \code{FALSE}.
@@ -417,7 +432,7 @@ get_locs <- function(con,
                                      .data$FilterLengte),
                filterdepth = .data$tubelength -
                                 .data$ReferentieNiveauMaaiveld -
-                                .data$filterlength,
+                                .data$filterlength / 2,
                soilsurf_ost =
                    .data$ReferentieNiveauTAW -
                    .data$ReferentieNiveauMaaiveld) %>%
@@ -454,7 +469,8 @@ get_locs <- function(con,
                        !is.na(.data$tubelength),
                    filterdepth = ifelse(.data$filterdepth_guessed == 1,
                                                 # (sql: logical stored as bit)
-                                        .data$tubelength,
+                                        .data$tubelength -
+                                            .data$filterlength / 2,
                                         .data$filterdepth))
     }
 
