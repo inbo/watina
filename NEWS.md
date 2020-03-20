@@ -1,6 +1,6 @@
 # watina 0.3.0
 
-## New feature
+#### New feature
 
 - New function `cluster_locs()` to spatially cluster locations (well clusters)
 
@@ -33,7 +33,7 @@ affecting the installation process on Windows (warnings were thrown).
 
 # watina 0.2.0
 
-## New features
+#### New features
 
 - Several functions have been added to query and process chemical data.
 - Three vignettes have been added.
