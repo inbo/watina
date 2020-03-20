@@ -1,8 +1,16 @@
 # watina 0.3.0
 
-#### New feature
+#### New features
 
-- New function `cluster_locs()` to spatially cluster locations (well clusters)
+- New function `cluster_locs()` to spatially cluster locations (well clusters) (#39)
+- More fun with `get_locs()`:
+    - optionally allow groundwater piezometers with missing `filterdepth` (argument `filterdepth_na`)
+    - optionally replace missing `filterdepth` values in a conservative way, based on `tubelength` (argument `filterdepth_guess`, #44)
+    - return eight more observation well attributes beside `filterdepth` (#44)
+    - four methods are available to aggregate observation well attributes per location (argument `obswell_aggr`, #44)
+- `convertdf_enc()` is now reexported from `inborutils`
+
+Further, a number of smaller fixes and enhancements were made.
 
 # watina 0.2.6
 
