@@ -64,7 +64,7 @@ as_points <- function(df, xvar = "x", yvar = "y", remove = FALSE) {
     check_dubbels <- df_cleaned %>% distinct(!!xvar, !!yvar)
     if (nrow(check_dubbels) < nrow(df)) {
         warning(nrow(df) - nrow(check_dubbels),
-                " locations are duplicated.")
+                " rows have duplicated coordinates.")
     }
 
     df_cleaned %>%
