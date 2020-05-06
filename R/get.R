@@ -616,7 +616,7 @@ get_locs <- function(con,
         if (nr_dropped_locs > 0) {
             warning("Dropped ",
                     nr_dropped_locs,
-                    " locations from which x or y coordinates were missing.")
+                    " locations from which x or y coordinates were missing.\n")
         }
 
         locs <-
