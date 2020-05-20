@@ -281,7 +281,6 @@
 #' }
 #'
 #' @export
-#' @importFrom inborutils connect_inbo_dbase
 #' @importFrom rlang .data
 #' @importFrom assertthat
 #' assert_that
