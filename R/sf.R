@@ -17,6 +17,10 @@
 #' @param yvar String. The Y coordinate variable name. Defaults to \code{"y"}.
 #' @param remove Logical. Should the X and Y coordinates be removed from the
 #' dataframe after conversion to a spatial object?
+#' @param warn_dupl Logical.
+#' Defaults to \code{TRUE}.
+#' Should the user be warned when duplicated coordinates are present in the
+#' result?
 #'
 #' @return
 #' An \code{sf} object of geometry type \code{POINT} with EPSG-code
@@ -42,13 +46,18 @@
 #' %>%
 #' count
 #' filter
-as_points <- function(df, xvar = "x", yvar = "y", remove = FALSE) {
+as_points <- function(df,
+                      xvar = "x",
+                      yvar = "y",
+                      remove = FALSE,
+                      warn_dupl = TRUE) {
 
     assert_that(inherits(df, "data.frame"))
     assert_that(is.string(xvar))
     assert_that(is.string(yvar))
     assert_that(has_name(df, xvar))
     assert_that(has_name(df, yvar))
+    assert_that(is.flag(warn_dupl), noNA(warn_dupl))
 
     df_cleaned <-
         df[!is.na(df[,xvar]) & !is.na(df[,yvar]),]
@@ -57,6 +66,8 @@ as_points <- function(df, xvar = "x", yvar = "y", remove = FALSE) {
         warning(nrow(df) - nrow(df_cleaned),
                 " locations were removed because of missing X or Y coordinates.")
     }
+
+    if (warn_dupl) {
 
     n_duplicated <-
         df_cleaned %>%
@@ -71,6 +82,8 @@ as_points <- function(df, xvar = "x", yvar = "y", remove = FALSE) {
             warning(n_duplicated,
                     " XY coordinate pairs occur more than one time.")
         }
+    }
+
     }
 
     df_cleaned %>%
