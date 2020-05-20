@@ -115,10 +115,10 @@ warn_xy_duplicates <- function(x, y) {
 
     if (n_duplicated > 0) {
         if (n_duplicated == 1) {
-            warning("1 XY coordinate pair occurs more than one time.")
+            warning("1 coordinate pair occurs more than once.")
         } else {
             warning(n_duplicated,
-                    " XY coordinate pairs occur more than one time.")
+                    " different coordinate pairs occur more than once.")
         }
     }
 
