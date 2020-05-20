@@ -1,3 +1,19 @@
+# watina 0.3.0
+
+#### New features
+
+- New function `cluster_locs()` to spatially cluster locations (well clusters) (#39)
+- More fun with `get_locs()`:
+    - optionally allow groundwater piezometers with missing `filterdepth` (argument `filterdepth_na`)
+    - optionally replace missing `filterdepth` values in a conservative way, based on `tubelength` (argument `filterdepth_guess`, #44)
+    - return eight more observation well attributes beside `filterdepth` (#44)
+    - four methods are available to aggregate observation well attributes per location (argument `obswell_aggr`, #44)
+    - applying a spatial mask is now a little speedier (#57)
+- `as_points()` and `get_locs()` return a warning when duplicated coordinates occur in their local result (#51, thanks @w-jan)
+- Package dependency moved from [inborutils](https://inbo.github.io/inborutils) to [inbodb](https://inbo.github.io/inbodb): this is a change within `connect_watina()` which should not affect its behaviour and which reduces overall package dependencies.
+
+Further, a number of smaller fixes and enhancements were made.
+
 # watina 0.2.6
 
 - Redo fix `get_locs()`: calculation of `soilsurf_ost` (#43)
@@ -27,7 +43,7 @@ affecting the installation process on Windows (warnings were thrown).
 
 # watina 0.2.0
 
-## New features
+#### New features
 
 - Several functions have been added to query and process chemical data.
 - Three vignettes have been added.

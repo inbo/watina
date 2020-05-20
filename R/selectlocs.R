@@ -298,6 +298,7 @@
 #' @importFrom assertthat
 #' assert_that
 #' is.flag
+#' noNA
 #' @importFrom stringr
 #' str_detect
 #' @importFrom tidyr
@@ -359,8 +360,8 @@ selectlocs_xg3 <- function(data,
     }
 
     assert_that(inherits(conditions, "data.frame"))
-    assert_that(is.flag(verbose))
-    assert_that(is.flag(list))
+    assert_that(is.flag(verbose), noNA(verbose))
+    assert_that(is.flag(list), noNA(list))
 
     assert_that(all(c("xg3_variable",
                   "statistic",
@@ -931,6 +932,7 @@ selectlocs_xg3 <- function(data,
 #' @importFrom assertthat
 #' assert_that
 #' is.flag
+#' noNA
 #' @importFrom dplyr
 #' %>%
 selectlocs_chem <- function(data,
@@ -964,8 +966,8 @@ selectlocs_chem <- function(data,
     }
 
     assert_that(inherits(conditions, "data.frame"))
-    assert_that(is.flag(verbose))
-    assert_that(is.flag(list))
+    assert_that(is.flag(verbose), noNA(verbose))
+    assert_that(is.flag(list), noNA(list))
 
     assert_that(all(c("chem_variable",
                       "statistic",
@@ -1110,6 +1112,7 @@ selectlocs_chem <- function(data,
 #' @importFrom assertthat
 #' assert_that
 #' is.flag
+#' noNA
 #' is.string
 #' has_args
 #' @importFrom tidyr
@@ -1163,8 +1166,8 @@ selectlocs <- function(data,
     }
 
     assert_that(inherits(conditions, "data.frame"))
-    assert_that(is.flag(verbose))
-    assert_that(is.flag(list))
+    assert_that(is.flag(verbose), noNA(verbose))
+    assert_that(is.flag(list), noNA(list))
 
     assert_that(all(c("variable",
                       "statistic",

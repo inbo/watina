@@ -111,9 +111,9 @@ extract_xg3_series <- function(data,
                         msg = "You specified at least one unknown xg3_type.")
         }
 
-    assert_that(max_gap %% max_gap == 0 & max_gap >= 0,
+    assert_that(max_gap %% 1 == 0 & max_gap >= 0,
                 msg = "max_gap must be a positive integer value.")
-    assert_that(min_dur %% min_dur == 0 & min_dur > 0,
+    assert_that(min_dur %% 1 == 0 & min_dur > 0,
                 msg = "min_dur must be a strictly positive integer value.")
 
     xg3_qualification <-

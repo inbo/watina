@@ -64,7 +64,7 @@ mydata %>%
 #> 13  ZWAP033 2011-04-14              0         10431           pHF   6.297
 #> 14  ZWAP033 2011-04-14              0         10431           pHL   5.830
 #> 15  ZWAP033 2011-04-14              0         10431         P-PO4   0.016
-#>    units below_loq loq  elneutr
+#>    unit  below_loq loq  elneutr
 #> 1   mg/l        NA -99 0.610484
 #> 2   mg/l        NA -99 0.610484
 #> 3  µS/cm        NA -99 0.610484
@@ -183,7 +183,7 @@ mylocs %>% get_chem(watina, "1/1/2017")
 #>  8 ZWAP034  2018-10-29 0              40121         K               1.98
 #>  9 ZWAP034  2018-10-29 0              40121         Mg              1.36
 #> 10 ZWAP034  2018-10-29 0              40121         Mn              0.05
-#> # … with more rows, and 4 more variables: units <chr>, below_loq <lgl>,
+#> # … with more rows, and 4 more variables: unit <chr>, below_loq <lgl>,
 #> #   loq <dbl>, elneutr <dbl>
 ```
 
@@ -204,7 +204,7 @@ mylocs %>% get_chem(watina, "1/1/2017", collect = TRUE)
 #>  8 ZWAP034  2018-10-29 0              40121         K               1.98
 #>  9 ZWAP034  2018-10-29 0              40121         Mg              1.36
 #> 10 ZWAP034  2018-10-29 0              40121         Mn              0.05
-#> # … with 598 more rows, and 4 more variables: units <chr>,
+#> # … with 598 more rows, and 4 more variables: unit <chr>,
 #> #   below_loq <lgl>, loq <dbl>, elneutr <dbl>
 ```
 
@@ -269,7 +269,7 @@ mylocs %>% get_chem(watina, "1/1/2017", conc_type = "eq")
 #>  8 ZWAP034  2018-10-29 0              40121         K             5.07e-2
 #>  9 ZWAP034  2018-10-29 0              40121         Mg            1.12e-1
 #> 10 ZWAP034  2018-10-29 0              40121         Mn            5.00e-2
-#> # … with more rows, and 4 more variables: units <chr>, below_loq <lgl>,
+#> # … with more rows, and 4 more variables: unit <chr>, below_loq <lgl>,
 #> #   loq <dbl>, elneutr <dbl>
 ```
 
@@ -299,7 +299,7 @@ get_chem(watina, "1/1/2017") %>%
 #> # … with 755 more rows, and 13 more variables: loc_typecode <chr>,
 #> #   loc_typename <chr>, filterdepth <dbl>, soilsurf_ost <dbl>,
 #> #   date <date>, lab_project_id <chr>, lab_sample_id <chr>,
-#> #   chem_variable <chr>, value <dbl>, units <chr>, below_loq <lgl>,
+#> #   chem_variable <chr>, value <dbl>, unit <chr>, below_loq <lgl>,
 #> #   loq <dbl>, elneutr <dbl>
 ```
 

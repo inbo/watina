@@ -570,7 +570,7 @@ eval_xg3_series <- function(data,
 #' \item{\code{val_geometric_mean}}: geometric mean.
 #' Only calculated when
 #' all values are strictly positive.
-#' \item{\code{units}}
+#' \item{\code{unit}}
 #' \item{\code{prop_below_loq}}: the proportion of measurements below the limit
 #' of quantification (as derived from \code{below_loq == TRUE}),
 #' i.e. relative to the total number of measurements
@@ -620,6 +620,7 @@ eval_xg3_series <- function(data,
 #' @importFrom assertthat
 #' assert_that
 #' is.flag
+#' noNA
 #' @importFrom dplyr
 #' %>%
 #' mutate
@@ -655,13 +656,13 @@ eval_chem <- function(data,
                       "lab_sample_id",
                       "chem_variable",
                       "value",
-                      "units",
+                      "unit",
                       "below_loq") %in% colnames(data)),
                 msg = "data must provide the following variables: loc_code,
-date, lab_sample_id, chem_variable, value, units, below_loq."
+date, lab_sample_id, chem_variable, value, unit, below_loq."
     )
 
-    assert_that(is.flag(uniformity_test))
+    assert_that(is.flag(uniformity_test), noNA(uniformity_test))
 
     data <-
         data %>%
@@ -670,7 +671,7 @@ date, lab_sample_id, chem_variable, value, units, below_loq."
                .data$lab_sample_id,
                .data$chem_variable,
                .data$value,
-               .data$units,
+               .data$unit,
                .data$below_loq) %>%
         filter(.data$chem_variable %in% chem_var)
 
@@ -693,7 +694,7 @@ date, lab_sample_id, chem_variable, value, units, below_loq."
     chem_qualified <-
         data %>%
         select(-.data$below_loq,
-               -.data$units) %>%
+               -.data$unit) %>%
         spread(key = .data$chem_variable,
                value = .data$value) %>%
         mutate_at(.vars = vars(4:ncol(.)),
@@ -812,7 +813,7 @@ date, lab_sample_id, chem_variable, value, units, below_loq."
             val_geometric_mean = ifelse(all(.data$value > 0),
                                         exp(mean(log(.data$value))),
                                         NA),
-            units = first(.data$units),
+            unit = first(.data$unit),
             prop_below_loq = ifelse(sum(!is.na(.data$below_loq)) > 0,
                                     sum(.data$below_loq[!is.na(.data$below_loq)]) /
                                     sum(!is.na(.data$below_loq)),
