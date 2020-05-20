@@ -1,15 +1,24 @@
 {
     "title": "watina: an R package for querying and processing data from the INBO Watina database",
     "description": "R package for querying and processing data from the INBO Watina database (mainly groundwater data). URL: <a href=\"https://inbo.github.io/watina\">https://inbo.github.io/watina</a>.",
-    "license": "other-open",
+    "license": "GPL-3.0",
     "upload_type": "software",
     "access_right": "open",
-    "version": "0.2.6",
+    "version": "0.3.0",
     "creators": [
         {
             "name": "Vanderhaeghe, Floris",
             "affiliation": "Research Institute for Nature and Forest",
             "orcid": "0000-0002-6378-6229"
         }
+    ],
+    "keywords": [
+        "R",
+        "package",
+        "groundwater",
+        "wetland",
+        "database",
+        "Flanders",
+        "Belgium"
     ]
 }

@@ -28,6 +28,7 @@ reference:
   - title: "Utilities and helpers"
     contents:
       - as_points
+      - cluster_locs
       - extract_xg3_series
       - collect
       - convertdf_enc

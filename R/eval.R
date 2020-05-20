@@ -620,6 +620,7 @@ eval_xg3_series <- function(data,
 #' @importFrom assertthat
 #' assert_that
 #' is.flag
+#' noNA
 #' @importFrom dplyr
 #' %>%
 #' mutate
@@ -661,7 +662,7 @@ eval_chem <- function(data,
 date, lab_sample_id, chem_variable, value, units, below_loq."
     )
 
-    assert_that(is.flag(uniformity_test))
+    assert_that(is.flag(uniformity_test), noNA(uniformity_test))
 
     data <-
         data %>%

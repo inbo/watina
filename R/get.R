@@ -2,8 +2,10 @@
 #'
 #' Returns locations (and optionally, observation wells) from the \emph{Watina}
 #' database that meet
-#' several criteria (spatial or non-spatial), either as a lazy object or as a
+#' several criteria, either as a lazy object or as a
 #' local tibble.
+#' Criteria refer to spatial or non-spatial physical attributes of the
+#' location or the location's observation wells.
 #' Essential metadata are included in the result.
 #'
 #' (TO BE ADDED: Explanation on the different available values of loc_type
@@ -17,26 +19,20 @@
 #'
 #' The result also provides metadata at the level of the observation
 #' well, even when \code{obswells = FALSE}.
-#' In the latter case, this refers to the variables \code{filterdepth} and
-#' \code{soilsurf_ost}, which then
-#' correspond to the most recent observation well
+#' In the latter case, this refers to the variables
+#' \code{soilsurf_ost},
+#' \code{measuringref_ost},
+#' \code{tubelength},
+#' \code{filterlength},
+#' \code{filterdepth}.
+#' See the argument \code{obswell_aggr} for options of how to aggregate this
+#' information at the location level;
+#' by default the latest observation well is used
 #' (per location) that meets the criteria on filterdepth.
+#' Mind that \code{obswells = FALSE} and \code{filterdepth_na = TRUE} may lead
+#' to missing filterdepth values at locations which do have a
+#' value for an older observation well, but not for the most recent one.
 #'
-#'
-#' @param con A \code{DBIConnection} object to Watina.
-#' See \code{\link{connect_watina}} to generate one.
-#' @param filterdepth_range Numeric vector of length 2.
-#' Specifies the allowed range of the depth of the filter bottom below soil
-#' surface, as meters (minimum and maximum allowed filterdepth, respectively).
-#' This condition is only applied to groundwater piezometers.
-#' The second vector element cannot be smaller than the first.
-#' With \code{obswells = FALSE}, a location is kept whenever one observation
-#' well fulfills the criterion.
-#' @param obswells Logical.
-#' If \code{TRUE}, the returned object distinguishes all observation wells that
-#' meet the \code{filterdepth_range} criterion.
-#' If \code{FALSE} (the default), the returned object just distinguishes
-#' locations.
 #' Please note the meaning of observation well in Watina: if there are multiple
 #' observation wells attached to one location, these belong to
 #' \emph{other timeframes}!
@@ -47,6 +43,102 @@
 #' Here, the term 'observation well' is used to refer to a fixed installed
 #' device in the field (groundwater piezometer, surface water level
 #' measurement device).
+
+#'
+#'
+#' @param con A \code{DBIConnection} object to Watina.
+#' See \code{\link{connect_watina}} to generate one.
+#' @param filterdepth_range Numeric vector of length 2.
+#' Specifies the allowed range of the depth of the filter below soil
+#' surface, as meters (minimum and maximum allowed filterdepth, respectively).
+#' This condition is only applied to groundwater piezometers.
+#' The second vector element cannot be smaller than the first.
+#' Note that 'filterdepth' takes into account \emph{half} the length of the
+#' filter.
+#' It is always assumed that filters are at the bottom of the tube.
+#' Hence
+#' \code{filterdepth = tubelength - filterlength / 2 -
+#' [tubelength part above soil surface]}.
+#' If filterlength is missing, it is assumed to be 0.3 m.
+#' With \code{obswells = FALSE}, a location is kept whenever one observation
+#' well fulfills the condition.
+#' @param filterdepth_guess Logical.
+#' Only relevant for groundwater piezometers.
+#' Defaults to \code{FALSE}.
+#' For observation wells of which tubelength is known, but not
+#' the part of the tubelength above soil surface (height of measuring point),
+#' filterdepth cannot be calculated and is missing.
+#' However, filterdepth will never be larger than tubelength minus half the
+#' filterlength; hence a maximum
+#' possible (i.e. conservative) value for filterdepth is given by
+#' \code{tubelength - filterlength / 2}.
+#' With \code{filterdepth_guess = TRUE}, filterdepth is replaced by this value
+#' when it cannot be calculated and tubelength is available.
+#' This is done before applying the \code{filterdepth_range} condition.
+#' To mark these cases, a logical variable \code{filterdepth_guessed} is added
+#' to the result: \code{TRUE} for wells where filterdepth was replaced;
+#' \code{FALSE} in all other rows.
+#' @param filterdepth_na Logical.
+#' Are observation wells with missing filterdepth value to be included?
+#' Defaults to \code{FALSE}.
+#' With \code{filterdepth_guess = TRUE}, this has only effect on the
+#' \emph{remaining} observation wells with missing filterdepth value.
+#' @param obswells Logical.
+#' If \code{TRUE}, the returned object distinguishes all observation wells
+#' (see \emph{Details}) that
+#' meet the \code{filterdepth_range} condition (or have missing filterdepth, if
+#' \code{filterdepth_na = TRUE}).
+#' If \code{FALSE} (the default), the returned object just distinguishes
+#' locations.
+#' In the latter case, the variables \code{obswell_installdate} and
+#' \code{obswell_stopdate} are not returned.
+#'
+#' @param obswell_aggr String.
+#' Defines how the attributes of multiple observation wells per location that
+#' fulfill the \code{filterdepth_range} and
+#' \code{filterdepth_na} criteria (after filterdepth adjustment if
+#' \code{filterdepth_guess = TRUE}), are
+#' aggregated into one record \strong{per location}:
+#' \itemize{
+#'
+#' \item \code{"latest"}: return attributes of the most recent observation well
+#' that fulfills the \code{filterdepth_range} and
+#' \code{filterdepth_na} criteria;
+#'
+#' \item \code{"latest_fd"}: return attributes of the most recent observation well
+#' that fulfills the \code{filterdepth_range} condition, i.e.
+#' filterdepth will not be missing unless \emph{all} retained wells have missing
+#' filterdepth \emph{and} \code{filterdepth_na = TRUE};
+#'
+#' \item \code{"latest_sso"}: return attributes of the most recent observation well
+#' that fulfills the \code{filterdepth_range} and
+#' \code{filterdepth_na} criteria \emph{and} for which \code{soilsurf_ost}
+#' (soil surface level in the
+#' \href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend height}
+#' CRS (EPSG \href{https://epsg.io/5710}{5710}) is not missing (unless
+#' \emph{all} retained wells have missing \code{soilsurf_ost});
+#'
+#' \item \code{"mean"}: aggregation not by selecting an individual observation
+#' well, but by averaging the values of the associated variables
+#' \code{soilsurf_ost},
+#' \code{measuringref_ost},
+#' \code{tubelength},
+#' \code{filterlength},
+#' \code{filterdepth}
+#' for the observation wells with non-missing values (different
+#' wells may be involved for each variable, depending on the distribution of
+#' missing values).
+#' With \code{filterdepth_guess = TRUE}, the extra variabele
+#' \code{filterdepth_guessed} is summarised as \code{TRUE} for a location
+#' if at least one of the location's observation wells has
+#' \code{filterdepth_guessed = TRUE}.
+#' }
+#' \strong{In all cases} the returned value of \code{obswell_statecode} and
+#' \code{obswell_state} corresponds to the \code{"latest"} approach.
+#' The \code{obswell_aggr} argument has no effect on locations with a single
+#' retained observation well.
+#' It is ignored if \code{obswells = TRUE}.
+#'
 #' @param mask An optional geospatial filter of class \code{sf}.
 #' If provided, only locations that intersect with \code{mask} will be returned,
 #' with the value of \code{buffer} taken into account.
@@ -101,6 +193,8 @@
 #' \dontrun{
 #' watina <- connect_watina()
 #'
+#' library(dplyr)
+#'
 #' get_locs(watina,
 #'          bbox = c(xmin = 1.4e+5,
 #'                   xmax = 1.7e+5,
@@ -114,6 +208,21 @@
 #' get_locs(watina,
 #'          area_codes = c("KAL", "KBR"),
 #'          loc_type = c("P", "S"),
+#'          collect = TRUE)
+#'
+#' get_locs(watina,
+#'          area_codes = "WES") %>%
+#'     count()
+#'
+#' get_locs(watina,
+#'          area_codes = "WES",
+#'          filterdepth_guess = TRUE) %>%
+#'     count()
+#'
+#' get_locs(watina,
+#'          area_codes = c("KAL", "KBR"),
+#'          loc_type = c("P", "S"),
+#'          filterdepth_na = TRUE,
 #'          collect = TRUE)
 #'
 #' # Mark the different output of:
@@ -133,11 +242,29 @@
 #'          loc_type = c("P", "S"),
 #'          collect = TRUE)
 #'
+#' # Different examples of aggregating observation wells at location level:
+#' get_locs(watina,
+#'          area_codes = "WES",
+#'          filterdepth_na = TRUE,
+#'          filterdepth_guess = TRUE,
+#'          obswell_aggr = "latest",
+#'          collect = TRUE) %>%
+#'     select(loc_code, contains("ost"), contains("filterdepth")) %>%
+#'     head(12)
+#'
+#' get_locs(watina,
+#'          area_codes = "WES",
+#'          filterdepth_na = TRUE,
+#'          filterdepth_guess = TRUE,
+#'          obswell_aggr = "mean",
+#'          collect = TRUE) %>%
+#'     select(loc_code, contains("ost"), contains("filterdepth")) %>%
+#'     head(12)
+#'
 #' # Selecting all piezometers with status VLD of the
 #' # province "West-Vlaanderen":
 #' data(BE_ADMIN_PROVINCE,
 #'      package = "BelgiumMaps.StatBel")
-#' library(dplyr)
 #' library(sf)
 #' library(stringr)
 #' mymask <-
@@ -160,6 +287,7 @@
 #' assert_that
 #' is.number
 #' is.flag
+#' noNA
 #' @importFrom sf
 #' st_drop_geometry
 #' st_intersects
@@ -175,9 +303,18 @@
 #' distinct
 #' arrange
 #' group_by
+#' row_number
+#' ungroup
+#' sql
 get_locs <- function(con,
                      filterdepth_range = c(0, 3),
+                     filterdepth_guess = FALSE,
+                     filterdepth_na = FALSE,
                      obswells = FALSE,
+                     obswell_aggr = c("latest",
+                                      "latest_fd",
+                                      "latest_sso",
+                                      "mean"),
                      mask = NULL,
                      join_mask = FALSE,
                      buffer = 10,
@@ -199,9 +336,13 @@ get_locs <- function(con,
     assert_that(is.null(area_codes) | all(is.character(area_codes)))
     assert_that(is.null(loc_vec) | all(is.character(loc_vec)),
                 msg = "loc_vec must be a character vector.")
-    assert_that(is.flag(join_mask))
-    assert_that(is.flag(collect))
-    assert_that(is.flag(obswells))
+    assert_that(is.flag(join_mask), noNA(join_mask))
+    assert_that(is.flag(collect), noNA(collect))
+    assert_that(is.flag(obswells), noNA(obswells))
+    assert_that(is.flag(filterdepth_guess), noNA(filterdepth_guess))
+    assert_that(is.flag(filterdepth_na), noNA(filterdepth_na))
+
+    obswell_aggr <- match.arg(obswell_aggr)
 
     if (!is.null(mask) & !collect) {
         message("As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.")
@@ -272,25 +413,27 @@ get_locs <- function(con,
     locs <-
         locs %>%
         left_join(tbl(con, "vwDimPeilpunt") %>%
-                      distinct(.data$MeetpuntWID,
-                               .data$PeilpuntCode,
-                               .data$PeilpuntVersie,
-                               .data$PeilpuntStatusCode,
-                             .data$PeilbuisLengte,
-                             .data$ReferentieNiveauMaaiveld,
-                             .data$ReferentieNiveauTAW) %>%
                       filter(.data$PeilpuntStatusCode %in% c("VLD",
                                                        "ENT",
-                                                       "CLD")),
+                                                       "CLD"),
+                             .data$PeilpuntOpenbaarheidTypeCode == "PLME",
+                             .data$PeilpuntOpenbaarheidCode == "UNKWN") %>%
+                      mutate(PeilpuntPlaatsing =
+                                 sql("CAST(PeilpuntPlaatsing AS date)"),
+                             PeilpuntStopzetting =
+                                 sql("CAST(PeilpuntStopzetting AS date)")
+                             ),
                   by = "MeetpuntWID") %>%
-        mutate(filterdepth = .data$PeilbuisLengte -
-                                .data$ReferentieNiveauMaaiveld) %>%
-        filter(.data$MeetpuntTypeCode == "P" &
-                   .data$filterdepth <= max_filterdepth &
-                   .data$filterdepth >= min_filterdepth |
-                   .data$MeetpuntTypeCode != "P"
-               ) %>%
-        mutate(soilsurf_ost =
+        mutate(tubelength = ifelse(.data$PeilbuisLengte <= 0,
+                                   NA,
+                                   .data$PeilbuisLengte),
+               filterlength = ifelse(is.na(.data$FilterLengte),
+                                     0.3,
+                                     .data$FilterLengte),
+               filterdepth = .data$tubelength -
+                                .data$ReferentieNiveauMaaiveld -
+                                .data$filterlength / 2,
+               soilsurf_ost =
                    .data$ReferentieNiveauTAW -
                    .data$ReferentieNiveauMaaiveld) %>%
         select(loc_wid = .data$MeetpuntWID,
@@ -305,32 +448,159 @@ get_locs <- function(con,
                loc_typename = .data$MeetpuntType,
                obswell_code = .data$PeilpuntCode,
                obswell_rank = .data$PeilpuntVersie,
-               .data$filterdepth,
-               .data$soilsurf_ost) %>%
-        distinct %>%
+               obswell_statecode = .data$PeilpuntToestandCode,
+               obswell_state = .data$PeilpuntToestandNaam,
+               obswell_installdate = .data$PeilpuntPlaatsing,
+               obswell_stopdate = .data$PeilpuntStopzetting,
+               .data$soilsurf_ost,
+               measuringref_ost = .data$ReferentieNiveauTAW,
+               .data$tubelength,
+               .data$filterlength,
+               .data$filterdepth) %>%
+        arrange(.data$area_code,
+                .data$loc_code,
+                .data$obswell_rank)
+
+    if (filterdepth_guess) {
+        locs <-
+            locs %>%
+            mutate(filterdepth_guessed =
+                       is.na(.data$filterdepth) &
+                       !is.na(.data$tubelength),
+                   filterdepth = ifelse(.data$filterdepth_guessed == 1,
+                                                # (sql: logical stored as bit)
+                                        .data$tubelength -
+                                            .data$filterlength / 2,
+                                        .data$filterdepth))
+    }
+
+    if (filterdepth_na) {
+        locs <-
+            locs %>%
+            filter(
+                (.data$loc_typecode == "P" &
+                     (.data$filterdepth <= max_filterdepth &
+                          .data$filterdepth >= min_filterdepth |
+                          is.na(.data$filterdepth))) |
+                    .data$loc_typecode != "P"
+            )
+    } else {
+        locs <-
+            locs %>%
+            filter(.data$loc_typecode == "P" &
+                       .data$filterdepth <= max_filterdepth &
+                       .data$filterdepth >= min_filterdepth |
+                       .data$loc_typecode != "P"
+            )
+    }
+
+    locs <-
+        locs %>%
         arrange(.data$area_code,
                 .data$loc_code,
                 .data$obswell_rank)
 
     if (!obswells) {
-        obswell_sel <-
-            locs %>%
-            group_by(.data$loc_code) %>%
-            summarise(obswell_count = n(),
-                      obswell_maxrank = max(.data$obswell_rank, na.rm = TRUE))
 
         locs <-
             locs %>%
-            left_join(obswell_sel, by = c("loc_code")) %>%
-            filter(.data$obswell_count == 1 |
-                       .data$obswell_rank == .data$obswell_maxrank) %>%
+            group_by(.data$loc_code) %>%
+            mutate(obswell_count = n(),
+                   obswell_maxrank = max(.data$obswell_rank,
+                                         na.rm = TRUE),
+                   obswell_maxrank_fd =
+                       max(ifelse(is.na(.data$filterdepth),
+                                         NA,
+                                         .data$obswell_rank),
+                                  na.rm = TRUE),
+                   obswell_maxrank_sso =
+                       max(ifelse(is.na(.data$soilsurf_ost),
+                                         NA,
+                                         .data$obswell_rank),
+                                  na.rm = TRUE),
+                   obswell_statecode =
+                       max(ifelse(.data$obswell_rank ==
+                                             .data$obswell_maxrank,
+                                         .data$obswell_statecode,
+                                         NA),
+                                  na.rm = TRUE),
+                   obswell_state =
+                       max(ifelse(.data$obswell_rank ==
+                                             .data$obswell_maxrank,
+                                         .data$obswell_state,
+                                         NA),
+                                  na.rm = TRUE)
+                   )
+
+        locs <-
+            switch(obswell_aggr,
+
+                   "latest" =
+                       locs %>%
+                       ungroup() %>%
+                       filter(.data$obswell_count == 1 |
+                                  .data$obswell_rank == .data$obswell_maxrank),
+
+                   "latest_fd" =
+                       locs %>%
+                       ungroup() %>%
+                       filter(.data$obswell_count == 1 |
+                                  (.data$obswell_rank ==
+                                       .data$obswell_maxrank_fd) |
+                                  (is.na(.data$obswell_maxrank_fd) &
+                                       (.data$obswell_rank ==
+                                            .data$obswell_maxrank))
+                       ),
+
+                   "latest_sso" =
+                       locs %>%
+                       ungroup() %>%
+                       filter(.data$obswell_count == 1 |
+                                  (.data$obswell_rank ==
+                                       .data$obswell_maxrank_sso) |
+                                  (is.na(.data$obswell_maxrank_sso) &
+                                       (.data$obswell_rank ==
+                                            .data$obswell_maxrank))
+                       ),
+
+                   "mean" =
+                       locs %>%
+                       mutate(soilsurf_ost = mean(.data$soilsurf_ost,
+                                                  na.rm = TRUE),
+                              measuringref_ost = mean(.data$measuringref_ost,
+                                                  na.rm = TRUE),
+                              filterdepth = mean(.data$filterdepth,
+                                                  na.rm = TRUE),
+                              filterlength = mean(.data$filterlength,
+                                                 na.rm = TRUE),
+                              tubelength = mean(.data$tubelength,
+                                                  na.rm = TRUE)) %>%
+                       {if ("filterdepth_guessed" %in% colnames(.)) {
+                           mutate(.,
+                                  filterdepth_guessed =
+                                      max(ifelse(.data$filterdepth_guessed == 1,
+                                                 # (sql: logical stored as bit)
+                                                 1,
+                                                 0),
+                                          na.rm = TRUE)) %>%
+                               mutate(filterdepth_guessed =
+                                          sql("CAST(
+                                              filterdepth_guessed AS bit)"))
+                       } else .} %>%
+                       filter(row_number() == 1L) %>%
+                       ungroup()
+
+                   ) %>%
             select(-.data$obswell_code,
                    -.data$obswell_rank,
+                   -.data$obswell_installdate,
+                   -.data$obswell_stopdate,
                    -.data$obswell_count,
-                   -.data$obswell_maxrank) %>%
+                   -.data$obswell_maxrank,
+                   -.data$obswell_maxrank_fd,
+                   -.data$obswell_maxrank_sso) %>%
             arrange(.data$area_code,
                     .data$loc_code)
-
     }
 
     if (!is.null(mask)) {
@@ -346,7 +616,7 @@ get_locs <- function(con,
         if (nr_dropped_locs > 0) {
             warning("Dropped ",
                     nr_dropped_locs,
-                    " locations from which x or y coordinates were missing.")
+                    " locations from which x or y coordinates were missing.\n")
         }
 
         locs <-
@@ -354,6 +624,8 @@ get_locs <- function(con,
             select(-.data$loc_wid) %>%
             filter(!is.na(.data$x), !is.na(.data$y)) %>%
             collect %>%
+            arrange(.data$area_code,
+                    .data$loc_code) %>%
             as_points
 
         if (buffer != 0) {
@@ -388,7 +660,9 @@ get_locs <- function(con,
         locs <-
             locs %>%
             select(-.data$loc_wid) %>%
-            collect
+            collect %>%
+            arrange(.data$area_code,
+                    .data$loc_code)
     }
 
     return(locs)
@@ -489,6 +763,7 @@ get_locs <- function(con,
 #' assert_that
 #' is.number
 #' is.flag
+#' noNA
 #' @importFrom rlang .data
 #' @importFrom lubridate
 #' year
@@ -522,8 +797,8 @@ get_xg3 <- function(locs,
                 msg = "startyear must not be larger than endyear.")
     assert_that("loc_code" %in% colnames(locs),
                 msg = "locs does not have a column name 'loc_code'.")
-    assert_that(is.flag(truncated))
-    assert_that(is.flag(collect))
+    assert_that(is.flag(truncated), noNA(truncated))
+    assert_that(is.flag(collect), noNA(collect))
 
     if (inherits(locs, "data.frame")) {
         locs <-
@@ -535,7 +810,8 @@ get_xg3 <- function(locs,
 
         locs <-
             copy_to(con,
-                    locs) %>%
+                    locs,
+                    "##locs") %>%
             inner_join(tbl(con, "vwDimMeetpunt") %>%
                           select(loc_wid = .data$MeetpuntWID,
                                  loc_code = .data$MeetpuntCode),
@@ -740,6 +1016,7 @@ get_xg3 <- function(locs,
 #' assert_that
 #' is.number
 #' is.flag
+#' noNA
 #' is.date
 #' @importFrom rlang .data
 #' @importFrom lubridate
@@ -793,8 +1070,8 @@ get_chem <- function(locs,
                 en_range[1] >= -1,
                 en_range[2] <= 1
                 )
-    assert_that(is.flag(en_exclude_na))
-    assert_that(is.flag(collect))
+    assert_that(is.flag(en_exclude_na), noNA(en_exclude_na))
+    assert_that(is.flag(collect), noNA(collect))
 
     if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
         assert_that(is.number(en_fecond_threshold),
@@ -811,7 +1088,8 @@ get_chem <- function(locs,
 
         locs <-
             copy_to(con,
-                    locs) %>%
+                    locs,
+                    "##locs") %>%
             inner_join(tbl(con, "vwDimMeetpunt") %>%
                            select(loc_wid = .data$MeetpuntWID,
                                   loc_code = .data$MeetpuntCode),
