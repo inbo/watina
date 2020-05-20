@@ -44,8 +44,6 @@
 #' has_name
 #' @importFrom dplyr
 #' %>%
-#' count
-#' filter
 as_points <- function(df,
                       xvar = "x",
                       yvar = "y",
@@ -68,10 +66,50 @@ as_points <- function(df,
     }
 
     if (warn_dupl) {
+        df_cleaned %>%
+            {warn_xy_duplicates(get(xvar, .), get(yvar, .))}
+    }
+
+    df_cleaned %>%
+        st_as_sf(coords = c(xvar, yvar),
+                 crs = 31370,
+                 remove = remove)
+
+}
+
+
+
+
+
+
+
+
+
+#' Warn for duplicated XY coordinate pairs
+#'
+#' @details
+#' Note that both vectors must be of same length.
+#'
+#' @param x Numerical vector of x coordinates
+#' @param y Numerical vector of y coordinates
+#'
+#' @importFrom assertthat
+#' assert_that
+#' @importFrom dplyr
+#' %>%
+#' count
+#' filter
+#' @keywords internal
+warn_xy_duplicates <- function(x, y) {
+
+    assert_that(is.numeric(x))
+    assert_that(is.numeric(y))
+    assert_that(all.equal(length(x), length(y)))
+    assert_that(length(x) > 0)
 
     n_duplicated <-
-        df_cleaned %>%
-        count(get(xvar, .), get(yvar, .)) %>%
+        data.frame(x = x, y = y) %>%
+        count(x, y) %>%
         filter(.data$n > 1) %>%
         nrow
 
@@ -84,11 +122,5 @@ as_points <- function(df,
         }
     }
 
-    }
-
-    df_cleaned %>%
-        st_as_sf(coords = c(xvar, yvar),
-                 crs = 31370,
-                 remove = remove)
 
 }

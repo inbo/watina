@@ -4,7 +4,7 @@
 \alias{as_points}
 \title{Convert a dataframe with X and Y coordinates to a geospatial points object}
 \usage{
-as_points(df, xvar = "x", yvar = "y", remove = FALSE)
+as_points(df, xvar = "x", yvar = "y", remove = FALSE, warn_dupl = TRUE)
 }
 \arguments{
 \item{df}{A dataframe with X and Y coordinates in meters, assumed to be in
@@ -16,6 +16,11 @@ the Belgian Lambert 72 CRS (EPSG-code 31370).}
 
 \item{remove}{Logical. Should the X and Y coordinates be removed from the
 dataframe after conversion to a spatial object?}
+
+\item{warn_dupl}{Logical.
+Defaults to \code{TRUE}.
+Should the user be warned when duplicated coordinates are present in the
+result?}
 }
 \value{
 An \code{sf} object of geometry type \code{POINT} with EPSG-code
