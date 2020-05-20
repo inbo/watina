@@ -1139,7 +1139,7 @@ get_chem <- function(locs,
                chem_variable = .data$ChemVarCode,
                value_mass = .data$Meetwaarde,
                value_eq = .data$MeetwaardeMEQ,
-               units = .data$ChemVarEenheid,
+               unit = .data$ChemVarEenheid,
                below_loq = .data$IsBelowLOQ,
                .data$loq,
                elneutr = .data$StaalEN
@@ -1256,12 +1256,12 @@ get_chem <- function(locs,
                         rename(value = .data$value_mass),
                eq = chem %>%
                         rename(value = .data$value_eq) %>%
-                        mutate(units = ifelse(.data$provide_eq_unit == "TRUE",
+                        mutate(unit = ifelse(.data$provide_eq_unit == "TRUE",
                                               "meq/l",
-                                              units))
+                                              unit))
         ) %>%
         select(-contains("value_"), -.data$provide_eq_unit) %>%
-        mutate(units = ifelse(.data$units == "/", NA, units)) %>%
+        mutate(unit = ifelse(.data$unit == "/", NA, unit)) %>%
         arrange(.data$loc_code,
                 .data$date,
                 .data$chem_variable)
