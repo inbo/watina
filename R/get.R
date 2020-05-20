@@ -666,6 +666,10 @@ get_locs <- function(con,
                     .data$loc_code)
     }
 
+    if (inherits(locs, "data.frame")) {
+        warn_xy_duplicates(locs$x, locs$y)
+    }
+
     return(locs)
 
 }
