@@ -605,13 +605,16 @@ get_locs <- function(con,
 
     if (!is.null(mask)) {
 
+        locs <-
+            locs %>%
+            select(-.data$loc_wid) %>%
+            collect
+
         nr_dropped_locs <-
             locs %>%
             filter(is.na(.data$x) | is.na(.data$y)) %>%
             count %>%
-            collect() %>%
             .$n
-
 
         if (nr_dropped_locs > 0) {
             warning("Dropped ",
@@ -621,9 +624,7 @@ get_locs <- function(con,
 
         locs <-
             locs %>%
-            select(-.data$loc_wid) %>%
             filter(!is.na(.data$x), !is.na(.data$y)) %>%
-            collect %>%
             arrange(.data$area_code,
                     .data$loc_code) %>%
             as_points
