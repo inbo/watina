@@ -1257,10 +1257,10 @@ get_chem <- function(locs,
                         rename(value = .data$value_eq) %>%
                         mutate(unit = ifelse(.data$provide_eq_unit == "TRUE",
                                               "meq/l",
-                                              unit))
+                                             .data$unit))
         ) %>%
         select(-contains("value_"), -.data$provide_eq_unit) %>%
-        mutate(unit = ifelse(.data$unit == "/", NA, unit)) %>%
+        mutate(unit = ifelse(.data$unit == "/", NA, .data$unit)) %>%
         arrange(.data$loc_code,
                 .data$date,
                 .data$chem_variable)
