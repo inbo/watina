@@ -40,6 +40,8 @@
 #' has_name
 #' @importFrom dplyr
 #' %>%
+#' count
+#' filter
 as_points <- function(df, xvar = "x", yvar = "y", remove = FALSE) {
 
     assert_that(inherits(df, "data.frame"))
@@ -56,10 +58,19 @@ as_points <- function(df, xvar = "x", yvar = "y", remove = FALSE) {
                 " locations were removed because of missing X or Y coordinates.")
     }
 
-    check_duplicates <- unique(df_cleaned[, c(xvar, yvar)])
-    if (nrow(check_duplicates) < nrow(df_cleaned)) {
-        warning(nrow(df_cleaned) - nrow(check_duplicates),
-                " rows have duplicated coordinates.")
+    n_duplicated <-
+        df_cleaned %>%
+        count(get(xvar, .), get(yvar, .)) %>%
+        filter(.data$n > 1) %>%
+        nrow
+
+    if (n_duplicated > 0) {
+        if (n_duplicated == 1) {
+            warning("1 XY coordinate pair occurs more than one time.")
+        } else {
+            warning(n_duplicated,
+                    " XY coordinate pairs occur more than one time.")
+        }
     }
 
     df_cleaned %>%
