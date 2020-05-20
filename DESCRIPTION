@@ -23,7 +23,7 @@ Imports:
     assertthat,
     dbplyr (>= 1.4.2.9000),
     dplyr,
-    inborutils (>= 0.1.0.9072),
+    inbodb,
     KSgeneral,
     lubridate,
     rlang,
@@ -36,7 +36,7 @@ Suggests:
     knitr,
     rmarkdown
 Remotes:
-    inbo/inborutils,
+    inbo/inbodb,
     florisvdh/dbplyr@dbplyr_with_pivot_wider
 LazyData: true
 Encoding: UTF-8
