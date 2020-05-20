@@ -83,7 +83,7 @@ i.e. excluding the 'combined' level:
 \item{\code{val_geometric_mean}}: geometric mean.
 Only calculated when
 all values are strictly positive.
-\item{\code{units}}
+\item{\code{unit}}
 \item{\code{prop_below_loq}}: the proportion of measurements below the limit
 of quantification (as derived from \code{below_loq == TRUE}),
 i.e. relative to the total number of measurements
