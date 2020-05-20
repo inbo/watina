@@ -627,7 +627,7 @@ get_locs <- function(con,
             filter(!is.na(.data$x), !is.na(.data$y)) %>%
             arrange(.data$area_code,
                     .data$loc_code) %>%
-            as_points
+            as_points(warn_dupl = FALSE)
 
         if (buffer != 0) {
             mask_expand <-
@@ -664,6 +664,10 @@ get_locs <- function(con,
             collect %>%
             arrange(.data$area_code,
                     .data$loc_code)
+    }
+
+    if (inherits(locs, "data.frame")) {
+        warn_xy_duplicates(locs$x, locs$y)
     }
 
     return(locs)
