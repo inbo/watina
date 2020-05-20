@@ -810,7 +810,8 @@ get_xg3 <- function(locs,
 
         locs <-
             copy_to(con,
-                    locs) %>%
+                    locs,
+                    "##locs") %>%
             inner_join(tbl(con, "vwDimMeetpunt") %>%
                           select(loc_wid = .data$MeetpuntWID,
                                  loc_code = .data$MeetpuntCode),
@@ -1087,7 +1088,8 @@ get_chem <- function(locs,
 
         locs <-
             copy_to(con,
-                    locs) %>%
+                    locs,
+                    "##locs") %>%
             inner_join(tbl(con, "vwDimMeetpunt") %>%
                            select(loc_wid = .data$MeetpuntWID,
                                   loc_code = .data$MeetpuntCode),
