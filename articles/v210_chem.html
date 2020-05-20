@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -138,7 +138,7 @@
 <span class="co">#&gt; 13  ZWAP033 2011-04-14              0         10431           pHF   6.297</span>
 <span class="co">#&gt; 14  ZWAP033 2011-04-14              0         10431           pHL   5.830</span>
 <span class="co">#&gt; 15  ZWAP033 2011-04-14              0         10431         P-PO4   0.016</span>
-<span class="co">#&gt;    units below_loq loq  elneutr</span>
+<span class="co">#&gt;    unit  below_loq loq  elneutr</span>
 <span class="co">#&gt; 1   mg/l        NA -99 0.610484</span>
 <span class="co">#&gt; 2   mg/l        NA -99 0.610484</span>
 <span class="co">#&gt; 3  µS/cm        NA -99 0.610484</span>
@@ -267,7 +267,7 @@
 <span class="co">#&gt;  8 ZWAP034  2018-10-29 0              40121         K               1.98</span>
 <span class="co">#&gt;  9 ZWAP034  2018-10-29 0              40121         Mg              1.36</span>
 <span class="co">#&gt; 10 ZWAP034  2018-10-29 0              40121         Mn              0.05</span>
-<span class="co">#&gt; # … with more rows, and 4 more variables: units &lt;chr&gt;, below_loq &lt;lgl&gt;,</span>
+<span class="co">#&gt; # … with more rows, and 4 more variables: unit &lt;chr&gt;, below_loq &lt;lgl&gt;,</span>
 <span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></pre></body></html></div>
 <p>Retrieving the data locally:</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span>(<span class="no">watina</span>, <span class="st">"1/1/2017"</span>, <span class="kw">collect</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
@@ -284,7 +284,7 @@
 <span class="co">#&gt;  8 ZWAP034  2018-10-29 0              40121         K               1.98</span>
 <span class="co">#&gt;  9 ZWAP034  2018-10-29 0              40121         Mg              1.36</span>
 <span class="co">#&gt; 10 ZWAP034  2018-10-29 0              40121         Mn              0.05</span>
-<span class="co">#&gt; # … with 598 more rows, and 4 more variables: units &lt;chr&gt;,</span>
+<span class="co">#&gt; # … with 598 more rows, and 4 more variables: unit &lt;chr&gt;,</span>
 <span class="co">#&gt; #   below_loq &lt;lgl&gt;, loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></pre></body></html></div>
 <p>Note below, the different number of results when using non-default settings for filtering according to <em>electroneutrality</em>! The default range of electroneutrality is from -0.1 to 0.1 (argument <code>en_range</code>).</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span>(<span class="no">watina</span>, <span class="st">"1/1/2017"</span>) <span class="kw">%&gt;%</span> <span class="no">count</span>
@@ -331,7 +331,7 @@
 <span class="co">#&gt;  8 ZWAP034  2018-10-29 0              40121         K             5.07e-2</span>
 <span class="co">#&gt;  9 ZWAP034  2018-10-29 0              40121         Mg            1.12e-1</span>
 <span class="co">#&gt; 10 ZWAP034  2018-10-29 0              40121         Mn            5.00e-2</span>
-<span class="co">#&gt; # … with more rows, and 4 more variables: units &lt;chr&gt;, below_loq &lt;lgl&gt;,</span>
+<span class="co">#&gt; # … with more rows, and 4 more variables: unit &lt;chr&gt;, below_loq &lt;lgl&gt;,</span>
 <span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></pre></body></html></div>
 <p>Joining results to <code>mylocs</code>:</p>
 <div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">%&gt;%</span>
@@ -357,7 +357,7 @@
 <span class="co">#&gt; # … with 755 more rows, and 13 more variables: loc_typecode &lt;chr&gt;,</span>
 <span class="co">#&gt; #   loc_typename &lt;chr&gt;, filterdepth &lt;dbl&gt;, soilsurf_ost &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   date &lt;date&gt;, lab_project_id &lt;chr&gt;, lab_sample_id &lt;chr&gt;,</span>
-<span class="co">#&gt; #   chem_variable &lt;chr&gt;, value &lt;dbl&gt;, units &lt;chr&gt;, below_loq &lt;lgl&gt;,</span>
+<span class="co">#&gt; #   chem_variable &lt;chr&gt;, value &lt;dbl&gt;, unit &lt;chr&gt;, below_loq &lt;lgl&gt;,</span>
 <span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></pre></body></html></div>
 </div>
 <div id="processing-hydrochemical-data-and-selecting-locations" class="section level2">

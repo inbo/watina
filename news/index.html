@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -132,6 +132,30 @@
       <small>Source: <a href='https://github.com/inbo/watina/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="watina-0-3-0" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.0">
+<a href="#watina-0-3-0" class="anchor"></a>watina 0.3.0</h1>
+<div id="new-features" class="section level4">
+<h4 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>New features</h4>
+<ul>
+<li>New function <code><a href="../reference/cluster_locs.html">cluster_locs()</a></code> to spatially cluster locations (well clusters) (<a href='https://github.com/inbo/watina/issues/39'>#39</a>)</li>
+<li>More fun with <code><a href="../reference/get_locs.html">get_locs()</a></code>:
+<ul>
+<li>optionally allow groundwater piezometers with missing <code>filterdepth</code> (argument <code>filterdepth_na</code>)</li>
+<li>optionally replace missing <code>filterdepth</code> values in a conservative way, based on <code>tubelength</code> (argument <code>filterdepth_guess</code>, <a href='https://github.com/inbo/watina/issues/44'>#44</a>)</li>
+<li>return eight more observation well attributes beside <code>filterdepth</code> (<a href='https://github.com/inbo/watina/issues/44'>#44</a>)</li>
+<li>four methods are available to aggregate observation well attributes per location (argument <code>obswell_aggr</code>, <a href='https://github.com/inbo/watina/issues/44'>#44</a>)</li>
+<li>applying a spatial mask is now a little speedier (<a href='https://github.com/inbo/watina/issues/57'>#57</a>)</li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/as_points.html">as_points()</a></code> and <code><a href="../reference/get_locs.html">get_locs()</a></code> return a warning when duplicated coordinates occur in their local result (<a href='https://github.com/inbo/watina/issues/51'>#51</a>, thanks <a href='https://github.com/w-jan'>@w-jan</a>)</li>
+<li>Package dependency moved from <a href="https://inbo.github.io/inborutils">inborutils</a> to <a href="https://inbo.github.io/inbodb">inbodb</a>: this is a change within <code><a href="../reference/connect_watina.html">connect_watina()</a></code> which should not affect its behaviour and which reduces overall package dependencies.</li>
+</ul>
+<p>Further, a number of smaller fixes and enhancements were made.</p>
+</div>
+</div>
     <div id="watina-0-2-6" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.6">
 <a href="#watina-0-2-6" class="anchor"></a>watina 0.2.6</h1>
@@ -179,9 +203,9 @@
     <div id="watina-0-2-0" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.0">
 <a href="#watina-0-2-0" class="anchor"></a>watina 0.2.0</h1>
-<div id="new-features" class="section level2">
-<h2 class="hasAnchor">
-<a href="#new-features" class="anchor"></a>New features</h2>
+<div id="new-features-1" class="section level4">
+<h4 class="hasAnchor">
+<a href="#new-features-1" class="anchor"></a>New features</h4>
 <ul>
 <li>Several functions have been added to query and process chemical data.</li>
 <li>Three vignettes have been added.</li>

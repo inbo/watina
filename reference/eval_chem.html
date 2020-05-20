@@ -75,7 +75,7 @@ the specified hydrochemical variables, for each location." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -146,8 +146,8 @@ the specified hydrochemical variables, for each location.</p>
 
     <pre class="usage"><span class='fu'>eval_chem</span>(
   <span class='no'>data</span>,
-  <span class='kw'>chem_var</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P-PO4"</span>, <span class='st'>"N-NO3"</span>, <span class='st'>"N-NO2"</span>, <span class='st'>"N-NH4"</span>, <span class='st'>"HCO3"</span>, <span class='st'>"SO4"</span>, <span class='st'>"Cl"</span>, <span class='st'>"Na"</span>, <span class='st'>"K"</span>, <span class='st'>"Ca"</span>,
-    <span class='st'>"Mg"</span>, <span class='st'>"Fe"</span>, <span class='st'>"Mn"</span>, <span class='st'>"Si"</span>, <span class='st'>"Al"</span>, <span class='st'>"CondF"</span>, <span class='st'>"CondL"</span>, <span class='st'>"pHF"</span>, <span class='st'>"pHL"</span>),
+  <span class='kw'>chem_var</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P-PO4"</span>, <span class='st'>"N-NO3"</span>, <span class='st'>"N-NO2"</span>, <span class='st'>"N-NH4"</span>, <span class='st'>"HCO3"</span>, <span class='st'>"SO4"</span>, <span class='st'>"Cl"</span>, <span class='st'>"Na"</span>, <span class='st'>"K"</span>,
+    <span class='st'>"Ca"</span>, <span class='st'>"Mg"</span>, <span class='st'>"Fe"</span>, <span class='st'>"Mn"</span>, <span class='st'>"Si"</span>, <span class='st'>"Al"</span>, <span class='st'>"CondF"</span>, <span class='st'>"CondL"</span>, <span class='st'>"pHF"</span>, <span class='st'>"pHL"</span>),
   <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"avail"</span>, <span class='st'>"num"</span>, <span class='st'>"both"</span>),
   <span class='kw'>uniformity_test</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
@@ -232,7 +232,7 @@ i.e. excluding the 'combined' level:</p><ul>
 <li><p><code>val_geometric_mean</code>: geometric mean.
 Only calculated when
 all values are strictly positive.</p></li>
-<li><p><code>units</code></p></li>
+<li><p><code>unit</code></p></li>
 <li><p><code>prop_below_loq</code>: the proportion of measurements below the limit
 of quantification (as derived from <code>below_loq == TRUE</code>),
 i.e. relative to the total number of measurements

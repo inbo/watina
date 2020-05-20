@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Qualify XG3 data per location x hydroyear — qualify_xg3 • watina</title>
+<title>Warn for duplicated XY coordinate pairs — warn_xy_duplicates • watina</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Qualify XG3 data per location x hydroyear — qualify_xg3" />
-<meta property="og:description" content="Helper function to determine
-the availability of the specified XG3 types per location x hydroyear." />
+<meta property="og:title" content="Warn for duplicated XY coordinate pairs — warn_xy_duplicates" />
+<meta property="og:description" content="Warn for duplicated XY coordinate pairs" />
 
 
 
@@ -130,48 +129,33 @@ the availability of the specified XG3 types per location x hydroyear." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Qualify XG3 data per location x hydroyear</h1>
-    <small class="dont-index">Source: <a href='https://github.com/inbo/watina/blob/master/R/eval.R'><code>R/eval.R</code></a></small>
-    <div class="hidden name"><code>qualify_xg3.Rd</code></div>
+    <h1>Warn for duplicated XY coordinate pairs</h1>
+    <small class="dont-index">Source: <a href='https://github.com/inbo/watina/blob/master/R/sf.R'><code>R/sf.R</code></a></small>
+    <div class="hidden name"><code>warn_xy_duplicates.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Helper function to determine
-the availability of the specified XG3 types per location x hydroyear.</p>
+    <p>Warn for duplicated XY coordinate pairs</p>
     </div>
 
-    <pre class="usage"><span class='fu'>qualify_xg3</span>(<span class='no'>data</span>, <span class='no'>xg3_type</span>)</pre>
+    <pre class="usage"><span class='fu'>warn_xy_duplicates</span>(<span class='no'>x</span>, <span class='no'>y</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>An object returned by <code><a href='get_xg3.html'>get_xg3</a></code>.</p></td>
+      <th>x</th>
+      <td><p>Numerical vector of x coordinates</p></td>
     </tr>
     <tr>
-      <th>xg3_type</th>
-      <td><p>Character vector of length 1, 2 or 3.
-Defines the types of XG3 which are taken from <code>data</code>.
-Specifies the 'X' in 'XG3': either <code>"L"</code>, <code>"H"</code> and/or <code>"V"</code>.
-Defaults to <code>"L"</code>.</p></td>
+      <th>y</th>
+      <td><p>Numerical vector of y coordinates</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A tibble, with columns <code>xg3_variable</code>
-(character; see Details) and <code>available</code> (logical) to denote at each
-location whether the hydroyear has the requested XG3 values available.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The column <code>xg3_variable</code> in the resulting tibble
-lists the requested XG3 types, for each location and hydroyear.
-If more than one XG3 type is requested, or if <code>data</code> contains both
-vertical CRSes, an extra value "<code>combined</code>" is listed in the
-<code>xg3_variable</code> column.
-It evaluates the combined presence of all selected XG3 variables at each
-location and hydroyear.</p>
+    <p>Note that both vectors must be of same length.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

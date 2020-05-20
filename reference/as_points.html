@@ -76,7 +76,7 @@ It converts the dataframe into an sf points object in the same CRS." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -146,7 +146,7 @@ reference system (CRS)
 It converts the dataframe into an <code>sf</code> points object in the same CRS.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>as_points</span>(<span class='no'>df</span>, <span class='kw'>xvar</span> <span class='kw'>=</span> <span class='st'>"x"</span>, <span class='kw'>yvar</span> <span class='kw'>=</span> <span class='st'>"y"</span>, <span class='kw'>remove</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>as_points</span>(<span class='no'>df</span>, <span class='kw'>xvar</span> <span class='kw'>=</span> <span class='st'>"x"</span>, <span class='kw'>yvar</span> <span class='kw'>=</span> <span class='st'>"y"</span>, <span class='kw'>remove</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>warn_dupl</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -168,6 +168,13 @@ the Belgian Lambert 72 CRS (EPSG-code 31370).</p></td>
       <th>remove</th>
       <td><p>Logical. Should the X and Y coordinates be removed from the
 dataframe after conversion to a spatial object?</p></td>
+    </tr>
+    <tr>
+      <th>warn_dupl</th>
+      <td><p>Logical.
+Defaults to <code>TRUE</code>.
+Should the user be warned when duplicated coordinates are present in the
+result?</p></td>
     </tr>
     </table>
 

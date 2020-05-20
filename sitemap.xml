@@ -7,6 +7,9 @@
     <loc>https://inbo.github.io/watina/reference/as_points.html</loc>
   </url>
   <url>
+    <loc>https://inbo.github.io/watina/reference/cluster_locs.html</loc>
+  </url>
+  <url>
     <loc>https://inbo.github.io/watina/reference/collect.html</loc>
   </url>
   <url>
@@ -50,6 +53,9 @@
   </url>
   <url>
     <loc>https://inbo.github.io/watina/reference/selectlocs_xg3.html</loc>
+  </url>
+  <url>
+    <loc>https://inbo.github.io/watina/reference/warn_xy_duplicates.html</loc>
   </url>
   <url>
     <loc>https://inbo.github.io/watina/reference/watina-package.html</loc>

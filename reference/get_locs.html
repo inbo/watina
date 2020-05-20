@@ -42,8 +42,10 @@
 <meta property="og:title" content="Get locations from the database — get_locs" />
 <meta property="og:description" content="Returns locations (and optionally, observation wells) from the Watina
 database that meet
-several criteria (spatial or non-spatial), either as a lazy object or as a
+several criteria, either as a lazy object or as a
 local tibble.
+Criteria refer to spatial or non-spatial physical attributes of the
+location or the location's observation wells.
 Essential metadata are included in the result." />
 
 
@@ -76,7 +78,7 @@ Essential metadata are included in the result." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -141,15 +143,20 @@ Essential metadata are included in the result." />
     <div class="ref-description">
     <p>Returns locations (and optionally, observation wells) from the <em>Watina</em>
 database that meet
-several criteria (spatial or non-spatial), either as a lazy object or as a
+several criteria, either as a lazy object or as a
 local tibble.
+Criteria refer to spatial or non-spatial physical attributes of the
+location or the location's observation wells.
 Essential metadata are included in the result.</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_locs</span>(
   <span class='no'>con</span>,
   <span class='kw'>filterdepth_range</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>3</span>),
+  <span class='kw'>filterdepth_guess</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>filterdepth_na</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>obswells</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>obswell_aggr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"latest"</span>, <span class='st'>"latest_fd"</span>, <span class='st'>"latest_sso"</span>, <span class='st'>"mean"</span>),
   <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>join_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>10</span>,
@@ -172,30 +179,100 @@ See <code><a href='connect_watina.html'>connect_watina</a></code> to generate on
     <tr>
       <th>filterdepth_range</th>
       <td><p>Numeric vector of length 2.
-Specifies the allowed range of the depth of the filter bottom below soil
+Specifies the allowed range of the depth of the filter below soil
 surface, as meters (minimum and maximum allowed filterdepth, respectively).
 This condition is only applied to groundwater piezometers.
 The second vector element cannot be smaller than the first.
+Note that 'filterdepth' takes into account <em>half</em> the length of the
+filter.
+It is always assumed that filters are at the bottom of the tube.
+Hence
+<code>filterdepth = tubelength - filterlength / 2 -
+[tubelength part above soil surface]</code>.
+If filterlength is missing, it is assumed to be 0.3 m.
 With <code>obswells = FALSE</code>, a location is kept whenever one observation
-well fulfills the criterion.</p></td>
+well fulfills the condition.</p></td>
+    </tr>
+    <tr>
+      <th>filterdepth_guess</th>
+      <td><p>Logical.
+Only relevant for groundwater piezometers.
+Defaults to <code>FALSE</code>.
+For observation wells of which tubelength is known, but not
+the part of the tubelength above soil surface (height of measuring point),
+filterdepth cannot be calculated and is missing.
+However, filterdepth will never be larger than tubelength minus half the
+filterlength; hence a maximum
+possible (i.e. conservative) value for filterdepth is given by
+<code>tubelength - filterlength / 2</code>.
+With <code>filterdepth_guess = TRUE</code>, filterdepth is replaced by this value
+when it cannot be calculated and tubelength is available.
+This is done before applying the <code>filterdepth_range</code> condition.
+To mark these cases, a logical variable <code>filterdepth_guessed</code> is added
+to the result: <code>TRUE</code> for wells where filterdepth was replaced;
+<code>FALSE</code> in all other rows.</p></td>
+    </tr>
+    <tr>
+      <th>filterdepth_na</th>
+      <td><p>Logical.
+Are observation wells with missing filterdepth value to be included?
+Defaults to <code>FALSE</code>.
+With <code>filterdepth_guess = TRUE</code>, this has only effect on the
+<em>remaining</em> observation wells with missing filterdepth value.</p></td>
     </tr>
     <tr>
       <th>obswells</th>
       <td><p>Logical.
-If <code>TRUE</code>, the returned object distinguishes all observation wells that
-meet the <code>filterdepth_range</code> criterion.
+If <code>TRUE</code>, the returned object distinguishes all observation wells
+(see <em>Details</em>) that
+meet the <code>filterdepth_range</code> condition (or have missing filterdepth, if
+<code>filterdepth_na = TRUE</code>).
 If <code>FALSE</code> (the default), the returned object just distinguishes
 locations.
-Please note the meaning of observation well in Watina: if there are multiple
-observation wells attached to one location, these belong to
-<em>other timeframes</em>!
-So one location always coincides with exactly one observation well at
-one moment in time.
-Multiple observation wells can succeed one another because of physical
-alterations (e.g. damage of a piezometer).
-Here, the term 'observation well' is used to refer to a fixed installed
-device in the field (groundwater piezometer, surface water level
-measurement device).</p></td>
+In the latter case, the variables <code>obswell_installdate</code> and
+<code>obswell_stopdate</code> are not returned.</p></td>
+    </tr>
+    <tr>
+      <th>obswell_aggr</th>
+      <td><p>String.
+Defines how the attributes of multiple observation wells per location that
+fulfill the <code>filterdepth_range</code> and
+<code>filterdepth_na</code> criteria (after filterdepth adjustment if
+<code>filterdepth_guess = TRUE</code>), are
+aggregated into one record <strong>per location</strong>:</p><ul>
+<li><p><code>"latest"</code>: return attributes of the most recent observation well
+that fulfills the <code>filterdepth_range</code> and
+<code>filterdepth_na</code> criteria;</p></li>
+<li><p><code>"latest_fd"</code>: return attributes of the most recent observation well
+that fulfills the <code>filterdepth_range</code> condition, i.e.
+filterdepth will not be missing unless <em>all</em> retained wells have missing
+filterdepth <em>and</em> <code>filterdepth_na = TRUE</code>;</p></li>
+<li><p><code>"latest_sso"</code>: return attributes of the most recent observation well
+that fulfills the <code>filterdepth_range</code> and
+<code>filterdepth_na</code> criteria <em>and</em> for which <code>soilsurf_ost</code>
+(soil surface level in the
+<a href='http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S'>Ostend height</a>
+CRS (EPSG <a href='https://epsg.io/5710'>5710</a>) is not missing (unless
+<em>all</em> retained wells have missing <code>soilsurf_ost</code>);</p></li>
+<li><p><code>"mean"</code>: aggregation not by selecting an individual observation
+well, but by averaging the values of the associated variables
+<code>soilsurf_ost</code>,
+<code>measuringref_ost</code>,
+<code>tubelength</code>,
+<code>filterlength</code>,
+<code>filterdepth</code>
+for the observation wells with non-missing values (different
+wells may be involved for each variable, depending on the distribution of
+missing values).
+With <code>filterdepth_guess = TRUE</code>, the extra variabele
+<code>filterdepth_guessed</code> is summarised as <code>TRUE</code> for a location
+if at least one of the location's observation wells has
+<code>filterdepth_guessed = TRUE</code>.</p></li>
+</ul><p><strong>In all cases</strong> the returned value of <code>obswell_statecode</code> and
+<code>obswell_state</code> corresponds to the <code>"latest"</code> approach.
+The <code>obswell_aggr</code> argument has no effect on locations with a single
+retained observation well.
+It is ignored if <code>obswells = TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>mask</th>
@@ -283,10 +360,29 @@ regarded as stable.
 Therefore, <code>collect = TRUE</code> does not return <code>loc_wid</code>.</p>
 <p>The result also provides metadata at the level of the observation
 well, even when <code>obswells = FALSE</code>.
-In the latter case, this refers to the variables <code>filterdepth</code> and
-<code>soilsurf_ost</code>, which then
-correspond to the most recent observation well
-(per location) that meets the criteria on filterdepth.</p>
+In the latter case, this refers to the variables
+<code>soilsurf_ost</code>,
+<code>measuringref_ost</code>,
+<code>tubelength</code>,
+<code>filterlength</code>,
+<code>filterdepth</code>.
+See the argument <code>obswell_aggr</code> for options of how to aggregate this
+information at the location level;
+by default the latest observation well is used
+(per location) that meets the criteria on filterdepth.
+Mind that <code>obswells = FALSE</code> and <code>filterdepth_na = TRUE</code> may lead
+to missing filterdepth values at locations which do have a
+value for an older observation well, but not for the most recent one.</p>
+<p>Please note the meaning of observation well in Watina: if there are multiple
+observation wells attached to one location, these belong to
+<em>other timeframes</em>!
+So one location always coincides with exactly one observation well at
+one moment in time.
+Multiple observation wells can succeed one another because of physical
+alterations (e.g. damage of a piezometer).
+Here, the term 'observation well' is used to refer to a fixed installed
+device in the field (groundwater piezometer, surface water level
+measurement device).</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other functions to query the database: 
@@ -296,6 +392,8 @@ correspond to the most recent observation well
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='no'>watina</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='connect_watina.html'>connect_watina</a></span>()
+
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 
 <span class='fu'>get_locs</span>(<span class='no'>watina</span>,
          <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>xmin</span> <span class='kw'>=</span> <span class='fl'>1.4e+5</span>,
@@ -310,6 +408,21 @@ correspond to the most recent observation well
 <span class='fu'>get_locs</span>(<span class='no'>watina</span>,
          <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"KAL"</span>, <span class='st'>"KBR"</span>),
          <span class='kw'>loc_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P"</span>, <span class='st'>"S"</span>),
+         <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
+         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='st'>"WES"</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/tally.html'>count</a></span>()
+
+<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
+         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='st'>"WES"</span>,
+         <span class='kw'>filterdepth_guess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/tally.html'>count</a></span>()
+
+<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
+         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"KAL"</span>, <span class='st'>"KBR"</span>),
+         <span class='kw'>loc_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P"</span>, <span class='st'>"S"</span>),
+         <span class='kw'>filterdepth_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
          <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='co'># Mark the different output of:</span>
@@ -329,11 +442,29 @@ correspond to the most recent observation well
          <span class='kw'>loc_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P"</span>, <span class='st'>"S"</span>),
          <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
+<span class='co'># Different examples of aggregating observation wells at location level:</span>
+<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
+         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='st'>"WES"</span>,
+         <span class='kw'>filterdepth_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+         <span class='kw'>filterdepth_guess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+         <span class='kw'>obswell_aggr</span> <span class='kw'>=</span> <span class='st'>"latest"</span>,
+         <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>loc_code</span>, <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>contains</a></span>(<span class='st'>"ost"</span>), <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>contains</a></span>(<span class='st'>"filterdepth"</span>)) <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fl'>12</span>)
+
+<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
+         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='st'>"WES"</span>,
+         <span class='kw'>filterdepth_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+         <span class='kw'>filterdepth_guess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+         <span class='kw'>obswell_aggr</span> <span class='kw'>=</span> <span class='st'>"mean"</span>,
+         <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>loc_code</span>, <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>contains</a></span>(<span class='st'>"ost"</span>), <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>contains</a></span>(<span class='st'>"filterdepth"</span>)) <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fl'>12</span>)
+
 <span class='co'># Selecting all piezometers with status VLD of the</span>
 <span class='co'># province "West-Vlaanderen":</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>BE_ADMIN_PROVINCE</span>,
      <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"BelgiumMaps.StatBel"</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>sf</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>stringr</span>)
 <span class='no'>mymask</span> <span class='kw'>&lt;-</span>
