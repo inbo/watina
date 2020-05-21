@@ -109,6 +109,8 @@
 <h2 class="hasAnchor">
 <a href="#installing-testing-and-using-the-watina-package" class="anchor"></a>Installing, testing and using the <em>watina</em> package</h2>
 <div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv</a></span>(<span class="kw">R_REMOTES_NO_ERRORS_FROM_WARNINGS</span> <span class="kw">=</span> <span class="st">"true"</span>) <span class="co"># as a precaution</span>
+<span class="kw">if</span> (!(<span class="st">"nycflights13"</span> <span class="kw">%in%</span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html">installed.packages</a></span>())) {
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"nycflights13"</span>)} <span class="co"># to prevent dbplyr from interrupting next step</span>
 <span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"inbo/watina"</span>,
                         <span class="kw">build_vignettes</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
                         <span class="kw">upgrade</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
