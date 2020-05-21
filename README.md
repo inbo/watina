@@ -23,7 +23,8 @@ Currently the R package won't work outside INBO.
 
 ```r
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
-install.packages("nycflights13") # to prevent dbplyr from interrupting next step
+if (!("nycflights13" %in% installed.packages())) {
+    install.packages("nycflights13")} # to prevent dbplyr from interrupting next step
 remotes::install_github("inbo/watina",
                         build_vignettes = TRUE,
                         upgrade = TRUE)
