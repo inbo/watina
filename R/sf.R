@@ -118,7 +118,7 @@ warn_xy_duplicates <- function(x, y) {
             warning("1 coordinate pair occurs more than once.")
         } else {
             warning(n_duplicated,
-                    " different coordinate pairs occur more than once.")
+                    " different coordinate pairs occur more than once.\n")
         }
     }
 
