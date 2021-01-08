@@ -40,5 +40,5 @@ Remotes:
     florisvdh/dbplyr@dbplyr_with_pivot_wider
 LazyData: true
 Encoding: UTF-8
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr

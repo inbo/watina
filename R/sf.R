@@ -105,7 +105,6 @@ warn_xy_duplicates <- function(x, y) {
     assert_that(is.numeric(x))
     assert_that(is.numeric(y))
     assert_that(all.equal(length(x), length(y)))
-    assert_that(length(x) > 0)
 
     n_duplicated <-
         data.frame(x = x, y = y) %>%
@@ -118,7 +117,7 @@ warn_xy_duplicates <- function(x, y) {
             warning("1 coordinate pair occurs more than once.")
         } else {
             warning(n_duplicated,
-                    " different coordinate pairs occur more than once.")
+                    " different coordinate pairs occur more than once.\n")
         }
     }
 
