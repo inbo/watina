@@ -8,7 +8,9 @@ if OS is Windows}
 collect(x)
 }
 \arguments{
-\item{x}{A tbl}
+\item{x}{A data frame, data frame extension (e.g. a tibble), or a lazy
+data frame (e.g. from dbplyr or dtplyr). See \emph{Methods}, below, for more
+details.}
 }
 \description{
 Works as a simple \code{\link[dplyr:compute]{collect()}}, on which it is
