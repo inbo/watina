@@ -33,7 +33,7 @@
 #' mydata <-
 #'  mylocs %>%
 #'  get_xg3(watina, 2014)
-#' mydata
+#' mydata %>% arrange(loc_code, hydroyear)
 #' eval_xg3_avail(mydata,
 #'                xg3_type = c("L", "V"))
     #' # Disconnect:
@@ -340,7 +340,7 @@ qualify_xg3 <- function(data,
 #' mydata <-
 #'  mylocs %>%
 #'  get_xg3(watina, 1900)
-#' mydata
+#' mydata %>% arrange(loc_code, hydroyear)
 #' mydata %>%
 #'   eval_xg3_series(xg3_type = c("L", "V"),
 #'                   max_gap = 2,
@@ -591,7 +591,7 @@ eval_xg3_series <- function(data,
 #' mydata <-
 #'  mylocs %>%
 #'  get_chem(watina, "1/1/2010")
-#' mydata
+#' mydata %>% arrange(loc_code, date, chem_variable)
 #' mydata %>%
 #'   pull(date) %>%
 #'   lubridate::year(.) %>%
@@ -676,7 +676,11 @@ date, lab_sample_id, chem_variable, value, unit, below_loq."
         filter(.data$chem_variable %in% chem_var)
 
     if (inherits(data, "tbl_lazy")) {
-        data <- collect(data)
+        data <-
+            collect(data) %>%
+            arrange(.data$loc_code,
+                    .data$date,
+                    .data$chem_variable)
     }
 
     if (!missing(chem_var)) {

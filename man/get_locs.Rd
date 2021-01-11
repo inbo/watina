@@ -222,6 +222,16 @@ Here, the term 'observation well' is used to refer to a fixed installed
 device in the field (groundwater piezometer, surface water level
 measurement device).
 }
+\note{
+Up to and including \verb{watina 0.3.0}, the result was sorted according to
+\code{area_code}, \code{loc_code} and (for observation wells) \code{obswell_rank},
+both for the lazy query and the collected result.
+Later versions avoid sorting in case of a lazy result, because
+otherwise, when using the result inside another lazy query, this led to
+'ORDER BY' constructs in SQL subqueries, which must be avoided.
+If you like to print the lazy object in a sorted manner, you must add
+\verb{\%>\% arrange(...)} yourself.
+}
 \examples{
 \dontrun{
 watina <- connect_watina()
@@ -232,7 +242,8 @@ get_locs(watina,
          bbox = c(xmin = 1.4e+5,
                   xmax = 1.7e+5,
                   ymin = 1.6e+5,
-                  ymax = 1.9e+5))
+                  ymax = 1.9e+5)) \%>\%
+    arrange(area_code, loc_code)
 
 get_locs(watina,
          area_codes = c("KAL", "KBR"),
