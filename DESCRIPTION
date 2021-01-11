@@ -34,10 +34,11 @@ Imports:
     tidyr
 Suggests:
     knitr,
-    rmarkdown
+    purrr,
+    rmarkdown,
+    tidyselect
 Remotes:
-    inbo/inbodb,
-    florisvdh/dbplyr@dbplyr_with_pivot_wider
+    inbo/inbodb
 LazyData: true
 Encoding: UTF-8
 RoxygenNote: 7.1.1
