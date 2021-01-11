@@ -906,6 +906,18 @@ get_xg3 <- function(locs,
 #'
 #' TO BE ADDED: What is electroneutrality and why is it used as a criterion?
 #'
+#' @md
+#'
+#' @note
+#' Up to and including `watina 0.3.0`, the result was sorted according to
+#' `loc_code`, `date` and `chem_variable`, both for the lazy query and the
+#' collected result.
+#' Later versions avoid sorting in case of a lazy result, because
+#' otherwise, when using the result inside another lazy query, this led to
+#' 'ORDER BY' constructs in SQL subqueries, which must be avoided.
+#' If you like to print the lazy object in a sorted manner, you must add
+#' `%>% arrange(...)` yourself.
+#'
 #' @param startdate First date of the timeframe, as a string.
 #' The string must use a formatting of the order 'day month year',
 #' i.e. a format which can be interpreted by \code{\link[lubridate:ymd]{dmy}}.
@@ -1258,14 +1270,14 @@ get_chem <- function(locs,
                                              .data$unit))
         ) %>%
         select(-contains("value_"), -.data$provide_eq_unit) %>%
-        mutate(unit = ifelse(.data$unit == "/", NA, .data$unit)) %>%
-        arrange(.data$loc_code,
-                .data$date,
-                .data$chem_variable)
+        mutate(unit = ifelse(.data$unit == "/", NA, .data$unit))
 
     if (collect) {
         chem <-
             chem %>%
+            arrange(.data$loc_code,
+                    .data$date,
+                    .data$chem_variable) %>%
             collect
     }
 

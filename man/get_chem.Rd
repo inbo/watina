@@ -136,6 +136,16 @@ To retrieve all data from all water samples, use \code{en_range = c(-1, 1)}.
 
 TO BE ADDED: What is electroneutrality and why is it used as a criterion?
 }
+\note{
+Up to and including \verb{watina 0.3.0}, the result was sorted according to
+\code{loc_code}, \code{date} and \code{chem_variable}, both for the lazy query and the
+collected result.
+Later versions avoid sorting in case of a lazy result, because
+otherwise, when using the result inside another lazy query, this led to
+'ORDER BY' constructs in SQL subqueries, which must be avoided.
+If you like to print the lazy object in a sorted manner, you must add
+\verb{\%>\% arrange(...)} yourself.
+}
 \examples{
 \dontrun{
 watina <- connect_watina()
