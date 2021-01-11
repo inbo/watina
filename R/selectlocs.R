@@ -553,10 +553,11 @@ selectlocs_xg3 <- function(data,
                        filter(str_detect(.data$statistic, "ser_")),
                    by = c("xg3_variable",
                           "statistic")) %>%
-        complete(.data$loc_code, nesting(.data$xg3_variable,
-                                         .data$statistic,
-                                         .data$criterion,
-                                         .data$direction)) %>%
+        complete(.data$loc_code, with(.data,
+                                      nesting(xg3_variable,
+                                              statistic,
+                                              criterion,
+                                              direction))) %>%
         mutate(cond_met =
                    ifelse(.data$direction == "min", .data$value >= .data$criterion,
                           ifelse(.data$direction == "max", .data$value <= .data$criterion,
@@ -1225,10 +1226,11 @@ selectlocs <- function(data,
             right_join(conditions,
                        by = c("variable",
                               "statistic")) %>%
-            complete(.data$loc_code, nesting(.data$variable,
-                                             .data$statistic,
-                                             .data$criterion,
-                                             .data$direction)) %>%
+            complete(.data$loc_code, with(.data,
+                                          nesting(variable,
+                                                  statistic,
+                                                  criterion,
+                                                  direction))) %>%
             mutate(cond_met =
                        ifelse(.data$direction == "min", .data$value >= .data$criterion,
                               ifelse(.data$direction == "max", .data$value <= .data$criterion,
