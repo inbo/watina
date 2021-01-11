@@ -676,7 +676,11 @@ date, lab_sample_id, chem_variable, value, unit, below_loq."
         filter(.data$chem_variable %in% chem_var)
 
     if (inherits(data, "tbl_lazy")) {
-        data <- collect(data)
+        data <-
+            collect(data) %>%
+            arrange(.data$loc_code,
+                    .data$date,
+                    .data$chem_variable)
     }
 
     if (!missing(chem_var)) {
