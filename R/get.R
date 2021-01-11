@@ -139,6 +139,18 @@
 #' retained observation well.
 #' It is ignored if \code{obswells = TRUE}.
 #'
+#' @md
+#'
+#' @note
+#' Up to and including `watina 0.3.0`, the result was sorted according to
+#' `area_code`, `loc_code` and (for observation wells) `obswell_rank`,
+#' both for the lazy query and the collected result.
+#' Later versions avoid sorting in case of a lazy result, because
+#' otherwise, when using the result inside another lazy query, this led to
+#' 'ORDER BY' constructs in SQL subqueries, which must be avoided.
+#' If you like to print the lazy object in a sorted manner, you must add
+#' `%>% arrange(...)` yourself.
+#'
 #' @param mask An optional geospatial filter of class \code{sf}.
 #' If provided, only locations that intersect with \code{mask} will be returned,
 #' with the value of \code{buffer} taken into account.
@@ -455,10 +467,7 @@ get_locs <- function(con,
                measuringref_ost = .data$ReferentieNiveauTAW,
                .data$tubelength,
                .data$filterlength,
-               .data$filterdepth) %>%
-        arrange(.data$area_code,
-                .data$loc_code,
-                .data$obswell_rank)
+               .data$filterdepth)
 
     if (filterdepth_guess) {
         locs <-
@@ -492,12 +501,6 @@ get_locs <- function(con,
                        .data$loc_typecode != "P"
             )
     }
-
-    locs <-
-        locs %>%
-        arrange(.data$area_code,
-                .data$loc_code,
-                .data$obswell_rank)
 
     if (!obswells) {
 
@@ -597,9 +600,7 @@ get_locs <- function(con,
                    -.data$obswell_count,
                    -.data$obswell_maxrank,
                    -.data$obswell_maxrank_fd,
-                   -.data$obswell_maxrank_sso) %>%
-            arrange(.data$area_code,
-                    .data$loc_code)
+                   -.data$obswell_maxrank_sso)
     }
 
     if (!is.null(mask)) {
