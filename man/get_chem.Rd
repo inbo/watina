@@ -151,9 +151,14 @@ If you like to print the lazy object in a sorted manner, you must add
 watina <- connect_watina()
 library(dplyr)
 mylocs <- get_locs(watina, area_codes = "ZWA")
-mylocs \%>\% get_chem(watina, "1/1/2017")
-mylocs \%>\% get_chem(watina, "1/1/2017", collect = TRUE)
-mylocs \%>\% get_chem(watina, "1/1/2017", conc_type = "eq")
+mylocs \%>\%
+    get_chem(watina, "1/1/2017") \%>\%
+    arrange(loc_code, date, chem_variable)
+mylocs \%>\%
+    get_chem(watina, "1/1/2017", collect = TRUE)
+mylocs \%>\%
+    get_chem(watina, "1/1/2017", conc_type = "eq") \%>\%
+    arrange(loc_code, date, chem_variable)
 
 # compare the number of returned rows:
 mylocs \%>\% get_chem(watina, "1/1/2017") \%>\% count
@@ -173,7 +178,8 @@ get_chem(watina, "1/1/2017") \%>\%
     left_join(mylocs \%>\%
                   select(-loc_wid),
               .) \%>\%
-    collect
+    collect \%>\%
+    arrange(loc_code, date, chem_variable)
 
 # Disconnect:
 DBI::dbDisconnect(watina)

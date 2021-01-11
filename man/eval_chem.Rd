@@ -117,7 +117,7 @@ mylocs <- get_locs(watina, area_codes = "ZWA")
 mydata <-
  mylocs \%>\%
  get_chem(watina, "1/1/2010")
-mydata
+mydata \%>\% arrange(loc_code, date, chem_variable)
 mydata \%>\%
   pull(date) \%>\%
   lubridate::year(.) \%>\%

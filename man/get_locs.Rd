@@ -242,7 +242,8 @@ get_locs(watina,
          bbox = c(xmin = 1.4e+5,
                   xmax = 1.7e+5,
                   ymin = 1.6e+5,
-                  ymax = 1.9e+5))
+                  ymax = 1.9e+5)) \%>\%
+    arrange(area_code, loc_code)
 
 get_locs(watina,
          area_codes = c("KAL", "KBR"),

@@ -101,17 +101,22 @@ If you like to print the lazy object in a sorted manner, you must add
 watina <- connect_watina()
 library(dplyr)
 mylocs <- get_locs(watina, area_codes = "KAL")
-mylocs \%>\% get_xg3(watina, 2010)
+mylocs \%>\%
+    get_xg3(watina, 2010) \%>\%
+    arrange(loc_code, hydroyear)
 mylocs \%>\% get_xg3(watina, 2010, collect = TRUE)
-mylocs \%>\% get_xg3(watina, 2010, vert_crs = "ostend")
+mylocs \%>\%
+    get_xg3(watina, 2010, vert_crs = "ostend") \%>\%
+    arrange(loc_code, hydroyear)
 
 # joining results to mylocs:
 mylocs \%>\%
-  get_xg3(watina, 2010) \%>\%
-  left_join(mylocs \%>\%
-            select(-loc_wid),
-            .) \%>\%
-  collect
+    get_xg3(watina, 2010) \%>\%
+    left_join(mylocs \%>\%
+              select(-loc_wid),
+              .) \%>\%
+    collect \%>\%
+    arrange(loc_code, hydroyear)
 
 # Disconnect:
 DBI::dbDisconnect(watina)

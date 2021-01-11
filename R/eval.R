@@ -33,7 +33,7 @@
 #' mydata <-
 #'  mylocs %>%
 #'  get_xg3(watina, 2014)
-#' mydata
+#' mydata %>% arrange(loc_code, hydroyear)
 #' eval_xg3_avail(mydata,
 #'                xg3_type = c("L", "V"))
     #' # Disconnect:
@@ -340,7 +340,7 @@ qualify_xg3 <- function(data,
 #' mydata <-
 #'  mylocs %>%
 #'  get_xg3(watina, 1900)
-#' mydata
+#' mydata %>% arrange(loc_code, hydroyear)
 #' mydata %>%
 #'   eval_xg3_series(xg3_type = c("L", "V"),
 #'                   max_gap = 2,
@@ -591,7 +591,7 @@ eval_xg3_series <- function(data,
 #' mydata <-
 #'  mylocs %>%
 #'  get_chem(watina, "1/1/2010")
-#' mydata
+#' mydata %>% arrange(loc_code, date, chem_variable)
 #' mydata %>%
 #'   pull(date) %>%
 #'   lubridate::year(.) %>%

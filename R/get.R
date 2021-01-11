@@ -211,7 +211,8 @@
 #'          bbox = c(xmin = 1.4e+5,
 #'                   xmax = 1.7e+5,
 #'                   ymin = 1.6e+5,
-#'                   ymax = 1.9e+5))
+#'                   ymax = 1.9e+5)) %>%
+#'     arrange(area_code, loc_code)
 #'
 #' get_locs(watina,
 #'          area_codes = c("KAL", "KBR"),
@@ -759,17 +760,22 @@ get_locs <- function(con,
 #' watina <- connect_watina()
 #' library(dplyr)
 #' mylocs <- get_locs(watina, area_codes = "KAL")
-#' mylocs %>% get_xg3(watina, 2010)
+#' mylocs %>%
+#'     get_xg3(watina, 2010) %>%
+#'     arrange(loc_code, hydroyear)
 #' mylocs %>% get_xg3(watina, 2010, collect = TRUE)
-#' mylocs %>% get_xg3(watina, 2010, vert_crs = "ostend")
+#' mylocs %>%
+#'     get_xg3(watina, 2010, vert_crs = "ostend") %>%
+#'     arrange(loc_code, hydroyear)
 #'
 #' # joining results to mylocs:
 #' mylocs %>%
-#'   get_xg3(watina, 2010) %>%
-#'   left_join(mylocs %>%
-#'             select(-loc_wid),
-#'             .) %>%
-#'   collect
+#'     get_xg3(watina, 2010) %>%
+#'     left_join(mylocs %>%
+#'               select(-loc_wid),
+#'               .) %>%
+#'     collect %>%
+#'     arrange(loc_code, hydroyear)
 #'
 #' # Disconnect:
 #' DBI::dbDisconnect(watina)
@@ -1012,9 +1018,14 @@ get_xg3 <- function(locs,
 #' watina <- connect_watina()
 #' library(dplyr)
 #' mylocs <- get_locs(watina, area_codes = "ZWA")
-#' mylocs %>% get_chem(watina, "1/1/2017")
-#' mylocs %>% get_chem(watina, "1/1/2017", collect = TRUE)
-#' mylocs %>% get_chem(watina, "1/1/2017", conc_type = "eq")
+#' mylocs %>%
+#'     get_chem(watina, "1/1/2017") %>%
+#'     arrange(loc_code, date, chem_variable)
+#' mylocs %>%
+#'     get_chem(watina, "1/1/2017", collect = TRUE)
+#' mylocs %>%
+#'     get_chem(watina, "1/1/2017", conc_type = "eq") %>%
+#'     arrange(loc_code, date, chem_variable)
 #'
 #' # compare the number of returned rows:
 #' mylocs %>% get_chem(watina, "1/1/2017") %>% count
@@ -1034,7 +1045,8 @@ get_xg3 <- function(locs,
 #'     left_join(mylocs %>%
 #'                   select(-loc_wid),
 #'               .) %>%
-#'     collect
+#'     collect %>%
+#'     arrange(loc_code, date, chem_variable)
 #'
 #' # Disconnect:
 #' DBI::dbDisconnect(watina)
