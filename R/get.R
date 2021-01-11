@@ -1029,8 +1029,6 @@ get_xg3 <- function(locs,
 #' day
 #' month
 #' year
-#' @importFrom dbplyr
-#' db_pivot_wider
 #' @importFrom dplyr
 #' %>%
 #' copy_to
