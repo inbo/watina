@@ -86,6 +86,16 @@ Currently, non-truncated values are returned, with usage of estimated values.
 Why truncate, and why truncate by default?
 When to choose which \code{vert_crs}?)
 }
+\note{
+Up to and including \verb{watina 0.3.0}, the result was sorted according to
+\code{loc_code} and \code{hydroyear}, both for the lazy query and the
+collected result.
+Later versions avoid sorting in case of a lazy result, because
+otherwise, when using the result inside another lazy query, this led to
+'ORDER BY' constructs in SQL subqueries, which must be avoided.
+If you like to print the lazy object in a sorted manner, you must add
+\verb{\%>\% arrange(...)} yourself.
+}
 \examples{
 \dontrun{
 watina <- connect_watina()

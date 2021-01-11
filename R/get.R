@@ -702,6 +702,18 @@ get_locs <- function(con,
 #' Why truncate, and why truncate by default?
 #' When to choose which \code{vert_crs}?)
 #'
+#' @md
+#'
+#' @note
+#' Up to and including `watina 0.3.0`, the result was sorted according to
+#' `loc_code` and `hydroyear`, both for the lazy query and the
+#' collected result.
+#' Later versions avoid sorting in case of a lazy result, because
+#' otherwise, when using the result inside another lazy query, this led to
+#' 'ORDER BY' constructs in SQL subqueries, which must be avoided.
+#' If you like to print the lazy object in a sorted manner, you must add
+#' `%>% arrange(...)` yourself.
+#'
 #' @param locs A \code{tbl_lazy} object or a dataframe, with at least a column
 #' \code{loc_code} that defines the locations for which values are to be
 #' returned.
@@ -854,13 +866,13 @@ get_xg3 <- function(locs,
                local = xg3 %>% select(-contains("ost")),
                ostend = xg3 %>% select(-contains("lcl")),
                both = xg3
-               ) %>%
-        arrange(.data$loc_code,
-                .data$hydroyear)
+               )
 
     if (collect) {
         xg3 <-
             xg3 %>%
+            arrange(.data$loc_code,
+                    .data$hydroyear) %>%
             collect
     }
 
