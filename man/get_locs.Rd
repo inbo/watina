@@ -224,7 +224,7 @@ measurement device).
 }
 \note{
 Up to and including \verb{watina 0.3.0}, the result was sorted according to
-\code{area_code}, \code{loc_code} and (for observation wells) \code{obswell_rank},
+\code{area_code} and \code{loc_code},
 both for the lazy query and the collected result.
 Later versions avoid sorting in case of a lazy result, because
 otherwise, when using the result inside another lazy query, this led to

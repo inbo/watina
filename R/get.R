@@ -143,7 +143,7 @@
 #'
 #' @note
 #' Up to and including `watina 0.3.0`, the result was sorted according to
-#' `area_code`, `loc_code` and (for observation wells) `obswell_rank`,
+#' `area_code` and `loc_code`,
 #' both for the lazy query and the collected result.
 #' Later versions avoid sorting in case of a lazy result, because
 #' otherwise, when using the result inside another lazy query, this led to
