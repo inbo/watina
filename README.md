@@ -21,6 +21,17 @@ Currently the R package won't work outside INBO.
 
 ## Installing, testing and using the _watina_ package
 
+### Option 1 (quick): installing without vignettes
+
+```r
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
+remotes::install_github("inbo/watina", upgrade = TRUE)
+```
+
+You can consult the vignettes of the latest release on the (this) `pkgdown` [website](https://inbo.github.io/watina/): click on 'Articles' at the top.
+
+### Option 2: installing with vignettes
+
 ```r
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
 if (!("nycflights13" %in% installed.packages())) {
