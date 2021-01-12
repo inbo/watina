@@ -182,7 +182,7 @@ get_chem(watina, "1/1/2017") \%>\%
     arrange(loc_code, date, chem_variable)
 
 # Disconnect:
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 }
 
 }

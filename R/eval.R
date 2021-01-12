@@ -37,7 +37,7 @@
 #' eval_xg3_avail(mydata,
 #'                xg3_type = c("L", "V"))
     #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #'
@@ -200,6 +200,7 @@ filter_xg3 <- function(data,
 #' contains
 #' vars
 #' mutate_at
+#' collect
 qualify_xg3 <- function(data,
                         xg3_type) {
 
@@ -346,7 +347,7 @@ qualify_xg3 <- function(data,
 #'                   max_gap = 2,
 #'                   min_dur = 5)
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #' @export
@@ -375,6 +376,7 @@ qualify_xg3 <- function(data,
 #' n
 #' first
 #' ungroup
+#' collect
 eval_xg3_series <- function(data,
                             xg3_type = c("L", "H", "V"),
                             max_gap,
@@ -611,7 +613,7 @@ eval_xg3_series <- function(data,
 #'   arrange(desc(loc_code)) %>%
 #'   select(loc_code, chem_variable, pval_uniform_totalspan)
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #'
@@ -631,6 +633,7 @@ eval_xg3_series <- function(data,
 #' left_join
 #' filter
 #' first
+#' collect
 #' @importFrom tidyr
 #' spread
 #' gather

@@ -262,7 +262,7 @@ get_locs(watina,
 At the end of your work (a script, a bookdown document etc.), close the connection:
 
 ```{r}
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 ```
 
 

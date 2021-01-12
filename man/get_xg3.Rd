@@ -119,7 +119,7 @@ mylocs \%>\%
     arrange(loc_code, hydroyear)
 
 # Disconnect:
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 }
 
 }

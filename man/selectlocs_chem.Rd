@@ -232,7 +232,7 @@ mydata \%>\%
                     conditions = conditions_df)
 
 # Disconnect:
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 }
 
 }

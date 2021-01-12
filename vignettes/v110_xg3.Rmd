@@ -195,6 +195,6 @@ It calls `eval_xg3_avail()` and `eval_xg3_series()` by itself, but alternatively
 
 
 ```{r include=FALSE}
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 ```
 

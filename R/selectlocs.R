@@ -290,7 +290,7 @@
 #' result$combined_result_filtered
 #' result[2:4]
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #' @export
@@ -925,7 +925,7 @@ selectlocs_xg3 <- function(data,
 #'                     conditions = conditions_df)
 #'
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #' @export

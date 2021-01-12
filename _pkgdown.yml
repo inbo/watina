@@ -11,6 +11,7 @@ reference:
   - title: "Connect"
     contents:
       - connect_watina
+      - dbDisconnect
   - title: "Get locations"
     contents:
       - get_locs
@@ -30,5 +31,3 @@ reference:
       - as_points
       - cluster_locs
       - extract_xg3_series
-      - collect
-      - convertdf_enc

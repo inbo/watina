@@ -49,7 +49,7 @@ mydata \%>\% arrange(loc_code, hydroyear)
 eval_xg3_avail(mydata,
                xg3_type = c("L", "V"))
 # Disconnect:
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 }
 
 

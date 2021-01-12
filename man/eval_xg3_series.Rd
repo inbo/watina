@@ -123,7 +123,7 @@ mydata \%>\%
                   max_gap = 2,
                   min_dur = 5)
 # Disconnect:
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 }
 
 }
