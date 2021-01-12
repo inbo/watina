@@ -317,7 +317,7 @@ result <-
 result$combined_result_filtered
 result[2:4]
 # Disconnect:
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 }
 
 }

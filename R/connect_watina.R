@@ -4,7 +4,7 @@
 #' The function can only be used from within the INBO network.
 #'
 #' Don't forget to disconnect at the end of your R-script using
-#' \code{\link[DBI:dbDisconnect]{DBI::dbDisconnect()}}!
+#' \code{\link{dbDisconnect}}!
 #'
 #' @return
 #' A \code{DBIConnection} object.
@@ -14,7 +14,7 @@
 #' watina <- connect_watina()
 #' # Do your stuff.
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #' @export
@@ -24,3 +24,15 @@ connect_watina <- function() {
                        autoconvert_utf8 = TRUE)
 }
 
+
+
+#' Disconnect a database connection
+#'
+#' This is a re-export of
+#' \code{\link[inbodb:dbDisconnect-OdbcConnection-method]{inbodb::dbDisconnect()}}.
+#'
+#' @name dbDisconnect
+#' @keywords documentation
+#' @importFrom inbodb dbDisconnect
+#' @export dbDisconnect
+NULL

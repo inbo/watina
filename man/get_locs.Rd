@@ -321,7 +321,7 @@ get_locs(watina,
          buffer = 0)
 
 # Disconnect:
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 }
 
 }

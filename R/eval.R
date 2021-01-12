@@ -37,7 +37,7 @@
 #' eval_xg3_avail(mydata,
 #'                xg3_type = c("L", "V"))
     #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #'
@@ -347,7 +347,7 @@ qualify_xg3 <- function(data,
 #'                   max_gap = 2,
 #'                   min_dur = 5)
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #' @export
@@ -613,7 +613,7 @@ eval_xg3_series <- function(data,
 #'   arrange(desc(loc_code)) %>%
 #'   select(loc_code, chem_variable, pval_uniform_totalspan)
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #'

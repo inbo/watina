@@ -15,14 +15,14 @@ The function can only be used from within the INBO network.
 }
 \details{
 Don't forget to disconnect at the end of your R-script using
-\code{\link[DBI:dbDisconnect]{DBI::dbDisconnect()}}!
+\code{\link{dbDisconnect}}!
 }
 \examples{
 \dontrun{
 watina <- connect_watina()
 # Do your stuff.
 # Disconnect:
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 }
 
 }

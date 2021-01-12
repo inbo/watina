@@ -313,6 +313,6 @@ The `selectlocs_chem()` function, of which we saw a demonstration above, calls `
 Alternatively the user can provide the result of those functions as input to `selectlocs_chem()`.
 
 ```{r include=FALSE}
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 ```
 

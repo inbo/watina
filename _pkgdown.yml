@@ -11,6 +11,7 @@ reference:
   - title: "Connect"
     contents:
       - connect_watina
+      - dbDisconnect
   - title: "Get locations"
     contents:
       - get_locs

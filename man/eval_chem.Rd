@@ -137,7 +137,7 @@ mydata \%>\%
   arrange(desc(loc_code)) \%>\%
   select(loc_code, chem_variable, pval_uniform_totalspan)
 # Disconnect:
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 }
 
 

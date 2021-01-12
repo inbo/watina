@@ -290,7 +290,7 @@
 #'          buffer = 0)
 #'
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #' @export
@@ -778,7 +778,7 @@ get_locs <- function(con,
 #'     arrange(loc_code, hydroyear)
 #'
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #' @export
@@ -1049,7 +1049,7 @@ get_xg3 <- function(locs,
 #'     arrange(loc_code, date, chem_variable)
 #'
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #' @export
