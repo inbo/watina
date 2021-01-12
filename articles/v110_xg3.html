@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -71,7 +71,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/inbo/watina/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -110,13 +110,14 @@
 <li>the last year of the XG3 series must be 2015 or later.</li>
 </ul>
 <p>We can store specific conditions in a dataframe; the available statistics are explained by the documentation of <code><a href="../reference/eval_xg3_avail.html">eval_xg3_avail()</a></code> and <code><a href="../reference/eval_xg3_series.html">eval_xg3_series()</a></code>:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">conditions_df</span> <span class="kw">&lt;-</span>
-  <span class="fu">tribble</span>(
-  ~<span class="no">xg3_variable</span>, ~<span class="no">statistic</span>, ~<span class="no">criterion</span>, ~<span class="no">direction</span>,
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">conditions_df</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span>
+  <span class="op">~</span><span class="va">xg3_variable</span>, <span class="op">~</span><span class="va">statistic</span>, <span class="op">~</span><span class="va">criterion</span>, <span class="op">~</span><span class="va">direction</span>,
   <span class="st">"combined"</span>, <span class="st">"ser_lastyear"</span>, <span class="fl">2015</span>, <span class="st">"min"</span>
-  )
-<span class="no">conditions_df</span> <span class="kw">%&gt;%</span>
-  <span class="no">kable</span></pre></body></html></div>
+  <span class="op">)</span>
+<span class="va">conditions_df</span> <span class="op">%&gt;%</span> 
+  <span class="va">kable</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">xg3_variable</th>
@@ -132,15 +133,16 @@
 </tr></tbody>
 </table>
 <p>The other aspects (which XG3 types?, <code>max_gap</code>, <code>min_dur</code>) are directly specified in the <code><a href="../reference/selectlocs_xg3.html">selectlocs_xg3()</a></code> function:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">watina</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/connect_watina.html">connect_watina</a></span>()
-<span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>,
-         <span class="kw">area_codes</span> <span class="kw">=</span> <span class="st">"TOR"</span>,
-         <span class="kw">loc_type</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"P"</span>, <span class="st">"S"</span>)) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span>(<span class="no">watina</span>, <span class="fl">1900</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/selectlocs_xg3.html">selectlocs_xg3</a></span>(<span class="kw">xg3_type</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"L"</span>, <span class="st">"H"</span>),
-                  <span class="kw">max_gap</span> <span class="kw">=</span> <span class="fl">1</span>,
-                  <span class="kw">min_dur</span> <span class="kw">=</span> <span class="fl">5</span>,
-                  <span class="kw">conditions</span> <span class="kw">=</span> <span class="no">conditions_df</span>)
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">watina</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/connect_watina.html">connect_watina</a></span><span class="op">(</span><span class="op">)</span>
+<span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
+         area_codes <span class="op">=</span> <span class="st">"TOR"</span>,
+         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">1900</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="../reference/selectlocs_xg3.html">selectlocs_xg3</a></span><span class="op">(</span>xg3_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"L"</span>, <span class="st">"H"</span><span class="op">)</span>,
+                  max_gap <span class="op">=</span> <span class="fl">1</span>,
+                  min_dur <span class="op">=</span> <span class="fl">5</span>,
+                  conditions <span class="op">=</span> <span class="va">conditions_df</span><span class="op">)</span>
 <span class="co">#&gt; Dropped 19 locations in series evaluation because no XG3 series are available at those locations, for the requested XG3 variables: TORP012, TORP013, TORP019, TORP023, TORP025, TORP026, TORP027, TORP030, TORP031, TORS001, TORS002, TORS003, TORS004, TORS005, TORS006, TORS007, TORS008, TORS010, TORS012</span>
 <span class="co">#&gt; # A tibble: 16 x 1</span>
 <span class="co">#&gt;    loc_code</span>
@@ -160,15 +162,16 @@
 <span class="co">#&gt; 13 TORP024 </span>
 <span class="co">#&gt; 14 TORP028 </span>
 <span class="co">#&gt; 15 TORP029 </span>
-<span class="co">#&gt; 16 TORS009</span></pre></body></html></div>
+<span class="co">#&gt; 16 TORS009</span></code></pre></div>
 <p>With the argument <code>list = TRUE</code> you can also obtain intermediate test results. For further information, see the documentation of the <code><a href="../reference/selectlocs_xg3.html">selectlocs_xg3()</a></code> function.</p>
 </div>
 <div id="the-basics-obtaining-xg3-values" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-basics-obtaining-xg3-values" class="anchor"></a>The basics: obtaining XG3 values</h2>
 <p>The <code><a href="../reference/get_xg3.html">get_xg3()</a></code> function in the above example retrieved XG3 values, from given locations, as a lazy object (unless <code>collect = TRUE</code>). A timeframe (in hydrological years) is used to filter XG3 values in Watina (arguments <code>startyear</code> and <code>endyear</code>). By default, the <code>endyear</code> argument is set to the previous hydrological year. Here we only provide the <code>startyear</code>:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>, <span class="kw">area_codes</span> <span class="kw">=</span> <span class="st">"KAL"</span>)
-<span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span>(<span class="no">watina</span>, <span class="fl">2010</span>)
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>, area_codes <span class="op">=</span> <span class="st">"KAL"</span><span class="op">)</span>
+<span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span><span class="op">)</span>
 <span class="co">#&gt; # Source:     lazy query [?? x 5]</span>
 <span class="co">#&gt; # Database:   Microsoft SQL Server</span>
 <span class="co">#&gt; # Ordered by: area_code, loc_code, loc_code, hydroyear</span>
@@ -184,9 +187,10 @@
 <span class="co">#&gt;  8 KALP079       2013  NA      NA      -0.64 </span>
 <span class="co">#&gt;  9 KALP081       2010  NA      NA      -0.557</span>
 <span class="co">#&gt; 10 KALP081       2013  NA      NA      -0.413</span>
-<span class="co">#&gt; # … with more rows</span></pre></body></html></div>
+<span class="co">#&gt; # … with more rows</span></code></pre></div>
 <p>Retrieving the data locally:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span>(<span class="no">watina</span>, <span class="fl">2010</span>, <span class="kw">collect</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span>, collect <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 46 x 5</span>
 <span class="co">#&gt;    loc_code hydroyear lg3_lcl hg3_lcl vg3_lcl</span>
 <span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span>
@@ -200,9 +204,10 @@
 <span class="co">#&gt;  8 KALP079       2013  NA      NA      -0.64 </span>
 <span class="co">#&gt;  9 KALP081       2010  NA      NA      -0.557</span>
 <span class="co">#&gt; 10 KALP081       2013  NA      NA      -0.413</span>
-<span class="co">#&gt; # … with 36 more rows</span></pre></body></html></div>
+<span class="co">#&gt; # … with 36 more rows</span></code></pre></div>
 <p>By default, the “local” vertical coordinate reference system (CRS) is used to express water levels, but also the CRS Ostend height (EPSG <a href="https://epsg.io/5710">5710</a>, also known as ‘TAW’ or ‘DNG’) is available from the database by setting <code>vert_crs = "ostend"</code>.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span>(<span class="no">watina</span>, <span class="fl">2010</span>, <span class="kw">vert_crs</span> <span class="kw">=</span> <span class="st">"ostend"</span>)
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span>, vert_crs <span class="op">=</span> <span class="st">"ostend"</span><span class="op">)</span>
 <span class="co">#&gt; # Source:     lazy query [?? x 5]</span>
 <span class="co">#&gt; # Database:   Microsoft SQL Server</span>
 <span class="co">#&gt; # Ordered by: area_code, loc_code, loc_code, hydroyear</span>
@@ -218,14 +223,15 @@
 <span class="co">#&gt;  8 KALP079       2013    NA      NA      19.8</span>
 <span class="co">#&gt;  9 KALP081       2010    NA      NA      20.9</span>
 <span class="co">#&gt; 10 KALP081       2013    NA      NA      21.0</span>
-<span class="co">#&gt; # … with more rows</span></pre></body></html></div>
+<span class="co">#&gt; # … with more rows</span></code></pre></div>
 <p>Joining results to <code>mylocs</code>:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span>(<span class="no">watina</span>, <span class="fl">2010</span>) <span class="kw">%&gt;%</span>
-  <span class="fu">left_join</span>(<span class="no">mylocs</span> <span class="kw">%&gt;%</span>
-            <span class="fu">select</span>(-<span class="no">loc_wid</span>),
-            <span class="no">.</span>) <span class="kw">%&gt;%</span>
-  <span class="no">collect</span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">mylocs</span> <span class="op">%&gt;%</span>
+            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">loc_wid</span><span class="op">)</span>,
+            <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="va">collect</span>
 <span class="co">#&gt; Joining, by = "loc_code"</span>
 <span class="co">#&gt; # A tibble: 109 x 13</span>
 <span class="co">#&gt;    loc_code area_code area_name      x      y loc_validitycode loc_validity</span>
@@ -242,7 +248,7 @@
 <span class="co">#&gt; 10 KALP063  KAL       Kalmthou… 154669 230340 VLD              Gevalideerd </span>
 <span class="co">#&gt; # … with 99 more rows, and 6 more variables: loc_typecode &lt;chr&gt;,</span>
 <span class="co">#&gt; #   loc_typename &lt;chr&gt;, hydroyear &lt;int&gt;, lg3_lcl &lt;dbl&gt;, hg3_lcl &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   vg3_lcl &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; #   vg3_lcl &lt;dbl&gt;</span></code></pre></div>
 </div>
 <div id="processing-xg3-values-and-selecting-locations" class="section level2">
 <h2 class="hasAnchor">
@@ -267,7 +273,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

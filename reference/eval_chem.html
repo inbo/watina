@@ -83,7 +83,7 @@ the specified hydrochemical variables, for each location." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -115,7 +115,7 @@ the specified hydrochemical variables, for each location." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/inbo/watina/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -144,13 +144,13 @@ numeric properties) of
 the specified hydrochemical variables, for each location.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>eval_chem</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>chem_var</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P-PO4"</span>, <span class='st'>"N-NO3"</span>, <span class='st'>"N-NO2"</span>, <span class='st'>"N-NH4"</span>, <span class='st'>"HCO3"</span>, <span class='st'>"SO4"</span>, <span class='st'>"Cl"</span>, <span class='st'>"Na"</span>, <span class='st'>"K"</span>,
-    <span class='st'>"Ca"</span>, <span class='st'>"Mg"</span>, <span class='st'>"Fe"</span>, <span class='st'>"Mn"</span>, <span class='st'>"Si"</span>, <span class='st'>"Al"</span>, <span class='st'>"CondF"</span>, <span class='st'>"CondL"</span>, <span class='st'>"pHF"</span>, <span class='st'>"pHL"</span>),
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"avail"</span>, <span class='st'>"num"</span>, <span class='st'>"both"</span>),
-  <span class='kw'>uniformity_test</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>eval_chem</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  chem_var <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P-PO4"</span>, <span class='st'>"N-NO3"</span>, <span class='st'>"N-NO2"</span>, <span class='st'>"N-NH4"</span>, <span class='st'>"HCO3"</span>, <span class='st'>"SO4"</span>, <span class='st'>"Cl"</span>, <span class='st'>"Na"</span>, <span class='st'>"K"</span>,
+    <span class='st'>"Ca"</span>, <span class='st'>"Mg"</span>, <span class='st'>"Fe"</span>, <span class='st'>"Mn"</span>, <span class='st'>"Si"</span>, <span class='st'>"Al"</span>, <span class='st'>"CondF"</span>, <span class='st'>"CondL"</span>, <span class='st'>"pHF"</span>, <span class='st'>"pHL"</span><span class='op'>)</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"avail"</span>, <span class='st'>"num"</span>, <span class='st'>"both"</span><span class='op'>)</span>,
+  uniformity_test <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -259,35 +259,38 @@ availability of data for <strong>all</strong> corresponding chemical variables.<
 <code><a href='eval_xg3_series.html'>eval_xg3_series</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>watina</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='connect_watina.html'>connect_watina</a></span>()
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
-<span class='no'>mylocs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_locs.html'>get_locs</a></span>(<span class='no'>watina</span>, <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='st'>"ZWA"</span>)
-<span class='no'>mydata</span> <span class='kw'>&lt;-</span>
- <span class='no'>mylocs</span> <span class='kw'>%&gt;%</span>
- <span class='fu'><a href='get_chem.html'>get_chem</a></span>(<span class='no'>watina</span>, <span class='st'>"1/1/2010"</span>)
-<span class='no'>mydata</span>
-<span class='no'>mydata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/pull.html'>pull</a></span>(<span class='no'>date</span>) <span class='kw'>%&gt;%</span>
-  <span class='kw pkg'>lubridate</span><span class='kw ns'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/year.html'>year</a></span>(<span class='no'>.</span>) <span class='kw'>%&gt;%</span>
-  (<span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>firstyear</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span>(<span class='no'>x</span>), <span class='kw'>lastyear</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='no'>x</span>)))
-<span class='no'>mydata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>eval_chem</span>(<span class='kw'>chem_var</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P-PO4"</span>, <span class='st'>"N-NO3"</span>, <span class='st'>"N-NO2"</span>, <span class='st'>"N-NH4"</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/desc.html'>desc</a></span>(<span class='no'>loc_code</span>))
-<span class='no'>mydata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>eval_chem</span>(<span class='kw'>chem_var</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P-PO4"</span>, <span class='st'>"N-NO3"</span>, <span class='st'>"N-NO2"</span>, <span class='st'>"N-NH4"</span>),
-            <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"both"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/desc.html'>desc</a></span>(<span class='no'>loc_code</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fl'>10</span>)
-<span class='no'>mydata</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>eval_chem</span>(<span class='kw'>chem_var</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P-PO4"</span>, <span class='st'>"N-NO3"</span>, <span class='st'>"N-NO2"</span>, <span class='st'>"N-NH4"</span>),
-            <span class='kw'>uniformity_test</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span>(<span class='fu'><a href='https://dplyr.tidyverse.org/reference/desc.html'>desc</a></span>(<span class='no'>loc_code</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>loc_code</span>, <span class='no'>chem_variable</span>, <span class='no'>pval_uniform_totalspan</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>watina</span> <span class='op'>&lt;-</span> <span class='fu'><a href='connect_watina.html'>connect_watina</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
+<span class='va'>mylocs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_locs.html'>get_locs</a></span><span class='op'>(</span><span class='va'>watina</span>, area_codes <span class='op'>=</span> <span class='st'>"ZWA"</span><span class='op'>)</span>
+<span class='va'>mydata</span> <span class='op'>&lt;-</span>
+ <span class='va'>mylocs</span> <span class='op'>%&gt;%</span>
+ <span class='fu'><a href='get_chem.html'>get_chem</a></span><span class='op'>(</span><span class='va'>watina</span>, <span class='st'>"1/1/2010"</span><span class='op'>)</span>
+<span class='va'>mydata</span>
+<span class='va'>mydata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/pull.html'>pull</a></span><span class='op'>(</span><span class='va'>date</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>lubridate</span><span class='fu'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/year.html'>year</a></span><span class='op'>(</span><span class='va'>.</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='op'>(</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>firstyear <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, lastyear <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>mydata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>eval_chem</span><span class='op'>(</span>chem_var <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P-PO4"</span>, <span class='st'>"N-NO3"</span>, <span class='st'>"N-NO2"</span>, <span class='st'>"N-NH4"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/desc.html'>desc</a></span><span class='op'>(</span><span class='va'>loc_code</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>mydata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>eval_chem</span><span class='op'>(</span>chem_var <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P-PO4"</span>, <span class='st'>"N-NO3"</span>, <span class='st'>"N-NO2"</span>, <span class='st'>"N-NH4"</span><span class='op'>)</span>,
+            type <span class='op'>=</span> <span class='st'>"both"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/desc.html'>desc</a></span><span class='op'>(</span><span class='va'>loc_code</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>
+<span class='va'>mydata</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>eval_chem</span><span class='op'>(</span>chem_var <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P-PO4"</span>, <span class='st'>"N-NO3"</span>, <span class='st'>"N-NO2"</span>, <span class='st'>"N-NH4"</span><span class='op'>)</span>,
+            uniformity_test <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/desc.html'>desc</a></span><span class='op'>(</span><span class='va'>loc_code</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>loc_code</span>, <span class='va'>chem_variable</span>, <span class='va'>pval_uniform_totalspan</span><span class='op'>)</span>
 <span class='co'># Disconnect:</span>
-<span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span>(<span class='no'>watina</span>)
-}</div></pre>
+<span class='fu'>DBI</span><span class='fu'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -303,7 +306,7 @@ availability of data for <strong>all</strong> corresponding chemical variables.<
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

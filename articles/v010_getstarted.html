@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -71,7 +71,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/inbo/watina/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -103,17 +103,19 @@
 <h2 class="hasAnchor">
 <a href="#connecting" class="anchor"></a>Connecting</h2>
 <p>You first need a connection object to connect to Watina; let’s simply name it <code>watina</code>:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">watina</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/connect_watina.html">connect_watina</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">watina</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/connect_watina.html">connect_watina</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="selecting-locations" class="section level2">
 <h2 class="hasAnchor">
 <a href="#selecting-locations" class="anchor"></a>Selecting locations</h2>
 <p>Selecting locations is a typical starting point. Afterwards, you can use the returned object as input to other functions.</p>
 <p>By default, a <code>tbl_lazy</code> object is given (lazy query).<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> The returned data include some essential metadata of the locations. The following example shows a few rows:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fl">5</span>) <span class="kw">%&gt;%</span>
-  <span class="no">collect</span> <span class="kw">%&gt;%</span>
-  <span class="no">as.data.frame</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="va">collect</span> <span class="op">%&gt;%</span> 
+  <span class="va">as.data.frame</span>
 <span class="co">#&gt;   loc_wid loc_code area_code area_name      x      y loc_validitycode</span>
 <span class="co">#&gt; 1     676  AABP011       AAB    Aabeek 178331 209751              VLD</span>
 <span class="co">#&gt; 2     677  AABP013       AAB    Aabeek 178315 209637              VLD</span>
@@ -125,13 +127,14 @@
 <span class="co">#&gt; 2  Gevalideerd            P Peilbuis/Piëzometer        2.71        10.34</span>
 <span class="co">#&gt; 3  Gevalideerd            P Peilbuis/Piëzometer        2.74         9.41</span>
 <span class="co">#&gt; 4  Gevalideerd            P Peilbuis/Piëzometer        2.72         9.31</span>
-<span class="co">#&gt; 5  Gevalideerd            P Peilbuis/Piëzometer        2.58         9.50</span></pre></body></html></div>
+<span class="co">#&gt; 5  Gevalideerd            P Peilbuis/Piëzometer        2.58         9.50</span></code></pre></div>
 <p>Selections can be done in a variety of ways – and these ways can be combined:</p>
 <ul>
 <li>by using area codes:</li>
 </ul>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>,
-         <span class="kw">area_codes</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"KAL"</span>, <span class="st">"KBR"</span>))
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # Source:     lazy query [?? x 12]</span>
 <span class="co">#&gt; # Database:   Microsoft SQL Server</span>
 <span class="co">#&gt; # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code</span>
@@ -149,36 +152,39 @@
 <span class="co">#&gt; 10    6180 KALP054  KAL       Kalmthou… 154689 232426 VLD             </span>
 <span class="co">#&gt; # … with more rows, and 5 more variables: loc_validity &lt;chr&gt;,</span>
 <span class="co">#&gt; #   loc_typecode &lt;chr&gt;, loc_typename &lt;chr&gt;, filterdepth &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   soilsurf_ost &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; #   soilsurf_ost &lt;dbl&gt;</span></code></pre></div>
 <p>The number of involved locations is given by:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>,
-         <span class="kw">area_codes</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"KAL"</span>, <span class="st">"KBR"</span>)) <span class="kw">%&gt;%</span>
-  <span class="no">count</span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="va">count</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 1]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
 <span class="co">#&gt;       n</span>
 <span class="co">#&gt;   &lt;int&gt;</span>
-<span class="co">#&gt; 1   188</span></pre></body></html></div>
+<span class="co">#&gt; 1   188</span></code></pre></div>
 <ul>
 <li>you can specify the type of location (device):</li>
 </ul>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>,
-         <span class="kw">area_codes</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"KAL"</span>, <span class="st">"KBR"</span>),
-         <span class="kw">loc_type</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"P"</span>, <span class="st">"S"</span>)) <span class="kw">%&gt;%</span>
-  <span class="no">count</span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
+         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="va">count</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 1]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
 <span class="co">#&gt;       n</span>
 <span class="co">#&gt;   &lt;int&gt;</span>
-<span class="co">#&gt; 1   223</span></pre></body></html></div>
+<span class="co">#&gt; 1   223</span></code></pre></div>
 <ul>
 <li>by using a spatial bounding box (rectangular area), using the Belgian Lambert 72 coordinate reference system (EPSG-code <a href="https://epsg.io/31370">31370</a>):</li>
 </ul>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>,
-         <span class="kw">bbox</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">xmin</span> <span class="kw">=</span> <span class="fl">1.4e+5</span>,
-                  <span class="kw">xmax</span> <span class="kw">=</span> <span class="fl">1.7e+5</span>,
-                  <span class="kw">ymin</span> <span class="kw">=</span> <span class="fl">1.6e+5</span>,
-                  <span class="kw">ymax</span> <span class="kw">=</span> <span class="fl">1.9e+5</span>))
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
+         bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">1.4e+5</span>,
+                  xmax <span class="op">=</span> <span class="fl">1.7e+5</span>,
+                  ymin <span class="op">=</span> <span class="fl">1.6e+5</span>,
+                  ymax <span class="op">=</span> <span class="fl">1.9e+5</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # Source:     lazy query [?? x 12]</span>
 <span class="co">#&gt; # Database:   Microsoft SQL Server</span>
 <span class="co">#&gt; # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code</span>
@@ -196,12 +202,13 @@
 <span class="co">#&gt; 10    5580 DORP027  DOR       Dorent    155151 182190 VLD             </span>
 <span class="co">#&gt; # … with more rows, and 5 more variables: loc_validity &lt;chr&gt;,</span>
 <span class="co">#&gt; #   loc_typecode &lt;chr&gt;, loc_typename &lt;chr&gt;, filterdepth &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   soilsurf_ost &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; #   soilsurf_ost &lt;dbl&gt;</span></code></pre></div>
 <ul>
 <li>if you already have specific location codes in mind, you can provide these directly as a vector:</li>
 </ul>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>,
-         <span class="kw">loc_vec</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"KBRP081"</span>, <span class="st">"KBRP090"</span>, <span class="st">"KBRP095"</span>))
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
+         loc_vec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KBRP081"</span>, <span class="st">"KBRP090"</span>, <span class="st">"KBRP095"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # Source:     lazy query [?? x 12]</span>
 <span class="co">#&gt; # Database:   Microsoft SQL Server</span>
 <span class="co">#&gt; # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code</span>
@@ -211,13 +218,14 @@
 <span class="co">#&gt; 2     698 KBRP090  KBR       Potpolde… 145988 204702 VLD             </span>
 <span class="co">#&gt; 3     709 KBRP095  KBR       Potpolde… 145949 204712 VLD             </span>
 <span class="co">#&gt; # … with 5 more variables: loc_validity &lt;chr&gt;, loc_typecode &lt;chr&gt;,</span>
-<span class="co">#&gt; #   loc_typename &lt;chr&gt;, filterdepth &lt;dbl&gt;, soilsurf_ost &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; #   loc_typename &lt;chr&gt;, filterdepth &lt;dbl&gt;, soilsurf_ost &lt;dbl&gt;</span></code></pre></div>
 <ul>
 <li>you can use a geospatial filter of class <a href="https://r-spatial.github.io/sf/">sf</a> to make selections, by using the <code>mask</code> argument:</li>
 </ul>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>,
-         <span class="kw">mask</span> <span class="kw">=</span> <span class="no">westfl</span>,
-         <span class="kw">buffer</span> <span class="kw">=</span> <span class="fl">0</span>)
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
+         mask <span class="op">=</span> <span class="va">westfl</span>,
+         buffer <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 <span class="co">#&gt; As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.</span>
 <span class="co">#&gt; Warning in get_locs(watina, mask = westfl, buffer = 0): Dropped 40</span>
 <span class="co">#&gt; locations from which x or y coordinates were missing.</span>
@@ -235,14 +243,15 @@
 <span class="co">#&gt;  9 ASSP009  ASS       Assebroe… 73613 208584 VLD              Gevalideerd </span>
 <span class="co">#&gt; 10 ASSP010  ASS       Assebroe… 73583 208390 VLD              Gevalideerd </span>
 <span class="co">#&gt; # … with 771 more rows, and 4 more variables: loc_typecode &lt;chr&gt;,</span>
-<span class="co">#&gt; #   loc_typename &lt;chr&gt;, filterdepth &lt;dbl&gt;, soilsurf_ost &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; #   loc_typename &lt;chr&gt;, filterdepth &lt;dbl&gt;, soilsurf_ost &lt;dbl&gt;</span></code></pre></div>
 <p>Note that the default value for <code>buffer</code> is 10 meters; it is used to enlarge mask (or shrink it, if <code>buffer</code> &lt; 0).</p>
 <p>Instead of leaving the output as a <code>tbl_lazy</code> object, you can also retrieve it as a tibble (i.e. an easier-to-use type of dataframe) by setting <code>collect = TRUE</code>.</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>,
-         <span class="kw">area_codes</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"KAL"</span>, <span class="st">"KBR"</span>),
-         <span class="kw">loc_type</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"P"</span>, <span class="st">"S"</span>),
-         <span class="kw">collect</span> <span class="kw">=</span> <span class="fl">TRUE</span>
-         )
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
+         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span>,
+         collect <span class="op">=</span> <span class="cn">TRUE</span>
+         <span class="op">)</span>
 <span class="co">#&gt; # A tibble: 223 x 11</span>
 <span class="co">#&gt;    loc_code area_code area_name      x      y loc_validitycode loc_validity</span>
 <span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;       </span>
@@ -257,13 +266,14 @@
 <span class="co">#&gt;  9 KALP053  KAL       Kalmthou… 153781 233736 VLD              Gevalideerd </span>
 <span class="co">#&gt; 10 KALP059  KAL       Kalmthou… 154754 232459 VLD              Gevalideerd </span>
 <span class="co">#&gt; # … with 213 more rows, and 4 more variables: loc_typecode &lt;chr&gt;,</span>
-<span class="co">#&gt; #   loc_typename &lt;chr&gt;, filterdepth &lt;dbl&gt;, soilsurf_ost &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; #   loc_typename &lt;chr&gt;, filterdepth &lt;dbl&gt;, soilsurf_ost &lt;dbl&gt;</span></code></pre></div>
 <p>Note that the lazy object contains a <code>loc_wid</code> column, which is an internal database variable to identify locations and make relations between tables. It should not be regarded as a stable ID; hence don’t store it for later use (note that lazy objects don’t store data). Consequently, the <code>loc_wid</code> column is omitted when using <code>collect = TRUE</code>.</p>
 <p>Optionally, you can also retrieve the individual observation wells that are linked to each location (where each observation well is from a different timeframe):</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>,
-         <span class="kw">obswells</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-         <span class="kw">area_codes</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"KAL"</span>, <span class="st">"KBR"</span>),
-         <span class="kw">loc_type</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"P"</span>, <span class="st">"S"</span>))
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
+         obswells <span class="op">=</span> <span class="cn">TRUE</span>,
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
+         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # Source:     lazy query [?? x 14]</span>
 <span class="co">#&gt; # Database:   Microsoft SQL Server</span>
 <span class="co">#&gt; # Ordered by: area_code, loc_code, obswell_rank</span>
@@ -281,13 +291,14 @@
 <span class="co">#&gt; 10    6180 KALP054  KAL       Kalmthou… 154689 232426 VLD             </span>
 <span class="co">#&gt; # … with more rows, and 7 more variables: loc_validity &lt;chr&gt;,</span>
 <span class="co">#&gt; #   loc_typecode &lt;chr&gt;, loc_typename &lt;chr&gt;, obswell_code &lt;chr&gt;,</span>
-<span class="co">#&gt; #   obswell_rank &lt;int&gt;, filterdepth &lt;dbl&gt;, soilsurf_ost &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; #   obswell_rank &lt;int&gt;, filterdepth &lt;dbl&gt;, soilsurf_ost &lt;dbl&gt;</span></code></pre></div>
 </div>
 <div id="disconnecting" class="section level2">
 <h2 class="hasAnchor">
 <a href="#disconnecting" class="anchor"></a>Disconnecting</h2>
 <p>At the end of your work (a script, a bookdown document etc.), close the connection:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="kw pkg">DBI</span><span class="kw ns">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html">dbDisconnect</a></span>(<span class="no">watina</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbDisconnect.html">dbDisconnect</a></span><span class="op">(</span><span class="va">watina</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="footnotes">
 <hr>
@@ -312,7 +323,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

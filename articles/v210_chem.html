@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -71,7 +71,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/inbo/watina/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -103,25 +103,26 @@
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
 <p>Let’s have a look at how chemical data, retrieved from Watina, look like. The below example requests available hydrochemical data since 2010 from locations in the area ‘Zwarte Beek’:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">watina</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/connect_watina.html">connect_watina</a></span>()
-<span class="no">mydata</span> <span class="kw">&lt;-</span>
-    <span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>, <span class="kw">area_codes</span> <span class="kw">=</span> <span class="st">"ZWA"</span>) <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span>(<span class="no">watina</span>, <span class="st">"1/1/2010"</span>)
-<span class="no">mydata</span> <span class="kw">%&gt;%</span>
-  <span class="no">count</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">watina</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/connect_watina.html">connect_watina</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">mydata</span> <span class="op">&lt;-</span>
+    <span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>, area_codes <span class="op">=</span> <span class="st">"ZWA"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+    <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2010"</span><span class="op">)</span>
+<span class="va">mydata</span> <span class="op">%&gt;%</span> 
+  <span class="va">count</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 1]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
 <span class="co">#&gt;       n</span>
 <span class="co">#&gt;   &lt;int&gt;</span>
 <span class="co">#&gt; 1  1916</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="no">mydata</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">mydata</span><span class="op">)</span>
 <span class="co">#&gt; [1] "tbl_Microsoft SQL Server" "tbl_dbi"                 </span>
 <span class="co">#&gt; [3] "tbl_sql"                  "tbl_lazy"                </span>
 <span class="co">#&gt; [5] "tbl"</span>
-<span class="no">mydata</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fl">15</span>) <span class="kw">%&gt;%</span>
-  <span class="no">collect</span> <span class="kw">%&gt;%</span>
-  <span class="no">as.data.frame</span>
+<span class="va">mydata</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="va">collect</span> <span class="op">%&gt;%</span> 
+  <span class="va">as.data.frame</span>
 <span class="co">#&gt;    loc_code       date lab_project_id lab_sample_id chem_variable   value</span>
 <span class="co">#&gt; 1   ZWAP033 2011-04-14              0         10431            Ca  19.690</span>
 <span class="co">#&gt; 2   ZWAP033 2011-04-14              0         10431            Cl  19.582</span>
@@ -153,14 +154,15 @@
 <span class="co">#&gt; 12  mg/l        NA -99 0.610484</span>
 <span class="co">#&gt; 13  &lt;NA&gt;        NA -99 0.610484</span>
 <span class="co">#&gt; 14  &lt;NA&gt;        NA -99 0.610484</span>
-<span class="co">#&gt; 15  mg/l        NA -99 0.610484</span></pre></body></html></div>
+<span class="co">#&gt; 15  mg/l        NA -99 0.610484</span></code></pre></div>
 <p>The first and last year of the dataset are:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">mydata</span> <span class="kw">%&gt;%</span>
-    <span class="fu">pull</span>(<span class="no">date</span>) <span class="kw">%&gt;%</span>
-    <span class="kw pkg">lubridate</span><span class="kw ns">::</span><span class="fu"><a href="http://lubridate.tidyverse.org/reference/year.html">year</a></span>(<span class="no">.</span>) <span class="kw">%&gt;%</span>
-    (<span class="kw">function</span>(<span class="no">x</span>) <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">firstyear</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span>(<span class="no">x</span>), <span class="kw">lastyear</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">x</span>)))
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mydata</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="http://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>firstyear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, lastyear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; firstyear  lastyear </span>
-<span class="co">#&gt;      2011      2019</span></pre></body></html></div>
+<span class="co">#&gt;      2011      2019</span></code></pre></div>
 <p>Let’s suppose that we now want to select locations for which:</p>
 <ul>
 <li>both N-NO3 (nitrate nitrogen) and P-PO4 (orthophosphate phosphorus) have at least two measurement dates;</li>
@@ -168,19 +170,21 @@
 <li>the first and last year with P-PO4 data are at least 4 years apart, i.e. they span at least 5 calendar years</li>
 </ul>
 <p>To express criteria, we need the numerical value of a date:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="kw pkg">lubridate</span><span class="kw ns">::</span><span class="fu"><a href="http://lubridate.tidyverse.org/reference/ymd.html">dmy</a></span>(<span class="st">"1/1/2014"</span>))
-<span class="co">#&gt; [1] 16071</span></pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="http://lubridate.tidyverse.org/reference/ymd.html">dmy</a></span><span class="op">(</span><span class="st">"1/1/2014"</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 16071</span></code></pre></div>
 <p>We can store specific conditions in a dataframe; the available statistics are explained by the documentation of <code><a href="../reference/eval_chem.html">eval_chem()</a></code>:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">conditions_df</span> <span class="kw">&lt;-</span>
-    <span class="fu">tribble</span>(
-        ~<span class="no">chem_variable</span>, ~<span class="no">statistic</span>, ~<span class="no">criterion</span>, ~<span class="no">direction</span>,
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">conditions_df</span> <span class="op">&lt;-</span>
+    <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span>
+        <span class="op">~</span><span class="va">chem_variable</span>, <span class="op">~</span><span class="va">statistic</span>, <span class="op">~</span><span class="va">criterion</span>, <span class="op">~</span><span class="va">direction</span>,
         <span class="st">"N-NO3"</span>, <span class="st">"nrdates"</span>, <span class="fl">2</span>, <span class="st">"min"</span>,
         <span class="st">"P-PO4"</span>, <span class="st">"nrdates"</span>, <span class="fl">2</span>, <span class="st">"min"</span>,
         <span class="st">"P-PO4"</span>, <span class="st">"firstdate"</span>, <span class="fl">16071</span>, <span class="st">"max"</span>,
         <span class="st">"P-PO4"</span>, <span class="st">"timespan_years"</span>, <span class="fl">5</span>, <span class="st">"min"</span>
-    )
-<span class="no">conditions_df</span> <span class="kw">%&gt;%</span>
-  <span class="no">kable</span></pre></body></html></div>
+    <span class="op">)</span>
+<span class="va">conditions_df</span> <span class="op">%&gt;%</span> 
+  <span class="va">kable</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">chem_variable</th>
@@ -216,12 +220,13 @@
 </tbody>
 </table>
 <p>You can also separately limit the chemical variables to be evaluated with the <code>chem_var</code> argument in the <code><a href="../reference/selectlocs_chem.html">selectlocs_chem()</a></code> function:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">myresult</span> <span class="kw">&lt;-</span>
-    <span class="no">mydata</span> <span class="kw">%&gt;%</span>
-    <span class="fu"><a href="../reference/selectlocs_chem.html">selectlocs_chem</a></span>(<span class="kw">data_type</span> <span class="kw">=</span> <span class="st">"data"</span>,
-                    <span class="kw">chem_var</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"N-NO3"</span>, <span class="st">"P-PO4"</span>),
-                    <span class="kw">conditions</span> <span class="kw">=</span> <span class="no">conditions_df</span>)
-<span class="no">myresult</span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">myresult</span> <span class="op">&lt;-</span>
+    <span class="va">mydata</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="../reference/selectlocs_chem.html">selectlocs_chem</a></span><span class="op">(</span>data_type <span class="op">=</span> <span class="st">"data"</span>,
+                    chem_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"N-NO3"</span>, <span class="st">"P-PO4"</span><span class="op">)</span>,
+                    conditions <span class="op">=</span> <span class="va">conditions_df</span><span class="op">)</span>
+<span class="va">myresult</span>
 <span class="co">#&gt; # A tibble: 18 x 1</span>
 <span class="co">#&gt;    loc_code</span>
 <span class="co">#&gt;    &lt;chr&gt;   </span>
@@ -242,15 +247,16 @@
 <span class="co">#&gt; 15 ZWAP215 </span>
 <span class="co">#&gt; 16 ZWAP216 </span>
 <span class="co">#&gt; 17 ZWAP220 </span>
-<span class="co">#&gt; 18 ZWAP221</span></pre></body></html></div>
+<span class="co">#&gt; 18 ZWAP221</span></code></pre></div>
 <p>With the argument <code>list = TRUE</code> you can also obtain intermediate test results. For further information, see the documentation of the <code><a href="../reference/selectlocs_chem.html">selectlocs_chem()</a></code> function.</p>
 </div>
 <div id="the-basics-obtaining-hydrochemical-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-basics-obtaining-hydrochemical-data" class="anchor"></a>The basics: obtaining hydrochemical data</h2>
 <p>The <code><a href="../reference/get_chem.html">get_chem()</a></code> function in the above example retrieved hydrochemical data, from given locations, as a lazy object (unless <code>collect = TRUE</code>). A timeframe is used to filter hydrochemical data in Watina (with arguments <code>startdate</code> and <code>enddate</code>). By default, the <code>enddate</code> argument is set as <em>today</em>. Here we only provide the <code>startdate</code>:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/get_locs.html">get_locs</a></span>(<span class="no">watina</span>, <span class="kw">area_codes</span> <span class="kw">=</span> <span class="st">"ZWA"</span>)
-<span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span>(<span class="no">watina</span>, <span class="st">"1/1/2017"</span>)
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>, area_codes <span class="op">=</span> <span class="st">"ZWA"</span><span class="op">)</span>
+<span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span><span class="op">)</span>
 <span class="co">#&gt; # Source:     lazy query [?? x 10]</span>
 <span class="co">#&gt; # Database:   Microsoft SQL Server</span>
 <span class="co">#&gt; # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code,</span>
@@ -268,9 +274,10 @@
 <span class="co">#&gt;  9 ZWAP034  2018-10-29 0              40121         Mg              1.36</span>
 <span class="co">#&gt; 10 ZWAP034  2018-10-29 0              40121         Mn              0.05</span>
 <span class="co">#&gt; # … with more rows, and 4 more variables: unit &lt;chr&gt;, below_loq &lt;lgl&gt;,</span>
-<span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></code></pre></div>
 <p>Retrieving the data locally:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span>(<span class="no">watina</span>, <span class="st">"1/1/2017"</span>, <span class="kw">collect</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span>, collect <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 608 x 10</span>
 <span class="co">#&gt;    loc_code date       lab_project_id lab_sample_id chem_variable  value</span>
 <span class="co">#&gt;    &lt;chr&gt;    &lt;date&gt;     &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;          &lt;dbl&gt;</span>
@@ -285,36 +292,39 @@
 <span class="co">#&gt;  9 ZWAP034  2018-10-29 0              40121         Mg              1.36</span>
 <span class="co">#&gt; 10 ZWAP034  2018-10-29 0              40121         Mn              0.05</span>
 <span class="co">#&gt; # … with 598 more rows, and 4 more variables: unit &lt;chr&gt;,</span>
-<span class="co">#&gt; #   below_loq &lt;lgl&gt;, loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; #   below_loq &lt;lgl&gt;, loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></code></pre></div>
 <p>Note below, the different number of results when using non-default settings for filtering according to <em>electroneutrality</em>! The default range of electroneutrality is from -0.1 to 0.1 (argument <code>en_range</code>).</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span>(<span class="no">watina</span>, <span class="st">"1/1/2017"</span>) <span class="kw">%&gt;%</span> <span class="no">count</span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">count</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 1]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
 <span class="co">#&gt;       n</span>
 <span class="co">#&gt;   &lt;int&gt;</span>
 <span class="co">#&gt; 1   608</span>
-<span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span>(<span class="no">watina</span>, <span class="st">"1/1/2017"</span>, <span class="kw">en_exclude_na</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="kw">%&gt;%</span> <span class="no">count</span>
+<span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span>, en_exclude_na <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">count</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 1]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
 <span class="co">#&gt;       n</span>
 <span class="co">#&gt;   &lt;int&gt;</span>
 <span class="co">#&gt; 1   602</span>
-<span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span>(<span class="no">watina</span>, <span class="st">"1/1/2017"</span>, <span class="kw">en_range</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">1</span>, <span class="fl">1</span>)) <span class="kw">%&gt;%</span> <span class="no">count</span>
+<span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span>, en_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">count</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 1]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
 <span class="co">#&gt;       n</span>
 <span class="co">#&gt;   &lt;int&gt;</span>
-<span class="co">#&gt; 1   674</span></pre></body></html></div>
+<span class="co">#&gt; 1   674</span></code></pre></div>
 <p>With <code>en_exclude_na = TRUE</code>, samples for which no electroneutrality could be calculated are discarded!</p>
 <p>By default, all measurements from water samples with a high iron / conductivity ratio are returned (hence, in these cases the <code>en_range</code> and <code>en_exclude_na</code> arguments are ignored). This is controlled by the <code>en_fecond_threshold</code> argument. If you want the <code>en_range</code> and <code>en_exclude_na</code> arguments to take effect also in these relatively iron-rich water samples, set <code>en_fecond_threshold = NA</code>:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span>(<span class="no">watina</span>, <span class="st">"1/1/2017"</span>, <span class="kw">en_fecond_threshold</span> <span class="kw">=</span> <span class="fl">NA</span>) <span class="kw">%&gt;%</span> <span class="no">count</span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span>, en_fecond_threshold <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">count</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 1]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
 <span class="co">#&gt;       n</span>
 <span class="co">#&gt;   &lt;int&gt;</span>
-<span class="co">#&gt; 1   524</span></pre></body></html></div>
+<span class="co">#&gt; 1   524</span></code></pre></div>
 <p>Equivalence concentrations instead of mass concentrations can be returned with <code>conc_type = "eq"</code>:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span>(<span class="no">watina</span>, <span class="st">"1/1/2017"</span>, <span class="kw">conc_type</span> <span class="kw">=</span> <span class="st">"eq"</span>)
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span>, conc_type <span class="op">=</span> <span class="st">"eq"</span><span class="op">)</span>
 <span class="co">#&gt; # Source:     lazy query [?? x 10]</span>
 <span class="co">#&gt; # Database:   Microsoft SQL Server</span>
 <span class="co">#&gt; # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code,</span>
@@ -332,14 +342,15 @@
 <span class="co">#&gt;  9 ZWAP034  2018-10-29 0              40121         Mg            1.12e-1</span>
 <span class="co">#&gt; 10 ZWAP034  2018-10-29 0              40121         Mn            5.00e-2</span>
 <span class="co">#&gt; # … with more rows, and 4 more variables: unit &lt;chr&gt;, below_loq &lt;lgl&gt;,</span>
-<span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></code></pre></div>
 <p>Joining results to <code>mylocs</code>:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">mylocs</span> <span class="kw">%&gt;%</span>
-<span class="fu"><a href="../reference/get_chem.html">get_chem</a></span>(<span class="no">watina</span>, <span class="st">"1/1/2017"</span>) <span class="kw">%&gt;%</span>
-    <span class="fu">left_join</span>(<span class="no">mylocs</span> <span class="kw">%&gt;%</span>
-                  <span class="fu">select</span>(-<span class="no">loc_wid</span>),
-              <span class="no">.</span>) <span class="kw">%&gt;%</span>
-    <span class="no">collect</span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">%&gt;%</span>
+<span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">mylocs</span> <span class="op">%&gt;%</span>
+                  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">loc_wid</span><span class="op">)</span>,
+              <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
+    <span class="va">collect</span>
 <span class="co">#&gt; Joining, by = "loc_code"</span>
 <span class="co">#&gt; # A tibble: 765 x 20</span>
 <span class="co">#&gt;    loc_code area_code area_name      x      y loc_validitycode loc_validity</span>
@@ -358,7 +369,7 @@
 <span class="co">#&gt; #   loc_typename &lt;chr&gt;, filterdepth &lt;dbl&gt;, soilsurf_ost &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   date &lt;date&gt;, lab_project_id &lt;chr&gt;, lab_sample_id &lt;chr&gt;,</span>
 <span class="co">#&gt; #   chem_variable &lt;chr&gt;, value &lt;dbl&gt;, unit &lt;chr&gt;, below_loq &lt;lgl&gt;,</span>
-<span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></code></pre></div>
 </div>
 <div id="processing-hydrochemical-data-and-selecting-locations" class="section level2">
 <h2 class="hasAnchor">
@@ -383,7 +394,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

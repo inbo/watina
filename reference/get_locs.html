@@ -86,7 +86,7 @@ Essential metadata are included in the result." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -118,7 +118,7 @@ Essential metadata are included in the result." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/inbo/watina/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -150,23 +150,23 @@ location or the location's observation wells.
 Essential metadata are included in the result.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_locs</span>(
-  <span class='no'>con</span>,
-  <span class='kw'>filterdepth_range</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>3</span>),
-  <span class='kw'>filterdepth_guess</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>filterdepth_na</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>obswells</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>obswell_aggr</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"latest"</span>, <span class='st'>"latest_fd"</span>, <span class='st'>"latest_sso"</span>, <span class='st'>"mean"</span>),
-  <span class='kw'>mask</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>join_mask</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>loc_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P"</span>, <span class='st'>"S"</span>, <span class='st'>"R"</span>, <span class='st'>"N"</span>, <span class='st'>"W"</span>, <span class='st'>"D"</span>, <span class='st'>"L"</span>, <span class='st'>"B"</span>),
-  <span class='kw'>loc_validity</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"VLD"</span>, <span class='st'>"ENT"</span>),
-  <span class='kw'>loc_vec</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>get_locs</span><span class='op'>(</span>
+  <span class='va'>con</span>,
+  filterdepth_range <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>3</span><span class='op'>)</span>,
+  filterdepth_guess <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  filterdepth_na <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  obswells <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  obswell_aggr <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"latest"</span>, <span class='st'>"latest_fd"</span>, <span class='st'>"latest_sso"</span>, <span class='st'>"mean"</span><span class='op'>)</span>,
+  mask <span class='op'>=</span> <span class='cn'>NULL</span>,
+  join_mask <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  buffer <span class='op'>=</span> <span class='fl'>10</span>,
+  bbox <span class='op'>=</span> <span class='cn'>NULL</span>,
+  area_codes <span class='op'>=</span> <span class='cn'>NULL</span>,
+  loc_type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P"</span>, <span class='st'>"S"</span>, <span class='st'>"R"</span>, <span class='st'>"N"</span>, <span class='st'>"W"</span>, <span class='st'>"D"</span>, <span class='st'>"L"</span>, <span class='st'>"B"</span><span class='op'>)</span>,
+  loc_validity <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"VLD"</span>, <span class='st'>"ENT"</span><span class='op'>)</span>,
+  loc_vec <span class='op'>=</span> <span class='cn'>NULL</span>,
+  collect <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -288,7 +288,7 @@ The CRS must be Belgian Lambert 72 (EPSG-code
 Do you want to spatially join the attribute columns of <code>mask</code> to the
 resulting tibble?
 The spatial join is executed with
-<code><a href='https://rdrr.io/pkg/sf/man/geos_binary_pred.html'>st_intersects()</a></code> as the topological operator.
+<code><a href='https://r-spatial.github.io/sf/reference/geos_binary_pred.html'>st_intersects()</a></code> as the topological operator.
 Beware: if the same location intersects with more than one element of
 <code>mask</code> (taking into account the value of <code>buffer</code>), that location
 will occur multiple times in the result.
@@ -390,95 +390,97 @@ measurement device).</p>
 <code><a href='get_xg3.html'>get_xg3</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>watina</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='connect_watina.html'>connect_watina</a></span>()
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>watina</span> <span class='op'>&lt;-</span> <span class='fu'><a href='connect_watina.html'>connect_watina</a></span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
 
-<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-         <span class='kw'>bbox</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>xmin</span> <span class='kw'>=</span> <span class='fl'>1.4e+5</span>,
-                  <span class='kw'>xmax</span> <span class='kw'>=</span> <span class='fl'>1.7e+5</span>,
-                  <span class='kw'>ymin</span> <span class='kw'>=</span> <span class='fl'>1.6e+5</span>,
-                  <span class='kw'>ymax</span> <span class='kw'>=</span> <span class='fl'>1.9e+5</span>))
+<span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+         bbox <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>xmin <span class='op'>=</span> <span class='fl'>1.4e+5</span>,
+                  xmax <span class='op'>=</span> <span class='fl'>1.7e+5</span>,
+                  ymin <span class='op'>=</span> <span class='fl'>1.6e+5</span>,
+                  ymax <span class='op'>=</span> <span class='fl'>1.9e+5</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"KAL"</span>, <span class='st'>"KBR"</span>),
-         <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+         area_codes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"KAL"</span>, <span class='st'>"KBR"</span><span class='op'>)</span>,
+         collect <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"KAL"</span>, <span class='st'>"KBR"</span>),
-         <span class='kw'>loc_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P"</span>, <span class='st'>"S"</span>),
-         <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+         area_codes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"KAL"</span>, <span class='st'>"KBR"</span><span class='op'>)</span>,
+         loc_type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P"</span>, <span class='st'>"S"</span><span class='op'>)</span>,
+         collect <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='st'>"WES"</span>) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/tally.html'>count</a></span>()
+<span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+         area_codes <span class='op'>=</span> <span class='st'>"WES"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/count.html'>count</a></span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='st'>"WES"</span>,
-         <span class='kw'>filterdepth_guess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/tally.html'>count</a></span>()
+<span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+         area_codes <span class='op'>=</span> <span class='st'>"WES"</span>,
+         filterdepth_guess <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/count.html'>count</a></span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"KAL"</span>, <span class='st'>"KBR"</span>),
-         <span class='kw'>loc_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P"</span>, <span class='st'>"S"</span>),
-         <span class='kw'>filterdepth_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-         <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+         area_codes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"KAL"</span>, <span class='st'>"KBR"</span><span class='op'>)</span>,
+         loc_type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P"</span>, <span class='st'>"S"</span><span class='op'>)</span>,
+         filterdepth_na <span class='op'>=</span> <span class='cn'>TRUE</span>,
+         collect <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># Mark the different output of:</span>
-  <span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-           <span class='kw'>loc_vec</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"KBRP081"</span>, <span class='st'>"KBRP090"</span>, <span class='st'>"KBRP095"</span>, <span class='st'>"KBRS001"</span>),
-           <span class='kw'>loc_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P"</span>, <span class='st'>"S"</span>),
-           <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+           loc_vec <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"KBRP081"</span>, <span class='st'>"KBRP090"</span>, <span class='st'>"KBRP095"</span>, <span class='st'>"KBRS001"</span><span class='op'>)</span>,
+           loc_type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P"</span>, <span class='st'>"S"</span><span class='op'>)</span>,
+           collect <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
   <span class='co'># versus:</span>
-  <span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-           <span class='kw'>loc_vec</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"KBRP081"</span>, <span class='st'>"KBRP090"</span>, <span class='st'>"KBRP095"</span>, <span class='st'>"KBRS001"</span>),
-           <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+           loc_vec <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"KBRP081"</span>, <span class='st'>"KBRP090"</span>, <span class='st'>"KBRP095"</span>, <span class='st'>"KBRS001"</span><span class='op'>)</span>,
+           collect <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># Returning all individual observation wells:</span>
-<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-         <span class='kw'>obswells</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"KAL"</span>, <span class='st'>"KBR"</span>),
-         <span class='kw'>loc_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"P"</span>, <span class='st'>"S"</span>),
-         <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+         obswells <span class='op'>=</span> <span class='cn'>TRUE</span>,
+         area_codes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"KAL"</span>, <span class='st'>"KBR"</span><span class='op'>)</span>,
+         loc_type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"P"</span>, <span class='st'>"S"</span><span class='op'>)</span>,
+         collect <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># Different examples of aggregating observation wells at location level:</span>
-<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='st'>"WES"</span>,
-         <span class='kw'>filterdepth_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-         <span class='kw'>filterdepth_guess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-         <span class='kw'>obswell_aggr</span> <span class='kw'>=</span> <span class='st'>"latest"</span>,
-         <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>loc_code</span>, <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>contains</a></span>(<span class='st'>"ost"</span>), <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>contains</a></span>(<span class='st'>"filterdepth"</span>)) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fl'>12</span>)
+<span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+         area_codes <span class='op'>=</span> <span class='st'>"WES"</span>,
+         filterdepth_na <span class='op'>=</span> <span class='cn'>TRUE</span>,
+         filterdepth_guess <span class='op'>=</span> <span class='cn'>TRUE</span>,
+         obswell_aggr <span class='op'>=</span> <span class='st'>"latest"</span>,
+         collect <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>loc_code</span>, <span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>contains</a></span><span class='op'>(</span><span class='st'>"ost"</span><span class='op'>)</span>, <span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>contains</a></span><span class='op'>(</span><span class='st'>"filterdepth"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fl'>12</span><span class='op'>)</span>
 
-<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-         <span class='kw'>area_codes</span> <span class='kw'>=</span> <span class='st'>"WES"</span>,
-         <span class='kw'>filterdepth_na</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-         <span class='kw'>filterdepth_guess</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-         <span class='kw'>obswell_aggr</span> <span class='kw'>=</span> <span class='st'>"mean"</span>,
-         <span class='kw'>collect</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='no'>loc_code</span>, <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>contains</a></span>(<span class='st'>"ost"</span>), <span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>contains</a></span>(<span class='st'>"filterdepth"</span>)) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fl'>12</span>)
+<span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+         area_codes <span class='op'>=</span> <span class='st'>"WES"</span>,
+         filterdepth_na <span class='op'>=</span> <span class='cn'>TRUE</span>,
+         filterdepth_guess <span class='op'>=</span> <span class='cn'>TRUE</span>,
+         obswell_aggr <span class='op'>=</span> <span class='st'>"mean"</span>,
+         collect <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>loc_code</span>, <span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>contains</a></span><span class='op'>(</span><span class='st'>"ost"</span><span class='op'>)</span>, <span class='fu'><a href='https://tidyselect.r-lib.org/reference/starts_with.html'>contains</a></span><span class='op'>(</span><span class='st'>"filterdepth"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fl'>12</span><span class='op'>)</span>
 
 <span class='co'># Selecting all piezometers with status VLD of the</span>
 <span class='co'># province "West-Vlaanderen":</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>BE_ADMIN_PROVINCE</span>,
-     <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"BelgiumMaps.StatBel"</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>sf</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>stringr</span>)
-<span class='no'>mymask</span> <span class='kw'>&lt;-</span>
-    <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_as_sf.html'>st_as_sf</a></span>(<span class='no'>BE_ADMIN_PROVINCE</span>) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span>(<span class='fu'><a href='https://stringr.tidyverse.org/reference/str_detect.html'>str_detect</a></span>(<span class='no'>TX_PROV_DESCR_NL</span>, <span class='st'>"West"</span>)) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_transform.html'>st_transform</a></span>(<span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>31370</span>)
-<span class='fu'>get_locs</span>(<span class='no'>watina</span>,
-         <span class='kw'>loc_validity</span> <span class='kw'>=</span> <span class='st'>"VLD"</span>,
-         <span class='kw'>mask</span> <span class='kw'>=</span> <span class='no'>mymask</span>,
-         <span class='kw'>buffer</span> <span class='kw'>=</span> <span class='fl'>0</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>BE_ADMIN_PROVINCE</span>,
+     package <span class='op'>=</span> <span class='st'>"BelgiumMaps.StatBel"</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://r-spatial.github.io/sf/'>sf</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://stringr.tidyverse.org'>stringr</a></span><span class='op'>)</span>
+<span class='va'>mymask</span> <span class='op'>&lt;-</span>
+    <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_as_sf.html'>st_as_sf</a></span><span class='op'>(</span><span class='va'>BE_ADMIN_PROVINCE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='fu'><a href='https://stringr.tidyverse.org/reference/str_detect.html'>str_detect</a></span><span class='op'>(</span><span class='va'>TX_PROV_DESCR_NL</span>, <span class='st'>"West"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_transform.html'>st_transform</a></span><span class='op'>(</span>crs <span class='op'>=</span> <span class='fl'>31370</span><span class='op'>)</span>
+<span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
+         loc_validity <span class='op'>=</span> <span class='st'>"VLD"</span>,
+         mask <span class='op'>=</span> <span class='va'>mymask</span>,
+         buffer <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
 
 <span class='co'># Disconnect:</span>
-<span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span>(<span class='no'>watina</span>)
-}</div></pre>
+<span class='fu'>DBI</span><span class='fu'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -494,7 +496,7 @@ measurement device).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

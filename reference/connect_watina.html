@@ -81,7 +81,7 @@ The function can only be used from within the INBO network." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -113,7 +113,7 @@ The function can only be used from within the INBO network." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/inbo/watina/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -140,7 +140,7 @@ The function can only be used from within the INBO network." />
 The function can only be used from within the INBO network.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>connect_watina</span>()</pre>
+    <pre class="usage"><span class='fu'>connect_watina</span><span class='op'>(</span><span class='op'>)</span></pre>
 
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -152,12 +152,14 @@ The function can only be used from within the INBO network.</p>
 <code><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>DBI::dbDisconnect()</a></code>!</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>watina</span> <span class='kw'>&lt;-</span> <span class='fu'>connect_watina</span>()
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>watina</span> <span class='op'>&lt;-</span> <span class='fu'>connect_watina</span><span class='op'>(</span><span class='op'>)</span>
 <span class='co'># Do your stuff.</span>
 <span class='co'># Disconnect:</span>
-<span class='kw pkg'>DBI</span><span class='kw ns'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span>(<span class='no'>watina</span>)
-}</div></pre>
+<span class='fu'>DBI</span><span class='fu'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -173,7 +175,7 @@ The function can only be used from within the INBO network.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
