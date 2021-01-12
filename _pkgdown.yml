@@ -30,5 +30,3 @@ reference:
       - as_points
       - cluster_locs
       - extract_xg3_series
-      - collect
-      - convertdf_enc
