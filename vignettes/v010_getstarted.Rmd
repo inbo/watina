@@ -292,6 +292,9 @@ get_locs(watina,
 #> #   obswell_rank <int>, filterdepth <dbl>, soilsurf_ost <dbl>
 ```
 
+With `get_locs(obswells = FALSE)`, which is the default, the observation well variables are aggregated for each location using one of four methods.
+The method is set with the argument `obswell_aggr`.
+The default, `obswell_aggr = "latest"`, returns the attributes of the most recent observation well that fulfills the `filterdepth_range` and `filterdepth_na` criteria.
 
 ## Disconnecting
 
