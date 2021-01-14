@@ -117,6 +117,34 @@ get_locs(watina,
 #> 1   223
 ```
 
+- for groundwater piezometers: by setting conditions on filterdepth.
+The filterdepth is the depth of the piezometer's filter below soil surface (unit: m), more specifically referring to _halfway_ the length of the filter.
+Conditions can be set by the arguments `filterdepth_range`  and `filterdepth_na` (see documentation of `get_locs()`).
+Moreover, by setting `filterdepth_guess = TRUE` (default `FALSE`) you can replace missing filterdepths by a conservative value, before applying these conditions.
+By default, only filterdepths between 0 and 3 meters below soilsurface are returned and locations with missing filterdepth are dropped.
+
+Indeed, more records are returned when allowing groundwater piezometers with missing filterdepth:
+
+```{r}
+get_locs(watina,
+         area_codes = c("KAL", "KBR"),
+         loc_type = c("P", "S"),
+         filterdepth_na = TRUE) %>% 
+  count
+```
+
+Of course you can set further conditions for other variables, by building upon the lazy result of `get_locs()`, e.g.:
+
+```{r}
+get_locs(watina,
+         area_codes = c("KAL", "KBR"),
+         loc_type = c("P", "S"),
+         filterdepth_na = TRUE) %>%
+  filter(obswell_state == "OK - niet bemeten") %>% 
+  count
+```
+
+
 - by using a spatial bounding box (rectangular area), using the Belgian Lambert 72 coordinate reference system (EPSG-code [31370](https://epsg.io/31370)):
 
 ```{r}
