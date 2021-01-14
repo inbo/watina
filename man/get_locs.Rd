@@ -306,15 +306,22 @@ get_locs(watina,
     head(12)
 
 # Selecting all piezometers with status VLD of the
-# province "West-Vlaanderen":
-data(BE_ADMIN_PROVINCE,
-     package = "BelgiumMaps.StatBel")
+# province "West-Vlaanderen" (current polygon taken
+# from the official WFS service):
 library(sf)
-library(stringr)
+library(purrr)
+library(httr)
 mymask <-
-    st_as_sf(BE_ADMIN_PROVINCE) \%>\%
-    filter(str_detect(TX_PROV_DESCR_NL, "West")) \%>\%
-    st_transform(crs = 31370)
+    "https://geoservices.informatievlaanderen.be/overdrachtdiensten/VRBG/wfs" \%>\%
+    parse_url() \%>\%
+    list_merge(query = list(request = "GetFeature",
+                            typeName = "VRBG:Refprv",
+                            cql_filter="NAAM='West-Vlaanderen'",
+                            srsName = "EPSG:31370",
+                            outputFormat = "text/xml; subtype=gml/3.1.1")) \%>\%
+    build_url() \%>\%
+    read_sf(crs = 31370) \%>\%
+    st_cast("GEOMETRYCOLLECTION")
 get_locs(watina,
          loc_validity = "VLD",
          mask = mymask,
