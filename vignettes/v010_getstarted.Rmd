@@ -165,18 +165,23 @@ get_locs(watina,
 - you can use a geospatial filter of class [sf](https://r-spatial.github.io/sf/) to make selections, by using the `mask` argument:
 
 ```{r echo=FALSE, include=FALSE}
-data(BE_ADMIN_PROVINCE,
-     package = "BelgiumMaps.StatBel")
-westfl <-
-    st_as_sf(BE_ADMIN_PROVINCE) %>%
-    filter(str_detect(TX_PROV_DESCR_NL, "West")) %>%
-    st_transform(crs = 31370)
+westfl <- 
+    "https://geoservices.informatievlaanderen.be/overdrachtdiensten/VRBG/wfs" %>%
+    httr::parse_url() %>%
+    purrr::list_merge(query = list(request = "GetFeature",
+                                   typeName = "VRBG:Refprv",
+                                   cql_filter="NAAM='West-Vlaanderen'",
+                                   srsName = "EPSG:31370",
+                                   outputFormat = "text/xml; subtype=gml/3.1.1")) %>%
+    httr::build_url() %>%
+    read_sf(crs = 31370) %>% 
+    st_cast("GEOMETRYCOLLECTION")
 ```
 
 
 ```{r}
 get_locs(watina,
-         mask = westfl,
+         mask = westfl,  # sf polygon of the 'West-Vlaanderen' province
          buffer = 0)
 #> As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.
 #> Warning in get_locs(watina, mask = westfl, buffer = 0): Dropped 40
