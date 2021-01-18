@@ -1,6 +1,6 @@
 template:
   params:
-    bootswatch: yeti
+    bootswatch: cosmo
 
 url: https://inbo.github.io/watina
 
