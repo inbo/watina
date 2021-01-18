@@ -130,7 +130,7 @@ get_locs(watina,
 ```
 
 - for groundwater piezometers: by setting conditions on filterdepth.
-The filterdepth is the depth of the piezometer's filter below soil surface (unit: m), more specifically referring to _halfway_ the length of the filter.
+The filterdepth is the depth of the piezometer's filter below soil surface (unit: m), more specifically referring to the position _halfway_ the length of the filter.
 Conditions can be set by the arguments `filterdepth_range`  and `filterdepth_na` (see documentation of `get_locs()`).
 Moreover, by setting `filterdepth_guess = TRUE` (default `FALSE`) you can replace missing filterdepths by a conservative value, before applying these conditions.
 By default, only filterdepths between 0 and 3 meters below soilsurface are returned and locations with missing filterdepth are dropped.
