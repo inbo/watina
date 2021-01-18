@@ -139,6 +139,18 @@
 #' retained observation well.
 #' It is ignored if \code{obswells = TRUE}.
 #'
+#' @md
+#'
+#' @note
+#' Up to and including `watina 0.3.0`, the result was sorted according to
+#' `area_code` and `loc_code`,
+#' both for the lazy query and the collected result.
+#' Later versions avoid sorting in case of a lazy result, because
+#' otherwise, when using the result inside another lazy query, this led to
+#' 'ORDER BY' constructs in SQL subqueries, which must be avoided.
+#' If you like to print the lazy object in a sorted manner, you must add
+#' `%>% arrange(...)` yourself.
+#'
 #' @param mask An optional geospatial filter of class \code{sf}.
 #' If provided, only locations that intersect with \code{mask} will be returned,
 #' with the value of \code{buffer} taken into account.
@@ -199,7 +211,8 @@
 #'          bbox = c(xmin = 1.4e+5,
 #'                   xmax = 1.7e+5,
 #'                   ymin = 1.6e+5,
-#'                   ymax = 1.9e+5))
+#'                   ymax = 1.9e+5)) %>%
+#'     arrange(area_code, loc_code)
 #'
 #' get_locs(watina,
 #'          area_codes = c("KAL", "KBR"),
@@ -262,22 +275,29 @@
 #'     head(12)
 #'
 #' # Selecting all piezometers with status VLD of the
-#' # province "West-Vlaanderen":
-#' data(BE_ADMIN_PROVINCE,
-#'      package = "BelgiumMaps.StatBel")
+#' # province "West-Vlaanderen" (current polygon taken
+#' # from the official WFS service):
 #' library(sf)
-#' library(stringr)
+#' library(purrr)
+#' library(httr)
 #' mymask <-
-#'     st_as_sf(BE_ADMIN_PROVINCE) %>%
-#'     filter(str_detect(TX_PROV_DESCR_NL, "West")) %>%
-#'     st_transform(crs = 31370)
+#'     "https://geoservices.informatievlaanderen.be/overdrachtdiensten/VRBG/wfs" %>%
+#'     parse_url() %>%
+#'     list_merge(query = list(request = "GetFeature",
+#'                             typeName = "VRBG:Refprv",
+#'                             cql_filter="NAAM='West-Vlaanderen'",
+#'                             srsName = "EPSG:31370",
+#'                             outputFormat = "text/xml; subtype=gml/3.1.1")) %>%
+#'     build_url() %>%
+#'     read_sf(crs = 31370) %>%
+#'     st_cast("GEOMETRYCOLLECTION")
 #' get_locs(watina,
 #'          loc_validity = "VLD",
 #'          mask = mymask,
 #'          buffer = 0)
 #'
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #' @export
@@ -455,10 +475,7 @@ get_locs <- function(con,
                measuringref_ost = .data$ReferentieNiveauTAW,
                .data$tubelength,
                .data$filterlength,
-               .data$filterdepth) %>%
-        arrange(.data$area_code,
-                .data$loc_code,
-                .data$obswell_rank)
+               .data$filterdepth)
 
     if (filterdepth_guess) {
         locs <-
@@ -492,12 +509,6 @@ get_locs <- function(con,
                        .data$loc_typecode != "P"
             )
     }
-
-    locs <-
-        locs %>%
-        arrange(.data$area_code,
-                .data$loc_code,
-                .data$obswell_rank)
 
     if (!obswells) {
 
@@ -586,8 +597,9 @@ get_locs <- function(con,
                                           sql("CAST(
                                               filterdepth_guessed AS bit)"))
                        } else .} %>%
-                       filter(row_number() == 1L) %>%
-                       ungroup()
+                       ungroup() %>%
+                       filter(.data$obswell_count == 1 |
+                                  .data$obswell_rank == .data$obswell_maxrank)
 
                    ) %>%
             select(-.data$obswell_code,
@@ -597,9 +609,7 @@ get_locs <- function(con,
                    -.data$obswell_count,
                    -.data$obswell_maxrank,
                    -.data$obswell_maxrank_fd,
-                   -.data$obswell_maxrank_sso) %>%
-            arrange(.data$area_code,
-                    .data$loc_code)
+                   -.data$obswell_maxrank_sso)
     }
 
     if (!is.null(mask)) {
@@ -701,6 +711,18 @@ get_locs <- function(con,
 #' Why truncate, and why truncate by default?
 #' When to choose which \code{vert_crs}?)
 #'
+#' @md
+#'
+#' @note
+#' Up to and including `watina 0.3.0`, the result was sorted according to
+#' `loc_code` and `hydroyear`, both for the lazy query and the
+#' collected result.
+#' Later versions avoid sorting in case of a lazy result, because
+#' otherwise, when using the result inside another lazy query, this led to
+#' 'ORDER BY' constructs in SQL subqueries, which must be avoided.
+#' If you like to print the lazy object in a sorted manner, you must add
+#' `%>% arrange(...)` yourself.
+#'
 #' @param locs A \code{tbl_lazy} object or a dataframe, with at least a column
 #' \code{loc_code} that defines the locations for which values are to be
 #' returned.
@@ -746,20 +768,25 @@ get_locs <- function(con,
 #' watina <- connect_watina()
 #' library(dplyr)
 #' mylocs <- get_locs(watina, area_codes = "KAL")
-#' mylocs %>% get_xg3(watina, 2010)
+#' mylocs %>%
+#'     get_xg3(watina, 2010) %>%
+#'     arrange(loc_code, hydroyear)
 #' mylocs %>% get_xg3(watina, 2010, collect = TRUE)
-#' mylocs %>% get_xg3(watina, 2010, vert_crs = "ostend")
+#' mylocs %>%
+#'     get_xg3(watina, 2010, vert_crs = "ostend") %>%
+#'     arrange(loc_code, hydroyear)
 #'
 #' # joining results to mylocs:
 #' mylocs %>%
-#'   get_xg3(watina, 2010) %>%
-#'   left_join(mylocs %>%
-#'             select(-loc_wid),
-#'             .) %>%
-#'   collect
+#'     get_xg3(watina, 2010) %>%
+#'     left_join(mylocs %>%
+#'               select(-loc_wid),
+#'               .) %>%
+#'     collect %>%
+#'     arrange(loc_code, hydroyear)
 #'
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #' @export
@@ -853,13 +880,13 @@ get_xg3 <- function(locs,
                local = xg3 %>% select(-contains("ost")),
                ostend = xg3 %>% select(-contains("lcl")),
                both = xg3
-               ) %>%
-        arrange(.data$loc_code,
-                .data$hydroyear)
+               )
 
     if (collect) {
         xg3 <-
             xg3 %>%
+            arrange(.data$loc_code,
+                    .data$hydroyear) %>%
             collect
     }
 
@@ -905,6 +932,18 @@ get_xg3 <- function(locs,
 #' To retrieve all data from all water samples, use \code{en_range = c(-1, 1)}.
 #'
 #' TO BE ADDED: What is electroneutrality and why is it used as a criterion?
+#'
+#' @md
+#'
+#' @note
+#' Up to and including `watina 0.3.0`, the result was sorted according to
+#' `loc_code`, `date` and `chem_variable`, both for the lazy query and the
+#' collected result.
+#' Later versions avoid sorting in case of a lazy result, because
+#' otherwise, when using the result inside another lazy query, this led to
+#' 'ORDER BY' constructs in SQL subqueries, which must be avoided.
+#' If you like to print the lazy object in a sorted manner, you must add
+#' `%>% arrange(...)` yourself.
 #'
 #' @param startdate First date of the timeframe, as a string.
 #' The string must use a formatting of the order 'day month year',
@@ -987,9 +1026,14 @@ get_xg3 <- function(locs,
 #' watina <- connect_watina()
 #' library(dplyr)
 #' mylocs <- get_locs(watina, area_codes = "ZWA")
-#' mylocs %>% get_chem(watina, "1/1/2017")
-#' mylocs %>% get_chem(watina, "1/1/2017", collect = TRUE)
-#' mylocs %>% get_chem(watina, "1/1/2017", conc_type = "eq")
+#' mylocs %>%
+#'     get_chem(watina, "1/1/2017") %>%
+#'     arrange(loc_code, date, chem_variable)
+#' mylocs %>%
+#'     get_chem(watina, "1/1/2017", collect = TRUE)
+#' mylocs %>%
+#'     get_chem(watina, "1/1/2017", conc_type = "eq") %>%
+#'     arrange(loc_code, date, chem_variable)
 #'
 #' # compare the number of returned rows:
 #' mylocs %>% get_chem(watina, "1/1/2017") %>% count
@@ -1009,10 +1053,11 @@ get_xg3 <- function(locs,
 #'     left_join(mylocs %>%
 #'                   select(-loc_wid),
 #'               .) %>%
-#'     collect
+#'     collect %>%
+#'     arrange(loc_code, date, chem_variable)
 #'
 #' # Disconnect:
-#' DBI::dbDisconnect(watina)
+#' dbDisconnect(watina)
 #' }
 #'
 #' @export
@@ -1029,8 +1074,6 @@ get_xg3 <- function(locs,
 #' day
 #' month
 #' year
-#' @importFrom dbplyr
-#' db_pivot_wider
 #' @importFrom dplyr
 #' %>%
 #' copy_to
@@ -1260,14 +1303,14 @@ get_chem <- function(locs,
                                              .data$unit))
         ) %>%
         select(-contains("value_"), -.data$provide_eq_unit) %>%
-        mutate(unit = ifelse(.data$unit == "/", NA, .data$unit)) %>%
-        arrange(.data$loc_code,
-                .data$date,
-                .data$chem_variable)
+        mutate(unit = ifelse(.data$unit == "/", NA, .data$unit))
 
     if (collect) {
         chem <-
             chem %>%
+            arrange(.data$loc_code,
+                    .data$date,
+                    .data$chem_variable) %>%
             collect
     }
 

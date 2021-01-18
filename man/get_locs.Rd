@@ -222,6 +222,16 @@ Here, the term 'observation well' is used to refer to a fixed installed
 device in the field (groundwater piezometer, surface water level
 measurement device).
 }
+\note{
+Up to and including \verb{watina 0.3.0}, the result was sorted according to
+\code{area_code} and \code{loc_code},
+both for the lazy query and the collected result.
+Later versions avoid sorting in case of a lazy result, because
+otherwise, when using the result inside another lazy query, this led to
+'ORDER BY' constructs in SQL subqueries, which must be avoided.
+If you like to print the lazy object in a sorted manner, you must add
+\verb{\%>\% arrange(...)} yourself.
+}
 \examples{
 \dontrun{
 watina <- connect_watina()
@@ -232,7 +242,8 @@ get_locs(watina,
          bbox = c(xmin = 1.4e+5,
                   xmax = 1.7e+5,
                   ymin = 1.6e+5,
-                  ymax = 1.9e+5))
+                  ymax = 1.9e+5)) \%>\%
+    arrange(area_code, loc_code)
 
 get_locs(watina,
          area_codes = c("KAL", "KBR"),
@@ -295,22 +306,29 @@ get_locs(watina,
     head(12)
 
 # Selecting all piezometers with status VLD of the
-# province "West-Vlaanderen":
-data(BE_ADMIN_PROVINCE,
-     package = "BelgiumMaps.StatBel")
+# province "West-Vlaanderen" (current polygon taken
+# from the official WFS service):
 library(sf)
-library(stringr)
+library(purrr)
+library(httr)
 mymask <-
-    st_as_sf(BE_ADMIN_PROVINCE) \%>\%
-    filter(str_detect(TX_PROV_DESCR_NL, "West")) \%>\%
-    st_transform(crs = 31370)
+    "https://geoservices.informatievlaanderen.be/overdrachtdiensten/VRBG/wfs" \%>\%
+    parse_url() \%>\%
+    list_merge(query = list(request = "GetFeature",
+                            typeName = "VRBG:Refprv",
+                            cql_filter="NAAM='West-Vlaanderen'",
+                            srsName = "EPSG:31370",
+                            outputFormat = "text/xml; subtype=gml/3.1.1")) \%>\%
+    build_url() \%>\%
+    read_sf(crs = 31370) \%>\%
+    st_cast("GEOMETRYCOLLECTION")
 get_locs(watina,
          loc_validity = "VLD",
          mask = mymask,
          buffer = 0)
 
 # Disconnect:
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 }
 
 }

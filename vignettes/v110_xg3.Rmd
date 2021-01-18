@@ -25,7 +25,7 @@ _This makes it possible to build the package with vignettes without access to th
 
 ## Overview
 
-XG3 is an umbrella for the three geohydrological variables LG3, HG3 and VG3, which are yearly statistics which can be calculated from series of water level measurements (on condition that data are frequent enough).
+XG3 is an umbrella for the three geohydrological variables LG3, HG3 and VG3, which are yearly statistics which can be calculated from series of water level measurements (on condition that enough data are available).
 More explanation on these variables is given by the documentation of `get_xg3()`.
 
 Let's suppose that we want to select locations (within an area, i.e. after having used `get_locs()`) for which:
@@ -195,6 +195,6 @@ It calls `eval_xg3_avail()` and `eval_xg3_series()` by itself, but alternatively
 
 
 ```{r include=FALSE}
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 ```
 

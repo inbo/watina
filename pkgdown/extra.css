@@ -1,0 +1,13 @@
+body {
+  font-size: 18px;
+}
+pre {
+  font-size: 16px;
+}
+pre, code {
+	background-color: #fdfdfd;
+	color: #222;
+}
+code a, pre a {
+	color: #024b8e;
+}

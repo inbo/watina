@@ -279,7 +279,7 @@ mylocs <- get_locs(watina,
 mydata <-
  mylocs \%>\%
  get_xg3(watina, 2000)
-mydata
+mydata \%>\% arrange(loc_code, hydroyear)
 # Number of locations in mydata:
 mydata \%>\% distinct(loc_code) \%>\% count
 # Number of hydrological years per location and XG3 variable:
@@ -317,7 +317,7 @@ result <-
 result$combined_result_filtered
 result[2:4]
 # Disconnect:
-DBI::dbDisconnect(watina)
+dbDisconnect(watina)
 }
 
 }

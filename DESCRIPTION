@@ -1,6 +1,6 @@
 Package: watina
 Title: Querying And Processing Data From The INBO Watina Database
-Version: 0.3.0
+Version: 0.4.0
 Description: The R-package watina contains functions to query
     and process data from the Watina database at the Research Institute for
     Nature and Forest (INBO). This database primarily provides
@@ -34,11 +34,12 @@ Imports:
     tidyr
 Suggests:
     knitr,
-    rmarkdown
+    purrr,
+    rmarkdown,
+    tidyselect
 Remotes:
-    inbo/inbodb,
-    florisvdh/dbplyr@dbplyr_with_pivot_wider
+    inbo/inbodb
 LazyData: true
 Encoding: UTF-8
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
