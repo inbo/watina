@@ -29,7 +29,8 @@ connect_watina <- function() {
 #' Disconnect a database connection
 #'
 #' This is a re-export of
-#' \code{\link[inbodb:dbDisconnect-OdbcConnection-method]{inbodb::dbDisconnect()}}.
+#' \code{\link[inbodb:dbDisconnect-OdbcConnection-method]{inbodb::dbDisconnect()}}
+#' (\href{https://inbo.github.io/inbodb/reference/dbDisconnect-OdbcConnection-method.html}{url}).
 #'
 #' @name dbDisconnect
 #' @keywords documentation
