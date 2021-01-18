@@ -8,3 +8,6 @@ pre, code {
 	background-color: #fdfdfd;
 	color: #222;
 }
+code a, pre a {
+	color: #024b8e;
+}
