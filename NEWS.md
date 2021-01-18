@@ -2,11 +2,11 @@
 
 - This release has been made compatible with `dbplyr` 2.0.0 (on CRAN); the `dbplyr` fork is not needed anymore ([e66e58f](https://github.com/inbo/watina/commit/e66e58f), #74).
   - Follow the installation procedure on the homepage (readme) to upgrade.
-  - Lazy results of `get_locs()`, `get_xg3()` or `get_chem()` are not sorted anymore.
+  - Lazy results of `get_locs()`, `get_xg3()` and `get_chem()` are not sorted anymore.
   Sorting is done in tibbles only, i.e. if `collect = TRUE`.
   For more information, consult the _Note_ added in the documentation of these functions.
 - Fix broken `selectlocs_xg3()` and `selectlocs_chem()` (#73).
-- Fix `get_locs()` error when no results came out of spatial masking ([c96421e](https://github.com/inbo/watina/commit/c96421e)).
+- Fix `get_locs()` error when no locations remain after spatial masking ([c96421e](https://github.com/inbo/watina/commit/c96421e)).
 - Adopt further [`inbodb`](https://inbo.github.io/inbodb) functionality (#75):
   - re-export its `dbDisconnect()`;
   - transfer handling of character encoding to `inbodb`.
