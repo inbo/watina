@@ -10,13 +10,10 @@
     <loc>https://inbo.github.io/watina/reference/cluster_locs.html</loc>
   </url>
   <url>
-    <loc>https://inbo.github.io/watina/reference/collect.html</loc>
-  </url>
-  <url>
     <loc>https://inbo.github.io/watina/reference/connect_watina.html</loc>
   </url>
   <url>
-    <loc>https://inbo.github.io/watina/reference/convertdf_enc.html</loc>
+    <loc>https://inbo.github.io/watina/reference/dbDisconnect.html</loc>
   </url>
   <url>
     <loc>https://inbo.github.io/watina/reference/eval_chem.html</loc>

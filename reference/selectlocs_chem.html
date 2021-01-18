@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  
 
 <meta property="og:title" content="Select locations based on hydrochemical data properties — selectlocs_chem" />
 <meta property="og:description" content="Select locations that comply with user-specified conditions,
@@ -76,7 +78,7 @@ by eval_chem." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -322,7 +324,7 @@ by <code><a href='eval_chem.html'>eval_chem</a></code>.</p>
 <span class='va'>mydata</span> <span class='op'>&lt;-</span>
     <span class='va'>mylocs</span> <span class='op'>%&gt;%</span>
     <span class='fu'><a href='get_chem.html'>get_chem</a></span><span class='op'>(</span><span class='va'>watina</span>, <span class='st'>"1/1/2010"</span><span class='op'>)</span>
-<span class='va'>mydata</span>
+<span class='va'>mydata</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>loc_code</span>, <span class='va'>date</span>, <span class='va'>chem_variable</span><span class='op'>)</span>
 <span class='va'>mydata</span> <span class='op'>%&gt;%</span>
     <span class='fu'><a href='https://dplyr.tidyverse.org/reference/pull.html'>pull</a></span><span class='op'>(</span><span class='va'>date</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
     <span class='fu'>lubridate</span><span class='fu'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/year.html'>year</a></span><span class='op'>(</span><span class='va'>.</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
@@ -371,7 +373,7 @@ by <code><a href='eval_chem.html'>eval_chem</a></code>.</p>
                     conditions <span class='op'>=</span> <span class='va'>conditions_df</span><span class='op'>)</span>
 
 <span class='co'># Disconnect:</span>
-<span class='fu'>DBI</span><span class='fu'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
+<span class='fu'><a href='dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
 <span class='op'>}</span>
 
 </div></pre>

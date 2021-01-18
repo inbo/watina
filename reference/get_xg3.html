@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  
 
 <meta property="og:title" content="Get XG3 values from the database — get_xg3" />
 <meta property="og:description" content="Returns XG3 values from the Watina database,
@@ -77,7 +79,7 @@ to a specified timeframe." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -238,6 +240,16 @@ Currently, non-truncated values are returned, with usage of estimated values.</p
 <p>(TO BE ADDED: What are XG3 values? What is a hydroyear?
 Why truncate, and why truncate by default?
 When to choose which <code>vert_crs</code>?)</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>Up to and including <code>watina 0.3.0</code>, the result was sorted according to
+<code>loc_code</code> and <code>hydroyear</code>, both for the lazy query and the
+collected result.
+Later versions avoid sorting in case of a lazy result, because
+otherwise, when using the result inside another lazy query, this led to
+'ORDER BY' constructs in SQL subqueries, which must be avoided.
+If you like to print the lazy object in a sorted manner, you must add
+<code>%&gt;% arrange(...)</code> yourself.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other functions to query the database: 
@@ -249,20 +261,25 @@ When to choose which <code>vert_crs</code>?)</p>
 <span class='va'>watina</span> <span class='op'>&lt;-</span> <span class='fu'><a href='connect_watina.html'>connect_watina</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span>
 <span class='va'>mylocs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_locs.html'>get_locs</a></span><span class='op'>(</span><span class='va'>watina</span>, area_codes <span class='op'>=</span> <span class='st'>"KAL"</span><span class='op'>)</span>
-<span class='va'>mylocs</span> <span class='op'>%&gt;%</span> <span class='fu'>get_xg3</span><span class='op'>(</span><span class='va'>watina</span>, <span class='fl'>2010</span><span class='op'>)</span>
+<span class='va'>mylocs</span> <span class='op'>%&gt;%</span>
+    <span class='fu'>get_xg3</span><span class='op'>(</span><span class='va'>watina</span>, <span class='fl'>2010</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>loc_code</span>, <span class='va'>hydroyear</span><span class='op'>)</span>
 <span class='va'>mylocs</span> <span class='op'>%&gt;%</span> <span class='fu'>get_xg3</span><span class='op'>(</span><span class='va'>watina</span>, <span class='fl'>2010</span>, collect <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='va'>mylocs</span> <span class='op'>%&gt;%</span> <span class='fu'>get_xg3</span><span class='op'>(</span><span class='va'>watina</span>, <span class='fl'>2010</span>, vert_crs <span class='op'>=</span> <span class='st'>"ostend"</span><span class='op'>)</span>
+<span class='va'>mylocs</span> <span class='op'>%&gt;%</span>
+    <span class='fu'>get_xg3</span><span class='op'>(</span><span class='va'>watina</span>, <span class='fl'>2010</span>, vert_crs <span class='op'>=</span> <span class='st'>"ostend"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>loc_code</span>, <span class='va'>hydroyear</span><span class='op'>)</span>
 
 <span class='co'># joining results to mylocs:</span>
 <span class='va'>mylocs</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>get_xg3</span><span class='op'>(</span><span class='va'>watina</span>, <span class='fl'>2010</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>left_join</a></span><span class='op'>(</span><span class='va'>mylocs</span> <span class='op'>%&gt;%</span>
-            <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>loc_wid</span><span class='op'>)</span>,
-            <span class='va'>.</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='va'>collect</span>
+    <span class='fu'>get_xg3</span><span class='op'>(</span><span class='va'>watina</span>, <span class='fl'>2010</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>left_join</a></span><span class='op'>(</span><span class='va'>mylocs</span> <span class='op'>%&gt;%</span>
+              <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>loc_wid</span><span class='op'>)</span>,
+              <span class='va'>.</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='va'>collect</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>loc_code</span>, <span class='va'>hydroyear</span><span class='op'>)</span>
 
 <span class='co'># Disconnect:</span>
-<span class='fu'>DBI</span><span class='fu'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
+<span class='fu'><a href='dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
 <span class='op'>}</span>
 
 </div></pre>

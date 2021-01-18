@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  
 
 <meta property="og:title" content="Connect to the INBO Watina database — connect_watina" />
 <meta property="og:description" content="Returns a connection to the INBO Watina database.
@@ -73,7 +75,7 @@ The function can only be used from within the INBO network." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -149,14 +151,14 @@ The function can only be used from within the INBO network.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Don't forget to disconnect at the end of your R-script using
-<code><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>DBI::dbDisconnect()</a></code>!</p>
+<code><a href='dbDisconnect.html'>dbDisconnect</a></code>!</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='va'>watina</span> <span class='op'>&lt;-</span> <span class='fu'>connect_watina</span><span class='op'>(</span><span class='op'>)</span>
 <span class='co'># Do your stuff.</span>
 <span class='co'># Disconnect:</span>
-<span class='fu'>DBI</span><span class='fu'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
+<span class='fu'><a href='dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
 <span class='op'>}</span>
 
 </div></pre>

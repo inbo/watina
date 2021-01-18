@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  
 
 <meta property="og:title" content="Function reference" />
 
@@ -71,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -157,6 +159,12 @@
           <p><code><a href="connect_watina.html">connect_watina()</a></code> </p>
         </td>
         <td><p>Connect to the INBO Watina database</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="dbDisconnect.html">dbDisconnect</a></code> </p>
+        </td>
+        <td><p>Disconnect a database connection</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -275,19 +283,6 @@
           <p><code><a href="extract_xg3_series.html">extract_xg3_series()</a></code> </p>
         </td>
         <td><p>Identify XG3 series per location</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="collect.html">collect()</a></code> </p>
-        </td>
-        <td><p>A variant of dplyr's collect() which converts dataframes to UTF-8 encoding
-if OS is Windows</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="convertdf_enc.html">convertdf_enc()</a></code> </p>
-        </td>
-        <td><p>Convert encoding of character and factor variables in a dataframe</p></td>
       </tr>
     </tbody>
     </table>

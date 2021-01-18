@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  
 
 <meta property="og:title" content="Get locations from the database — get_locs" />
 <meta property="og:description" content="Returns locations (and optionally, observation wells) from the Watina
@@ -78,7 +80,7 @@ Essential metadata are included in the result." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -383,6 +385,16 @@ alterations (e.g. damage of a piezometer).
 Here, the term 'observation well' is used to refer to a fixed installed
 device in the field (groundwater piezometer, surface water level
 measurement device).</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>Up to and including <code>watina 0.3.0</code>, the result was sorted according to
+<code>area_code</code> and <code>loc_code</code>,
+both for the lazy query and the collected result.
+Later versions avoid sorting in case of a lazy result, because
+otherwise, when using the result inside another lazy query, this led to
+'ORDER BY' constructs in SQL subqueries, which must be avoided.
+If you like to print the lazy object in a sorted manner, you must add
+<code>%&gt;% arrange(...)</code> yourself.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other functions to query the database: 
@@ -399,7 +411,8 @@ measurement device).</p>
          bbox <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>xmin <span class='op'>=</span> <span class='fl'>1.4e+5</span>,
                   xmax <span class='op'>=</span> <span class='fl'>1.7e+5</span>,
                   ymin <span class='op'>=</span> <span class='fl'>1.6e+5</span>,
-                  ymax <span class='op'>=</span> <span class='fl'>1.9e+5</span><span class='op'>)</span><span class='op'>)</span>
+                  ymax <span class='op'>=</span> <span class='fl'>1.9e+5</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>area_code</span>, <span class='va'>loc_code</span><span class='op'>)</span>
 
 <span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
          area_codes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"KAL"</span>, <span class='st'>"KBR"</span><span class='op'>)</span>,
@@ -462,22 +475,29 @@ measurement device).</p>
     <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fl'>12</span><span class='op'>)</span>
 
 <span class='co'># Selecting all piezometers with status VLD of the</span>
-<span class='co'># province "West-Vlaanderen":</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>BE_ADMIN_PROVINCE</span>,
-     package <span class='op'>=</span> <span class='st'>"BelgiumMaps.StatBel"</span><span class='op'>)</span>
+<span class='co'># province "West-Vlaanderen" (current polygon taken</span>
+<span class='co'># from the official WFS service):</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://r-spatial.github.io/sf/'>sf</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://stringr.tidyverse.org'>stringr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://purrr.tidyverse.org'>purrr</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://httr.r-lib.org/'>httr</a></span><span class='op'>)</span>
 <span class='va'>mymask</span> <span class='op'>&lt;-</span>
-    <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_as_sf.html'>st_as_sf</a></span><span class='op'>(</span><span class='va'>BE_ADMIN_PROVINCE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-    <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='fu'><a href='https://stringr.tidyverse.org/reference/str_detect.html'>str_detect</a></span><span class='op'>(</span><span class='va'>TX_PROV_DESCR_NL</span>, <span class='st'>"West"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-    <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_transform.html'>st_transform</a></span><span class='op'>(</span>crs <span class='op'>=</span> <span class='fl'>31370</span><span class='op'>)</span>
+    <span class='st'>"https://geoservices.informatievlaanderen.be/overdrachtdiensten/VRBG/wfs"</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://httr.r-lib.org/reference/parse_url.html'>parse_url</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://purrr.tidyverse.org/reference/list_modify.html'>list_merge</a></span><span class='op'>(</span>query <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>request <span class='op'>=</span> <span class='st'>"GetFeature"</span>,
+                            typeName <span class='op'>=</span> <span class='st'>"VRBG:Refprv"</span>,
+                            cql_filter<span class='op'>=</span><span class='st'>"NAAM='West-Vlaanderen'"</span>,
+                            srsName <span class='op'>=</span> <span class='st'>"EPSG:31370"</span>,
+                            outputFormat <span class='op'>=</span> <span class='st'>"text/xml; subtype=gml/3.1.1"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://httr.r-lib.org/reference/parse_url.html'>build_url</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_read.html'>read_sf</a></span><span class='op'>(</span>crs <span class='op'>=</span> <span class='fl'>31370</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+    <span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_cast.html'>st_cast</a></span><span class='op'>(</span><span class='st'>"GEOMETRYCOLLECTION"</span><span class='op'>)</span>
 <span class='fu'>get_locs</span><span class='op'>(</span><span class='va'>watina</span>,
          loc_validity <span class='op'>=</span> <span class='st'>"VLD"</span>,
          mask <span class='op'>=</span> <span class='va'>mymask</span>,
          buffer <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
 
 <span class='co'># Disconnect:</span>
-<span class='fu'>DBI</span><span class='fu'>::</span><span class='fu'><a href='https://dbi.r-dbi.org/reference/dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
+<span class='fu'><a href='dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
 <span class='op'>}</span>
 
 </div></pre>

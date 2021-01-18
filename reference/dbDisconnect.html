@@ -6,14 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A variant of dplyr's collect() which converts dataframes to UTF-8 encoding
-if OS is Windows — collect • watina</title>
+<title>Disconnect a database connection — dbDisconnect • watina</title>
 
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -39,14 +38,13 @@ if OS is Windows — collect • watina</title>
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  
 
-<meta property="og:title" content="A variant of dplyr's collect() which converts dataframes to UTF-8 encoding
-if OS is Windows — collect" />
-<meta property="og:description" content="Works as a simple collect(), on which it is
-based.
-However, on a Windows OS the collect() function exported
-by this package will convert character and factor
-variables of dataframes to UTF-8 encoding." />
+<meta property="og:title" content="Disconnect a database connection — dbDisconnect" />
+<meta property="og:description" content="This is a re-export of
+inbodb::dbDisconnect()
+(url)." />
 
 
 
@@ -78,7 +76,7 @@ variables of dataframes to UTF-8 encoding." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -135,39 +133,19 @@ variables of dataframes to UTF-8 encoding." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A variant of dplyr's collect() which converts dataframes to UTF-8 encoding
-if OS is Windows</h1>
-    <small class="dont-index">Source: <a href='https://github.com/inbo/watina/blob/master/R/encode_utf8.R'><code>R/encode_utf8.R</code></a></small>
-    <div class="hidden name"><code>collect.Rd</code></div>
+    <h1>Disconnect a database connection</h1>
+    <small class="dont-index">Source: <a href='https://github.com/inbo/watina/blob/master/R/connect_watina.R'><code>R/connect_watina.R</code></a></small>
+    <div class="hidden name"><code>dbDisconnect.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Works as a simple <code><a href='https://dplyr.tidyverse.org/reference/compute.html'>collect()</a></code>, on which it is
-based.
-However, on a Windows OS the <code>collect()</code> function exported
-by this package will convert character and factor
-variables of dataframes to <code>UTF-8</code> encoding.</p>
+    <p>This is a re-export of
+<code>inbodb::dbDisconnect()</code>
+(<a href='https://inbo.github.io/inbodb/reference/dbDisconnect-OdbcConnection-method.html'>url</a>).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>collect</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>A tbl</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The functions in this package that <em>collect</em> a <code>tbl_lazy</code> object,
-e.g. when <code>collect = TRUE</code>, do so by using this function.
-As a convenience to the user, the function is exported to allow manual
-implementation.</p>
-<p>The function <code><a href='convertdf_enc.html'>convertdf_enc()</a></code> is the workhorse
-for the encoding conversion.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
