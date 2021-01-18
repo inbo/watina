@@ -597,8 +597,9 @@ get_locs <- function(con,
                                           sql("CAST(
                                               filterdepth_guessed AS bit)"))
                        } else .} %>%
-                       filter(row_number() == 1L) %>%
-                       ungroup()
+                       ungroup() %>%
+                       filter(.data$obswell_count == 1 |
+                                  .data$obswell_rank == .data$obswell_maxrank)
 
                    ) %>%
             select(-.data$obswell_code,
