@@ -7,6 +7,7 @@
   For more information, consult the _Note_ added in the documentation of these functions.
 - Fix broken `selectlocs_xg3()` and `selectlocs_chem()` (#73).
 - Fix `get_locs()` error when no locations remain after spatial masking ([c96421e](https://github.com/inbo/watina/commit/c96421e)).
+- Fix `get_locs()` error when `obswell_aggr = "mean"` (#80).
 - Adopt further [`inbodb`](https://inbo.github.io/inbodb) functionality (#75):
   - re-export its `dbDisconnect()`;
   - transfer handling of character encoding to `inbodb`.
