@@ -322,7 +322,6 @@
 #' distinct
 #' arrange
 #' group_by
-#' row_number
 #' ungroup
 #' sql
 get_locs <- function(con,
