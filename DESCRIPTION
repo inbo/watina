@@ -33,6 +33,7 @@ Imports:
     tibble,
     tidyr
 Suggests:
+    ggplot2,
     knitr,
     purrr,
     rmarkdown,
