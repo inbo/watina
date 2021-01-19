@@ -1,6 +1,6 @@
 Package: watina
 Title: Querying And Processing Data From The INBO Watina Database
-Version: 0.4.0
+Version: 0.4.0.9000
 Description: The R-package watina contains functions to query
     and process data from the Watina database at the Research Institute for
     Nature and Forest (INBO). This database primarily provides
