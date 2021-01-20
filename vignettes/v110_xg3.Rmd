@@ -14,9 +14,7 @@ knitr::opts_chunk$set(
   eval = FALSE
 )
 library(watina)
-library(sf)
 library(dplyr)
-library(stringr)
 library(knitr)
 ```
 
