@@ -4,7 +4,7 @@
 \name{watina-package}
 \alias{watina}
 \alias{watina-package}
-\title{watina: Querying And Processing Data From The INBO Watina Database}
+\title{watina: Querying and Processing Data from the INBO Watina Database}
 \description{
 The R-package watina contains functions to query
     and process data from the Watina database at the Research Institute for
