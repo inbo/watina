@@ -85,9 +85,6 @@
 #' }
 #'
 #' @export
-#' @importFrom sf
-#' st_coordinates
-#' st_geometry_type
 #' @importFrom assertthat
 #' assert_that
 #' is.string
@@ -96,8 +93,6 @@
 #' %>%
 #' as_tibble
 #' bind_cols
-#' @importFrom tibble
-#' enframe
 #' @importFrom stats
 #' dist
 #' hclust
@@ -111,14 +106,18 @@ cluster_locs <- function(input,
     assert_that(inherits(input, c("data.frame", "sf")))
     assert_that(is.string(xvar), is.string(yvar), is.string(output_var))
 
+    require_pkgs("tibble")
+
     if (inherits(input, "sf")) {
 
-        assert_that(unique(st_geometry_type(input)) == "POINT",
+        require_pkgs("sf")
+
+        assert_that(unique(sf::st_geometry_type(input)) == "POINT",
                     msg = "Geospatial input must only contain POINT geometries.")
 
         coords <-
             input %>%
-            st_coordinates %>%
+            sf::st_coordinates() %>%
             as_tibble
         xvar <- "X"
         yvar <- "Y"
@@ -146,7 +145,7 @@ cluster_locs <- function(input,
         dist %>%
         hclust(method = "complete") %>%
         cutree(h = max_dist) %>%
-        enframe(name = NULL, value = output_var) %>%
+        tibble::enframe(name = NULL, value = output_var) %>%
         bind_cols(input, .)
 
 }

@@ -21,21 +21,20 @@ Depends:
     R (>= 3.5.0)
 Imports:
     assertthat,
-    dbplyr (>= 1.4.3.9000),
     dplyr,
     inbodb,
     KSgeneral,
     lubridate,
     rlang,
-    sf,
     stringr,
     stats,
-    tibble,
     tidyr
 Suggests:
     knitr,
     purrr,
     rmarkdown,
+    sf,
+    tibble,
     tidyselect
 Remotes:
     inbo/inbodb
