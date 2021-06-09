@@ -25,6 +25,11 @@ Think watina is useful? Let others discover it, by telling them in person, via T
 
 Using watina for a paper you are writing? Consider [citing it][citation].
 
+```r
+# with the watina package installed, this will return a bibliography entry:
+citation("watina")
+```
+
 ### Ask a question ⁉️
 
 Using watina and got stuck? Browse the [documentation][website] to see if you can find a solution. Still stuck? Post your question as an [issue on GitHub][new_issue]. While we cannot offer user support, we'll try to do our best to address it, as questions often lead to better documentation or the discovery of bugs.
@@ -48,6 +53,9 @@ Using watina and discovered a bug? That's annoying! Don't let others have the sa
 * Any details about your local setup that might be helpful in troubleshooting.
 * Detailed steps to reproduce the bug.
 
+Help yourself and those you are asking for help: use the reprex package!
+Usually just running [`reprex::reprex(session_info = TRUE)`](https://reprex.tidyverse.org/reference/reprex.html) on a small reproducible example will do all the magic. 🌟
+
 ### Improve the documentation 📖
 
 Noticed a typo on the website? Think a function could use a better example? Good documentation makes all the difference, so your help to improve it is very welcome!
@@ -58,7 +66,7 @@ Noticed a typo on the website? Think a function could use a better example? Good
 
 #### Function documentation
 
-Functions are described as comments near their code and translated to documentation using [`roxygen2`](https://klutometis.github.io/roxygen/). If you want to improve a function description:
+Functions are described as comments near their code and translated to documentation using [`roxygen2`](https://roxygen2.r-lib.org/). If you want to improve a function description:
 
 1. Go to `R/` directory in the [code repository][repo].
 2. Look for the file with the name of the function.
@@ -80,8 +88,9 @@ Organise data in R in a [tidy](https://r4ds.had.co.nz/tidy-data.html#tidy-data-1
 Recommended resources to get started are:
     - [R for Data Science](https://r4ds.had.co.nz/)
     - [Geocomputation with R](https://geocompr.robinlovelace.net)
-    - [R packages](http://r-pkgs.had.co.nz/) (by Hadley Wickham 2015; an extended/updated [version](https://r-pkgs.org/) is still under development)
-    - `vignette("formatting", package = "roxygen2")` for documentation syntax
+    - [R packages](https://r-pkgs.org/) (by Hadley Wickham and Jenny Bryan)
+    - [`vignette("rd-formatting", package = "roxygen2")`](https://roxygen2.r-lib.org/articles/formatting.html) for documentation syntax.
+    Or use markdown support in function documentation after adding the `@md` tag.
 - have a quick look at the [tidyverse style guide](https://style.tidyverse.org/).
 There you see how to style object, variable and function names, as well as the documentation.
 At least keep in mind: **use lower case and 'snake_case'** for object, variable and function names.
@@ -112,16 +121,67 @@ We try to follow the [GitHub flow](https://guides.github.com/introduction/flow/)
 
 #### _With_ write permissions to the [code repository][repo]
 
-More detailed info on git workflows at INBO: <https://inbo.github.io/tutorials/tags/git/>.
-See also [these git workshop materials](https://inbo.github.io/git-course/index.html).
+It is wise to first think about the scope of your function (or your proposed enhancement of an existing one), and talk it through with other collaborators:
 
-1. Make commits (in your local clone of the remote repo on Github) _in your own git branch_, branched off from the `master` branch.
-(But see this in a relative manner: exactly the same process can be repeated by someone else in turn, relative to your branch.
-So '`master`' in this protocol can be replaced by another branch name!)
-You can push your branch to the remote as often as you like, as it will not influence other branches (first time: do `git push -u origin yourbranchname`; afterwards `git push` suffices). It serves as a backup and enables others to work with you on that branch.
-1. Meanwhile, make sure that your branch stays up to date with evolutions in `master` (i.e. in your local repo, update `master` with `git checkout master && git pull` and then, with your own branch checked out again, do `git merge --no-ff master`), in order to prevent merge conflicts with `master` later on.
-At this stage, you need to resolve any merge conflicts that may arise in your own branch.
-1. Propose to merge your commits into `master`: this starts with making a 'pull request' (PR; actually this is a merge request) and assign at least one reviewer before a merge can be decided. At that moment, open online discussion in the repo is possible on your changes (for other open discussion that you want to start, make an _issue_). As long as no merge is performed, more commits can be added to this PR with `git push`, e.g. to implement requested changes by others.
-    - note that, if you branched off another (reference) branch than `master`, make sure to change the reference branch in the pull request (the default reference is `master`).
-1. After your PR is merged, pull the reference branch (usually `master`) and clean up your local repo in order to keep up with the remote.
+- functions that are of broader interest than Natura 2000, better go to [inborutils](https://inbo.github.io/inborutils/) or a separate package;
+- functions that will only be relevant to a specific _watina_ project, are better developed in the project-specific repo.
+
+You will want to look at the file `src/manage_package.R` to get some useful packaging commands and developing tips.
+
+**Releases, version numbering and the relation to git branches**
+
+- We follow the semantic version numbering as described [here](https://r-pkgs.org/description.html#version).
+- The commit referred to by `master` (branch tip) must always have a `<major>.<minor>.<patch>` version number in the `DESCRIPTION` file.
+It is the latest released package version.
+  - Subsequent commits on `master` which do not change the package code itself, but only website setup and repo documentation, must inherit the _same_ release version number.
+  - **Commits which do change the package _must_ carry a development version number**; typically `<major>.<minor>.<patch>.9000`.
+It follows that they never appear at the tip of the `master` branch.
+Non-package commits _may_ follow this route as well: it is safe for all new commits.
+
+  These conventions ensure that:
+  - a simple package installation with `remotes::install_github()`, which defaults to downloading from the `master` branch, will result in an installation of the latest release;
+  - the `pkgdown` [website] shows the version number of the latest release.
+  
+- Other branches than `master` can have various names.
+However, there is always at least one **development branch** whose name begins with `dev`.
+For example: `dev_nextrelease`, `dev_0.4.0`, ...
+It is the collector of new features and bugfixes that will lead to a later release, and its first commit should be to add a dev-suffix (`.9000`) to the current version number (don't increment `<major>.<minor>.<patch>`).
+  - Especially when cooperating, it is counteradvised to push directly to this branch; better do so through pull requests from feature branches.
+- Eventually, the development branch's last commit before merging to `master` will be to increment at least one of `<major>`, `<minor>` or `<patch>` and to drop the dev-suffix from the version number (i.e. in the `DESCRIPTION` file).
+Such final commits should happen directly on the development branch.
+No later than that commmit (but it can safely be done earlier), also the `.zenodo.json` metadata file must be updated to the new release version number.
+
+
+**Steps and tricks in git**
+
+The preceding philosophy leads to following steps and guidelines:
+
+1. Make commits (in your local clone of the remote repo on Github) _in your own git branch_, branched off from the **base** branch you wish to contribute to -- below referred as `<base>` branch.
+Let's call your new branch the `<feature>` branch.
+    - In general, the base branch will be a `dev*` branch, or it could be a feature branch of someone else you wish to make a contribution to.
+    
+    You can push your branch to the remote as often as you like, as it will not influence other branches (first time: do `git push -u origin yourbranchname`; afterwards `git push` suffices). It serves as a backup and enables others to work with you on that branch.
+1. Meanwhile, make sure that your branch stays up to date with evolutions in the base branch.
+This is needed to ensure a smooth merge of your branch to the base branch later on.
+    - To do that in your local repo, you can run `git pull origin <base>` while having your feature branch checked out.
+    - If you also wish to update your local base branch in this process, you can first `git checkout <base>` followed by `git pull`, then switch back to `git checkout <feature>` and merge the base branch with `git merge --no-ff <base>`.
+    
+    If any merge conflicts arise at this stage, resolve them in your own branch.
+1. Propose to merge your commits into the base branch: after pushing your branch to GitHub (which you can do repeatedly), this starts with making a **pull request** (PR; actually this is a merge request) and assign at least one reviewer before a merge can be decided.
+At that moment, open online discussion in the repo is possible on your changes (for other open discussion that you want to start, make an _issue_).
+As long as no merge is performed, more commits can be added to this PR with `git push`, e.g. to implement requested changes by others.
+    - make sure to correctly **set the base branch** in the pull request (because the default is `master`).
+1. After your PR is merged, pull the base branch and clean up your local repo in order to keep up with the remote.
+
+**Git resources**
+
+- Info on general git workflows at INBO: <https://inbo.github.io/tutorials/tags/git/>.
+See also [these git workshop materials](https://inbo.github.io/git-course/index.html).
+- Günther T. (2014). Learn version control with Git: A step-by-step course for the complete beginner.
+- <https://learngitbranching.js.org/>
+- [Interactive Git cheatsheet](http://ndpsoftware.com/git-cheatsheet.html)
+
+
+
+
 
