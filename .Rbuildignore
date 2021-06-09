@@ -3,10 +3,9 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 ^README-.*\.png$
-.github/
 ^docs$
 ^_pkgdown\.yml$
 ^pkgdown$
-^\.travis\.yml$
 ^appveyor\.yml$
 ^\.zenodo\.json$
+^\.github$
