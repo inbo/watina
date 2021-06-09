@@ -1,7 +1,8 @@
 <!-- badges: start -->
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3630532.svg)](https://doi.org/10.5281/zenodo.3630532)
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-[![Build Status](https://travis-ci.org/inbo/watina.svg?branch=master)](https://travis-ci.org/inbo/watina)
+[![R-CMD-check](https://github.com/inbo/watina/workflows/R-CMD-check/badge.svg)](https://github.com/inbo/watina/actions?query=workflow%3AR-CMD-check)
+[![site-devel](https://github.com/inbo/watina/workflows/site-devel/badge.svg)](https://github.com/inbo/watina/actions?query=workflow%3Asite-devel)
 <!-- badges: end -->
 
 ## Welcome
@@ -19,7 +20,7 @@ natural areas in Flanders (Belgium) and provides:
 
 Currently the R package won't work outside INBO.
 
-## Installing, testing and using the _watina_ package
+## Installing and using the _watina_ package
 
 ### Option 1 (quick): installing without vignettes
 
