@@ -37,7 +37,6 @@
 #' as_points(mydata)
 #'
 #' @export
-#' @importFrom sf st_as_sf
 #' @importFrom assertthat
 #' assert_that
 #' is.string
@@ -57,6 +56,8 @@ as_points <- function(df,
     assert_that(has_name(df, yvar))
     assert_that(is.flag(warn_dupl), noNA(warn_dupl))
 
+    require_pkgs("sf")
+
     df_cleaned <-
         df[!is.na(df[,xvar]) & !is.na(df[,yvar]),]
 
@@ -71,9 +72,9 @@ as_points <- function(df,
     }
 
     df_cleaned %>%
-        st_as_sf(coords = c(xvar, yvar),
-                 crs = 31370,
-                 remove = remove)
+        sf::st_as_sf(coords = c(xvar, yvar),
+                     crs = 31370,
+                     remove = remove)
 
 }
 
