@@ -30,6 +30,7 @@ Imports:
     stats,
     tidyr
 Suggests:
+    DBI,
     knitr,
     purrr,
     rmarkdown,
