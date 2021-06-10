@@ -796,7 +796,6 @@ get_locs <- function(con,
 #' @importFrom dplyr
 #' %>%
 #' copy_to
-#' db_drop_table
 #' filter
 #' left_join
 #' inner_join
@@ -830,7 +829,9 @@ get_xg3 <- function(locs,
             locs %>%
             distinct(.data$loc_code)
 
-        try(db_drop_table(con, "##locs"),
+        require_pkgs("DBI")
+
+        try(DBI::dbRemoveTable(con, "##locs"),
             silent = TRUE)
 
         locs <-
@@ -1071,7 +1072,6 @@ get_xg3 <- function(locs,
 #' @importFrom dplyr
 #' %>%
 #' copy_to
-#' db_drop_table
 #' filter
 #' left_join
 #' inner_join
@@ -1124,7 +1124,9 @@ get_chem <- function(locs,
             locs %>%
             distinct(.data$loc_code)
 
-        try(db_drop_table(con, "##locs"),
+        require_pkgs("DBI")
+
+        try(DBI::dbRemoveTable(con, "##locs"),
             silent = TRUE)
 
         locs <-
