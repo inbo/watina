@@ -80,7 +80,7 @@ to cut the cluster tree." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -232,40 +232,40 @@ Locations that can not be clustered receive a unique cluster value.</p>
   <span class='op'>)</span>
 <span class='fu'>cluster_locs</span><span class='op'>(</span><span class='va'>mydata</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>cluster_id</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 10 x 4</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 4</span>
 #&gt;        a       x       y cluster_id
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> 0.693 </span><span style='text-decoration: underline;'>155</span><span>760. </span><span style='text-decoration: underline;'>132</span><span>690.          1
-#&gt; </span><span style='color: #555555;'> 2</span><span> 0.931 </span><span style='text-decoration: underline;'>155</span><span>761. </span><span style='text-decoration: underline;'>132</span><span>689.          1
-#&gt; </span><span style='color: #555555;'> 3</span><span> 0.673 </span><span style='text-decoration: underline;'>155</span><span>763. </span><span style='text-decoration: underline;'>132</span><span>691.          2
-#&gt; </span><span style='color: #555555;'> 4</span><span> 0.453 </span><span style='text-decoration: underline;'>155</span><span>763. </span><span style='text-decoration: underline;'>132</span><span>692.          2
-#&gt; </span><span style='color: #555555;'> 5</span><span> 0.654 </span><span style='text-decoration: underline;'>155</span><span>763. </span><span style='text-decoration: underline;'>132</span><span>695.          3
-#&gt; </span><span style='color: #555555;'> 6</span><span> 0.719 </span><span style='text-decoration: underline;'>155</span><span>760. </span><span style='text-decoration: underline;'>132</span><span>695.          4
-#&gt; </span><span style='color: #555555;'> 7</span><span> 0.899 </span><span style='text-decoration: underline;'>155</span><span>761. </span><span style='text-decoration: underline;'>132</span><span>694.          4
-#&gt; </span><span style='color: #555555;'> 8</span><span> 0.922 </span><span style='text-decoration: underline;'>155</span><span>765. </span><span style='text-decoration: underline;'>132</span><span>689.          5
-#&gt; </span><span style='color: #555555;'> 9</span><span> 0.235 </span><span style='text-decoration: underline;'>155</span><span>765. </span><span style='text-decoration: underline;'>132</span><span>695.          6
-#&gt; </span><span style='color: #555555;'>10</span><span> 0.268 </span><span style='text-decoration: underline;'>155</span><span>761. </span><span style='text-decoration: underline;'>132</span><span>693.          7</div><div class='input'><span class='va'>mydata</span> <span class='op'>%&gt;%</span>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span> 0.693 <span style='text-decoration: underline;'>155</span>760. <span style='text-decoration: underline;'>132</span>690.          1
+#&gt; <span style='color: #BCBCBC;'> 2</span> 0.931 <span style='text-decoration: underline;'>155</span>761. <span style='text-decoration: underline;'>132</span>689.          1
+#&gt; <span style='color: #BCBCBC;'> 3</span> 0.673 <span style='text-decoration: underline;'>155</span>763. <span style='text-decoration: underline;'>132</span>691.          2
+#&gt; <span style='color: #BCBCBC;'> 4</span> 0.453 <span style='text-decoration: underline;'>155</span>763. <span style='text-decoration: underline;'>132</span>692.          2
+#&gt; <span style='color: #BCBCBC;'> 5</span> 0.654 <span style='text-decoration: underline;'>155</span>763. <span style='text-decoration: underline;'>132</span>695.          3
+#&gt; <span style='color: #BCBCBC;'> 6</span> 0.719 <span style='text-decoration: underline;'>155</span>760. <span style='text-decoration: underline;'>132</span>695.          4
+#&gt; <span style='color: #BCBCBC;'> 7</span> 0.899 <span style='text-decoration: underline;'>155</span>761. <span style='text-decoration: underline;'>132</span>694.          4
+#&gt; <span style='color: #BCBCBC;'> 8</span> 0.922 <span style='text-decoration: underline;'>155</span>765. <span style='text-decoration: underline;'>132</span>689.          5
+#&gt; <span style='color: #BCBCBC;'> 9</span> 0.235 <span style='text-decoration: underline;'>155</span>765. <span style='text-decoration: underline;'>132</span>695.          6
+#&gt; <span style='color: #BCBCBC;'>10</span> 0.268 <span style='text-decoration: underline;'>155</span>761. <span style='text-decoration: underline;'>132</span>693.          7</div><div class='input'><span class='va'>mydata</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='as_points.html'>as_points</a></span><span class='op'>(</span>remove <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='va'>cluster_locs</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>cluster_id</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Simple feature collection with 10 features and 2 fields
-#&gt; geometry type:  POINT
-#&gt; dimension:      XY
-#&gt; bbox:           xmin: 155759.9 ymin: 132689.1 xmax: 155765.3 ymax: 132695.4
-#&gt; projected CRS:  Belge 1972 / Belgian Lambert 72
-#&gt; </span><span style='color: #555555;'># A tibble: 10 x 3</span><span>
+#&gt; Geometry type: POINT
+#&gt; Dimension:     XY
+#&gt; Bounding box:  xmin: 155759.9 ymin: 132689.1 xmax: 155765.3 ymax: 132695.4
+#&gt; Projected CRS: Belge 1972 / Belgian Lambert 72
+#&gt; <span style='color: #949494;'># A tibble: 10 x 3</span>
 #&gt;        a            geometry cluster_id
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;POINT [m]&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> 0.693 (155759.9 132690.4)          1
-#&gt; </span><span style='color: #555555;'> 2</span><span> 0.931 (155760.8 132689.4)          1
-#&gt; </span><span style='color: #555555;'> 3</span><span> 0.673 (155763.3 132690.8)          2
-#&gt; </span><span style='color: #555555;'> 4</span><span> 0.453 (155763.4 132692.3)          2
-#&gt; </span><span style='color: #555555;'> 5</span><span> 0.654 (155762.7 132695.3)          3
-#&gt; </span><span style='color: #555555;'> 6</span><span> 0.719   (155760 132695.4)          4
-#&gt; </span><span style='color: #555555;'> 7</span><span> 0.899 (155760.9 132694.5)          4
-#&gt; </span><span style='color: #555555;'> 8</span><span> 0.922 (155765.3 132689.1)          5
-#&gt; </span><span style='color: #555555;'> 9</span><span> 0.235 (155765.1 132695.1)          6
-#&gt; </span><span style='color: #555555;'>10</span><span> 0.268   (155761.1 132693)          7</div><div class='input'>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;POINT [m]&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span> 0.693 (155759.9 132690.4)          1
+#&gt; <span style='color: #BCBCBC;'> 2</span> 0.931 (155760.8 132689.4)          1
+#&gt; <span style='color: #BCBCBC;'> 3</span> 0.673 (155763.3 132690.8)          2
+#&gt; <span style='color: #BCBCBC;'> 4</span> 0.453 (155763.4 132692.3)          2
+#&gt; <span style='color: #BCBCBC;'> 5</span> 0.654 (155762.7 132695.3)          3
+#&gt; <span style='color: #BCBCBC;'> 6</span> 0.719   (155760 132695.4)          4
+#&gt; <span style='color: #BCBCBC;'> 7</span> 0.899 (155760.9 132694.5)          4
+#&gt; <span style='color: #BCBCBC;'> 8</span> 0.922 (155765.3 132689.1)          5
+#&gt; <span style='color: #BCBCBC;'> 9</span> 0.235 (155765.1 132695.1)          6
+#&gt; <span style='color: #BCBCBC;'>10</span> 0.268   (155761.1 132693)          7</div><div class='input'>
 <span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='va'>watina</span> <span class='op'>&lt;-</span> <span class='fu'><a href='connect_watina.html'>connect_watina</a></span><span class='op'>(</span><span class='op'>)</span>
 
@@ -290,7 +290,7 @@ Locations that can not be clustered receive a unique cluster value.</p>
 <span class='fu'><a href='dbDisconnect.html'>dbDisconnect</a></span><span class='op'>(</span><span class='va'>watina</span><span class='op'>)</span>
 <span class='op'>}</span>
 
-</div></span></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

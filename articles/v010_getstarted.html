@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -86,7 +86,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="v010_getstarted_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getting started: connecting and selecting locations</h1>
@@ -314,13 +314,13 @@
 <span class="co">#&gt; #   soilsurf_ost &lt;dbl&gt;, measuringref_ost &lt;dbl&gt;, tubelength &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   filterlength &lt;dbl&gt;, filterdepth &lt;dbl&gt;</span></code></pre></div>
 <p>Note that the lazy object contains a <code>loc_wid</code> column, which is an internal database variable to identify locations and make relations between tables. It should not be regarded as a stable ID; hence don’t store it for later use (note that lazy objects don’t store data). Consequently, the <code>loc_wid</code> column is omitted when using <code>collect = TRUE</code>.</p>
-<p>Optionally, you can retrieve the individual <strong>observation wells</strong> that are linked to each location (where each observation well is from a different timeframe). In this case, more attributes are returned (specific observation well attributes). The below example also demonstrates the use of <code><a href="https://tibble.tidyverse.org/reference/glimpse.html">tibble::glimpse()</a></code> to preview all columns:</p>
+<p>Optionally, you can retrieve the individual <strong>observation wells</strong> that are linked to each location (where each observation well is from a different timeframe). In this case, more attributes are returned (specific observation well attributes). The below example also demonstrates the use of <code><a href="https://pillar.r-lib.org/reference/glimpse.html">tibble::glimpse()</a></code> to preview all columns:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
          obswells <span class="op">=</span> <span class="cn">TRUE</span>,
          area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
          loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tibble.tidyverse.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Rows: ??</span>
 <span class="co">#&gt; Columns: 21</span>
 <span class="co">#&gt; $ loc_wid             &lt;int&gt; 1546, 1549, 1552, 1562, 1563, 1564, 1565, 1566, 1…</span>
@@ -356,7 +356,7 @@
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p> See the <a href="https://dbplyr.tidyverse.org/">dbplyr</a> package to get you started with this type of object.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p> See the <a href="https://dbplyr.tidyverse.org/">dbplyr</a> package to get you started with this type of object.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>

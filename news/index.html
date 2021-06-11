@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
       </span>
     </div>
 
@@ -134,9 +134,17 @@
       <small>Source: <a href='https://github.com/inbo/watina/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="watina-0-4-0-2021-01-18" class="section level1">
+    <div id="watina-041-2021-06-11" class="section level1">
+<h1 class="page-header" data-toc-text="0.4.1">
+<a href="#watina-041-2021-06-11" class="anchor"></a>watina 0.4.1 (2021-06-11)</h1>
+<ul>
+<li>Fixed non-working <code><a href="../reference/get_xg3.html">get_xg3()</a></code> and <code><a href="../reference/get_chem.html">get_chem()</a></code> for dataframe input, by avoiding the currently defunct <code>dbplyr::db_drop_table()</code> (<a href='https://github.com/inbo/watina/issues/89'>#89</a>, <a href="https://github.com/inbo/watina/commit/08bc66d">08bc66d</a>).</li>
+<li>Various maintenance (<a href='https://github.com/inbo/watina/issues/81'>#81</a>, <a href='https://github.com/inbo/watina/issues/86'>#86</a>, <a href='https://github.com/inbo/watina/issues/87'>#87</a>, <a href='https://github.com/inbo/watina/issues/88'>#88</a>, <a href="https://github.com/inbo/watina/commit/c382499">c382499</a>).</li>
+</ul>
+</div>
+    <div id="watina-040-2021-01-18" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.0">
-<a href="#watina-0-4-0-2021-01-18" class="anchor"></a>watina 0.4.0 (2021-01-18)</h1>
+<a href="#watina-040-2021-01-18" class="anchor"></a>watina 0.4.0 (2021-01-18)</h1>
 <ul>
 <li>This release has been made compatible with <code>dbplyr</code> 2.0.0 (on CRAN); the <code>dbplyr</code> fork is not needed anymore (<a href="https://github.com/inbo/watina/commit/e66e58f">e66e58f</a>, <a href='https://github.com/inbo/watina/issues/74'>#74</a>).
 <ul>
@@ -156,9 +164,9 @@
 <li>Improve documentation and <code>pkgdown</code> website (<a href='https://github.com/inbo/watina/issues/76'>#76</a>, <a href='https://github.com/inbo/watina/issues/77'>#77</a>, <a href="https://github.com/inbo/watina/commit/3986b4e">3986b4e</a>).</li>
 </ul>
 </div>
-    <div id="watina-0-3-0-2020-05-20" class="section level1">
+    <div id="watina-030-2020-05-20" class="section level1">
 <h1 class="page-header" data-toc-text="0.3.0">
-<a href="#watina-0-3-0-2020-05-20" class="anchor"></a>watina 0.3.0 (2020-05-20)</h1>
+<a href="#watina-030-2020-05-20" class="anchor"></a>watina 0.3.0 (2020-05-20)</h1>
 <div id="new-features" class="section level4">
 <h4 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h4>
@@ -180,53 +188,53 @@
 <p>Further, a number of smaller fixes and enhancements were made.</p>
 </div>
 </div>
-    <div id="watina-0-2-6-2020-02-28" class="section level1">
+    <div id="watina-026-2020-02-28" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.6">
-<a href="#watina-0-2-6-2020-02-28" class="anchor"></a>watina 0.2.6 (2020-02-28)</h1>
+<a href="#watina-026-2020-02-28" class="anchor"></a>watina 0.2.6 (2020-02-28)</h1>
 <ul>
 <li>Redo fix <code><a href="../reference/get_locs.html">get_locs()</a></code>: calculation of <code>soilsurf_ost</code> (<a href='https://github.com/inbo/watina/issues/43'>#43</a>)</li>
 </ul>
 </div>
-    <div id="watina-0-2-5-2020-02-27" class="section level1">
+    <div id="watina-025-2020-02-27" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.5">
-<a href="#watina-0-2-5-2020-02-27" class="anchor"></a>watina 0.2.5 (2020-02-27)</h1>
+<a href="#watina-025-2020-02-27" class="anchor"></a>watina 0.2.5 (2020-02-27)</h1>
 <ul>
 <li>Bugfix in <code><a href="../reference/get_locs.html">get_locs()</a></code>: calculation of <code>soilsurf_ost</code> (<a href='https://github.com/inbo/watina/issues/42'>#42</a>)</li>
 </ul>
 </div>
-    <div id="watina-0-2-4-2020-01-29" class="section level1">
+    <div id="watina-024-2020-01-29" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.4">
-<a href="#watina-0-2-4-2020-01-29" class="anchor"></a>watina 0.2.4 (2020-01-29)</h1>
+<a href="#watina-024-2020-01-29" class="anchor"></a>watina 0.2.4 (2020-01-29)</h1>
 <ul>
 <li>Bugfix in <code>convertdf_enc()</code> (<a href='https://github.com/inbo/watina/issues/34'>#34</a>)</li>
 <li>Some small documentation improvements</li>
 </ul>
 </div>
-    <div id="watina-0-2-3-2020-01-09" class="section level1">
+    <div id="watina-023-2020-01-09" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.3">
-<a href="#watina-0-2-3-2020-01-09" class="anchor"></a>watina 0.2.3 (2020-01-09)</h1>
+<a href="#watina-023-2020-01-09" class="anchor"></a>watina 0.2.3 (2020-01-09)</h1>
 <ul>
 <li>Documentation is now generated by the newer <code>roxygen2</code> version <code>7.0.2</code>, resulting in a better layout of function arguments in the ‘usage’ section.</li>
 </ul>
 </div>
-    <div id="watina-0-2-2-2019-11-04" class="section level1">
+    <div id="watina-022-2019-11-04" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.2">
-<a href="#watina-0-2-2-2019-11-04" class="anchor"></a>watina 0.2.2 (2019-11-04)</h1>
+<a href="#watina-022-2019-11-04" class="anchor"></a>watina 0.2.2 (2019-11-04)</h1>
 <ul>
 <li>On Windows, the functions now convert ‘weird’ characters from the database to proper UTF-8.</li>
 <li>Bugfix (<a href='https://github.com/inbo/watina/issues/29'>#29</a>) in <code><a href="../reference/get_locs.html">get_locs()</a></code> regarding the default implementation of the <code>loc_validity</code> argument.</li>
 </ul>
 </div>
-    <div id="watina-0-2-1-2019-10-14" class="section level1">
+    <div id="watina-021-2019-10-14" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.1">
-<a href="#watina-0-2-1-2019-10-14" class="anchor"></a>watina 0.2.1 (2019-10-14)</h1>
+<a href="#watina-021-2019-10-14" class="anchor"></a>watina 0.2.1 (2019-10-14)</h1>
 <ul>
 <li>Fixed bug in some hyperlinks in function documentation, affecting the installation process on Windows (warnings were thrown).</li>
 </ul>
 </div>
-    <div id="watina-0-2-0-2019-10-02" class="section level1">
+    <div id="watina-020-2019-10-02" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.0">
-<a href="#watina-0-2-0-2019-10-02" class="anchor"></a>watina 0.2.0 (2019-10-02)</h1>
+<a href="#watina-020-2019-10-02" class="anchor"></a>watina 0.2.0 (2019-10-02)</h1>
 <div id="new-features-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#new-features-1" class="anchor"></a>New features</h4>
