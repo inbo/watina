@@ -1,3 +1,8 @@
+# watina 0.4.1 (2021-06-11)
+
+- Fixed non-working `get_xg3()` and `get_chem()` for dataframe input, by avoiding the currently defunct `dbplyr::db_drop_table()` (#89).
+- Various maintenance aspects (#81, #86, #87, #88)
+
 # watina 0.4.0 (2021-01-18)
 
 - This release has been made compatible with `dbplyr` 2.0.0 (on CRAN); the `dbplyr` fork is not needed anymore ([e66e58f](https://github.com/inbo/watina/commit/e66e58f), #74).
