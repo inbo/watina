@@ -790,7 +790,7 @@ date, lab_sample_id, chem_variable, value, unit, below_loq."
                 left_join(df2,
                           by = c("loc_code",
                                  "chem_variable")) %>%
-                return
+                return()
         } else {
             return(df1)
         }

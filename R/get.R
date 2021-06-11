@@ -307,12 +307,6 @@
 #' is.number
 #' is.flag
 #' noNA
-#' @importFrom sf
-#' st_drop_geometry
-#' st_intersects
-#' st_crs
-#' st_join
-#' st_buffer
 #' @importFrom dplyr
 #' %>%
 #' tbl
@@ -322,7 +316,6 @@
 #' distinct
 #' arrange
 #' group_by
-#' row_number
 #' ungroup
 #' sql
 get_locs <- function(con,
@@ -370,7 +363,8 @@ get_locs <- function(con,
     if (!is.null(mask)) {
         assert_that(inherits(mask, "sf"),
                     msg = "mask must be an sf object.")
-        assert_that(st_crs(mask) == st_crs(31370),
+        require_pkgs("sf")
+        assert_that(sf::st_crs(mask) == sf::st_crs(31370),
                     msg = "The CRS of mask must be Belgian Lambert 72 (EPSG-code 31370).")
     }
 
@@ -641,7 +635,7 @@ get_locs <- function(con,
         if (buffer != 0) {
             mask_expand <-
                 mask %>%
-                st_buffer(dist = buffer)
+                sf::st_buffer(dist = buffer)
         } else {
             mask_expand <-
                 mask
@@ -651,16 +645,16 @@ get_locs <- function(con,
 
             locs <-
                 locs %>%
-                st_join(mask_expand,
+                sf::st_join(mask_expand,
                         left = FALSE) %>%
-                st_drop_geometry
+                sf::st_drop_geometry()
 
         } else {
 
             locs <-
                 locs %>%
                 .[mask_expand, ] %>%
-                st_drop_geometry
+                sf::st_drop_geometry()
 
         }
 
@@ -802,7 +796,6 @@ get_locs <- function(con,
 #' @importFrom dplyr
 #' %>%
 #' copy_to
-#' db_drop_table
 #' filter
 #' left_join
 #' inner_join
@@ -836,13 +829,15 @@ get_xg3 <- function(locs,
             locs %>%
             distinct(.data$loc_code)
 
-        try(db_drop_table(con, "##locs"),
+        require_pkgs("DBI")
+
+        try(DBI::dbRemoveTable(con, "#locs"),
             silent = TRUE)
 
         locs <-
             copy_to(con,
                     locs,
-                    "##locs") %>%
+                    "#locs") %>%
             inner_join(tbl(con, "vwDimMeetpunt") %>%
                           select(loc_wid = .data$MeetpuntWID,
                                  loc_code = .data$MeetpuntCode),
@@ -1077,7 +1072,6 @@ get_xg3 <- function(locs,
 #' @importFrom dplyr
 #' %>%
 #' copy_to
-#' db_drop_table
 #' filter
 #' left_join
 #' inner_join
@@ -1130,13 +1124,15 @@ get_chem <- function(locs,
             locs %>%
             distinct(.data$loc_code)
 
-        try(db_drop_table(con, "##locs"),
+        require_pkgs("DBI")
+
+        try(DBI::dbRemoveTable(con, "#locs"),
             silent = TRUE)
 
         locs <-
             copy_to(con,
                     locs,
-                    "##locs") %>%
+                    "#locs") %>%
             inner_join(tbl(con, "vwDimMeetpunt") %>%
                            select(loc_wid = .data$MeetpuntWID,
                                   loc_code = .data$MeetpuntCode),
