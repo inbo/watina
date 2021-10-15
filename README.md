@@ -21,7 +21,19 @@ Currently the R package won't work outside INBO.
 
 ## Installing and using the _watina_ package
 
-### Option 1 (quick): installing without vignettes
+### Option 1: from r-universe repository (quickest)
+
+To install the current package version from the `master` branch (latest stable release), run:
+
+```r
+install.packages("watina", repos = "https://inbo.r-universe.dev")
+```
+
+The above provides a pre-compiled package for Windows and macOS, which should be faster than below approaches.
+INBO staff should have the INBO repository enabled already (check with `getOption("repos")`), in which case **`install.packages("watina")`** is all you need!
+
+
+### Option 2, from source: installing without vignettes (quick)
 
 ```r
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
@@ -30,7 +42,7 @@ remotes::install_github("inbo/watina", upgrade = TRUE)
 
 You can consult the vignettes of the latest release on the (this) `pkgdown` [website](https://inbo.github.io/watina/): click on 'Articles' at the top.
 
-### Option 2: installing with vignettes
+### Option 3, from source: installing with vignettes
 
 ```r
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
