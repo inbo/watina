@@ -2,6 +2,8 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3630532.svg)](https://doi.org/10.5281/zenodo.3630532)
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![R-CMD-check](https://github.com/inbo/watina/workflows/R-CMD-check/badge.svg)](https://github.com/inbo/watina/actions?query=workflow%3AR-CMD-check)
+[![inbo r-universe-name](https://inbo.r-universe.dev/badges/:name?color=pink)](https://inbo.r-universe.dev)
+[![inbo r-universe package status](https://inbo.r-universe.dev/badges/watina)](https://inbo.r-universe.dev)
 <!-- badges: end -->
 
 ## Welcome
