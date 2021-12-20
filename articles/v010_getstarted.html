@@ -20,6 +20,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,18 +34,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -71,7 +67,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/inbo/watina/">
+  <a href="https://github.com/inbo/watina/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -92,7 +88,7 @@
       <h1 data-toc-skip>Getting started: connecting and selecting locations</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/inbo/watina/blob/master/vignettes/v010_getstarted.Rmd"><code>vignettes/v010_getstarted.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inbo/watina/blob/HEAD/vignettes/v010_getstarted.Rmd" class="external-link"><code>vignettes/v010_getstarted.Rmd</code></a></small>
       <div class="hidden name"><code>v010_getstarted.Rmd</code></div>
 
     </div>
@@ -100,22 +96,22 @@
     
     
 <p><em>General note: the below vignette contains frozen output of 14 Jan 2021.</em> <em>This makes it possible to build the package with vignettes without access to the Watina database.</em></p>
-<div id="connecting" class="section level2">
-<h2 class="hasAnchor">
-<a href="#connecting" class="anchor"></a>Connecting</h2>
+<div class="section level2">
+<h2 id="connecting">Connecting<a class="anchor" aria-label="anchor" href="#connecting"></a>
+</h2>
 <p>You first need a connection object to connect to Watina; let’s simply name it <code>watina</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">watina</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/connect_watina.html">connect_watina</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="selecting-locations" class="section level2">
-<h2 class="hasAnchor">
-<a href="#selecting-locations" class="anchor"></a>Selecting locations</h2>
+<div class="section level2">
+<h2 id="selecting-locations">Selecting locations<a class="anchor" aria-label="anchor" href="#selecting-locations"></a>
+</h2>
 <p>Selecting locations is a typical starting point. Afterwards, you can use the returned object as input to other functions.</p>
 <p>By default, a <code>tbl_lazy</code> object is given (lazy query).<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> The returned data include some essential metadata of the locations. The following example shows a few rows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="va">collect</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="va">collect</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="va">as.data.frame</span>
 <span class="co">#&gt;   loc_wid loc_code area_code area_name      x      y loc_validitycode</span>
 <span class="co">#&gt; 1      45  AABP001       AAB    Aabeek 177604 209714              VLD</span>
@@ -147,7 +143,7 @@
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
-         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span><span class="op">)</span>
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 17]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
 <span class="co">#&gt;    loc_wid loc_code area_code area_name      x      y loc_validitycode</span>
@@ -169,7 +165,7 @@
 <p>The number of involved locations is given by:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
-         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="va">count</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 1]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
@@ -181,8 +177,8 @@
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
-         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
-         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
+         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="va">count</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 1]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
@@ -195,9 +191,9 @@
 <p>Indeed, more records are returned when allowing groundwater piezometers with missing filterdepth:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
-         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
-         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span>,
-         filterdepth_na <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
+         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span>,
+         filterdepth_na <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="va">count</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 1]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
@@ -207,10 +203,10 @@
 <p>Of course you can set further conditions for other variables, by building upon the lazy result of <code><a href="../reference/get_locs.html">get_locs()</a></code>, e.g.:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
-         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
-         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span>,
-         filterdepth_na <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">obswell_state</span> <span class="op">==</span> <span class="st">"OK - niet bemeten"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
+         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span>,
+         filterdepth_na <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">obswell_state</span> <span class="op">==</span> <span class="st">"OK - niet bemeten"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="va">count</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 1]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
@@ -218,11 +214,11 @@
 <span class="co">#&gt;   &lt;int&gt;</span>
 <span class="co">#&gt; 1   157</span></code></pre></div>
 <ul>
-<li>by using a spatial bounding box (rectangular area), using the Belgian Lambert 72 coordinate reference system (EPSG-code <a href="https://epsg.io/31370">31370</a>):</li>
+<li>by using a spatial bounding box (rectangular area), using the Belgian Lambert 72 coordinate reference system (EPSG-code <a href="https://epsg.io/31370" class="external-link">31370</a>):</li>
 </ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
-         bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">1.4e+5</span>,
+         bbox <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">1.4e+5</span>,
                   xmax <span class="op">=</span> <span class="fl">1.7e+5</span>,
                   ymin <span class="op">=</span> <span class="fl">1.6e+5</span>,
                   ymax <span class="op">=</span> <span class="fl">1.9e+5</span><span class="op">)</span><span class="op">)</span>
@@ -249,7 +245,7 @@
 </ul>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
-         loc_vec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KBRP081"</span>, <span class="st">"KBRP090"</span>, <span class="st">"KBRP095"</span><span class="op">)</span><span class="op">)</span>
+         loc_vec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KBRP081"</span>, <span class="st">"KBRP090"</span>, <span class="st">"KBRP095"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # Source:   lazy query [?? x 17]</span>
 <span class="co">#&gt; # Database: Microsoft SQL Server</span>
 <span class="co">#&gt;   loc_wid loc_code area_code area_name      x      y loc_validitycode</span>
@@ -262,7 +258,7 @@
 <span class="co">#&gt; #   soilsurf_ost &lt;dbl&gt;, measuringref_ost &lt;dbl&gt;, tubelength &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   filterlength &lt;dbl&gt;, filterdepth &lt;dbl&gt;</span></code></pre></div>
 <ul>
-<li>you can use a geospatial filter of class <a href="https://r-spatial.github.io/sf/">sf</a> to make selections, by using the <code>mask</code> argument:</li>
+<li>you can use a geospatial filter of class <a href="https://r-spatial.github.io/sf/" class="external-link">sf</a> to make selections, by using the <code>mask</code> argument:</li>
 </ul>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
@@ -292,8 +288,8 @@
 <p>Instead of leaving the output as a <code>tbl_lazy</code> object, you can also retrieve it as a tibble (i.e. an easier-to-use type of dataframe) by setting <code>collect = TRUE</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
-         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
-         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span>,
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
+         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span>,
          collect <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; Warning in warn_xy_duplicates(locs$x, locs$y): 15 different coordinate pairs occur more than once.</span>
 <span class="co">#&gt; # A tibble: 247 x 16</span>
@@ -314,13 +310,13 @@
 <span class="co">#&gt; #   soilsurf_ost &lt;dbl&gt;, measuringref_ost &lt;dbl&gt;, tubelength &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   filterlength &lt;dbl&gt;, filterdepth &lt;dbl&gt;</span></code></pre></div>
 <p>Note that the lazy object contains a <code>loc_wid</code> column, which is an internal database variable to identify locations and make relations between tables. It should not be regarded as a stable ID; hence don’t store it for later use (note that lazy objects don’t store data). Consequently, the <code>loc_wid</code> column is omitted when using <code>collect = TRUE</code>.</p>
-<p>Optionally, you can retrieve the individual <strong>observation wells</strong> that are linked to each location (where each observation well is from a different timeframe). In this case, more attributes are returned (specific observation well attributes). The below example also demonstrates the use of <code><a href="https://pillar.r-lib.org/reference/glimpse.html">tibble::glimpse()</a></code> to preview all columns:</p>
+<p>Optionally, you can retrieve the individual <strong>observation wells</strong> that are linked to each location (where each observation well is from a different timeframe). In this case, more attributes are returned (specific observation well attributes). The below example also demonstrates the use of <code><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">tibble::glimpse()</a></code> to preview all columns:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
          obswells <span class="op">=</span> <span class="cn">TRUE</span>,
-         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
-         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="op">)</span>
+         area_codes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAL"</span>, <span class="st">"KBR"</span><span class="op">)</span>,
+         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Rows: ??</span>
 <span class="co">#&gt; Columns: 21</span>
 <span class="co">#&gt; $ loc_wid             &lt;int&gt; 1546, 1549, 1552, 1562, 1563, 1564, 1565, 1566, 1…</span>
@@ -344,11 +340,11 @@
 <span class="co">#&gt; $ tubelength          &lt;dbl&gt; 3.12, 0.50, 2.26, 2.02, 2.04, 1.82, 3.25, 2.82, 2…</span>
 <span class="co">#&gt; $ filterlength        &lt;dbl&gt; 1.00, 0.50, 1.00, 0.20, 0.30, 0.20, 0.20, 0.20, 0…</span>
 <span class="co">#&gt; $ filterdepth         &lt;dbl&gt; 2.460, 0.450, 1.880, 1.400, 1.450, 1.400, 2.700, …</span></code></pre></div>
-<p>With <code><a href="../reference/get_locs.html">get_locs(obswells = FALSE)</a></code>, which is the default, the observation well variables are aggregated for each location using one of four methods. The method is set with the argument <code>obswell_aggr</code>. The default, <code>obswell_aggr = "latest"</code>, returns the attributes of the most recent observation well that fulfills the <code>filterdepth_range</code> and <code>filterdepth_na</code> criteria.</p>
+<p>With <code>get_locs(obswells = FALSE)</code>, which is the default, the observation well variables are aggregated for each location using one of four methods. The method is set with the argument <code>obswell_aggr</code>. The default, <code>obswell_aggr = "latest"</code>, returns the attributes of the most recent observation well that fulfills the <code>filterdepth_range</code> and <code>filterdepth_na</code> criteria.</p>
 </div>
-<div id="disconnecting" class="section level2">
-<h2 class="hasAnchor">
-<a href="#disconnecting" class="anchor"></a>Disconnecting</h2>
+<div class="section level2">
+<h2 id="disconnecting">Disconnecting<a class="anchor" aria-label="anchor" href="#disconnecting"></a>
+</h2>
 <p>At the end of your work (a script, a bookdown document etc.), close the connection:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/dbDisconnect.html">dbDisconnect</a></span><span class="op">(</span><span class="va">watina</span><span class="op">)</span></code></pre></div>
@@ -356,7 +352,7 @@
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p> See the <a href="https://dbplyr.tidyverse.org/">dbplyr</a> package to get you started with this type of object.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p> See the <a href="https://dbplyr.tidyverse.org/" class="external-link">dbplyr</a> package to get you started with this type of object.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
@@ -372,11 +368,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Floris Vanderhaeghe.</p>
+  <p></p>
+<p>Developed by Floris Vanderhaeghe.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -384,6 +382,8 @@
 
   
 
+
+  
 
   </body>
 </html>

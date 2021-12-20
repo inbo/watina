@@ -24,6 +24,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -36,18 +38,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -75,7 +71,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/inbo/watina/">
+  <a href="https://github.com/inbo/watina/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -94,9 +90,9 @@
   <div class="contents col-md-9">
 
 
-<div id="welcome" class="section level2">
-<h2 class="hasAnchor">
-<a href="#welcome" class="anchor"></a>Welcome</h2>
+<div class="section level2">
+<h2 id="welcome">Welcome<a class="anchor" aria-label="anchor" href="#welcome"></a>
+</h2>
 <p>The R-package <code>watina</code> contains functions to query and process data from the <em>Watina database</em> at the Research Institute for Nature and Forest (INBO). This database is focused on groundwater data in natural areas in Flanders (Belgium) and provides:</p>
 <ul>
 <li>groundwater level and chemical data;</li>
@@ -106,41 +102,41 @@
 </ul>
 <p>Currently the R package won’t work outside INBO.</p>
 </div>
-<div id="installing-and-using-the-watina-package" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installing-and-using-the-watina-package" class="anchor"></a>Installing and using the <em>watina</em> package</h2>
-<div id="option-1-from-r-universe-repository-quickest" class="section level3">
-<h3 class="hasAnchor">
-<a href="#option-1-from-r-universe-repository-quickest" class="anchor"></a>Option 1: from r-universe repository (quickest)</h3>
+<div class="section level2">
+<h2 id="installing-and-using-the-watina-package">Installing and using the <em>watina</em> package<a class="anchor" aria-label="anchor" href="#installing-and-using-the-watina-package"></a>
+</h2>
+<div class="section level3">
+<h3 id="option-1-from-r-universe-repository-quickest">Option 1: from r-universe repository (quickest)<a class="anchor" aria-label="anchor" href="#option-1-from-r-universe-repository-quickest"></a>
+</h3>
 <p>To install the current package version from the <code>master</code> branch (latest stable release), run:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"watina"</span>, repos <span class="op">=</span> <span class="st">"https://inbo.r-universe.dev"</span><span class="op">)</span></code></pre></div>
-<p>The above provides a pre-compiled package for Windows and macOS, which should be faster than below approaches. INBO staff should have the INBO repository enabled already (check with <code><a href="https://rdrr.io/r/base/options.html">getOption("repos")</a></code>), in which case <strong><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("watina")</a></code></strong> is all you need!</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"watina"</span>, repos <span class="op">=</span> <span class="st">"https://inbo.r-universe.dev"</span><span class="op">)</span></code></pre></div>
+<p>The above provides a pre-compiled package for Windows and macOS, which should be faster than below approaches. INBO staff should have the INBO repository enabled already (check with <code>getOption("repos")</code>), in which case <strong><code>install.packages("watina")</code></strong> is all you need!</p>
 </div>
-<div id="option-2-from-source-installing-without-vignettes-quick" class="section level3">
-<h3 class="hasAnchor">
-<a href="#option-2-from-source-installing-without-vignettes-quick" class="anchor"></a>Option 2, from source: installing without vignettes (quick)</h3>
+<div class="section level3">
+<h3 id="option-2-from-source-installing-without-vignettes-quick">Option 2, from source: installing without vignettes (quick)<a class="anchor" aria-label="anchor" href="#option-2-from-source-installing-without-vignettes-quick"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv</a></span><span class="op">(</span>R_REMOTES_NO_ERRORS_FROM_WARNINGS <span class="op">=</span> <span class="st">"true"</span><span class="op">)</span> <span class="co"># as a precaution</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"inbo/watina"</span>, upgrade <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_REMOTES_NO_ERRORS_FROM_WARNINGS <span class="op">=</span> <span class="st">"true"</span><span class="op">)</span> <span class="co"># as a precaution</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"inbo/watina"</span>, upgrade <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>You can consult the vignettes of the latest release on the (this) <code>pkgdown</code> <a href="https://inbo.github.io/watina/">website</a>: click on ‘Articles’ at the top.</p>
 </div>
-<div id="option-3-from-source-installing-with-vignettes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#option-3-from-source-installing-with-vignettes" class="anchor"></a>Option 3, from source: installing with vignettes</h3>
+<div class="section level3">
+<h3 id="option-3-from-source-installing-with-vignettes">Option 3, from source: installing with vignettes<a class="anchor" aria-label="anchor" href="#option-3-from-source-installing-with-vignettes"></a>
+</h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html">Sys.setenv</a></span><span class="op">(</span>R_REMOTES_NO_ERRORS_FROM_WARNINGS <span class="op">=</span> <span class="st">"true"</span><span class="op">)</span> <span class="co"># as a precaution</span>
-<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"nycflights13"</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"nycflights13"</span><span class="op">)</span><span class="op">}</span> <span class="co"># to prevent dbplyr from interrupting next step</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"inbo/watina"</span>,
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_REMOTES_NO_ERRORS_FROM_WARNINGS <span class="op">=</span> <span class="st">"true"</span><span class="op">)</span> <span class="co"># as a precaution</span>
+<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">"nycflights13"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"nycflights13"</span><span class="op">)</span><span class="op">}</span> <span class="co"># to prevent dbplyr from interrupting next step</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"inbo/watina"</span>,
                         build_vignettes <span class="op">=</span> <span class="cn">TRUE</span>,
                         upgrade <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Note that this will install the package from the <code>master</code> branch. If you need a version from another branch, add the <code>ref</code> argument in the above function to provide the branch name.</p>
 </div>
 </div>
-<div id="you-are-welcome-to-contribute" class="section level2">
-<h2 class="hasAnchor">
-<a href="#you-are-welcome-to-contribute" class="anchor"></a>You are welcome to contribute!</h2>
+<div class="section level2">
+<h2 id="you-are-welcome-to-contribute">You are welcome to contribute!<a class="anchor" aria-label="anchor" href="#you-are-welcome-to-contribute"></a>
+</h2>
 <p>Please have a look at our <a href="CONTRIBUTING.html">contributing guide</a>!</p>
 </div>
 
@@ -148,62 +144,67 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/inbo/watina/">https://​github.com/​inbo/​watina/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/inbo/watina/issues">https://​github.com/​inbo/​watina/​issues</a>
-</li>
+<li><a href="https://github.com/inbo/watina/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/inbo/watina/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></small></li>
+<li><small><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></small></li>
 </ul>
 </div>
+
 <div class="community">
-<h2>Community</h2>
+<h2 data-toc-skip>Community</h2>
 <ul class="list-unstyled">
 <li><a href="CONTRIBUTING.html">Contributing guide</a></li>
 <li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
+
 <div class="citation">
-<h2>Citation</h2>
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html">Citing watina</a></li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>Floris Vanderhaeghe <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-6378-6229" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html#citation">Citing watina</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li><a href="https://doi.org/10.5281/zenodo.3630532"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.3630532.svg" alt="DOI"></a></li>
-<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
-<li><a href="https://github.com/inbo/watina/actions?query=workflow%3AR-CMD-check"><img src="https://github.com/inbo/watina/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://inbo.r-universe.dev"><img src="https://inbo.r-universe.dev/badges/:name?color=c04384" alt="inbo r-universe-name"></a></li>
-<li><a href="https://inbo.r-universe.dev"><img src="https://inbo.r-universe.dev/badges/watina" alt="inbo r-universe package status"></a></li>
+<li>Floris Vanderhaeghe <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-6378-6229" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://doi.org/10.5281/zenodo.3630532" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.3630532.svg" alt="DOI"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#maturing" class="external-link"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
+<li><a href="https://github.com/inbo/watina/actions?query=workflow%3AR-CMD-check" class="external-link"><img src="https://github.com/inbo/watina/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://inbo.r-universe.dev" class="external-link"><img src="https://inbo.r-universe.dev/badges/:name?color=c04384" alt="inbo r-universe-name"></a></li>
+<li><a href="https://inbo.r-universe.dev" class="external-link"><img src="https://inbo.r-universe.dev/badges/watina" alt="inbo r-universe package status"></a></li>
+</ul>
 </div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Floris Vanderhaeghe.</p>
+  <p></p>
+<p>Developed by Floris Vanderhaeghe.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -211,6 +212,8 @@
 
   
 
+
+  
 
   </body>
 </html>

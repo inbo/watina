@@ -20,6 +20,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,18 +34,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">watina</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -71,7 +67,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/inbo/watina/">
+  <a href="https://github.com/inbo/watina/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -92,7 +88,7 @@
       <h1 data-toc-skip>Using XG3 values to characterize and select locations</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/inbo/watina/blob/master/vignettes/v110_xg3.Rmd"><code>vignettes/v110_xg3.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/inbo/watina/blob/HEAD/vignettes/v110_xg3.Rmd" class="external-link"><code>vignettes/v110_xg3.Rmd</code></a></small>
       <div class="hidden name"><code>v110_xg3.Rmd</code></div>
 
     </div>
@@ -100,9 +96,9 @@
     
     
 <p><em>General note: the below vignette contains frozen output of 16 Sep 2019.</em> <em>This makes it possible to build the package with vignettes without access to the Watina database.</em></p>
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p>XG3 is an umbrella for the three geohydrological variables LG3, HG3 and VG3, which are yearly statistics which can be calculated from series of water level measurements (on condition that enough data are available). More explanation on these variables is given by the documentation of <code><a href="../reference/get_xg3.html">get_xg3()</a></code>.</p>
 <p>Let’s suppose that we want to select locations (within an area, i.e. after having used <code><a href="../reference/get_locs.html">get_locs()</a></code>) for which:</p>
 <ul>
@@ -113,11 +109,11 @@
 <p>We can store specific conditions in a dataframe; the available statistics are explained by the documentation of <code><a href="../reference/eval_xg3_avail.html">eval_xg3_avail()</a></code> and <code><a href="../reference/eval_xg3_series.html">eval_xg3_series()</a></code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">conditions_df</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html">tribble</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span>
   <span class="op">~</span><span class="va">xg3_variable</span>, <span class="op">~</span><span class="va">statistic</span>, <span class="op">~</span><span class="va">criterion</span>, <span class="op">~</span><span class="va">direction</span>,
   <span class="st">"combined"</span>, <span class="st">"ser_lastyear"</span>, <span class="fl">2015</span>, <span class="st">"min"</span>
   <span class="op">)</span>
-<span class="va">conditions_df</span> <span class="op">%&gt;%</span> 
+<span class="va">conditions_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="va">kable</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -138,9 +134,9 @@
 <code class="sourceCode R"><span class="va">watina</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/connect_watina.html">connect_watina</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>,
          area_codes <span class="op">=</span> <span class="st">"TOR"</span>,
-         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">1900</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="../reference/selectlocs_xg3.html">selectlocs_xg3</a></span><span class="op">(</span>xg3_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"L"</span>, <span class="st">"H"</span><span class="op">)</span>,
+         loc_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P"</span>, <span class="st">"S"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">1900</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="../reference/selectlocs_xg3.html">selectlocs_xg3</a></span><span class="op">(</span>xg3_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"L"</span>, <span class="st">"H"</span><span class="op">)</span>,
                   max_gap <span class="op">=</span> <span class="fl">1</span>,
                   min_dur <span class="op">=</span> <span class="fl">5</span>,
                   conditions <span class="op">=</span> <span class="va">conditions_df</span><span class="op">)</span>
@@ -166,13 +162,13 @@
 <span class="co">#&gt; 16 TORS009</span></code></pre></div>
 <p>With the argument <code>list = TRUE</code> you can also obtain intermediate test results. For further information, see the documentation of the <code><a href="../reference/selectlocs_xg3.html">selectlocs_xg3()</a></code> function.</p>
 </div>
-<div id="the-basics-obtaining-xg3-values" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-basics-obtaining-xg3-values" class="anchor"></a>The basics: obtaining XG3 values</h2>
+<div class="section level2">
+<h2 id="the-basics-obtaining-xg3-values">The basics: obtaining XG3 values<a class="anchor" aria-label="anchor" href="#the-basics-obtaining-xg3-values"></a>
+</h2>
 <p>The <code><a href="../reference/get_xg3.html">get_xg3()</a></code> function in the above example retrieved XG3 values, from given locations, as a lazy object (unless <code>collect = TRUE</code>). A timeframe (in hydrological years) is used to filter XG3 values in Watina (arguments <code>startyear</code> and <code>endyear</code>). By default, the <code>endyear</code> argument is set to the previous hydrological year. Here we only provide the <code>startyear</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mylocs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>, area_codes <span class="op">=</span> <span class="st">"KAL"</span><span class="op">)</span>
-<span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span><span class="op">)</span>
+<span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span><span class="op">)</span>
 <span class="co">#&gt; # Source:     lazy query [?? x 5]</span>
 <span class="co">#&gt; # Database:   Microsoft SQL Server</span>
 <span class="co">#&gt; # Ordered by: area_code, loc_code, loc_code, hydroyear</span>
@@ -191,7 +187,7 @@
 <span class="co">#&gt; # … with more rows</span></code></pre></div>
 <p>Retrieving the data locally:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span>, collect <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span>, collect <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 46 x 5</span>
 <span class="co">#&gt;    loc_code hydroyear lg3_lcl hg3_lcl vg3_lcl</span>
 <span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span>
@@ -206,9 +202,9 @@
 <span class="co">#&gt;  9 KALP081       2010  NA      NA      -0.557</span>
 <span class="co">#&gt; 10 KALP081       2013  NA      NA      -0.413</span>
 <span class="co">#&gt; # … with 36 more rows</span></code></pre></div>
-<p>By default, the “local” vertical coordinate reference system (CRS) is used to express water levels, but also the CRS Ostend height (EPSG <a href="https://epsg.io/5710">5710</a>, also known as ‘TAW’ or ‘DNG’) is available from the database by setting <code>vert_crs = "ostend"</code>.</p>
+<p>By default, the “local” vertical coordinate reference system (CRS) is used to express water levels, but also the CRS Ostend height (EPSG <a href="https://epsg.io/5710" class="external-link">5710</a>, also known as ‘TAW’ or ‘DNG’) is available from the database by setting <code>vert_crs = "ostend"</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">%&gt;%</span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span>, vert_crs <span class="op">=</span> <span class="st">"ostend"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span>, vert_crs <span class="op">=</span> <span class="st">"ostend"</span><span class="op">)</span>
 <span class="co">#&gt; # Source:     lazy query [?? x 5]</span>
 <span class="co">#&gt; # Database:   Microsoft SQL Server</span>
 <span class="co">#&gt; # Ordered by: area_code, loc_code, loc_code, hydroyear</span>
@@ -227,11 +223,11 @@
 <span class="co">#&gt; # … with more rows</span></code></pre></div>
 <p>Joining results to <code>mylocs</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mylocs</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">mylocs</span> <span class="op">%&gt;%</span>
-            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">loc_wid</span><span class="op">)</span>,
-            <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+            <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">loc_wid</span><span class="op">)</span>,
+            <span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="va">collect</span>
 <span class="co">#&gt; Joining, by = "loc_code"</span>
 <span class="co">#&gt; # A tibble: 109 x 13</span>
@@ -251,9 +247,9 @@
 <span class="co">#&gt; #   loc_typename &lt;chr&gt;, hydroyear &lt;int&gt;, lg3_lcl &lt;dbl&gt;, hg3_lcl &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   vg3_lcl &lt;dbl&gt;</span></code></pre></div>
 </div>
-<div id="processing-xg3-values-and-selecting-locations" class="section level2">
-<h2 class="hasAnchor">
-<a href="#processing-xg3-values-and-selecting-locations" class="anchor"></a>Processing XG3 values and selecting locations</h2>
+<div class="section level2">
+<h2 id="processing-xg3-values-and-selecting-locations">Processing XG3 values and selecting locations<a class="anchor" aria-label="anchor" href="#processing-xg3-values-and-selecting-locations"></a>
+</h2>
 <p>You can characterize the locations of a dataset of XG3 values, using the <code><a href="../reference/eval_xg3_avail.html">eval_xg3_avail()</a></code> and <code><a href="../reference/eval_xg3_series.html">eval_xg3_series()</a></code> functions. You are invited to read their documentation and try their examples!</p>
 <p>The <code><a href="../reference/selectlocs_xg3.html">selectlocs_xg3()</a></code> function, of which we saw a demonstration above, sits on top of these. It calls <code><a href="../reference/eval_xg3_avail.html">eval_xg3_avail()</a></code> and <code><a href="../reference/eval_xg3_series.html">eval_xg3_series()</a></code> by itself, but alternatively the user can provide the result of those functions as input to <code><a href="../reference/selectlocs_xg3.html">selectlocs_xg3()</a></code>.</p>
 </div>
@@ -270,11 +266,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Floris Vanderhaeghe.</p>
+  <p></p>
+<p>Developed by Floris Vanderhaeghe.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -282,6 +280,8 @@
 
   
 
+
+  
 
   </body>
 </html>
