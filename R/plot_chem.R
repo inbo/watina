@@ -86,26 +86,22 @@ read_vanwirdum_data <-
         return(vanwirdum_data)
     }
 
+
+#' Plots hydrochemistry: Van Wirdum diagram
 #'
 #' Create a Van Wirdum diagram for water samples (ionic ratio - log electric
 #' conductivity) in ggplot
 #'
 #' Source: Van Wirdum, Geert (1991). Vegetation and hydrology of floating
-#' rich-fens. Datawyse, Maatsricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
+#' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
 #'
 #' Creates a ggplot object of the ionic ratio (IR) as Y axis against the
-#' electric conductivity (EC 25°C) as X axis
+#' electric conductivity (EC 25°C) as X axis and allows to plot your own
+#' water samples alongside reference data.
 #'
-#' EC at 25°C in µS/cm or mS/m on a logarithmic scale
+#' @section Reference data:
 #'
-#' IR = [Ca2+] / ([Ca2+] + [Cl-]) with the Ca and Cl concentrations in meq/l
-#' Compute IR as follows:
-#' mydata <- mydata %>%
-#'   mutate(Ca_meq = (Ca_mg*2)/40.078,
-#'          Cl_meq = Cl_mg/35.453) %>%
-#'   mutate(ir = Ca_meq/(Ca_meq + Cl_meq)) # ir without units (0-1)
-#'
-#' Reference points (Van Wirdum 1991): benchmark samples for:
+#' #' Reference points (Van Wirdum 1991): benchmark samples for:
 #' 1) lithotrophic water LI: a calcium-bicarbonate type of water, usually
 #' owing its characteristic composition to a contact with soil;
 #' 2) atmotrophic water AT: a type of water with low concentrations of most
@@ -115,16 +111,37 @@ read_vanwirdum_data <-
 #' found in the oceans;
 #' 4) molunotrophic water RH: polluted water as presently found in the Rhine.
 #'
-#' Mixing contours: most water analyses plot within the area bounded by the
-#' curved lines LI-AT-TH-LI
+#' You can also show the mixing contours between the reference points LI, AT
+#' and TH as curves or as lines. Most water analyses plot within the area
+#' bounded by the (curved) lines LI-AT-TH-LI.
+#'
+#' @section Input:
+#'
+#' Input: a dataset with the ionic ration and electric conductivity at 25°C
+#'
+#' EC at 25°C can be in µS/cm or mS/m and will be shown on a logarithmic scale
+#'
+#' IR can be without units (0-1) or in %
+#'
+#' Compute IR as follows:
+#' IR = [Ca2+] / ([Ca2+] + [Cl-]) with the Ca and Cl concentrations in meq/l
+#' mydata <- mydata %>%
+#'   mutate(Ca_meq = (Ca_mg*2)/40.078,
+#'          Cl_meq = Cl_mg/35.453) %>%
+#'   mutate(ir = Ca_meq/(Ca_meq + Cl_meq)) # ir without units (0-1)
+#'
+#'
+#' @section Typical way of using:
 #'
 #' Add your data points (and any other information you would like to plot)
 #' to the Van Wirdum diagram as you would do for any ggplot.
 #'
 #' @param ir_unit The units for IR, can be NULL (default, axis 0-1)
-#' or "pc" (%, axis 0-100)
+#' or "pc" (%, axis 0-100). Choose this parameter according to the unit used
+#' in your dataset.
 #' @param ec25_unit The units for EC 25°C, can be "micro" (default, µS/cm)
-#' or "milli" (mS/m)
+#' or "milli" (mS/m). Choose this parameter according to the unit used
+#' in your dataset.
 #' @param contour Draw the mixing contours, "segment" (default), "curve" or
 #' NULL (do not draw)
 #' @param language Which language should be used for the legend, "EN" (English,
@@ -133,7 +150,8 @@ read_vanwirdum_data <-
 #' or TRUE
 #'
 #' @return
-#' A ggplot object with the Van Wirdum IR-log EC diagram
+#' A ggplot object with the Van Wirdum IR-log EC diagram, the reference points
+#' for the water types LI-AT-TH and the mixing contours.
 #'
 #' @examples
 #' \dontrun{
@@ -160,6 +178,7 @@ read_vanwirdum_data <-
 #     )
 #
 # library(ggplot2)
+# library(scales)
 # ir_unit = NULL
 # ec25_unit = "micro"
 # contour = "curve"
@@ -170,6 +189,7 @@ read_vanwirdum_data <-
 # NEEDED IN DESCRIPTION
 # Suggests:
 #   ggplot2
+#   scales
 # LazyData: true (is already ok)
 
 # STILL TO DO: add dataset in R/sysdata.rda (or data/ ?)
@@ -199,12 +219,17 @@ gg_vanwirdum <- function(ir_unit = NULL,
                          language = "EN",
                          rhine = FALSE) {
 
-  # Check for availability package ggplot2
+  # Check for availability packages ggplot2 and scales
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     stop("Package \"ggplot2\" needed for this function to work.
          Please install it.",
          call. = FALSE)
   }
+    if (!requireNamespace("scales", quietly = TRUE)) {
+        stop("Package \"scales\" needed for this function to work.
+         Please install it.",
+             call. = FALSE)
+    }
 
   # Define reference locations
   ref_points <-
