@@ -130,6 +130,9 @@ read_vanwirdum_data <-
 #'          Cl_meq = Cl_mg/35.453) %>%
 #'   mutate(ir = Ca_meq/(Ca_meq + Cl_meq)) # ir without units (0-1)
 #'
+#'   or use the helper function \code{\link{calc_ir}} to calculate IR based on
+#'   the Ca and Cl concentrations.
+#'
 #'
 #' @section Typical way of using:
 #'
@@ -200,18 +203,46 @@ read_vanwirdum_data <-
 
 # NICE TO HAVE: helper function to convert a dataset from get_chem to a dataset
 # readily compatible with this function
-# mydata <-
-#   get_locs(watina, area_codes = "ZWA") %>%
-#   get_chem(watina, "1/1/2010")
-#
-# mydata_vw <- mydata %>%
-#   filter(chem_variable %in% c("Ca", "Cl", "CondL")) %>%
-#   select(-unit, -below_loq, -loq) %>%
-#   pivot_wider(names_from = chem_variable, values_from = value) %>%
-#   mutate(Ca_meq = (Ca*2)/40.078,
-#          Cl_meq = Cl/35.453,
-#          ir = Ca_meq/(Ca_meq + Cl_meq))
-# ir without units (0-1), CondL in µS/cm
+watina <- connect_watina()
+mydata <-
+  get_locs(watina, area_codes = "ZWA") %>%
+  get_chem(watina, "1/1/2019") %>%
+    collect %>%
+    as.data.frame
+x <- mydata
+
+calc_ir <- function(x){
+
+    # collect the data if needed
+    if ("tbl_sql" %in% class(x)) {
+        x <- x %>%
+            collect
+    }
+
+    x <- x %>%
+        filter(chem_variable %in% c("Ca", "Cl", "CondL"))
+
+    # check units and calculate ir
+    if ("mg/l" %in% unique(x$unit)) {
+
+        x <- x %>%
+            select(-unit, -below_loq, -loq) %>%
+            pivot_wider(names_from = chem_variable, values_from = value) %>%
+            mutate(Ca_meq = (Ca*2)/40.078,
+                   Cl_meq = Cl/35.453,
+                   ir = Ca_meq/(Ca_meq + Cl_meq)) # ir without units (0-1), CondL in µS/cm => default in gg_vanwirdum
+        } else {
+
+            x <- x %>%
+                select(-unit, -below_loq, -loq) %>%
+                pivot_wider(names_from = chem_variable, values_from = value) %>%
+                mutate(ir = Ca/(Ca + Cl))
+            # ir without units (0-1), CondL in µS/cm => default in gg_vanwirdum
+            }
+
+}
+
+
 
 gg_vanwirdum <- function(ir_unit = NULL,
                          ec25_unit = "micro",
@@ -358,3 +389,4 @@ gg_vanwirdum <- function(ir_unit = NULL,
           panel.grid.major = element_line(size = 1))
 
 }
+history()
