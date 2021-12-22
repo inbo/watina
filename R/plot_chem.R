@@ -1,4 +1,91 @@
-#' Plots hydrochemistry
+#' Return the 'vanwirdum_data' data source as a tibble
+#'
+#' Returns the included data source \code{\link{vanwirdum_data}} as a
+#' \code{\link[tibble:tbl_df-class]{tibble}}
+#'
+#' This datasets gives the curved contour which encloses the plotting area of
+#' all possible, simple mixtures of the reference water samples LI-ANG (a
+#' relatively calcium-rich groundwater sample ), AT-WTV (a precipitation sample
+#' caught in a relatively unpolluted inland area of The Netherlands) and TH-N70
+#' (a representative analysis from the North Sea monitoring program, 70 km from
+#' the coast).
+#' Source: Van Wirdum, Geert (1991). Vegetation and hydrology of floating
+#' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
+#' \href{https://publicwiki.deltares.nl/display/VWD/Home}{dataset available here}
+#'
+#' \code{read_vanwirdum_data()}  returns it as a
+#' \code{\link[tibble:tbl_df-class]{tibble}} with 42 rows and 2 variables.
+#' A tibble is a dataframe that makes working in the tidyverse a little
+#' \href{https://r4ds.had.co.nz/tibbles.html}{easier}.
+#'
+#' Variables:
+#' \describe{
+#'   \item{ec25}{electric conductivity at 25°C in mS/cm}
+#'   \item{ir}{ionic ratio in %}}
+#'
+#' @return
+#' The \code{vanwirdum_data} dataframe as a \code{\link[tibble:tbl_df-class]{tibble}}
+#
+#' @examples
+#' read_vanwirdum_data()
+#'
+#' @export
+#' @importFrom dplyr
+#' tribble
+#'
+#'@keywords internal
+#'
+
+read_vanwirdum_data <-
+    function() {
+        vanwirdum_data <- tribble(
+            ~ec25, ~ir,
+            63.30956284,94.31498538,
+            35.93464093,93.32760382,
+            24.90267631,92.05872255,
+            15.56978112,88.81507815,
+            12.42913352,86.41593288,
+            9.30501041,80.77314322,
+            7.771007662,74.42660428,
+            6.921570383,68.64306476,
+            6.448364484,63.0002751,
+            5.969064634,55.66422203,
+            5.63284352,48.1874191,
+            5.525390616,43.46376864,
+            5.364388374,38.42662987,
+            5.161676837,31.3166296,
+            5.161676837,24.20876189,
+            5.161676837,18.62141914,
+            5.575060883,13.79753773,
+            7.361877404,8.380800867,
+            12.63883835,5.503959123,
+            25.32283525,4.232945276,
+            73.49784815,3.895998652,
+            228.6654432,3.810695709,
+            695.1394102,3.725392767,
+            3157.436507,3.725392767,
+            4609.686896,3.556919455,
+            4609.686896,3.471616512,
+            3206.339376,3.810695709,
+            2001.956002,4.825800728,
+            1087.858305,6.858143339,
+            679.2308009,9.903458395,
+            420.8067858,14.55886649,
+            292.7556511,20.0609063,
+            213.3226248,27.08560364,
+            166.6219332,34.36407722,
+            127.1665473,44.85847176,
+            102.4477316,55.77724843,
+            90.12020389,63.18367643,
+            79.64706759,72.66296594,
+            71.85774104,81.57712346,
+            66.85394731,87.89807151,
+            64.83019531,91.50851857,
+            62.85547508,94.3299134,
+        )
+        return(vanwirdum_data)
+    }
+
 #'
 #' Create a Van Wirdum diagram for water samples (ionic ratio - log electric
 #' conductivity) in ggplot
