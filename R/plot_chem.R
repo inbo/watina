@@ -3,17 +3,18 @@
 #' Returns the included data source \code{\link{vanwirdum_data}} as a
 #' \code{\link[tibble:tbl_df-class]{tibble}}
 #'
-#' This datasets gives the curved contour which encloses the plotting area of
-#' all possible, simple mixtures of the reference water samples LI-ANG (a
-#' relatively calcium-rich groundwater sample ), AT-WTV (a precipitation sample
-#' caught in a relatively unpolluted inland area of The Netherlands) and TH-N70
-#' (a representative analysis from the North Sea monitoring program, 70 km from
-#' the coast).
 #' Source: Van Wirdum, Geert (1991). Vegetation and hydrology of floating
 #' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
 #' \href{https://publicwiki.deltares.nl/display/VWD/Home}{dataset available here}
 #'
-#' \code{read_vanwirdum_data()}  returns it as a
+#' The 'vanwirdum_data' dataset gives the curved contour which encloses the
+#' plotting area of all possible, simple mixtures of the reference water
+#' samples LI-ANG (a relatively calcium-rich groundwater sample ), AT-WTV
+#' (a precipitation sample caught in a relatively unpolluted inland area of
+#' The Netherlands) and TH-N70 (a representative analysis from the North Sea
+#' monitoring program, 70 km from the coast).
+#'
+#' \code{read_vanwirdum_data()} returns this dataset as a
 #' \code{\link[tibble:tbl_df-class]{tibble}} with 42 rows and 2 variables.
 #' A tibble is a dataframe that makes working in the tidyverse a little
 #' \href{https://r4ds.had.co.nz/tibbles.html}{easier}.
@@ -24,7 +25,8 @@
 #'   \item{ir}{ionic ratio in %}}
 #'
 #' @return
-#' The \code{vanwirdum_data} dataframe as a \code{\link[tibble:tbl_df-class]{tibble}}
+#' The \code{vanwirdum_data} dataframe as a
+#' \code{\link[tibble:tbl_df-class]{tibble}}
 #
 #' @examples
 #' read_vanwirdum_data()
@@ -87,21 +89,110 @@ read_vanwirdum_data <-
     }
 
 
+#' Prepare data from get_chem for Van Wirdum diagram
+#'
+#' Uses the output of get_chem and convert it to a new tibble with the right
+#' input format to make a Van Wirdum diagram.
+#'
+#' Depending on the units of the Ca and Cl concentrations, the ionic ratio gets
+#' calculated as:
+#'
+#' 1) with the Ca and Cl concentrations in meq/l
+#' ionic ratio = [Ca2+] / ([Ca2+] + [Cl-])
+#'
+#' 2) with the Ca and Cl concentrations in mg/l
+#' ionic ratio = ((Ca_mg*2)/40.078) / (((Ca_mg*2)/40.078) + (Cl_mg/35.453))
+#'
+#' The result is the ionic ratio ir without units (0-1).
+#'
+#' @param x Output of the get_chem function (hydrochemical data retrieved from
+#' Watina). It can be a lazy object as well as a local object (get_chem(collect = TRUE))
+#'
+#' @return
+#' A tibble similar to x but with an extra column ir with the ionic ratio
+#'
+#' @examples
+#' \dontrun{
+#'   watina <- connect_watina()
+#'
+#'   mydata <-
+#'   get_locs(watina, area_codes = "ZWA") %>%
+#'   get_chem(watina, "1/1/2019") %>%
+#'   collect %>%
+#'   as.data.frame
+#'
+#'   mydata_vw <- calc_ir(mydata)
+#'
+#' p <- gg_vanwirdum(contour = "curve",
+#'                  rhine = TRUE) +
+#'      geom_point(data = mydata_vw,
+#'                 aes(x = CondL, y = ir))
+#' }
+
+# NEEDED IN DESCRIPTION
+
+
+watina <- connect_watina()
+mydata <-
+    get_locs(watina, area_codes = "ZWA") %>%
+    get_chem(watina, "1/1/2019") %>%
+    collect %>%
+    as.data.frame
+
+x <- mydata
+
+calc_ir <- function(x){
+
+    # collect the data if needed
+    if ("tbl_sql" %in% class(x)) {
+        x <- x %>%
+            collect
+    }
+
+    x <- x %>%
+        filter(chem_variable %in% c("Ca", "Cl", "CondL"))
+
+    # check units and calculate ir
+    # assumption: the concentrations in the dataset are all in meq or all in mg,
+    # not in both units
+    if ("mg/l" %in% unique(x$unit)) {
+
+        x <- x %>%
+            select(-unit, -below_loq, -loq) %>%
+            pivot_wider(names_from = chem_variable, values_from = value) %>%
+            mutate(Ca_meq = (Ca*2)/40.078,
+                   Cl_meq = Cl/35.453,
+                   ir = Ca_meq/(Ca_meq + Cl_meq))
+
+    } else {
+
+        x <- x %>%
+            select(-unit, -below_loq, -loq) %>%
+            pivot_wider(names_from = chem_variable, values_from = value) %>%
+            mutate(ir = Ca/(Ca + Cl))
+
+    }
+
+    return(x)
+    # with ir without units (0-1), CondL in µS/cm => default in gg_vanwirdum
+
+}
+
+
 #' Plots hydrochemistry: Van Wirdum diagram
 #'
-#' Create a Van Wirdum diagram for water samples (ionic ratio - log electric
+#' Creates a Van Wirdum diagram for water samples (ionic ratio - log electric
 #' conductivity) in ggplot
 #'
 #' Source: Van Wirdum, Geert (1991). Vegetation and hydrology of floating
 #' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
 #'
 #' Creates a ggplot object of the ionic ratio (IR) as Y axis against the
-#' electric conductivity (EC 25°C) as X axis and allows to plot your own
-#' water samples alongside reference data.
+#' electric conductivity at 25°C (EC25) as X axis and adds reference data.
 #'
 #' @section Reference data:
 #'
-#' #' Reference points (Van Wirdum 1991): benchmark samples for:
+#' Reference points (Van Wirdum 1991): benchmark water samples for:
 #' 1) lithotrophic water LI: a calcium-bicarbonate type of water, usually
 #' owing its characteristic composition to a contact with soil;
 #' 2) atmotrophic water AT: a type of water with low concentrations of most
@@ -112,10 +203,21 @@ read_vanwirdum_data <-
 #' 4) molunotrophic water RH: polluted water as presently found in the Rhine.
 #'
 #' You can also show the mixing contours between the reference points LI, AT
-#' and TH as curves or as lines. Most water analyses plot within the area
-#' bounded by the (curved) lines LI-AT-TH-LI.
+#' and TH as curves or as lines. The curved contour encloses the
+#' plotting area of all possible, simple mixtures of the reference water
+#' samples LI-ANG (a relatively calcium-rich groundwater sample ), AT-WTV
+#' (a precipitation sample caught in a relatively unpolluted inland area of
+#' The Netherlands) and TH-N70 (a representative analysis from the North Sea
+#' monitoring program, 70 km from the coast).
+#' Most water analyses plot within the area bounded by the (curved) lines
+#' LI-AT-TH-LI.
 #'
-#' @section Input:
+#' @section Typical way of using:
+#'
+#' Add your own water samples as data points (and any other information you
+#' would like to plot) to the Van Wirdum diagram as you would do for any ggplot.
+#'
+#' @section Input format:
 #'
 #' Input: a dataset with the ionic ration and electric conductivity at 25°C
 #'
@@ -133,12 +235,6 @@ read_vanwirdum_data <-
 #'   or use the helper function \code{\link{calc_ir}} to calculate IR based on
 #'   the Ca and Cl concentrations.
 #'
-#'
-#' @section Typical way of using:
-#'
-#' Add your data points (and any other information you would like to plot)
-#' to the Van Wirdum diagram as you would do for any ggplot.
-#'
 #' @param ir_unit The units for IR, can be NULL (default, axis 0-1)
 #' or "pc" (%, axis 0-100). Choose this parameter according to the unit used
 #' in your dataset.
@@ -153,8 +249,9 @@ read_vanwirdum_data <-
 #' or TRUE
 #'
 #' @return
-#' A ggplot object with the Van Wirdum IR-log EC diagram, the reference points
-#' for the water types LI-AT-TH and the mixing contours.
+#' A ggplot object with the Van Wirdum IR-log EC25 diagram, the reference points
+#' for the water types LI-AT-TH and the mixing contours between the reference
+#' water samples LI-AT-TH.
 #'
 #' @examples
 #' \dontrun{
@@ -163,7 +260,7 @@ read_vanwirdum_data <-
 #'     my_ir = runif(10), # without units (0-1)
 #'     my_ec25 = rnorm(10, 100, 35),
 #'     my_site = append(replicate(4, "site A"), replicate(6, "site B"))
-#'   )
+#'   ) # a dataset with water samples
 #'
 #' p <- gg_vanwirdum(contour = "curve",
 #'                  rhine = TRUE) +
@@ -194,54 +291,6 @@ read_vanwirdum_data <-
 #   ggplot2
 #   scales
 # LazyData: true (is already ok)
-
-# STILL TO DO: add dataset in R/sysdata.rda (or data/ ?)
-#  vw_lat_framework <- read_csv("C:/Users/cecile_herr/Desktop/coordinates_LAT_framework.csv")
-# https://r-pkgs.org/data.html
-# usethis::use_data(vw_lat_framework, internal = TRUE)
-# watina:::vw_lat_framework
-
-# NICE TO HAVE: helper function to convert a dataset from get_chem to a dataset
-# readily compatible with this function
-watina <- connect_watina()
-mydata <-
-  get_locs(watina, area_codes = "ZWA") %>%
-  get_chem(watina, "1/1/2019") %>%
-    collect %>%
-    as.data.frame
-x <- mydata
-
-calc_ir <- function(x){
-
-    # collect the data if needed
-    if ("tbl_sql" %in% class(x)) {
-        x <- x %>%
-            collect
-    }
-
-    x <- x %>%
-        filter(chem_variable %in% c("Ca", "Cl", "CondL"))
-
-    # check units and calculate ir
-    if ("mg/l" %in% unique(x$unit)) {
-
-        x <- x %>%
-            select(-unit, -below_loq, -loq) %>%
-            pivot_wider(names_from = chem_variable, values_from = value) %>%
-            mutate(Ca_meq = (Ca*2)/40.078,
-                   Cl_meq = Cl/35.453,
-                   ir = Ca_meq/(Ca_meq + Cl_meq)) # ir without units (0-1), CondL in µS/cm => default in gg_vanwirdum
-        } else {
-
-            x <- x %>%
-                select(-unit, -below_loq, -loq) %>%
-                pivot_wider(names_from = chem_variable, values_from = value) %>%
-                mutate(ir = Ca/(Ca + Cl))
-            # ir without units (0-1), CondL in µS/cm => default in gg_vanwirdum
-            }
-
-}
-
 
 
 gg_vanwirdum <- function(ir_unit = NULL,
