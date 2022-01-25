@@ -28,7 +28,8 @@ Currently the R package won't work outside INBO.
 To install the current package version from the `master` branch (latest stable release), run:
 
 ```r
-install.packages("watina", repos = "https://inbo.r-universe.dev")
+install.packages("watina", repos = c(inbo = "https://inbo.r-universe.dev", 
+                                     CRAN = "https://cloud.r-project.org"))
 ```
 
 The above provides a pre-compiled package for Windows and macOS, which should be faster than below approaches.
