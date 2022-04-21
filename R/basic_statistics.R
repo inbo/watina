@@ -4,7 +4,7 @@
 #' @import watina
 #' @import tidyverse
 #' @param watina connection to watina database, default = connect_watina()
-#' @param area_code area of interest 3-lettercode (ex. "ZWA")
+#' @param area_code area of interest 3-lettercode (ex. "ZWA"). All piezometers within this area and with a max. filter depth of 5m are taken into account.
 #' @param startdate startdate of samples "DD/MM/YYYY"
 #' @param enddate enddate, default is current date "DD/MM/YYY"
 #' @examples
@@ -19,7 +19,7 @@ basic_statistics <- function (watina = connect_watina(),
                               enddate = paste(day(today()), month(today()), year(today()))) {
   variables = c("CondF", "pHF", "HCO3","P-PO4", "N-NO2", "N-NO3", "N-NH4", "SO4", "Cl", "Na", "K", "Ca", "Mg", "Fe")
   watina <- connect_watina()
-  locs=get_locs(watina, area_codes = area_code, loc_type = "P")
+  locs=get_locs(watina, area_codes = area_code, loc_type = "P",filterdepth_range = c(0,5))
   chemdata=get_chem(watina,locs=locs,startdate = startdate,en_range = c(-0.1,0.1),enddate = enddate )%>% filter (chem_variable %in% variables) %>% collect
   sub_ph_cond = chemdata %>% filter(.$chem_variable == "CondF" |.$chem_variable == "pHF")
   sub_anion_cation = chemdata %>% filter(!.$chem_variable == "CondF" |.$chem_variable == "pHF") %>% filter (between(elneutr, -0.1, 0.1)) %>% rbind(sub_ph_cond) %>% group_by(loc_code,date,lab_sample_id,chem_variable) %>% summarise(value = mean(value))%>%

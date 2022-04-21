@@ -6,7 +6,7 @@
 #' @import smwrGraphs
 #' @import tidyverse
 #' @param watina connection to watina database, default = connect_watina()
-#' @param area_code area of interest 3-lettercode (ex. "ZWA")
+#' @param area_code area of interest 3-lettercode (ex. "ZWA"). All piezometers within this area and with a max. filter depth of 5m are taken into account.
 #' @param startdate startdate of samples, format = "DD/MM/YYYY"
 #' @param enddate enddate, default is current date, format = "DD/MM/YYY"
 #' @param format export format of stiff graphs, default is "pdf", other option is "png".
@@ -23,7 +23,7 @@ watina_stiff <- function (watina = connect_watina(),
   {
     variables_stiff = c("HCO3","SO4", "Cl", "Na", "K", "Ca", "Mg", "Fe")
     watina <- connect_watina()
-    locs=get_locs(watina, area_codes = area_code, loc_type = "P")
+    locs=get_locs(watina, area_codes = area_code, loc_type = "P",filterdepth_range = c(0,5))
     stiff_input=get_chem(watina,locs=locs,startdate = startdate,en_range = c(-0.1,0.1),enddate = enddate )%>%filter(chem_variable %in% variables_stiff)%>%
       filter(between(elneutr, -0.10, 0.10))%>%
       group_by(loc_code,date,lab_sample_id,chem_variable) %>% summarise(value = mean(value))%>%
