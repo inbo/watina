@@ -23,13 +23,8 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: ${{ secrets.CACHE_VERSION }}
-          extra-packages: local::.
+          extra-packages: local::., pkgdown@1.6.1
           needs: website
-
-      - name: Install pkgdown version
-        run: |
-          remotes::install_version("pkgdown", "1.6.1")
-        shell: Rscript {0}
 
       - name: Deploy package
         run: |
