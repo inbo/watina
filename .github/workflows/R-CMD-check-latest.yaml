@@ -23,10 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-20.04, r: 'release'}
-          - {os: ubuntu-20.04, r: 'devel'}
-          - {os: ubuntu-18.04, r: 'release'}
-          - {os: ubuntu-18.04, r: 'devel'}
+          - {os: ubuntu-22.04, r: 'release'}
+          - {os: ubuntu-22.04, r: 'devel'}
           - {os: windows-latest, r: 'release'}
           - {os: macOS-latest, r: 'release'}
 
