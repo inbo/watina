@@ -354,8 +354,6 @@ qualify_xg3 <- function(data,
 #' @importFrom rlang .data
 #' @importFrom assertthat
 #' assert_that
-#' @importFrom KSgeneral
-#' disc_ks_test
 #' @importFrom stringr
 #' str_detect
 #' @importFrom stats
@@ -381,6 +379,8 @@ eval_xg3_series <- function(data,
                             xg3_type = c("L", "H", "V"),
                             max_gap,
                             min_dur) {
+
+    require_pkgs("KSgeneral")
 
     if (missing(xg3_type)) {
         xg3_type <- match.arg(xg3_type)} else {
@@ -410,11 +410,13 @@ eval_xg3_series <- function(data,
             ser_rel_nryears = .data$ser_nryears / .data$ser_length,
             ser_firstyear = min(.data$hydroyear),
             ser_lastyear = max(.data$hydroyear),
-            ser_pval_uniform = disc_ks_test(.data$hydroyear,
-                                            ecdf(seq(.data$ser_firstyear,
-                                                     .data$ser_lastyear)),
-                                            exact = TRUE) %>%
-                                .$p.value
+            ser_pval_uniform = KSgeneral::disc_ks_test(
+                .data$hydroyear,
+                ecdf(seq(.data$ser_firstyear,
+                         .data$ser_lastyear)),
+                exact = TRUE
+            ) %>%
+                .$p.value
         ) %>%
         ungroup
     },
@@ -650,6 +652,8 @@ eval_chem <- function(data,
                       type = c("avail", "num", "both"),
                       uniformity_test = FALSE) {
 
+    require_pkgs("KSgeneral")
+
     type <- match.arg(type)
 
     assert_that(inherits(data, what = c("tbl_lazy", "data.frame")),
@@ -774,13 +778,15 @@ date, lab_sample_id, chem_variable, value, unit, below_loq."
                 df %>%
                 summarise(
                     nryears = sum(.data$available),
-                    pval_uniform_totalspan = ifelse(.data$nryears > 0,
-                                            disc_ks_test(.data$year[.data$available],
-                                                        ecdf(seq(firstyear,
-                                                                 lastyear)),
-                                                        exact = TRUE) %>%
-                                                .$p.value,
-                                            NA)
+                    pval_uniform_totalspan = ifelse(
+                        .data$nryears > 0,
+                        KSgeneral::disc_ks_test(.data$year[.data$available],
+                                                ecdf(seq(firstyear,
+                                                         lastyear)),
+                                                exact = TRUE) %>%
+                            .$p.value,
+                        NA
+                    )
                 ) %>%
                 select(-.data$nryears) %>%
                 ungroup

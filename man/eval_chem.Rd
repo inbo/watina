@@ -6,8 +6,8 @@
 \usage{
 eval_chem(
   data,
-  chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4", "HCO3", "SO4", "Cl", "Na", "K",
-    "Ca", "Mg", "Fe", "Mn", "Si", "Al", "CondF", "CondL", "pHF", "pHL"),
+  chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4", "HCO3", "SO4", "Cl", "Na", "K", "Ca",
+    "Mg", "Fe", "Mn", "Si", "Al", "CondF", "CondL", "pHF", "pHL"),
   type = c("avail", "num", "both"),
   uniformity_test = FALSE
 )
