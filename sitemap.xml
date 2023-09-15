@@ -1,37 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://inbo.github.io/watina/404.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/articles/v010_getstarted.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/articles/v110_xg3.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/articles/v210_chem.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/authors.html</loc>
-  </url>
-  <url>
     <loc>https://inbo.github.io/watina/index.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/news/index.html</loc>
   </url>
   <url>
     <loc>https://inbo.github.io/watina/reference/as_points.html</loc>
@@ -70,9 +40,6 @@
     <loc>https://inbo.github.io/watina/reference/get_xg3.html</loc>
   </url>
   <url>
-    <loc>https://inbo.github.io/watina/reference/index.html</loc>
-  </url>
-  <url>
     <loc>https://inbo.github.io/watina/reference/qualify_xg3.html</loc>
   </url>
   <url>
@@ -92,5 +59,14 @@
   </url>
   <url>
     <loc>https://inbo.github.io/watina/reference/watina-package.html</loc>
+  </url>
+  <url>
+    <loc>https://inbo.github.io/watina/articles/v010_getstarted.html</loc>
+  </url>
+  <url>
+    <loc>https://inbo.github.io/watina/articles/v110_xg3.html</loc>
+  </url>
+  <url>
+    <loc>https://inbo.github.io/watina/articles/v210_chem.html</loc>
   </url>
 </urlset>
