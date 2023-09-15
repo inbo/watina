@@ -2,6 +2,8 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3630532.svg)](https://doi.org/10.5281/zenodo.3630532)
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![R-CMD-check](https://github.com/inbo/watina/workflows/R-CMD-check/badge.svg)](https://github.com/inbo/watina/actions?query=workflow%3AR-CMD-check)
+[![inbo r-universe-name](https://inbo.r-universe.dev/badges/:name?color=c04384)](https://inbo.r-universe.dev)
+[![inbo r-universe package status](https://inbo.r-universe.dev/badges/watina)](https://inbo.r-universe.dev)
 <!-- badges: end -->
 
 ## Welcome
@@ -21,7 +23,20 @@ Currently the R package won't work outside INBO.
 
 ## Installing and using the _watina_ package
 
-### Option 1 (quick): installing without vignettes
+### Option 1: from r-universe repository (quickest)
+
+To install the current package version from the `master` branch (latest stable release), run:
+
+```r
+install.packages("watina", repos = c(inbo = "https://inbo.r-universe.dev", 
+                                     CRAN = "https://cloud.r-project.org"))
+```
+
+The above provides a pre-compiled package for Windows and macOS, which should be faster than below approaches.
+INBO staff should have the INBO repository enabled already (check with `getOption("repos")`), in which case **`install.packages("watina")`** is all you need!
+
+
+### Option 2, from source: installing without vignettes (quick)
 
 ```r
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
@@ -30,7 +45,7 @@ remotes::install_github("inbo/watina", upgrade = TRUE)
 
 You can consult the vignettes of the latest release on the (this) `pkgdown` [website](https://inbo.github.io/watina/): click on 'Articles' at the top.
 
-### Option 2: installing with vignettes
+### Option 3, from source: installing with vignettes
 
 ```r
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
