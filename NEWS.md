@@ -1,3 +1,9 @@
+# watina 0.4.2 (2023-09-15)
+
+- Move package {KSgeneral} to `Suggests` (#103).
+This avoids package breaking when {KSgeneral} is not available on CRAN.
+For the moment not taking further measures to protect against it, as the package is currently back on CRAN.
+
 # watina 0.4.1 (2021-06-11)
 
 - Fixed non-working `get_xg3()` and `get_chem()` for dataframe input, by avoiding the currently defunct `dbplyr::db_drop_table()` (#89, [08bc66d](https://github.com/inbo/watina/commit/08bc66d)).
