@@ -1,7 +1,7 @@
 # watina 0.4.2 (2023-09-15)
 
 - Move package {KSgeneral} to `Suggests` (#103).
-This avoids package breaking in periods where {KSgeneral} is not available on CRAN.
+This avoids package breaking when {KSgeneral} is not available on CRAN.
 For the moment not taking further measures to protect against it, as the package is currently back on CRAN.
 
 # watina 0.4.1 (2021-06-11)
