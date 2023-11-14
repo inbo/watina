@@ -25,7 +25,7 @@ Currently the R package won't work outside INBO.
 
 ### Option 1: from r-universe repository (quickest)
 
-To install the current package version from the `master` branch (latest stable release), run:
+To install the current package version from the `main` branch (latest stable release), run:
 
 ```r
 install.packages("watina", repos = c(inbo = "https://inbo.r-universe.dev", 
@@ -56,7 +56,7 @@ remotes::install_github("inbo/watina",
                         upgrade = TRUE)
 ```
 
-Note that this will install the package from the `master` branch.
+Note that this will install the package from the `main` branch.
 If you need a version from another branch, add the `ref` argument in the above function to provide the branch name.
 
 ## You are welcome to contribute!
