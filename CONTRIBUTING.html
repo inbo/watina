@@ -308,7 +308,7 @@ guide</a>.</li>
 <li>If you have forked and cloned the project before and it has been a
 while since you worked on it, <a href="https://help.github.com/articles/merging-an-upstream-repository-into-your-fork/">pull
 changes from the original repo</a> to your clone by using
-<code>git pull upstream master</code>.</li>
+<code>git pull upstream main</code>.</li>
 <li>Open the RStudio project file (<code>.Rproj</code>).</li>
 <li>Make your changes:
 <ul>
@@ -344,19 +344,19 @@ to get some useful packaging commands and developing tips.</p>
 branches</strong></p>
 <ul>
 <li>We follow the semantic version numbering as described <a href="https://r-pkgs.org/description.html#version">here</a>.</li>
-<li>The commit referred to by <code>master</code> (branch tip) must
-always have a <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>
-version number in the <code>DESCRIPTION</code> file. It is the latest
-released package version.
+<li>The commit referred to by <code>main</code> (branch tip) must always
+have a <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code> version
+number in the <code>DESCRIPTION</code> file. It is the latest released
+package version.
 <ul>
-<li>Subsequent commits on <code>master</code> which do not change the
+<li>Subsequent commits on <code>main</code> which do not change the
 package code itself, but only website setup and repo documentation, must
 inherit the <em>same</em> release version number.</li>
 <li>
 <strong>Commits which do change the package <em>must</em> carry a
 development version number</strong>; typically
 <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;.9000</code>. It follows
-that they never appear at the tip of the <code>master</code> branch.
+that they never appear at the tip of the <code>main</code> branch.
 Non-package commits <em>may</em> follow this route as well: it is safe
 for all new commits.</li>
 </ul>
@@ -364,13 +364,13 @@ These conventions ensure that:
 <ul>
 <li>a simple package installation with
 <code>remotes::install_github()</code>, which defaults to downloading
-from the <code>master</code> branch, will result in an installation of
-the latest release;</li>
+from the <code>main</code> branch, will result in an installation of the
+latest release;</li>
 <li>the <code>pkgdown</code> <a href="https://inbo.github.io/watina">website</a> shows the version
 number of the latest release.</li>
 </ul>
 </li>
-<li>Other branches than <code>master</code> can have various names.
+<li>Other branches than <code>main</code> can have various names.
 However, there is always at least one <strong>development
 branch</strong> whose name begins with <code>dev</code>. For example:
 <code>dev_nextrelease</code>, <code>dev_0.4.0</code>, … It is the
@@ -385,7 +385,7 @@ branches.</li>
 </ul>
 </li>
 <li>Eventually, the development branch’s last commit before merging to
-<code>master</code> will be to increment at least one of
+<code>main</code> will be to increment at least one of
 <code>&lt;major&gt;</code>, <code>&lt;minor&gt;</code> or
 <code>&lt;patch&gt;</code> and to drop the dev-suffix from the version
 number (i.e. in the <code>DESCRIPTION</code> file). Such final commits
@@ -438,7 +438,7 @@ added to this PR with <code>git push</code>, e.g. to implement requested
 changes by others.
 <ul>
 <li>make sure to correctly <strong>set the base branch</strong> in the
-pull request (because the default is <code>master</code>).</li>
+pull request (because the default is <code>main</code>).</li>
 </ul>
 </li>
 <li>After your PR is merged, pull the base branch and clean up your
