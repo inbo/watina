@@ -33,7 +33,7 @@ Let's suppose that we want to select locations (within an area, i.e. after havin
 However the user is free to choose this, using the `min_dur` and `max_gap` arguments.
 - the last year of the XG3 series must be 2015 or later.
 
-We can store specific conditions in a dataframe; the available statistics are explained by the documentation of `eval_xg3_avail()` and `eval_xg3_series()`:
+We can store specific conditions in a data frame; the available statistics are explained by the documentation of `eval_xg3_avail()` and `eval_xg3_series()`:
 
 ```{r eval=TRUE}
 conditions_df <-

@@ -2,12 +2,12 @@
 % Please edit documentation in R/sf.R
 \name{as_points}
 \alias{as_points}
-\title{Convert a dataframe with X and Y coordinates to a geospatial points object}
+\title{Convert a data frame with X and Y coordinates to a geospatial points object}
 \usage{
 as_points(df, xvar = "x", yvar = "y", remove = FALSE, warn_dupl = TRUE)
 }
 \arguments{
-\item{df}{A dataframe with X and Y coordinates in meters, assumed to be in
+\item{df}{A data frame with X and Y coordinates in meters, assumed to be in
 the Belgian Lambert 72 CRS (EPSG-code 31370).}
 
 \item{xvar}{String. The X coordinate variable name. Defaults to \code{"x"}.}
@@ -15,7 +15,7 @@ the Belgian Lambert 72 CRS (EPSG-code 31370).}
 \item{yvar}{String. The Y coordinate variable name. Defaults to \code{"y"}.}
 
 \item{remove}{Logical. Should the X and Y coordinates be removed from the
-dataframe after conversion to a spatial object?}
+data frame after conversion to a spatial object?}
 
 \item{warn_dupl}{Logical.
 Defaults to \code{TRUE}.
@@ -27,11 +27,11 @@ An \code{sf} object of geometry type \code{POINT} with EPSG-code
 31370 as coordinate reference system.
 }
 \description{
-\code{as_points} is a convenience function which accepts as input a dataframe
+\code{as_points} is a convenience function which accepts as input a data frame
 with X/Y coordinates (in meters), assumed to come from the coordinate
 reference system (CRS)
 'Belge 1972 / Belgian Lambert 72' (EPSG \href{https://epsg.io/31370}{31370}).
-It converts the dataframe into an \code{sf} points object in the same CRS.
+It converts the data frame into an \code{sf} points object in the same CRS.
 }
 \details{
 As locations in Watina are typically defined by their X/Y coordinates,

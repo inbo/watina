@@ -45,7 +45,7 @@ the minimum required duration of an XG3 series,
 i.e. the time (expressed as years)
 from the first to the last year of the XG3 series.}
 
-\item{conditions}{A dataframe.
+\item{conditions}{A data frame.
 See the devoted section below.}
 
 \item{verbose}{Logical.
@@ -174,7 +174,7 @@ the level 'combined'.
 Hence, the result will depend both on the XG3 \emph{types} (HG3, LG3 and/or
 VG3) for which statistics have been computed (specified by \code{xg3_type}),
 and on the conditions, specified by \code{conditions}.
-See the devoted section on the \code{conditions} dataframe.
+See the devoted section on the \code{conditions} data frame.
 
 Only locations are returned:
 \itemize{
@@ -188,7 +188,7 @@ for which \strong{all}
 conditions are met;
 }
 }
-As the conditions imposed by the \code{conditions} dataframe are always
+As the conditions imposed by the \code{conditions} data frame are always
 evaluated as a
 required combination of conditions ('and'), the user must make different
 calls to \code{selectlocs_xg3()}
@@ -204,7 +204,7 @@ for which \strong{all} those conditions are met.
 
 \code{selectlocs_xg3()} joins the long-formatted results of
 \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}
-with the \code{conditions} dataframe in order to evaluate the conditions.
+with the \code{conditions} data frame in order to evaluate the conditions.
 Often, this join in itself already leads to dropping specific
 combinations of \code{loc_code} and \code{xg3_variable}.
 At least the locations that are completely dropped in this step are reported
@@ -223,14 +223,14 @@ This list can instead be used as data-input, and in that case
 \code{xg3_type}, \code{max_gap} and \code{min_dur} are not needed
 (they will be ignored).
 }
-\section{Specification of the conditions dataframe}{
+\section{Specification of the conditions data frame}{
 
 Conditions can be specified for each of the summary statistics returned
 by \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}.
 Consequently, XG3 availability conditions and
 XG3 series conditions can be distinguished.
 
-The \code{conditions} parameter takes a dataframe that must have the
+The \code{conditions} parameter takes a data frame that must have the
 following columns:
 \describe{
 \item{\code{xg3_variable}}{One of: \code{"combined","lg3_lcl","lg3_ost",
@@ -250,8 +250,8 @@ the statistic must be equal to the criterion value.
 }
 }
 
-Each condition is one row of the dataframe.
-The dataframe should have at least one, and may have many.
+Each condition is one row of the data frame.
+The data frame should have at least one, and may have many.
 Each combination of \code{xg3_variable} and \code{statistic} must be
 unique.
 Conditions on XG3 variables, absent from \code{data} or not implied by

@@ -1,22 +1,22 @@
-#' Convert a dataframe with X and Y coordinates to a geospatial points object
+#' Convert a data frame with X and Y coordinates to a geospatial points object
 #'
-#' \code{as_points} is a convenience function which accepts as input a dataframe
+#' \code{as_points} is a convenience function which accepts as input a data frame
 #' with X/Y coordinates (in meters), assumed to come from the coordinate
 #' reference system (CRS)
 #' 'Belge 1972 / Belgian Lambert 72' (EPSG \href{https://epsg.io/31370}{31370}).
-#' It converts the dataframe into an \code{sf} points object in the same CRS.
+#' It converts the data frame into an \code{sf} points object in the same CRS.
 #'
 #' As locations in Watina are typically defined by their X/Y coordinates,
 #' this function eases the conversion to spatial data.
 #' To later remove all spatial information from the result, you can use
 #' \code{\link[sf:st_geometry]{sf::st_drop_geometry()}}.
 #'
-#' @param df A dataframe with X and Y coordinates in meters, assumed to be in
+#' @param df A data frame with X and Y coordinates in meters, assumed to be in
 #' the Belgian Lambert 72 CRS (EPSG-code 31370).
 #' @param xvar String. The X coordinate variable name. Defaults to \code{"x"}.
 #' @param yvar String. The Y coordinate variable name. Defaults to \code{"y"}.
 #' @param remove Logical. Should the X and Y coordinates be removed from the
-#' dataframe after conversion to a spatial object?
+#' data frame after conversion to a spatial object?
 #' @param warn_dupl Logical.
 #' Defaults to \code{TRUE}.
 #' Should the user be warned when duplicated coordinates are present in the

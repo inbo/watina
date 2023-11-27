@@ -657,7 +657,7 @@ eval_chem <- function(data,
     type <- match.arg(type)
 
     assert_that(inherits(data, what = c("tbl_lazy", "data.frame")),
-                msg = "data must be a lazy object or a dataframe.")
+                msg = "data must be a lazy object or a data frame.")
     assert_that(all(c("loc_code",
                       "date",
                       "lab_sample_id",

@@ -20,7 +20,7 @@
 #' Hence, the result will depend both on the XG3 \emph{types} (HG3, LG3 and/or
 #' VG3) for which statistics have been computed (specified by \code{xg3_type}),
 #' and on the conditions, specified by \code{conditions}.
-#' See the devoted section on the \code{conditions} dataframe.
+#' See the devoted section on the \code{conditions} data frame.
 #'
 #' Only locations are returned:
 #' \itemize{
@@ -34,7 +34,7 @@
 #' conditions are met;
 #' }
 #' }
-#' As the conditions imposed by the \code{conditions} dataframe are always
+#' As the conditions imposed by the \code{conditions} data frame are always
 #' evaluated as a
 #' required combination of conditions ('and'), the user must make different
 #' calls to \code{selectlocs_xg3()}
@@ -50,7 +50,7 @@
 #'
 #' \code{selectlocs_xg3()} joins the long-formatted results of
 #' \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}
-#' with the \code{conditions} dataframe in order to evaluate the conditions.
+#' with the \code{conditions} data frame in order to evaluate the conditions.
 #' Often, this join in itself already leads to dropping specific
 #' combinations of \code{loc_code} and \code{xg3_variable}.
 #' At least the locations that are completely dropped in this step are reported
@@ -69,13 +69,13 @@
 #' \code{xg3_type}, \code{max_gap} and \code{min_dur} are not needed
 #' (they will be ignored).
 #'
-#' @section Specification of the conditions dataframe:
+#' @section Specification of the conditions data frame:
 #' Conditions can be specified for each of the summary statistics returned
 #' by \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}.
 #' Consequently, XG3 availability conditions and
 #' XG3 series conditions can be distinguished.
 #'
-#' The \code{conditions} parameter takes a dataframe that must have the
+#' The \code{conditions} parameter takes a data frame that must have the
 #' following columns:
 #' \describe{
 #' \item{\code{xg3_variable}}{One of: \code{"combined","lg3_lcl","lg3_ost",
@@ -95,8 +95,8 @@
 #' }
 #' }
 #'
-#' Each condition is one row of the dataframe.
-#' The dataframe should have at least one, and may have many.
+#' Each condition is one row of the data frame.
+#' The data frame should have at least one, and may have many.
 #' Each combination of \code{xg3_variable} and \code{statistic} must be
 #' unique.
 #' Conditions on XG3 variables, absent from \code{data} or not implied by
@@ -130,7 +130,7 @@
 #' Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
 #' Together with the available variables in \code{data},
 #' \code{xg3_type} determines the meaning of the variable \code{"combined"}.
-#' @param conditions A dataframe.
+#' @param conditions A data frame.
 #' See the devoted section below.
 #' @param verbose Logical.
 #' If \code{TRUE}, give feedback on dropped locations because of
@@ -368,13 +368,13 @@ selectlocs_xg3 <- function(data,
                   "criterion",
                   "direction") %in%
                       colnames(conditions)),
-                msg = "The conditions dataframe does not have the required column names.")
+                msg = "The conditions data frame does not have the required column names.")
 
     assert_that(nrow(conditions) > 0,
-        msg = "You must at least provide one condition in the conditions dataframe.")
+        msg = "You must at least provide one condition in the conditions data frame.")
 
     assert_that(all(!is.na(conditions)),
-                msg = "You must not leave empty cells in the conditions dataframe.")
+                msg = "You must not leave empty cells in the conditions data frame.")
 
     assert_that(all(conditions$xg3_variable %in% c("combined",
                                                  "lg3_lcl",
@@ -383,22 +383,22 @@ selectlocs_xg3 <- function(data,
                                                  "vg3_ost",
                                                  "hg3_lcl",
                                                  "hg3_ost")),
-                msg = "You specified unknown XG3 variables in the conditions dataframe. Please fix.")
+                msg = "You specified unknown XG3 variables in the conditions data frame. Please fix.")
 
     assert_that(is.numeric(conditions$criterion),
-                msg = "The 'criterion' variable of the conditions dataframe must be numeric. Please fix.")
+                msg = "The 'criterion' variable of the conditions data frame must be numeric. Please fix.")
 
     assert_that(all(conditions$direction %in% c("min",
                                               "max",
                                               "equal")),
-                msg = "Directions in the conditions dataframe must be 'min', 'max' or 'equal'. Please fix.")
+                msg = "Directions in the conditions data frame must be 'min', 'max' or 'equal'. Please fix.")
 
     assert_that({
         conditions %>%
             count(.data$xg3_variable, .data$statistic) %>%
             filter(.data$n > 1) %>%
             nrow(.) == 0},
-        msg = "You cannot repeat the same combination of xg3_variable and statistic in the conditions dataframe.")
+        msg = "You cannot repeat the same combination of xg3_variable and statistic in the conditions data frame.")
 
     unknown_statnames <-
         conditions %>%
@@ -422,7 +422,7 @@ selectlocs_xg3 <- function(data,
 
     assert_that(length(unknown_statnames) == 0,
         msg = paste0(
-                "The following 'statistic' names in the conditions dataframe are unknown: ",
+                "The following 'statistic' names in the conditions data frame are unknown: ",
                 paste(unknown_statnames, collapse = ", "),
                 ". Please fix."
                 )
@@ -436,7 +436,7 @@ selectlocs_xg3 <- function(data,
         if (any(str_detect(unique(conditions$statistic), "ser_"))) TRUE else FALSE
 
     assert_that(cond_has_avail | cond_has_ser,
-                msg = "The conditions dataframe has no known 'statistic' names.")
+                msg = "The conditions data frame has no known 'statistic' names.")
 
     ## 1. Collecting statistics
 
@@ -730,7 +730,7 @@ selectlocs_xg3 <- function(data,
 #' Hence, the result will depend both on the \emph{chemical variables} for
 #' which statistics have been computed (specified by \code{chem_var}),
 #' and on the conditions, specified by \code{conditions}.
-#' See the devoted section on the \code{conditions} dataframe.
+#' See the devoted section on the \code{conditions} data frame.
 #'
 #' Only locations are returned:
 #' \itemize{
@@ -744,7 +744,7 @@ selectlocs_xg3 <- function(data,
 #' conditions are met;
 #' }
 #' }
-#' As the conditions imposed by the \code{conditions} dataframe are always
+#' As the conditions imposed by the \code{conditions} data frame are always
 #' evaluated as a
 #' required combination of conditions ('and'), the user must make different
 #' calls to \code{selectlocs_chem()}
@@ -753,11 +753,11 @@ selectlocs_xg3 <- function(data,
 #' If \code{data_type = "data"}, \code{selectlocs_chem()} calls
 #' \code{\link{eval_chem}}.
 #' Its \code{type} and \code{uniformity_test} arguments are derived from the
-#' user-specified \code{conditions} dataframe.
+#' user-specified \code{conditions} data frame.
 #'
 #' \code{selectlocs_chem()} joins the long-formatted results of
 #' \code{\link{eval_chem}}
-#' with the \code{conditions} dataframe in order to evaluate the conditions.
+#' with the \code{conditions} data frame in order to evaluate the conditions.
 #' Often, this join in itself already leads to dropping specific
 #' combinations of \code{loc_code} and \code{chem_variable}.
 #' At least the locations that are completely dropped in this step are reported
@@ -772,11 +772,11 @@ selectlocs_xg3 <- function(data,
 #' with \code{data_type = "summary"}.
 #' In that case the argument \code{chem_var} is ignored.
 #'
-#' @section Specification of the conditions dataframe:
+#' @section Specification of the conditions data frame:
 #' Conditions can be specified for each of the summary statistics returned
 #' by \code{\link{eval_chem}}.
 #'
-#' The \code{conditions} parameter takes a dataframe that must have the
+#' The \code{conditions} parameter takes a data frame that must have the
 #' following columns:
 #' \describe{
 #' \item{\code{chem_variable}}{Can be any chemical variable code,
@@ -802,8 +802,8 @@ selectlocs_xg3 <- function(data,
 #' }
 #' }
 #'
-#' Each condition is one row of the dataframe.
-#' The dataframe should have at least one, and may have many.
+#' Each condition is one row of the data frame.
+#' The data frame should have at least one, and may have many.
 #' Each combination of \code{chem_variable} and \code{statistic} must be
 #' unique.
 #' Conditions on chemical variables, absent from \code{data} or not implied by
@@ -825,7 +825,7 @@ selectlocs_xg3 <- function(data,
 #' codes from the column \code{chem_variable} in \code{data}.
 #' Together with the available variables in \code{data},
 #' \code{chem_var} determines the meaning of the variable \code{"combined"}.
-#' @param conditions A dataframe.
+#' @param conditions A data frame.
 #' See the devoted section below.
 #' @param verbose Logical.
 #' If \code{TRUE}, give feedback on dropped locations because of
@@ -975,10 +975,10 @@ selectlocs_chem <- function(data,
                       "criterion",
                       "direction") %in%
                         colnames(conditions)),
-                msg = "The conditions dataframe does not have the required column names.")
+                msg = "The conditions data frame does not have the required column names.")
 
     assert_that(nrow(conditions) > 0,
-                msg = "You must at least provide one condition in the conditions dataframe.")
+                msg = "You must at least provide one condition in the conditions data frame.")
 
     selectlocs(data = data,
                data_type = data_type,
@@ -1038,19 +1038,19 @@ selectlocs_chem <- function(data,
 #'
 #' Generic (helper) function to select locations that comply with
 #' user-specified conditions,
-#' from either a dataset (dataframe or lazy object) with the variable's values or
-#' from a dataframe with summary statistics.
+#' from either a dataset (data frame or lazy object) with the variable's values or
+#' from a data frame with summary statistics.
 #'
 #' The result of the evaluation function (\code{eval_fun}) must produce a
-#' dataframe, formatted as declared by the second bullet under the
+#' data frame, formatted as declared by the second bullet under the
 #' \code{data} argument.
 #'
 #' @param data Either:
 #' \itemize{
-#' \item{a dataset (dataframe or lazy object) with the variable's values}:
+#' \item{a dataset (data frame or lazy object) with the variable's values}:
 #' with at least a column \code{loc_code}, a column with the variable name,
 #' and a column \code{value};
-#' \item{a dataframe with summary statistics}:
+#' \item{a data frame with summary statistics}:
 #' with a first column \code{loc_code} and a second column with the evaluated
 #' variable names or codes.
 #' The column name of the second column can vary.
@@ -1064,7 +1064,7 @@ selectlocs_chem <- function(data,
 #' dataset.
 #' @param eval_args The arguments of the evaluation function, as a named list,
 #' if \code{data} is a dataset.
-#' @param conditions A dataframe.
+#' @param conditions A data frame.
 #' It must have the
 #' following columns:
 #' \describe{
@@ -1084,8 +1084,8 @@ selectlocs_chem <- function(data,
 #' }
 #' }
 #'
-#' Each condition is one row of the dataframe.
-#' The dataframe should have at least one, and may have many.
+#' Each condition is one row of the data frame.
+#' The data frame should have at least one, and may have many.
 #' Each combination of \code{chem_variable} and \code{statistic} must be
 #' unique.
 #' Conditions on chemical variables, absent from \code{data} or not implied by
@@ -1175,28 +1175,28 @@ selectlocs <- function(data,
                       "criterion",
                       "direction") %in%
                         colnames(conditions)),
-                msg = "The conditions dataframe does not have the required column names.")
+                msg = "The conditions data frame does not have the required column names.")
 
     assert_that(nrow(conditions) > 0,
-                msg = "You must at least provide one condition in the conditions dataframe.")
+                msg = "You must at least provide one condition in the conditions data frame.")
 
     assert_that(all(!is.na(conditions)),
-                msg = "You must not leave empty cells in the conditions dataframe.")
+                msg = "You must not leave empty cells in the conditions data frame.")
 
     assert_that(is.numeric(conditions$criterion),
-                msg = "The 'criterion' variable of the conditions dataframe must be numeric. Please fix.")
+                msg = "The 'criterion' variable of the conditions data frame must be numeric. Please fix.")
 
     assert_that(all(conditions$direction %in% c("min",
                                                 "max",
                                                 "equal")),
-                msg = "Directions in the conditions dataframe must be 'min', 'max' or 'equal'. Please fix.")
+                msg = "Directions in the conditions data frame must be 'min', 'max' or 'equal'. Please fix.")
 
     assert_that({
         conditions %>%
             count(.data$variable, .data$statistic) %>%
             filter(.data$n > 1) %>%
             nrow(.) == 0},
-        msg = "You cannot repeat the same combination of variable and statistic in the conditions dataframe.")
+        msg = "You cannot repeat the same combination of variable and statistic in the conditions data frame.")
 
     ## 1. Collecting statistics
 

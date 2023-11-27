@@ -104,7 +104,7 @@ as.numeric(lubridate::dmy("1/1/2014"))
 #> [1] 16071
 ```
 
-We can store specific conditions in a dataframe; the available statistics are explained by the documentation of `eval_chem()`:
+We can store specific conditions in a data frame; the available statistics are explained by the documentation of `eval_chem()`:
 
 ```{r eval=TRUE}
 conditions_df <-

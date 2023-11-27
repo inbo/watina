@@ -259,7 +259,7 @@ get_locs(watina,
 Note that the default value for `buffer` is 10 meters; it is used to enlarge mask (or shrink it, if `buffer` < 0).
 Also, note there are a few warnings to inform about dropped locations and duplicated coordinates.
 
-Instead of leaving the output as a `tbl_lazy` object, you can also retrieve it as a tibble (i.e. an easier-to-use type of dataframe) by setting `collect = TRUE`.
+Instead of leaving the output as a `tbl_lazy` object, you can also retrieve it as a tibble (i.e. an easier-to-use type of data frame) by setting `collect = TRUE`.
 
 ```{r}
 get_locs(watina,

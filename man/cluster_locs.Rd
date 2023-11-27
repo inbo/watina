@@ -13,9 +13,9 @@ cluster_locs(
 )
 }
 \arguments{
-\item{input}{A dataframe with X/Y coordinates, or an \code{sf} object of
+\item{input}{A data frame with X/Y coordinates, or an \code{sf} object of
 geometry type \code{POINT}.
-A typical input dataframe is the collected output of \code{\link{get_locs}}.}
+A typical input data frame is the collected output of \code{\link{get_locs}}.}
 
 \item{max_dist}{The maximum geospatial distance between two points to make
 them belong to the same cluster.
@@ -30,12 +30,12 @@ coordinate reference system, as is the case for the
 
 \item{xvar}{String.
 The X coordinate variable name; only considered when \code{input} is a
-dataframe.
+data frame.
 Defaults to \code{"x"}.}
 
 \item{yvar}{String.
 The Y coordinate variable name; only considered when \code{input} is a
-dataframe.
+data frame.
 Defaults to \code{"y"}.}
 }
 \value{
@@ -45,7 +45,7 @@ cluster membership.
 }
 \description{
 \code{cluster_locs()} accepts as input a
-dataframe with X/Y coordinates, or an \code{sf} object
+data frame with X/Y coordinates, or an \code{sf} object
 of geometry type \code{POINT}.
 The function adds an integer variable that defines cluster membership.
 The intention is to detect spatial groundwater well clusters; hence it uses a

@@ -17,7 +17,7 @@ get_chem(
 )
 }
 \arguments{
-\item{locs}{A \code{tbl_lazy} object or a dataframe, with at least a column
+\item{locs}{A \code{tbl_lazy} object or a data frame, with at least a column
 \code{loc_code} that defines the locations for which values are to be
 returned.
 Typically, this will be the object returned by \code{\link{get_locs}}.}

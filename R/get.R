@@ -717,7 +717,7 @@ get_locs <- function(con,
 #' If you like to print the lazy object in a sorted manner, you must add
 #' `%>% arrange(...)` yourself.
 #'
-#' @param locs A \code{tbl_lazy} object or a dataframe, with at least a column
+#' @param locs A \code{tbl_lazy} object or a data frame, with at least a column
 #' \code{loc_code} that defines the locations for which values are to be
 #' returned.
 #' Typically, this will be the object returned by \code{\link{get_locs}}.
