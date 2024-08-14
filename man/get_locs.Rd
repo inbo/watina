@@ -312,7 +312,7 @@ library(sf)
 library(purrr)
 library(httr)
 mymask <-
-    "https://geoservices.informatievlaanderen.be/overdrachtdiensten/VRBG/wfs" \%>\%
+    "https://geo.api.vlaanderen.be/VRBG/wfs" \%>\%
     parse_url() \%>\%
     list_merge(query = list(request = "GetFeature",
                             typeName = "VRBG:Refprv",
