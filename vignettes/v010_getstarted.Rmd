@@ -217,7 +217,7 @@ get_locs(watina,
 
 ```{r echo=FALSE, include=FALSE}
 westfl <- 
-    "https://geoservices.informatievlaanderen.be/overdrachtdiensten/VRBG/wfs" %>%
+    "https://geo.api.vlaanderen.be/VRBG/wfs" %>%
     httr::parse_url() %>%
     purrr::list_merge(query = list(request = "GetFeature",
                                    typeName = "VRBG:Refprv",
