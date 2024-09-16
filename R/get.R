@@ -440,7 +440,8 @@ get_locs <- function(con,
         mutate(tubelength = ifelse(.data$PeilbuisLengte <= 0,
                                    NA,
                                    .data$PeilbuisLengte),
-               filterlength = ifelse(is.na(.data$FilterLengte),
+               filterlength = ifelse(is.na(.data$FilterLengte) |
+                                         .data$FilterLengte == 0,
                                      0.3,
                                      .data$FilterLengte),
                filterdepth = .data$tubelength -
