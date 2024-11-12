@@ -669,7 +669,7 @@ eval_chem <- function(data,
 date, lab_sample_id, chem_variable, value, unit, below_loq."
     )
 
-    assert_that(is.flag(uniformity_test), noNA(uniformity_test))
+    assert_that(is.flag(uniformity_test), assertthat::noNA(uniformity_test))
 
     data <-
         data %>%

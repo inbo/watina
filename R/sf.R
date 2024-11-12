@@ -54,7 +54,7 @@ as_points <- function(df,
     assert_that(is.string(yvar))
     assert_that(has_name(df, xvar))
     assert_that(has_name(df, yvar))
-    assert_that(is.flag(warn_dupl), noNA(warn_dupl))
+    assert_that(is.flag(warn_dupl), assertthat::noNA(warn_dupl))
 
     require_pkgs("sf")
 
