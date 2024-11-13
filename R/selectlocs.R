@@ -360,8 +360,8 @@ selectlocs_xg3 <- function(data,
     }
 
     assert_that(inherits(conditions, "data.frame"))
-    assert_that(is.flag(verbose), noNA(verbose))
-    assert_that(is.flag(list), noNA(list))
+    assert_that(is.flag(verbose), assertthat::noNA(verbose))
+    assert_that(is.flag(list), assertthat::noNA(list))
 
     assert_that(all(c("xg3_variable",
                   "statistic",
@@ -967,8 +967,8 @@ selectlocs_chem <- function(data,
     }
 
     assert_that(inherits(conditions, "data.frame"))
-    assert_that(is.flag(verbose), noNA(verbose))
-    assert_that(is.flag(list), noNA(list))
+    assert_that(is.flag(verbose), assertthat::noNA(verbose))
+    assert_that(is.flag(list), assertthat::noNA(list))
 
     assert_that(all(c("chem_variable",
                       "statistic",
@@ -1167,8 +1167,8 @@ selectlocs <- function(data,
     }
 
     assert_that(inherits(conditions, "data.frame"))
-    assert_that(is.flag(verbose), noNA(verbose))
-    assert_that(is.flag(list), noNA(list))
+    assert_that(is.flag(verbose), assertthat::noNA(verbose))
+    assert_that(is.flag(list), assertthat::noNA(list))
 
     assert_that(all(c("variable",
                       "statistic",

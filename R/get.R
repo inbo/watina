@@ -348,11 +348,11 @@ get_locs <- function(con,
     assert_that(is.null(area_codes) | all(is.character(area_codes)))
     assert_that(is.null(loc_vec) | all(is.character(loc_vec)),
                 msg = "loc_vec must be a character vector.")
-    assert_that(is.flag(join_mask), noNA(join_mask))
-    assert_that(is.flag(collect), noNA(collect))
-    assert_that(is.flag(obswells), noNA(obswells))
-    assert_that(is.flag(filterdepth_guess), noNA(filterdepth_guess))
-    assert_that(is.flag(filterdepth_na), noNA(filterdepth_na))
+    assert_that(is.flag(join_mask), assertthat::noNA(join_mask))
+    assert_that(is.flag(collect), assertthat::noNA(collect))
+    assert_that(is.flag(obswells), assertthat::noNA(obswells))
+    assert_that(is.flag(filterdepth_guess), assertthat::noNA(filterdepth_guess))
+    assert_that(is.flag(filterdepth_na), assertthat::noNA(filterdepth_na))
 
     obswell_aggr <- match.arg(obswell_aggr)
 
@@ -822,8 +822,8 @@ get_xg3 <- function(locs,
                 msg = "startyear must not be larger than endyear.")
     assert_that("loc_code" %in% colnames(locs),
                 msg = "locs does not have a column name 'loc_code'.")
-    assert_that(is.flag(truncated), noNA(truncated))
-    assert_that(is.flag(collect), noNA(collect))
+    assert_that(is.flag(truncated), assertthat::noNA(truncated))
+    assert_that(is.flag(collect), assertthat::noNA(collect))
 
     if (inherits(locs, "data.frame")) {
         locs <-
@@ -1112,8 +1112,8 @@ get_chem <- function(locs,
                 en_range[1] >= -1,
                 en_range[2] <= 1
                 )
-    assert_that(is.flag(en_exclude_na), noNA(en_exclude_na))
-    assert_that(is.flag(collect), noNA(collect))
+    assert_that(is.flag(en_exclude_na), assertthat::noNA(en_exclude_na))
+    assert_that(is.flag(collect), assertthat::noNA(collect))
 
     if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
         assert_that(is.number(en_fecond_threshold),
