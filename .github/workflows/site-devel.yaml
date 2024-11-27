@@ -12,7 +12,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -31,7 +31,7 @@ jobs:
           Rscript -e 'options(rmarkdown.html_vignette.check_title = FALSE); pkgdown::build_site()'
 
       - name: Upload pkgdown-site as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pkgdown-site
           path: docs
