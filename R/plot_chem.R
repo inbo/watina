@@ -103,7 +103,7 @@ read_vanwirdum_data <-
 #' Plots hydrochemistry: Van Wirdum diagram
 #'
 #' Creates the background of a Van Wirdum diagram for water samples
-#' (ionic ratio - log electric conductivity) in ggplot
+#' in ggplot (ionic ratio - log electric conductivity).
 #'
 #' Source: Van Wirdum, Geert (1991). Vegetation and hydrology of floating
 #' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
@@ -115,17 +115,16 @@ read_vanwirdum_data <-
 #'
 #' Reference points (Van Wirdum 1991): benchmark water samples for:
 #'
-#' 1) lithotrophic water LI: a calcium-bicarbonate type of water, usually
-#' owing its characteristic composition to a contact with soil;
-#'
-#' 2) atmotrophic water AT: a type of water with low concentrations of most
+#' \enumerate{
+#'  \item{lithotrophic water LI: a calcium-bicarbonate type of water, usually
+#' owing its characteristic composition to a contact with soil;}
+#'  \item{atmotrophic water AT: a type of water with low concentrations of most
 #' constituents, usually owing its characteristic composition to atmospheric
-#' precipitation;
-#'
-#' 3) thalassotrophic water TH: a saline sodium-chloride type of water as
-#' found in the oceans;
-#'
-#' 4) molunotrophic water RH: polluted water as presently found in the Rhine.
+#' precipitation;}
+#'  \item{thalassotrophic water TH: a saline sodium-chloride type of water as
+#' found in the oceans;}
+#'  \item{molunotrophic water RH: polluted water as presently found in the Rhine.}
+#'  }
 #'
 #' You can also show the mixing contours between the reference points LI, AT
 #' and TH as curves or as lines. The curved contour encloses the
@@ -146,15 +145,16 @@ read_vanwirdum_data <-
 #'
 #' @section Input format:
 #'
-#' Input: a dataset with the ionic ratio and electric conductivity at 25°C
+#' Input: a dataset with the electric conductivity at 25°C and the ionic ratio:
 #'
-#' EC at 25°C can be in µS/cm or mS/m and will be shown on a logarithmic scale
+#'  \itemize{
+#'  \item{EC at 25°C can be in µS/cm or mS/m and will be shown on a logarithmic scale}
+#'  \item{IR can be without units (0-1) or in \%}
+#'  }
 #'
-#' IR can be without units (0-1) or in \%
+#' Compute the ionic ratio as follows:
 #'
-#' Compute IR as follows:
-#'
-#' IR = [Ca2+] / ([Ca2+] + [Cl-]) with the Ca and Cl concentrations in meq/l
+#' ionic ratio = [Ca2+] / ([Ca2+] + [Cl-]) with the Ca and Cl concentrations in meq/l
 #'
 #' \preformatted{
 #' mydata <- mydata \%>\%
@@ -163,16 +163,16 @@ read_vanwirdum_data <-
 #'   mutate(ir = Ca_meq/(Ca_meq + Cl_meq)) # ir without units (0-1)
 #' }
 #'
-#'   or use the helper function \code{\link{calc_ir}} to calculate IR based on
-#'   the Ca and Cl concentrations obtained through the \code{\link{get_chem}}
-#'   function.
+#'   or use the helper function \code{\link{calc_ir}} to calculate the ionic
+#'   ratio based on the Ca and Cl concentrations obtained through
+#'   the \code{\link{get_chem}} function.
 #'
-#' @param ir_unit The units for IR, can be NULL (default, axis 0-1)
+#' @param ir_unit The units for the ionic ratio, can be NULL (default, axis 0-1)
 #' or "pc" (\%, axis 0-100). Choose this parameter according to the unit used
 #' in your dataset.
-#' @param ec25_unit The units for EC 25°C, can be "micro" (default, µS/cm)
-#' or "milli" (mS/m). Choose this parameter according to the unit used
-#' in your dataset.
+#' @param ec25_unit The units for the electric conductivity et 25°C:
+#' can be "micro" (default, µS/cm) or "milli" (mS/m).
+#' Choose this parameter according to the unit used in your dataset.
 #' @param contour Draw the mixing contours of the reference water samples,
 #' "segment" (default), "curve" or NULL (do not draw)
 #' @param lang Which language should be used for the legend, "en" (English,

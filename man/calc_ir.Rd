@@ -2,34 +2,35 @@
 % Please edit documentation in R/misc_chem.R
 \name{calc_ir}
 \alias{calc_ir}
-\title{Compute the ionic ratio (e.g. for a Van Wirdum diagram)}
+\title{Compute the ionic ratio}
 \usage{
 calc_ir(x)
 }
 \arguments{
-\item{x}{Output of the get_chem function (hydrochemical data retrieved from
-Watina). It can be a lazy object as well as a local object (get_chem(collect = TRUE))}
+\item{x}{Output of the \code{get_chem} function (hydrochemical data retrieved from
+Watina). It can be a lazy object as well as a local object \code{(get_chem(collect = TRUE))}}
 }
 \value{
-A tibble similar to x but with an extra column ir with the ionic ratio
+A tibble similar to x but with an extra column \code{ir} with the ionic ratio
 }
 \description{
-Uses the output of get_chem and convert it to a new tibble with the ionic ratio
-(and the right input format to make a Van Wirdum diagram).
+Uses the output of \code{\link{get_chem}} and convert it to a new tibble with
+the ionic ratio (and the right input format to make a Van Wirdum diagram).
 }
 \details{
 Depending on the units of the Ca and Cl concentrations, the ionic ratio gets
-calculated as:
+calculated as follows:
 
-1) with the Ca and Cl concentrations in meq/l
+\enumerate{
+ \item{if the Ca and Cl concentrations are in meq/l:
 
-ionic ratio = [Ca2+] / ([Ca2+] + [Cl-])
+ ionic ratio = [Ca2+] / ([Ca2+] + [Cl-])}
+ \item{if the Ca and Cl concentrations are in mg/l:
 
-2) with the Ca and Cl concentrations in mg/l
+ ionic ratio = ((Ca_mg*2)/40.078) / (((Ca_mg*2)/40.078) + (Cl_mg/35.453))}
+}
 
-ionic ratio = ((Ca_mg*2)/40.078) / (((Ca_mg*2)/40.078) + (Cl_mg/35.453))
-
-The result is the ionic ratio ir without units (0-1).
+The result is the ionic ratio \code{ir} without units (0-1).
 }
 \examples{
 \dontrun{
