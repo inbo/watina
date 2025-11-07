@@ -1,0 +1,155 @@
+---
+title: "Creating plots based on hydrochemical data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Creating plots based on hydrochemical data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = TRUE
+)
+
+library(watina)
+library(dplyr)
+library(knitr)
+library(ggplot2)
+```
+
+_General note: the below vignette contains frozen output of 7 Nov 2025._
+_This makes it possible to build the package with vignettes without access to the Watina database._
+
+## Retrieve chemical data from Watina
+
+We use the `get_chem()` function to retrieve hydrochemical data.
+The example requests available hydrochemical data since 2024 from locations 
+in the area 'Kesterbeek' and saves it locally `(collect = TRUE)`: 
+
+```{r, eval = FALSE}
+watina <- connect_watina()
+my_chem_data <-
+    get_locs(watina, area_codes = "KES") %>% 
+    get_chem(watina, "1/1/2024", collect = TRUE)
+
+```
+
+```{r, eval = FALSE, include = FALSE}
+dbDisconnect(watina)
+```
+
+```{r, eval = FALSE}
+my_chem_data
+#> # A tibble: 272 x 10
+#>    loc_code date       lab_project_id lab_sample_id chem_variable  value
+#>    <chr>    <date>     <chr>          <chr>         <chr>          <dbl>
+#>  1 KESP001  2024-07-04 0              42052         Al             0.050
+#>  2 KESP001  2024-07-04 0              42052         Ca             109.881
+#>  3 KESP001  2024-07-04 0              42052         Cl             11.349 
+#>  4 KESP001  2024-07-04 0              42052         CondF          599.000   
+#>  5 KESP001  2024-07-04 0              42052         CondL          606.700  
+#>  6 KESP001  2024-07-04 0              42052         Fe             2.788
+#>  7 KESP001  2024-07-04 0              42052         HCO3           375.292
+#>  8 KESP001  2024-07-04 0              42052         K              0.970
+#>  9 KESP001  2024-07-04 0              42052         Mg             8.960
+#> 10 KESP001  2024-07-04 0              42052         Mn             0.792
+#> # … with 262 more rows, and 4 more variables: unit <chr>,
+#> #   below_loq <lgl>, loq <dbl>, elneutr <dbl>
+```
+```{r, include = FALSE}
+# needed if we build the package with vignettes without access to the Watina database
+my_chem_data <- data.frame(
+    loc_code = rep(c("KESP001", "KESP003"), each = 6),
+    date = as.Date(rep(c("2024-07-04", "2024-11-13"), each = 3, times = 2)),
+    lab_project_id = rep(0, 12),
+    lab_sample_id = rep(c("42052", "42307", "42048", "42303"), each = 3),
+    elneutr = c(0.005029, 0.005029, 0.005029, 0.014906, 0.014906, 0.014906, 
+                0.041433, 0.041433, 0.041433, 0.024119, 0.024119, 0.024119),
+    chem_variable = rep(c("Ca", "Cl", "CondL"), 4),
+    value = c(109.881, 11.349, 606.7, 110.967, 8.763, 579.6,
+              135.331, 31.653, 730.6, 124.289, 31.781, 677.2),
+    unit = rep(c("mg/l", "mg/l", "µS/cm"), 4),
+    below_loq = rep(FALSE, 12),
+    loq = rep(-99, 12)
+    )
+```
+
+We will use this dataset to demonstrate the plotting options available in the 
+Watina package.
+
+## Plot the ionic ratio against the electric conductivity (Van Wirdum)
+
+This diagram, devised by Geert Van Wirdum, shows the chemical similarity of a 
+water sample to references samples such as atmocline water (rainwater), 
+thalassocline water (seawater) and lithocline water (calcium rich, fresh 
+groundwater). The diagram plots the ionic ratio, 
+that is *[Ca2+] / ([Ca2+] + [Cl-])*, against the logarithm of the electric 
+conductivity at 25°C.
+
+The electric conductivity is available for most samples in Watina, but we need 
+to compute the ionic ratio. 
+We could do this manually for each sample but the `watina` package also contains 
+a `calc_ir()` function that can be applied directly to the output of the 
+`get_chem()` function to calculate the ionic ratio:
+
+```{r}
+my_chem_data_vanwirdum <- calc_ir(my_chem_data)
+```
+
+The obtained dataset is a broad table with the following fields:
+
+```{r }
+names(my_chem_data_vanwirdum)
+```
+
+The new fields `Ca_meq` and `Cl_meq` give the Ca and Cl concentrations in 
+milliequivalents and the field `ir` contains the calculated ionic ratio.
+
+Now we can create the diagram of the ionic ratio against the (log of) 
+electric conductivity at 25°C (the so called Van Wirdum diagram) with 
+the `ggplot_vanwirdum_background()` function. 
+This function will create the background of a Van Wirdum diagram, 
+with reference points for lithotrophic water (LI), atmotrophic water (AT), 
+thalassotrophic water (TH) and optionally molunotrophic water (RH - polluted 
+water as found in the Rhine).
+ 
+```{r , fig.height=3.5, fig.width=6}
+# background with standard options:
+print(ggplot_vanwirdum_background() )
+```
+
+We can show the mixing contours of the reference points with a curve instead of a line
+and plot the reference point for polluted river water using respectively the 
+`contour` and `rhine` arguments:
+
+```{r, fig.height=3.5, fig.width=6}
+print(ggplot_vanwirdum_background(contour = "curve",
+                                  rhine = TRUE))
+```
+
+
+Now let's add our own data for the valley of the Kesterbeek.
+In this example we plot 2 locations that were sampled twice in 2024:
+
+```{r, fig.height=3.5, fig.width=6}
+# add your own data with EC as x and IR as y and format as you wish
+ggplot_vanwirdum_background(contour = "curve",
+             lang = "en",
+             rhine = TRUE) +
+  geom_point(data = my_chem_data_vanwirdum %>% head(n = 4),
+             aes(x = CondL, y = ir, 
+                 colour = loc_code,
+                 shape = as.factor(date)), size = 3) +
+    scale_colour_manual(name = "Location", values = c("dodgerblue", "red")) + 
+    scale_shape_discrete(name = "Date")
+```
+
+
+All the usual options of `ggplot2` are available to customize the layout of the plot.
+
+
+
+
