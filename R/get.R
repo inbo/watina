@@ -915,6 +915,7 @@ get_xg3 <- function(locs,
 #'
 #' The water samples must meet a specified electroneutrality
 #' condition, set by \code{en_range}.
+#'
 #' \itemize{
 #' \item This condition is however ignored when the sample's iron (meq/l) /
 #' conductivity (µS/cm) ratio exceeds \code{en_fecond_threshold} (use
@@ -927,7 +928,30 @@ get_xg3 <- function(locs,
 #' }
 #' To retrieve all data from all water samples, use \code{en_range = c(-1, 1)}.
 #'
-#' TO BE ADDED: What is electroneutrality and why is it used as a criterion?
+#' **More information about the electroneutrality**
+#'
+#' We expect groundwater samples to have no net charge, i.e. the total
+#' positive charge from cations must equal the total negative charge
+#' from anions.
+#' To ensure this is true (if we ignore the inevitable margin of error
+#' in the laboratory),
+#' we calculate:
+#' \itemize{
+#' \item the sum of charges from anions (AN) in the sample as
+#'      *HCO3 + SO4 + PO4 + Cl + NO3 + NO2*
+#' \item the sum of charges from cations (CAT) in the sample as
+#'      *Ca + Mg + Na + K + Fe + NH4*
+#' }
+#'
+#' Then we derive the electroneutrality as *(CAT - AN)/(CAT + AN)*
+#'
+#' If significant deviation from zero occurs, there must be analytical errors in
+#' the concentration determinations or ions at significant concentration levels
+#' that were not included in the analysis.
+#'
+#' The \code{get_chem()} function allows for a standard tolerance of +/-0.1 for
+#' the electroneutrality.
+#' This value can be adapted using the \code{en_range} argument.
 #'
 #' @md
 #'
@@ -1010,10 +1034,43 @@ get_xg3 <- function(locs,
 #' With \code{collect = TRUE},
 #' a local \code{\link[tibble]{tibble}} is returned.
 #'
-#' (TO BE ADDED: Explanation on the variable names of the returned object)
+#' **Returned Fields**
 #'
-#' (TO BE ADDED: Explanation on the different abbreviations in the column
-#' 'chem_variable')
+#' - loc_code (chr): location code such as KESP001, ABES001, ...
+#' - date (Date): sampling date
+#' - lab_project_id (chr): code or identifier of the project as used
+#' by the laboratory
+#' - lab_sample_id (chr): code or identifier of the sample as used
+#' by the laboratory
+#' - chem_variable (chr): abbreviation for the chemical variable (detailed below)
+#' - value (num): measurement value
+#' - unit (chr)
+#' - below_loq (logi): is the value below the limit of quantification
+#' for this analysis in the laboratory?
+#' - loq (num): limit of quantification for this analysis in the laboratory
+#' - elneutr (num): value of the calculated electroneutrality (not in %)
+#'
+#' **Possible values for \code{chem_variable}:**
+#'
+#' - Al: aluminium concentration
+#' - Ca: calcium concentration
+#' - Cl: chloride concentration
+#' - CondF: electrical conductivity at 25°C (measured in the field)
+#' - CondL: electrical conductivity at 25°C (measured in the laboratory)
+#' - Fe: iron concentration
+#' - HCO3: bicarbonate concentration
+#' - K: potassium concentration
+#' - Mg: magnesium concentration
+#' - Mn: manganese concentration
+#' - N-NH4: ammonium (expressed as ammonium-nitrogen)
+#' - N-NO2: nitrite (expressed as nitrite-nitrogen)
+#' - N-NO3: nitrate (expressed as nitrate-nitrogen)
+#' - Na: natrium concentration
+#' - P-PO4: orthophosphate concentration (expressed as orthophosphate-phosphorus)
+#' - pHF: pH (measured in the field)
+#' - pHL: pH (measured in the laboratory)
+#' - Si: silicon concentration
+#' - SO4: sulphate concentration
 #'
 #' @family functions to query the database
 #'
