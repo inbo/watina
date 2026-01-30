@@ -86,7 +86,7 @@ This diagram, devised by Geert Van Wirdum, shows the chemical similarity of a
 water sample to references samples such as atmocline water (rainwater), 
 thalassocline water (seawater) and lithocline water (calcium rich, fresh 
 groundwater). The diagram plots the ionic ratio, 
-that is *[Ca2+] / ([Ca2+] + [Cl-])*, against the logarithm of the electric 
+that is $[Ca^{2+}] / ([Ca^{2+}] + [Cl^{-}])$, against the logarithm of the electric 
 conductivity at 25°C.
 
 The electric conductivity is available for most samples in Watina, but we need 
