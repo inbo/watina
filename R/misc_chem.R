@@ -17,11 +17,13 @@
 #'
 #' The result is the ionic ratio \code{ir} without units (0-1).
 #'
-#' @param x Output of the \code{get_chem} function (hydrochemical data retrieved from
-#' Watina). It can be a lazy object as well as a local object \code{(get_chem(collect = TRUE))}
+#' @param x Output of the \code{get_chem} function (hydrochemical data retrieved
+#' from Watina). It can be a lazy object as well as a local object
+#' \code{(get_chem(collect = TRUE))}.
 #'
 #' @return
-#' A tibble similar to x but with an extra column \code{ir} with the ionic ratio
+#' A tibble similar to x but with an extra column \code{ir} with the ionic
+#' ratio.
 #'
 #' @examples
 #' \dontrun{
@@ -35,7 +37,8 @@
 #'
 #'   # compute ionic ratio and add as new field
 #'   mydata_vw <- calc_ir(mydata)
-#'   # this dataset can be used to make a Van Wirdum diagram with ggplot_vanwirdum_background()
+#'   # this dataset can be used to make a Van Wirdum diagram with
+#'   # ggplot_vanwirdum_background()
 #'
 #' }
 #'
