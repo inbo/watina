@@ -31,8 +31,7 @@
 #'   mydata <-
 #'   get_locs(watina, area_codes = "ZWA") %>%
 #'   get_chem(watina, "1/1/2019") %>%
-#'   collect %>%
-#'   as.data.frame
+#'   collect()
 #'
 #'   # compute ionic ratio and add as new field
 #'   mydata_vw <- calc_ir(mydata)
