@@ -187,6 +187,8 @@ read_vanwirdum_data <-
 #'
 #' @examples
 #' \dontrun{
+#' library(ggplot2)
+#'
 #' # a dataset with water samples
 #' mydata <-
 #'   tibble(
