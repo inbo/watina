@@ -357,4 +357,6 @@ ggplot_vanwirdum_background <- function(ir_unit = NULL,
                      panel.grid.minor = ggplot2::element_line(linewidth = 1),
                      panel.grid.major = ggplot2::element_line(linewidth = 1))
 
+  return(p_vanwirdum)
+
 }
