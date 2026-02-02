@@ -1,11 +1,12 @@
 #' Return the 'vanwirdum_data' data source as a tibble
 #'
 #' Returns the included data source 'vanwirdum_data' as a
-#' \code{\link[tibble:tbl_df-class]{tibble}}
+#' \code{\link[tibble:tbl_df-class]{tibble}}.
 #'
 #' Source: Van Wirdum, Geert (1991). Vegetation and hydrology of floating
 #' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
-#' \href{https://publicwiki.deltares.nl/display/VWD/Home}{dataset available here}
+#' \href{https://publicwiki.deltares.nl/display/VWD/Home}{dataset available
+#' here}
 #'
 #' The 'vanwirdum_data' dataset gives the curved contour which encloses the
 #' plotting area of all possible, simple mixtures of the following reference
@@ -174,11 +175,11 @@ read_vanwirdum_data <-
 #' can be "micro" (default, µS/cm) or "milli" (mS/m).
 #' Choose this parameter according to the unit used in your dataset.
 #' @param contour Draw the mixing contours of the reference water samples,
-#' "segment" (default), "curve" or NULL (do not draw)
+#' "segment" (default), "curve" or NULL (do not draw).
 #' @param lang Which language should be used for the legend, "en" (English,
-#' default) or "nl" (Dutch)
+#' default) or "nl" (Dutch)?
 #' @param rhine Should the reference point for Rhine be shown? FALSE (default)
-#' or TRUE
+#' or TRUE.
 #'
 #' @return
 #' A ggplot object with the Van Wirdum IR-log EC25 diagram, the reference points
@@ -187,6 +188,8 @@ read_vanwirdum_data <-
 #'
 #' @examples
 #' \dontrun{
+#' library(ggplot2)
+#'
 #' # a dataset with water samples
 #' mydata <-
 #'   tibble(
@@ -354,5 +357,7 @@ ggplot_vanwirdum_background <- function(ir_unit = NULL,
                      axis.text  = ggplot2::element_text(size = 13),
                      panel.grid.minor = ggplot2::element_line(linewidth = 1),
                      panel.grid.major = ggplot2::element_line(linewidth = 1))
+
+  return(p_vanwirdum)
 
 }
