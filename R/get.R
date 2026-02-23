@@ -1036,19 +1036,19 @@ get_xg3 <- function(locs,
 #'
 #' **Returned Fields**
 #'
-#' - loc_code (chr): location code such as KESP001, ABES001, ...
-#' - date (Date): sampling date
-#' - lab_project_id (chr): code or identifier of the project as used
+#' - `loc_code` (chr): location code such as KESP001, ABES001, ...
+#' - `date` (Date): sampling date
+#' - `lab_project_id` (chr): code or identifier of the project as used
 #' by the laboratory
-#' - lab_sample_id (chr): code or identifier of the sample as used
+#' - `lab_sample_id` (chr): code or identifier of the sample as used
 #' by the laboratory
-#' - chem_variable (chr): abbreviation for the chemical variable (detailed below)
-#' - value (num): measurement value
-#' - unit (chr)
-#' - below_loq (logi): is the value below the limit of quantification
+#' - `chem_variable` (chr): abbreviation for the chemical variable (detailed below)
+#' - `value` (num): measurement value
+#' - `unit` (chr): unit
+#' - `below_loq` (logi): is the value below the limit of quantitation
 #' for this analysis in the laboratory?
-#' - loq (num): limit of quantification for this analysis in the laboratory
-#' - elneutr (num): value of the calculated electroneutrality (not in %)
+#' - `loq` (num): limit of quantitation for this analysis in the laboratory
+#' - `elneutr` (num): value of the calculated electroneutrality (not in %)
 #'
 #' **Possible values for \code{chem_variable}:**
 #'
@@ -1065,7 +1065,7 @@ get_xg3 <- function(locs,
 #' - N-NH4: ammonium (expressed as ammonium-nitrogen)
 #' - N-NO2: nitrite (expressed as nitrite-nitrogen)
 #' - N-NO3: nitrate (expressed as nitrate-nitrogen)
-#' - Na: natrium concentration
+#' - Na: sodium concentration
 #' - P-PO4: orthophosphate concentration (expressed as orthophosphate-phosphorus)
 #' - pHF: pH (measured in the field)
 #' - pHL: pH (measured in the laboratory)

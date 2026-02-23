@@ -105,19 +105,19 @@ a local \code{\link[tibble]{tibble}} is returned.
 
 \strong{Returned Fields}
 \itemize{
-\item loc_code (chr): location code such as KESP001, ABES001, ...
-\item date (Date): sampling date
-\item lab_project_id (chr): code or identifier of the project as used
+\item \code{loc_code} (chr): location code such as KESP001, ABES001, ...
+\item \code{date} (Date): sampling date
+\item \code{lab_project_id} (chr): code or identifier of the project as used
 by the laboratory
-\item lab_sample_id (chr): code or identifier of the sample as used
+\item \code{lab_sample_id} (chr): code or identifier of the sample as used
 by the laboratory
-\item chem_variable (chr): abbreviation for the chemical variable (detailed below)
-\item value (num): measurement value
-\item unit (chr)
-\item below_loq (logi): is the value below the limit of quantification
+\item \code{chem_variable} (chr): abbreviation for the chemical variable (detailed below)
+\item \code{value} (num): measurement value
+\item \code{unit} (chr)
+\item \code{below_loq} (logi): is the value below the limit of quantitation
 for this analysis in the laboratory?
-\item loq (num): limit of quantification for this analysis in the laboratory
-\item elneutr (num): value of the calculated electroneutrality (not in \%)
+\item \code{loq} (num): limit of quantitation for this analysis in the laboratory
+\item \code{elneutr} (num): value of the calculated electroneutrality (not in \%)
 }
 
 \strong{Possible values for \code{chem_variable}:}
@@ -135,7 +135,7 @@ for this analysis in the laboratory?
 \item N-NH4: ammonium (expressed as ammonium-nitrogen)
 \item N-NO2: nitrite (expressed as nitrite-nitrogen)
 \item N-NO3: nitrate (expressed as nitrate-nitrogen)
-\item Na: natrium concentration
+\item Na: sodium concentration
 \item P-PO4: orthophosphate concentration (expressed as orthophosphate-phosphorus)
 \item pHF: pH (measured in the field)
 \item pHL: pH (measured in the laboratory)
@@ -246,7 +246,7 @@ dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to query the database: 
+Other functions to query the database:
 \code{\link{get_locs}()},
 \code{\link{get_xg3}()}
 }
