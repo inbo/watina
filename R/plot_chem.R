@@ -23,7 +23,7 @@
 #' The curved contour around these points gives the boundary within which
 #' most natural waters can occur.
 #'
-#' \code{read_vanwirdum_data()} returns this dataset as a
+#' \code{vanwirdum_data} returns this dataset as a
 #' \code{\link[tibble:tbl_df-class]{tibble}} with 42 rows and 2 variables.
 #' A tibble is a dataframe that makes working in the tidyverse a little
 #' \href{https://r4ds.had.co.nz/tibbles.html}{easier}.
@@ -38,20 +38,14 @@
 #' @return
 #' The \code{vanwirdum_data} dataframe as a
 #' \code{\link[tibble:tbl_df-class]{tibble}}
-#
-#' @examples
-#' read_vanwirdum_data()
 #'
-#' @export
 #' @importFrom dplyr
 #' tribble
 #'
 #' @keywords internal
 #'
 
-read_vanwirdum_data <-
-    function() {
-        vanwirdum_data <- tribble(
+vanwirdum_data <- tribble(
             ~ec25, ~ir,
             63.30956284,94.31498538,
             35.93464093,93.32760382,
@@ -96,9 +90,6 @@ read_vanwirdum_data <-
             64.83019531,91.50851857,
             62.85547508,94.3299134,
         )
-        return(vanwirdum_data)
-    }
-
 
 
 #' Plots hydrochemistry: Van Wirdum diagram
@@ -312,7 +303,7 @@ ggplot_vanwirdum_background <- function(ir_unit = NULL,
 
     } else if (contour == "curve") {
 
-        vw_lat_framework <- read_vanwirdum_data()
+        vw_lat_framework <- vanwirdum_data
 
       if (ec25_unit == "micro") {
         vw_lat_framework <- vw_lat_framework %>%
