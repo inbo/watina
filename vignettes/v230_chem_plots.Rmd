@@ -92,11 +92,11 @@ conductivity at 25°C.
 The electric conductivity is available for most samples in Watina, but we need 
 to compute the ionic ratio. 
 We could do this manually for each sample but the `watina` package also contains 
-a `calc_ir()` function that can be applied directly to the output of the 
+a `calculate_ir()` function that can be applied directly to the output of the 
 `get_chem()` function to calculate the ionic ratio:
 
 ```{r}
-my_chem_data_vanwirdum <- calc_ir(my_chem_data)
+my_chem_data_vanwirdum <- calculate_ir(my_chem_data)
 ```
 
 The obtained dataset is a broad table with the following fields:
@@ -135,6 +135,11 @@ Now let's add our own data for the valley of the Kesterbeek.
 In this example we plot 2 locations that were sampled twice in 2024:
 
 ```{r, fig.height=3.5, fig.width=6}
+# get the conductivity data
+my_chem_data_vanwirdum <- my_chem_data_vanwirdum %>%
+    filter(chem_variable == "CondL") %>% # CondL = conductivity in the lab 
+    select(loc_code, date, conductivity = value, ir)
+
 # add your own data with EC as x and IR as y and format as you wish
 ggplot_vanwirdum_background(contour = "curve",
              lang = "en",

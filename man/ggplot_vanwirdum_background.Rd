@@ -102,7 +102,7 @@ mydata <- mydata \%>\%
   mutate(ir = Ca_meq/(Ca_meq + Cl_meq)) # ir without units (0-1)
 }
 
-  or use the helper function \code{\link{calc_ir}} to calculate the ionic
+  or use the helper function \code{\link{calculate_ir}} to calculate the ionic
   ratio based on the Ca and Cl concentrations obtained through
   the \code{\link{get_chem}} function.
 }
