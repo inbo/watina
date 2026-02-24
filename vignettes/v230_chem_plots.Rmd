@@ -80,17 +80,17 @@ my_chem_data <- data.frame(
 We will use this dataset to demonstrate the plotting options available in the 
 Watina package.
 
-## Plot the ionic ratio against the electric conductivity (Van Wirdum)
+## Plot the ionic ratio against the electrical conductivity (Van Wirdum)
 
 This diagram, devised by Geert Van Wirdum, shows the chemical similarity of a 
 water sample to references samples such as atmocline water (rainwater), 
 thalassocline water (seawater) and lithocline water (calcium rich, fresh 
 groundwater). The diagram plots the ionic ratio, 
-that is $[Ca^{2+}] / ([Ca^{2+}] + [Cl^{-}])$, against the logarithm of the electric 
-conductivity at 25°C.
+that is $[Ca^{2+}] / ([Ca^{2+}] + [Cl^{-}])$, against the logarithm of the 
+electrical conductivity at 25°C.
 
-The electric conductivity is available for most samples in Watina, but we need 
-to compute the ionic ratio. 
+The electrical conductivity is available for most samples in Watina, but we need 
+to **compute the ionic ratio**. 
 We could do this manually for each sample but the `watina` package also contains 
 a `calculate_ir()` function that can be applied directly to the output of the 
 `get_chem()` function to calculate the ionic ratio:
@@ -99,26 +99,26 @@ a `calculate_ir()` function that can be applied directly to the output of the
 my_chem_data_vanwirdum <- calculate_ir(my_chem_data)
 ```
 
-The obtained dataset is a broad table with the following fields:
+The obtained dataset is a wide table with the following fields (namely all the 
+fields from the input dataset and a new field `ir` that contains 
+the calculated ionic ratio):
 
 ```{r }
 names(my_chem_data_vanwirdum)
 ```
 
-The new fields `Ca_meq` and `Cl_meq` give the Ca and Cl concentrations in 
-milliequivalents and the field `ir` contains the calculated ionic ratio.
-
 Now we can create the diagram of the ionic ratio against the (log of) 
-electric conductivity at 25°C (the so called Van Wirdum diagram) with 
+electrical conductivity at 25°C (the so called Van Wirdum diagram) with 
 the `ggplot_vanwirdum_background()` function. 
+
 This function will create the background of a Van Wirdum diagram, 
-with reference points for lithotrophic water (LI), atmotrophic water (AT), 
-thalassotrophic water (TH) and optionally molunotrophic water (RH - polluted 
+with reference points for lithotrophic water (Li), atmotrophic water (At), 
+thalassotrophic water (Th) and optionally molunotrophic water (Rh - polluted 
 water as found in the Rhine).
  
 ```{r , fig.height=3.5, fig.width=6}
 # background with standard options:
-print(ggplot_vanwirdum_background() )
+ggplot_vanwirdum_background()
 ```
 
 We can show the mixing contours of the reference points with a curve instead of a line
@@ -126,8 +126,8 @@ and plot the reference point for polluted river water using respectively the
 `contour` and `rhine` arguments:
 
 ```{r, fig.height=3.5, fig.width=6}
-print(ggplot_vanwirdum_background(contour = "curve",
-                                  rhine = TRUE))
+ggplot_vanwirdum_background(contour = "curve",
+                            rhine = TRUE)
 ```
 
 
@@ -145,15 +145,17 @@ ggplot_vanwirdum_background(contour = "curve",
              lang = "en",
              rhine = TRUE) +
   geom_point(data = my_chem_data_vanwirdum %>% head(n = 4),
-             aes(x = CondL, y = ir, 
+             aes(x = conductivity, y = ir, 
                  colour = loc_code,
-                 shape = as.factor(date)), size = 3) +
+                 shape = as.factor(date)), 
+             size = 3) +
     scale_colour_manual(name = "Location", values = c("dodgerblue", "red")) + 
     scale_shape_discrete(name = "Date")
 ```
 
 
-All the usual options of `ggplot2` are available to customize the layout of the plot.
+All the usual options of `ggplot2` are available to customize the layout of the 
+plot.
 
 
 
