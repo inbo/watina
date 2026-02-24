@@ -6,30 +6,30 @@
 \title{Plots hydrochemistry: Van Wirdum diagram}
 \usage{
 ggplot_vanwirdum_background(
-  ir_unit = NULL,
-  ec25_unit = "micro",
-  contour = "segment",
-  lang = "en",
+  ir_format = c("decimal", "pct"),
+  ec25_unit = c("micro_cm", "milli_m"),
+  contour = c("segment", "curve", "none"),
+  lang = c("en", "nl"),
   rhine = FALSE
 )
 }
 \arguments{
-\item{ir_unit}{The units for the ionic ratio, can be NULL (default, axis 0-1)
-or "pc" (\%, axis 0-100). Choose this parameter according to the unit used
+\item{ir_format}{The format for the ionic ratio, can be "decimal" (default, axis 0-1)
+or "pct" (\%, axis 0-100). Choose this parameter according to the format used
 in your dataset.}
 
-\item{ec25_unit}{The units for the electric conductivity et 25°C:
-can be "micro" (default, µS/cm) or "milli" (mS/m).
+\item{ec25_unit}{The units for the electrical conductivity at 25°C:
+can be "micro_cm" (default, µS/cm) or "milli_m" (mS/m).
 Choose this parameter according to the unit used in your dataset.}
 
 \item{contour}{Draw the mixing contours of the reference water samples,
-"segment" (default), "curve" or NULL (do not draw)}
+"segment" (default), "curve" or NULL (do not draw).}
 
 \item{lang}{Which language should be used for the legend, "en" (English,
-default) or "nl" (Dutch)}
+default) or "nl" (Dutch)?}
 
 \item{rhine}{Should the reference point for Rhine be shown? FALSE (default)
-or TRUE}
+or TRUE.}
 }
 \value{
 A ggplot object with the Van Wirdum IR-log EC25 diagram, the reference points
@@ -38,53 +38,27 @@ water samples LI-AT-TH.
 }
 \description{
 Creates the background of a Van Wirdum diagram for water samples
-in ggplot (ionic ratio - log electric conductivity).
+in ggplot (ionic ratio - log electrical conductivity).
 }
 \details{
-Source: Van Wirdum, Geert (1991). Vegetation and hydrology of floating
-rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
-
 Creates a ggplot object of the ionic ratio (IR) as Y axis against the
-electric conductivity at 25°C (EC25) as X axis and adds reference data.
-}
-\section{Reference data}{
+electrical conductivity at 25°C (EC25) as X axis and adds reference data.
 
-
-Reference points (Van Wirdum 1991): benchmark water samples for:
-
-\enumerate{
- \item{lithotrophic water LI: a calcium-bicarbonate type of water, usually
-owing its characteristic composition to a contact with soil;}
- \item{atmotrophic water AT: a type of water with low concentrations of most
-constituents, usually owing its characteristic composition to atmospheric
-precipitation;}
- \item{thalassotrophic water TH: a saline sodium-chloride type of water as
-found in the oceans;}
- \item{molunotrophic water RH: polluted water as presently found in the Rhine.}
- }
-
-You can also show the mixing contours between the reference points LI, AT
-and TH as curves or as lines. The curved contour encloses the
-plotting area of all possible, simple mixtures of the reference water
-samples LI-ANG (a relatively calcium-rich groundwater sample ), AT-WTV
-(a precipitation sample caught in a relatively unpolluted inland area of
-The Netherlands) and TH-N70 (a representative analysis from the North Sea
-monitoring program, 70 km from the coast).
-Most water analyses plot within the area bounded by the (curved) lines
-LI-AT-TH-LI.
-}
-
-\section{Typical way of using}{
-
+\strong{Typical way of using:}
 
 Add your own water samples as data points (and any other information you
-would like to plot) to the Van Wirdum diagram as you would do for any ggplot.
+would like to plot) to the Van Wirdum diagram, for instance:
+
+\preformatted{
+ggplot_vanwirdum_background() +
+         geom_point(data = my_data,
+                    aes(x = my_ec25, y = my_ir))
 }
 
-\section{Input format}{
+\strong{Input format for the data to plot:}
 
-
-Input: a dataset with the electric conductivity at 25°C and the ionic ratio:
+Input: a dataset with the electrical conductivity at 25°C and the ionic ratio
+as columns:
 
  \itemize{
  \item{EC at 25°C can be in µS/cm or mS/m and will be shown on a logarithmic scale}
@@ -106,11 +80,40 @@ mydata <- mydata \%>\%
   ratio based on the Ca and Cl concentrations obtained through
   the \code{\link{get_chem}} function.
 }
+\section{Reference data on the Van Wirdum diagram}{
+
+
+The reference points are benchmark water samples (defined in Van Wirdum 1991)
+for:
+
+\enumerate{
+ \item{\strong{lithotrophic water LI}: a calcium-bicarbonate type of water, usually
+owing its characteristic composition to a contact with subsoil;}
+ \item{\strong{atmotrophic water AT}: a type of water with low concentrations of most
+constituents, usually owing its characteristic composition to atmospheric
+precipitation;}
+ \item{\strong{thalassotrophic water TH}: a saline sodium-chloride type of water as
+found in the oceans;}
+ \item{\strong{molunotrophic water RH}: polluted water as presently found in the Rhine.}
+ }
+
+You can also show the \strong{mixing contours} between the reference points LI, AT
+and TH as curves or as lines. The curved contour encloses the
+plotting area of all possible, simple mixtures of the reference water
+samples LI-ANG (a relatively calcium-rich groundwater sample ), AT-WTV
+(a precipitation sample caught in a relatively unpolluted inland area of
+The Netherlands) and TH-N70 (a representative analysis from the North Sea
+monitoring program, 70 km from the coast).
+Most water analyses plot within the area bounded by the (curved) lines
+LI-AT-TH-LI.
+}
 
 \examples{
 \dontrun{
+library(ggplot2)
+
 # a dataset with water samples
-mydata <-
+my_data <-
   tibble(
     my_ir = runif(10), # without units (0-1)
     my_ec25 = rnorm(10, 100, 35),
@@ -118,7 +121,7 @@ mydata <-
   )
 
 # default version of the basis plot without data
-ggplot_vanwirdum_background(ec25_unit = "micro",
+ggplot_vanwirdum_background(ec25_unit = "micro_cm",
              contour = "segment",
              lang = "en",
              rhine = FALSE)
@@ -127,9 +130,14 @@ ggplot_vanwirdum_background(ec25_unit = "micro",
 ggplot_vanwirdum_background(contour = "curve",
              lang = "nl",
              rhine = TRUE) +
-  geom_point(data = mydata,
+  geom_point(data = my_data,
              aes(x = my_ec25, y = my_ir, colour = my_site), size = 3) +
   theme(axis.text  = element_text(colour = "blue"))
 }
 
+
+}
+\references{
+Van Wirdum, Geert (1991). Vegetation and hydrology of floating
+rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
 }

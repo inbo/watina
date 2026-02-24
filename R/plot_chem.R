@@ -3,11 +3,6 @@
 #' Returns the included data source 'vanwirdum_data' as a
 #' \code{\link[tibble:tbl_df-class]{tibble}}.
 #'
-#' Source: Van Wirdum, Geert (1991). Vegetation and hydrology of floating
-#' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
-#' \href{https://publicwiki.deltares.nl/display/VWD/Home}{dataset available
-#' here}
-#'
 #' The 'vanwirdum_data' dataset gives the curved contour which encloses the
 #' plotting area of all possible, simple mixtures of the following reference
 #' water samples:
@@ -30,7 +25,7 @@
 #'
 #' Variables:
 #' \describe{
-#'   \item{ec25}{electric conductivity at 25°C in mS/m}
+#'   \item{ec25}{electrical conductivity at 25°C in mS/m}
 #'   \item{ir}{ionic ratio in \%}}
 #'
 #' @encoding UTF-8
@@ -44,6 +39,10 @@
 #'
 #' @keywords internal
 #'
+#' @references Van Wirdum, Geert (1991). Vegetation and hydrology of floating
+#' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
+#' \href{https://publicwiki.deltares.nl/display/VWD/Home}{dataset available
+#' here}
 
 vanwirdum_data <- tribble(
             ~ec25, ~ir,
@@ -95,49 +94,26 @@ vanwirdum_data <- tribble(
 #' Plots hydrochemistry: Van Wirdum diagram
 #'
 #' Creates the background of a Van Wirdum diagram for water samples
-#' in ggplot (ionic ratio - log electric conductivity).
-#'
-#' Source: Van Wirdum, Geert (1991). Vegetation and hydrology of floating
-#' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
+#' in ggplot (ionic ratio - log electrical conductivity).
 #'
 #' Creates a ggplot object of the ionic ratio (IR) as Y axis against the
-#' electric conductivity at 25°C (EC25) as X axis and adds reference data.
+#' electrical conductivity at 25°C (EC25) as X axis and adds reference data.
 #'
-#' @section Reference data:
-#'
-#' Reference points (Van Wirdum 1991): benchmark water samples for:
-#'
-#' \enumerate{
-#'  \item{lithotrophic water LI: a calcium-bicarbonate type of water, usually
-#' owing its characteristic composition to a contact with soil;}
-#'  \item{atmotrophic water AT: a type of water with low concentrations of most
-#' constituents, usually owing its characteristic composition to atmospheric
-#' precipitation;}
-#'  \item{thalassotrophic water TH: a saline sodium-chloride type of water as
-#' found in the oceans;}
-#'  \item{molunotrophic water RH: polluted water as presently found in the Rhine.}
-#'  }
-#'
-#' You can also show the mixing contours between the reference points LI, AT
-#' and TH as curves or as lines. The curved contour encloses the
-#' plotting area of all possible, simple mixtures of the reference water
-#' samples LI-ANG (a relatively calcium-rich groundwater sample ), AT-WTV
-#' (a precipitation sample caught in a relatively unpolluted inland area of
-#' The Netherlands) and TH-N70 (a representative analysis from the North Sea
-#' monitoring program, 70 km from the coast).
-#' Most water analyses plot within the area bounded by the (curved) lines
-#' LI-AT-TH-LI.
-#'
-#' @section Typical way of using:
+#' \strong{Typical way of using:}
 #'
 #' Add your own water samples as data points (and any other information you
-#' would like to plot) to the Van Wirdum diagram as you would do for any ggplot.
+#' would like to plot) to the Van Wirdum diagram, for instance:
 #'
-#' @encoding UTF-8
+#' \preformatted{
+#' ggplot_vanwirdum_background() +
+#'          geom_point(data = my_data,
+#'                     aes(x = my_ec25, y = my_ir))
+#' }
 #'
-#' @section Input format:
+#' \strong{Input format for the data to plot:}
 #'
-#' Input: a dataset with the electric conductivity at 25°C and the ionic ratio:
+#' Input: a dataset with the electrical conductivity at 25°C and the ionic ratio
+#' as columns:
 #'
 #'  \itemize{
 #'  \item{EC at 25°C can be in µS/cm or mS/m and will be shown on a logarithmic scale}
@@ -155,15 +131,44 @@ vanwirdum_data <- tribble(
 #'   mutate(ir = Ca_meq/(Ca_meq + Cl_meq)) # ir without units (0-1)
 #' }
 #'
-#'   or use the helper function \code{\link{calc_ir}} to calculate the ionic
+#'   or use the helper function \code{\link{calculate_ir}} to calculate the ionic
 #'   ratio based on the Ca and Cl concentrations obtained through
 #'   the \code{\link{get_chem}} function.
 #'
-#' @param ir_unit The units for the ionic ratio, can be NULL (default, axis 0-1)
-#' or "pc" (\%, axis 0-100). Choose this parameter according to the unit used
+#'
+#' @section Reference data on the Van Wirdum diagram:
+#'
+#' The reference points are benchmark water samples (defined in Van Wirdum 1991)
+#' for:
+#'
+#' \enumerate{
+#'  \item{\strong{lithotrophic water LI}: a calcium-bicarbonate type of water, usually
+#' owing its characteristic composition to a contact with subsoil;}
+#'  \item{\strong{atmotrophic water AT}: a type of water with low concentrations of most
+#' constituents, usually owing its characteristic composition to atmospheric
+#' precipitation;}
+#'  \item{\strong{thalassotrophic water TH}: a saline sodium-chloride type of water as
+#' found in the oceans;}
+#'  \item{\strong{molunotrophic water RH}: polluted water as presently found in the Rhine.}
+#'  }
+#'
+#' You can also show the \strong{mixing contours} between the reference points LI, AT
+#' and TH as curves or as lines. The curved contour encloses the
+#' plotting area of all possible, simple mixtures of the reference water
+#' samples LI-ANG (a relatively calcium-rich groundwater sample ), AT-WTV
+#' (a precipitation sample caught in a relatively unpolluted inland area of
+#' The Netherlands) and TH-N70 (a representative analysis from the North Sea
+#' monitoring program, 70 km from the coast).
+#' Most water analyses plot within the area bounded by the (curved) lines
+#' LI-AT-TH-LI.
+#'
+#' @encoding UTF-8
+#'
+#' @param ir_format The format for the ionic ratio, can be "decimal" (default, axis 0-1)
+#' or "pct" (\%, axis 0-100). Choose this parameter according to the format used
 #' in your dataset.
-#' @param ec25_unit The units for the electric conductivity et 25°C:
-#' can be "micro" (default, µS/cm) or "milli" (mS/m).
+#' @param ec25_unit The units for the electrical conductivity at 25°C:
+#' can be "micro_cm" (default, µS/cm) or "milli_m" (mS/m).
 #' Choose this parameter according to the unit used in your dataset.
 #' @param contour Draw the mixing contours of the reference water samples,
 #' "segment" (default), "curve" or NULL (do not draw).
@@ -177,12 +182,15 @@ vanwirdum_data <- tribble(
 #' for the water types LI-AT-TH and the mixing contours between the reference
 #' water samples LI-AT-TH.
 #'
+#' @references Van Wirdum, Geert (1991). Vegetation and hydrology of floating
+#' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
+#'
 #' @examples
 #' \dontrun{
 #' library(ggplot2)
 #'
 #' # a dataset with water samples
-#' mydata <-
+#' my_data <-
 #'   tibble(
 #'     my_ir = runif(10), # without units (0-1)
 #'     my_ec25 = rnorm(10, 100, 35),
@@ -190,7 +198,7 @@ vanwirdum_data <- tribble(
 #'   )
 #'
 #' # default version of the basis plot without data
-#' ggplot_vanwirdum_background(ec25_unit = "micro",
+#' ggplot_vanwirdum_background(ec25_unit = "micro_cm",
 #'              contour = "segment",
 #'              lang = "en",
 #'              rhine = FALSE)
@@ -199,10 +207,11 @@ vanwirdum_data <- tribble(
 #' ggplot_vanwirdum_background(contour = "curve",
 #'              lang = "nl",
 #'              rhine = TRUE) +
-#'   geom_point(data = mydata,
+#'   geom_point(data = my_data,
 #'              aes(x = my_ec25, y = my_ir, colour = my_site), size = 3) +
 #'   theme(axis.text  = element_text(colour = "blue"))
 #' }
+#'
 #'
 #' @export
 #' @importFrom rlang
@@ -213,11 +222,17 @@ vanwirdum_data <- tribble(
 #' mutate
 #'
 
-ggplot_vanwirdum_background <- function(ir_unit = NULL,
-                         ec25_unit = "micro",
-                         contour = "segment",
-                         lang = "en",
+ggplot_vanwirdum_background <- function(ir_format = c("decimal", "pct"),
+                         ec25_unit = c("micro_cm", "milli_m"),
+                         contour = c("segment", "curve", "none"),
+                         lang = c("en", "nl"),
                          rhine = FALSE) {
+
+    ir_format <- match.arg(ir_format)
+    ec25_unit <- match.arg(ec25_unit)
+    contour <- match.arg(contour)
+    lang <- match.arg(lang)
+    assert_that(is.flag(rhine), assertthat::noNA(rhine))
 
   # Check for availability packages ggplot2 and scales
     require_pkgs("ggplot2")
@@ -236,20 +251,20 @@ ggplot_vanwirdum_background <- function(ir_unit = NULL,
     )
 
   # Use correct units for legend and limits in the plot for EC25 (param ec25_unit)
-  if (ec25_unit == "micro") {
+  if (ec25_unit == "micro_cm") {
     ec25_u <- "(\u00b5S/cm)"
     ec25_limits <- c(5,100000)
-  } else if (ec25_unit == "milli") {
+  } else {
     ec25_u <- "(mS/m)"
     ec25_limits <- c(0.5,10000)
     ref_points <- ref_points %>%
       mutate(ec25_ref = .data$ec25_ref/10)
   }
-  # Use correct units for legend and limits in the plot for IR (param ir_unit)
-  if (is.null(ir_unit)) {
+  # Use correct units for legend and limits in the plot for IR (param ir_format)
+  if (ir_format == "decimal") {
     ir_u <- ""
     ir_limits <- c(0,1)
-  } else if (ir_unit == "pc") {
+  } else {
     ir_u <- "(%)"
     ir_limits <- c(0,100)
     ref_points <- ref_points %>%
@@ -261,7 +276,7 @@ ggplot_vanwirdum_background <- function(ir_unit = NULL,
     data.frame(
       language = c("en","nl"),
       ir = c("Ionic ratio","Ionenratio"),
-      ec25 = c("Electric conductivity 25\u00b0C","Elektrische conductiviteit 25\u00b0C")
+      ec25 = c("Electrical conductivity 25\u00b0C","Elektrische conductiviteit 25\u00b0C")
     )
 
   # Adapt dataset to show or hide the reference point for Rhine (param rhine)
@@ -289,7 +304,7 @@ ggplot_vanwirdum_background <- function(ir_unit = NULL,
                           size = 2, colour = "black", shape = 15)
 
   # add mixing contours
-  if (!is.null(contour)) {
+
     if (contour == "segment") {
 
       # draw segment between the 3 reference points LI-AT-TH
@@ -305,11 +320,11 @@ ggplot_vanwirdum_background <- function(ir_unit = NULL,
 
         vw_lat_framework <- vanwirdum_data
 
-      if (ec25_unit == "micro") {
+      if (ec25_unit == "micro_cm") {
         vw_lat_framework <- vw_lat_framework %>%
           mutate(ec25 = .data$ec25*10)
       }
-      if (is.null(ir_unit)) {
+      if (ir_format == "decimal") {
         vw_lat_framework <- vw_lat_framework %>%
           mutate(ir = .data$ir/100)
       }
@@ -320,7 +335,6 @@ ggplot_vanwirdum_background <- function(ir_unit = NULL,
                                           y = .data$ir),
                              colour = "grey20", linetype = "dashed")
     }
-  }
 
   # add labels for the reference points
   p_vanwirdum <- p_vanwirdum +
@@ -344,9 +358,7 @@ ggplot_vanwirdum_background <- function(ir_unit = NULL,
                              labels = scales::label_number(),
                              limits = ec25_limits) +
       ggplot2::theme_bw() +
-      ggplot2::theme(axis.title = ggplot2::element_text(size = 14, face = "bold"),
-                     axis.text  = ggplot2::element_text(size = 13),
-                     panel.grid.minor = ggplot2::element_line(linewidth = 1),
+      ggplot2::theme(panel.grid.minor = ggplot2::element_line(linewidth = 1),
                      panel.grid.major = ggplot2::element_line(linewidth = 1))
 
   return(p_vanwirdum)
