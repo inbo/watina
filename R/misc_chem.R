@@ -50,6 +50,7 @@
 #' @importFrom dplyr
 #' %>%
 #' filter
+#' left_join
 #' mutate
 #' select
 #' summarize
@@ -68,12 +69,12 @@ calculate_ir <- function(data){
 
     assert_that(all(c("loc_code", "chem_variable",
                       "value", "unit", "date") %in% colnames(data)),
-                msg = "data does not have the necessary 'loc_code', 'chem_variable', 'value', 'unit' and 'date' columns.")
+                msg = "Data does not have the necessary 'loc_code', 'chem_variable', 'value', 'unit' and 'date' columns.")
 
     assert_that((data %>% filter(.data$chem_variable == "Ca") %>% nrow() ==
                      data %>% filter(.data$chem_variable == "Cl") %>% nrow() &
                      data %>% filter(.data$chem_variable == "Cl") %>% nrow() > 0),
-                msg = "there are missing observations for the concentrations of Ca and/or Cl.")
+                msg = "There are missing observations for the concentrations of Ca and/or Cl.")
 
     data_ca_cl <- data %>%
         select("loc_code", "date", "chem_variable", "value", "unit") %>%
@@ -88,7 +89,7 @@ calculate_ir <- function(data){
                     select("unit") %>%
                     unique() %>%
                     nrow() == 1,
-                msg = "please use the same units for Ca and Cl.")
+                msg = "Please use the same units for Ca and Cl.")
 
     # calculate ir
 
