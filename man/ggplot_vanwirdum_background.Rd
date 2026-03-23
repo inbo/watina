@@ -23,7 +23,7 @@ can be "micro_cm" (default, µS/cm) or "milli_m" (mS/m).
 Choose this parameter according to the unit used in your dataset.}
 
 \item{contour}{Draw the mixing contours of the reference water samples,
-"segment" (default), "curve" or NULL (do not draw).}
+"segment" (default), "curve" or "none" (do not draw).}
 
 \item{lang}{Which language should be used for the legend, "en" (English,
 default) or "nl" (Dutch)?}

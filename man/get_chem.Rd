@@ -113,7 +113,7 @@ by the laboratory
 by the laboratory
 \item \code{chem_variable} (chr): abbreviation for the chemical variable (detailed below)
 \item \code{value} (num): measurement value
-\item \code{unit} (chr)
+\item \code{unit} (chr): unit
 \item \code{below_loq} (logi): is the value below the limit of quantitation
 for this analysis in the laboratory?
 \item \code{loq} (num): limit of quantitation for this analysis in the laboratory
@@ -246,7 +246,7 @@ dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to query the database:
+Other functions to query the database: 
 \code{\link{get_locs}()},
 \code{\link{get_xg3}()}
 }
