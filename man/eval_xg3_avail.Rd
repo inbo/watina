@@ -43,15 +43,13 @@ watina <- connect_watina()
 library(dplyr)
 mylocs <- get_locs(watina, area_codes = "KAL")
 mydata <-
- mylocs \%>\%
- get_xg3(watina, 2014)
+  mylocs \%>\%
+  get_xg3(watina, 2014)
 mydata \%>\% arrange(loc_code, hydroyear)
-eval_xg3_avail(mydata,
-               xg3_type = c("L", "V"))
+eval_xg3_avail(mydata, xg3_type = c("L", "V"))
 # Disconnect:
 dbDisconnect(watina)
 }
-
 
 }
 \seealso{

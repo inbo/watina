@@ -273,36 +273,44 @@ vertical CRS.
 \dontrun{
 watina <- connect_watina()
 library(dplyr)
-mylocs <- get_locs(watina,
-                   area_codes = "TOR",
-                   loc_type = c("P", "S"))
+mylocs <- get_locs(
+  watina,
+  area_codes = "TOR",
+  loc_type = c("P", "S")
+)
 mydata <-
- mylocs \%>\%
- get_xg3(watina, 2000)
+  mylocs \%>\%
+  get_xg3(watina, 2000)
 mydata \%>\% arrange(loc_code, hydroyear)
 # Number of locations in mydata:
-mydata \%>\% distinct(loc_code) \%>\% count
+mydata \%>\%
+  distinct(loc_code) \%>\%
+  count()
 # Number of hydrological years per location and XG3 variable:
 mydata \%>\%
   group_by(loc_code) \%>\%
-  collect \%>\%
-  summarise(lg3_lcl = sum(!is.na(lg3_lcl)),
-            hg3_lcl = sum(!is.na(hg3_lcl)),
-            vg3_lcl = sum(!is.na(vg3_lcl)))
+  collect() \%>\%
+  summarise(
+    lg3_lcl = sum(!is.na(lg3_lcl)),
+    hg3_lcl = sum(!is.na(hg3_lcl)),
+    vg3_lcl = sum(!is.na(vg3_lcl))
+  )
 conditions_df <-
   tribble(
-  ~xg3_variable, ~statistic, ~criterion, ~direction,
-  "lg3_lcl", "ser_lastyear", 2015, "min",
-  "hg3_lcl", "ser_lastyear", 2015, "min"
+    ~xg3_variable, ~statistic, ~criterion, ~direction,
+    "lg3_lcl", "ser_lastyear", 2015, "min",
+    "hg3_lcl", "ser_lastyear", 2015, "min"
   )
 conditions_df
 result <-
   mydata \%>\%
-  selectlocs_xg3(xg3_type = c("L", "H"),
-                  max_gap = 1,
-                  min_dur = 5,
-                  conditions = conditions_df,
-                  list = TRUE)
+  selectlocs_xg3(
+    xg3_type = c("L", "H"),
+    max_gap = 1,
+    min_dur = 5,
+    conditions = conditions_df,
+    list = TRUE
+  )
 # or:
 # mystats <- list(avail = eval_xg3_avail(mydata,
 #                                        xg3_type = c("L", "H")),

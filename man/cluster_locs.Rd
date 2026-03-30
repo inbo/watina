@@ -76,7 +76,7 @@ cluster_locs(mydata) \%>\%
   arrange(cluster_id)
 mydata \%>\%
   as_points(remove = TRUE) \%>\%
-  cluster_locs \%>\%
+  cluster_locs() \%>\%
   arrange(cluster_id)
 
 \dontrun{
@@ -84,9 +84,10 @@ watina <- connect_watina()
 
 clusters <-
   get_locs(watina,
-           area_codes = "KBR",
-           collect = TRUE) \%>\%
-  cluster_locs
+    area_codes = "KBR",
+    collect = TRUE
+  ) \%>\%
+  cluster_locs()
 
 # inspect result:
 clusters \%>\%
@@ -97,7 +98,7 @@ clusters \%>\%
 clusters \%>\%
   count(cluster_id) \%>\%
   pull(n) \%>\%
-  table
+  table()
 
 # Disconnect:
 dbDisconnect(watina)

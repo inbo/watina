@@ -239,71 +239,94 @@ watina <- connect_watina()
 library(dplyr)
 
 get_locs(watina,
-         bbox = c(xmin = 1.4e+5,
-                  xmax = 1.7e+5,
-                  ymin = 1.6e+5,
-                  ymax = 1.9e+5)) \%>\%
-    arrange(area_code, loc_code)
+  bbox = c(
+    xmin = 1.4e+5,
+    xmax = 1.7e+5,
+    ymin = 1.6e+5,
+    ymax = 1.9e+5
+  )
+) \%>\%
+  arrange(area_code, loc_code)
 
-get_locs(watina,
-         area_codes = c("KAL", "KBR"),
-         collect = TRUE)
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR"),
+  collect = TRUE
+)
 
-get_locs(watina,
-         area_codes = c("KAL", "KBR"),
-         loc_type = c("P", "S"),
-         collect = TRUE)
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S"),
+  collect = TRUE
+)
 
-get_locs(watina,
-         area_codes = "WES") \%>\%
-    count()
+get_locs(
+  watina,
+  area_codes = "WES"
+) \%>\%
+  count()
 
-get_locs(watina,
-         area_codes = "WES",
-         filterdepth_guess = TRUE) \%>\%
-    count()
+get_locs(
+  watina,
+  area_codes = "WES",
+  filterdepth_guess = TRUE
+) \%>\%
+  count()
 
-get_locs(watina,
-         area_codes = c("KAL", "KBR"),
-         loc_type = c("P", "S"),
-         filterdepth_na = TRUE,
-         collect = TRUE)
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S"),
+  filterdepth_na = TRUE,
+  collect = TRUE
+)
 
 # Mark the different output of:
-  get_locs(watina,
-           loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
-           loc_type = c("P", "S"),
-           collect = TRUE)
-  # versus:
-  get_locs(watina,
-           loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
-           collect = TRUE)
+get_locs(
+  watina,
+  loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
+  loc_type = c("P", "S"),
+  collect = TRUE
+)
+# versus:
+get_locs(
+  watina,
+  loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
+  collect = TRUE
+)
 
 # Returning all individual observation wells:
-get_locs(watina,
-         obswells = TRUE,
-         area_codes = c("KAL", "KBR"),
-         loc_type = c("P", "S"),
-         collect = TRUE)
+get_locs(
+  watina,
+  obswells = TRUE,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S"),
+  collect = TRUE
+)
 
 # Different examples of aggregating observation wells at location level:
-get_locs(watina,
-         area_codes = "WES",
-         filterdepth_na = TRUE,
-         filterdepth_guess = TRUE,
-         obswell_aggr = "latest",
-         collect = TRUE) \%>\%
-    select(loc_code, contains("ost"), contains("filterdepth")) \%>\%
-    head(12)
+get_locs(
+  watina,
+  area_codes = "WES",
+  filterdepth_na = TRUE,
+  filterdepth_guess = TRUE,
+  obswell_aggr = "latest",
+  collect = TRUE
+) \%>\%
+  select(loc_code, contains("ost"), contains("filterdepth")) \%>\%
+  head(12)
 
-get_locs(watina,
-         area_codes = "WES",
-         filterdepth_na = TRUE,
-         filterdepth_guess = TRUE,
-         obswell_aggr = "mean",
-         collect = TRUE) \%>\%
-    select(loc_code, contains("ost"), contains("filterdepth")) \%>\%
-    head(12)
+get_locs(
+  watina,
+  area_codes = "WES",
+  filterdepth_na = TRUE,
+  filterdepth_guess = TRUE,
+  obswell_aggr = "mean",
+  collect = TRUE
+) \%>\%
+  select(loc_code, contains("ost"), contains("filterdepth")) \%>\%
+  head(12)
 
 # Selecting all piezometers with status VLD of the
 # province "West-Vlaanderen" (current polygon taken
@@ -312,20 +335,24 @@ library(sf)
 library(purrr)
 library(httr)
 mymask <-
-    "https://geo.api.vlaanderen.be/VRBG/wfs" \%>\%
-    parse_url() \%>\%
-    list_merge(query = list(request = "GetFeature",
-                            typeName = "VRBG:Refprv",
-                            cql_filter="NAAM='West-Vlaanderen'",
-                            srsName = "EPSG:31370",
-                            outputFormat = "text/xml; subtype=gml/3.1.1")) \%>\%
-    build_url() \%>\%
-    read_sf(crs = 31370) \%>\%
-    st_cast("GEOMETRYCOLLECTION")
-get_locs(watina,
-         loc_validity = "VLD",
-         mask = mymask,
-         buffer = 0)
+  "https://geo.api.vlaanderen.be/VRBG/wfs" \%>\%
+  parse_url() \%>\%
+  list_merge(query = list(
+    request = "GetFeature",
+    typeName = "VRBG:Refprv",
+    cql_filter = "NAAM='West-Vlaanderen'",
+    srsName = "EPSG:31370",
+    outputFormat = "text/xml; subtype=gml/3.1.1"
+  )) \%>\%
+  build_url() \%>\%
+  read_sf(crs = 31370) \%>\%
+  st_cast("GEOMETRYCOLLECTION")
+get_locs(
+  watina,
+  loc_validity = "VLD",
+  mask = mymask,
+  buffer = 0
+)
 
 # Disconnect:
 dbDisconnect(watina)

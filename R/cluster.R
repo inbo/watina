@@ -57,7 +57,7 @@
 #'   arrange(cluster_id)
 #' mydata %>%
 #'   as_points(remove = TRUE) %>%
-#'   cluster_locs %>%
+#'   cluster_locs() %>%
 #'   arrange(cluster_id)
 #'
 #' \dontrun{
@@ -65,9 +65,10 @@
 #'
 #' clusters <-
 #'   get_locs(watina,
-#'            area_codes = "KBR",
-#'            collect = TRUE) %>%
-#'   cluster_locs
+#'     area_codes = "KBR",
+#'     collect = TRUE
+#'   ) %>%
+#'   cluster_locs()
 #'
 #' # inspect result:
 #' clusters %>%
@@ -78,7 +79,7 @@
 #' clusters %>%
 #'   count(cluster_id) %>%
 #'   pull(n) %>%
-#'   table
+#'   table()
 #'
 #' # Disconnect:
 #' dbDisconnect(watina)
@@ -98,54 +99,53 @@
 #' hclust
 #' cutree
 cluster_locs <- function(input,
-                          max_dist = 2,
-                          output_var = "cluster_id",
-                          xvar = "x",
-                          yvar = "y") {
+                         max_dist = 2,
+                         output_var = "cluster_id",
+                         xvar = "x",
+                         yvar = "y") {
+  assert_that(inherits(input, c("data.frame", "sf")))
+  assert_that(is.string(xvar), is.string(yvar), is.string(output_var))
 
-    assert_that(inherits(input, c("data.frame", "sf")))
-    assert_that(is.string(xvar), is.string(yvar), is.string(output_var))
+  require_pkgs("tibble")
 
-    require_pkgs("tibble")
+  if (inherits(input, "sf")) {
+    require_pkgs("sf")
 
-    if (inherits(input, "sf")) {
+    assert_that(
+      unique(sf::st_geometry_type(input)) == "POINT",
+      msg = "Geospatial input must only contain POINT geometries."
+    )
 
-        require_pkgs("sf")
+    coords <-
+      input %>%
+      sf::st_coordinates() %>%
+      as_tibble()
+    xvar <- "X"
+    yvar <- "Y"
+  }
 
-        assert_that(unique(sf::st_geometry_type(input)) == "POINT",
-                    msg = "Geospatial input must only contain POINT geometries.")
+  if (!inherits(input, "sf")) {
+    assert_that(has_name(input, xvar), has_name(input, yvar))
 
-        coords <-
-            input %>%
-            sf::st_coordinates() %>%
-            as_tibble
-        xvar <- "X"
-        yvar <- "Y"
+    input_old <- input
+
+    input <-
+      input[!is.na(input[, xvar]) & !is.na(input[, yvar]), ]
+
+    if (nrow(input) < nrow(input_old)) {
+      warning(
+        nrow(input_old) - nrow(input),
+        " locations were removed because of missing X or Y coordinates."
+      )
     }
 
-    if (!inherits(input, "sf")) {
+    coords <- input[, c(xvar, yvar)]
+  }
 
-        assert_that(has_name(input, xvar), has_name(input, yvar))
-
-        input_old <- input
-
-        input <-
-            input[!is.na(input[,xvar]) & !is.na(input[,yvar]),]
-
-        if (nrow(input) < nrow(input_old)) {
-            warning(nrow(input_old) - nrow(input),
-                    " locations were removed because of missing X or Y coordinates.")
-        }
-
-        coords <- input[, c(xvar, yvar)]
-
-    }
-
-    coords %>%
-        dist %>%
-        hclust(method = "complete") %>%
-        cutree(h = max_dist) %>%
-        tibble::enframe(name = NULL, value = output_var) %>%
-        bind_cols(input, .)
-
+  coords %>%
+    dist() %>%
+    hclust(method = "complete") %>%
+    cutree(h = max_dist) %>%
+    tibble::enframe(name = NULL, value = output_var) %>%
+    bind_cols(input, .)
 }

@@ -45,50 +45,50 @@
 #' here}
 
 vanwirdum_data <- tribble(
-            ~ec25, ~ir,
-            63.30956284,94.31498538,
-            35.93464093,93.32760382,
-            24.90267631,92.05872255,
-            15.56978112,88.81507815,
-            12.42913352,86.41593288,
-            9.30501041,80.77314322,
-            7.771007662,74.42660428,
-            6.921570383,68.64306476,
-            6.448364484,63.0002751,
-            5.969064634,55.66422203,
-            5.63284352,48.1874191,
-            5.525390616,43.46376864,
-            5.364388374,38.42662987,
-            5.161676837,31.3166296,
-            5.161676837,24.20876189,
-            5.161676837,18.62141914,
-            5.575060883,13.79753773,
-            7.361877404,8.380800867,
-            12.63883835,5.503959123,
-            25.32283525,4.232945276,
-            73.49784815,3.895998652,
-            228.6654432,3.810695709,
-            695.1394102,3.725392767,
-            3157.436507,3.725392767,
-            4609.686896,3.556919455,
-            4609.686896,3.471616512,
-            3206.339376,3.810695709,
-            2001.956002,4.825800728,
-            1087.858305,6.858143339,
-            679.2308009,9.903458395,
-            420.8067858,14.55886649,
-            292.7556511,20.0609063,
-            213.3226248,27.08560364,
-            166.6219332,34.36407722,
-            127.1665473,44.85847176,
-            102.4477316,55.77724843,
-            90.12020389,63.18367643,
-            79.64706759,72.66296594,
-            71.85774104,81.57712346,
-            66.85394731,87.89807151,
-            64.83019531,91.50851857,
-            62.85547508,94.3299134,
-        )
+  ~ec25, ~ir,
+  63.30956284, 94.31498538,
+  35.93464093, 93.32760382,
+  24.90267631, 92.05872255,
+  15.56978112, 88.81507815,
+  12.42913352, 86.41593288,
+  9.30501041, 80.77314322,
+  7.771007662, 74.42660428,
+  6.921570383, 68.64306476,
+  6.448364484, 63.0002751,
+  5.969064634, 55.66422203,
+  5.63284352, 48.1874191,
+  5.525390616, 43.46376864,
+  5.364388374, 38.42662987,
+  5.161676837, 31.3166296,
+  5.161676837, 24.20876189,
+  5.161676837, 18.62141914,
+  5.575060883, 13.79753773,
+  7.361877404, 8.380800867,
+  12.63883835, 5.503959123,
+  25.32283525, 4.232945276,
+  73.49784815, 3.895998652,
+  228.6654432, 3.810695709,
+  695.1394102, 3.725392767,
+  3157.436507, 3.725392767,
+  4609.686896, 3.556919455,
+  4609.686896, 3.471616512,
+  3206.339376, 3.810695709,
+  2001.956002, 4.825800728,
+  1087.858305, 6.858143339,
+  679.2308009, 9.903458395,
+  420.8067858, 14.55886649,
+  292.7556511, 20.0609063,
+  213.3226248, 27.08560364,
+  166.6219332, 34.36407722,
+  127.1665473, 44.85847176,
+  102.4477316, 55.77724843,
+  90.12020389, 63.18367643,
+  79.64706759, 72.66296594,
+  71.85774104, 81.57712346,
+  66.85394731, 87.89807151,
+  64.83019531, 91.50851857,
+  62.85547508, 94.3299134,
+)
 
 
 #' Plots hydrochemistry: Van Wirdum diagram
@@ -198,20 +198,25 @@ vanwirdum_data <- tribble(
 #'   )
 #'
 #' # default version of the basis plot without data
-#' ggplot_vanwirdum_background(ec25_unit = "micro_cm",
-#'              contour = "segment",
-#'              lang = "en",
-#'              rhine = FALSE)
+#' ggplot_vanwirdum_background(
+#'   ec25_unit = "micro_cm",
+#'   contour = "segment",
+#'   lang = "en",
+#'   rhine = FALSE
+#' )
 #'
 #' # add your own data with EC as x and IR as y and format as you wish
-#' ggplot_vanwirdum_background(contour = "curve",
-#'              lang = "nl",
-#'              rhine = TRUE) +
-#'   geom_point(data = my_data,
-#'              aes(x = my_ec25, y = my_ir, colour = my_site), size = 3) +
-#'   theme(axis.text  = element_text(colour = "blue"))
+#' ggplot_vanwirdum_background(
+#'   contour = "curve",
+#'   lang = "nl",
+#'   rhine = TRUE
+#' ) +
+#'   geom_point(
+#'     data = my_data,
+#'     aes(x = my_ec25, y = my_ir, colour = my_site), size = 3
+#'   ) +
+#'   theme(axis.text = element_text(colour = "blue"))
 #' }
-#'
 #'
 #' @export
 #' @importFrom rlang
@@ -223,26 +228,29 @@ vanwirdum_data <- tribble(
 #'
 
 ggplot_vanwirdum_background <- function(ir_format = c("decimal", "pct"),
-                         ec25_unit = c("micro_cm", "milli_m"),
-                         contour = c("segment", "curve", "none"),
-                         lang = c("en", "nl"),
-                         rhine = FALSE) {
-
-    ir_format <- match.arg(ir_format)
-    ec25_unit <- match.arg(ec25_unit)
-    contour <- match.arg(contour)
-    lang <- match.arg(lang)
-    assert_that(is.flag(rhine), assertthat::noNA(rhine))
+                                        ec25_unit = c("micro_cm", "milli_m"),
+                                        contour = c("segment", "curve", "none"),
+                                        lang = c("en", "nl"),
+                                        rhine = FALSE) {
+  ir_format <- match.arg(ir_format)
+  ec25_unit <- match.arg(ec25_unit)
+  contour <- match.arg(contour)
+  lang <- match.arg(lang)
+  assert_that(is.flag(rhine), assertthat::noNA(rhine))
 
   # Check for availability packages ggplot2 and scales
-    require_pkgs("ggplot2")
-    require_pkgs("scales")
+  require_pkgs("ggplot2")
+  require_pkgs("scales")
 
   # Define reference locations
   ref_points <-
     data.frame(
-      location_ref = c("Li (Angeren)", "At (Witteveen)", "Th (Noordwijk)",
-                       "Rh (Lobith)"),
+      location_ref = c(
+        "Li (Angeren)",
+        "At (Witteveen)",
+        "Th (Noordwijk)",
+        "Rh (Lobith)"
+      ),
       Ca_ref = c(115, 0.4, 420, 82),
       Cl_ref = c(11, 3, 19100, 178),
       ec25_ref = c(651, 50.1, 52000, 996), # in µS/cm
@@ -253,114 +261,138 @@ ggplot_vanwirdum_background <- function(ir_format = c("decimal", "pct"),
   # Use correct units for legend and limits in the plot for EC25 (param ec25_unit)
   if (ec25_unit == "micro_cm") {
     ec25_u <- "(\u00b5S/cm)"
-    ec25_limits <- c(5,100000)
+    ec25_limits <- c(5, 100000)
   } else {
     ec25_u <- "(mS/m)"
-    ec25_limits <- c(0.5,10000)
+    ec25_limits <- c(0.5, 10000)
     ref_points <- ref_points %>%
-      mutate(ec25_ref = .data$ec25_ref/10)
+      mutate(ec25_ref = .data$ec25_ref / 10)
   }
   # Use correct units for legend and limits in the plot for IR (param ir_format)
   if (ir_format == "decimal") {
     ir_u <- ""
-    ir_limits <- c(0,1)
+    ir_limits <- c(0, 1)
   } else {
     ir_u <- "(%)"
-    ir_limits <- c(0,100)
+    ir_limits <- c(0, 100)
     ref_points <- ref_points %>%
-      mutate(ir_ref = .data$ir_ref*100)
+      mutate(ir_ref = .data$ir_ref * 100)
   }
 
   # Legend in appropriate language (param language)
   dict_legend <-
     data.frame(
-      language = c("en","nl"),
-      ir = c("Ionic ratio","Ionenratio"),
-      ec25 = c("Electrical conductivity 25\u00b0C","Elektrische conductiviteit 25\u00b0C")
+      language = c("en", "nl"),
+      ir = c("Ionic ratio", "Ionenratio"),
+      ec25 = c("Electrical conductivity 25\u00b0C", "Elektrische conductiviteit 25\u00b0C")
     )
 
   # Adapt dataset to show or hide the reference point for Rhine (param rhine)
   ref_points_rh <- if (rhine == FALSE) {
     ref_points %>% filter(.data$name_ref != "Rh")
-  } else {ref_points}
+  } else {
+    ref_points
+  }
 
   # Define custom breaks for EC25 in the ggplot
   # major breaks:
-  vw_major_breaks <- function(n = 10){
+  vw_major_breaks <- function(n = 10) {
     function(x) {
-        grDevices::axisTicks(log10(range(x, na.rm = TRUE)), log = TRUE, n = n)
+      grDevices::axisTicks(log10(range(x, na.rm = TRUE)), log = TRUE, n = n)
     }
   }
   # minor breaks:
-  vw_minor_breaks <- rep(1:9, 21)*(10^rep(-10:10, each = 9))
+  vw_minor_breaks <- rep(1:9, 21) * (10^rep(-10:10, each = 9))
 
   # create Van Wirdum diagram in ggplot2
 
   # add reference points
   p_vanwirdum <- ggplot2::ggplot() +
-      ggplot2::geom_point(data = ref_points_rh,
-                          ggplot2::aes(x = .data$ec25_ref,
-                                       y = .data$ir_ref),
-                          size = 2, colour = "black", shape = 15)
+    ggplot2::geom_point(
+      data = ref_points_rh,
+      ggplot2::aes(
+        x = .data$ec25_ref,
+        y = .data$ir_ref
+      ),
+      size = 2, colour = "black", shape = 15
+    )
 
   # add mixing contours
 
-    if (contour == "segment") {
+  if (contour == "segment") {
+    # draw segment between the 3 reference points LI-AT-TH
+    p_vanwirdum <- p_vanwirdum +
+      ggplot2::geom_path(
+        data = ref_points %>%
+          filter(.data$name_ref != "Rh") %>%
+          rbind(.[1, ]), # close the triangle
+        ggplot2::aes(
+          x = .data$ec25_ref,
+          y = .data$ir_ref
+        ),
+        colour = "grey20"
+      )
+  } else if (contour == "curve") {
+    vw_lat_framework <- vanwirdum_data
 
-      # draw segment between the 3 reference points LI-AT-TH
-      p_vanwirdum <- p_vanwirdum +
-          ggplot2::geom_path(data = ref_points %>%
-                                 filter(.data$name_ref != "Rh") %>%
-                                 rbind(.[1,]), # close the triangle
-                                ggplot2::aes(x = .data$ec25_ref,
-                                             y = .data$ir_ref),
-                                colour = "grey20")
-
-    } else if (contour == "curve") {
-
-        vw_lat_framework <- vanwirdum_data
-
-      if (ec25_unit == "micro_cm") {
-        vw_lat_framework <- vw_lat_framework %>%
-          mutate(ec25 = .data$ec25*10)
-      }
-      if (ir_format == "decimal") {
-        vw_lat_framework <- vw_lat_framework %>%
-          mutate(ir = .data$ir/100)
-      }
-      # draw curve along the points of the LAT framework
-      p_vanwirdum <- p_vanwirdum +
-          ggplot2::geom_path(data = vw_lat_framework,
-                             ggplot2::aes(x = .data$ec25,
-                                          y = .data$ir),
-                             colour = "grey20", linetype = "dashed")
+    if (ec25_unit == "micro_cm") {
+      vw_lat_framework <- vw_lat_framework %>%
+        mutate(ec25 = .data$ec25 * 10)
     }
+    if (ir_format == "decimal") {
+      vw_lat_framework <- vw_lat_framework %>%
+        mutate(ir = .data$ir / 100)
+    }
+    # draw curve along the points of the LAT framework
+    p_vanwirdum <- p_vanwirdum +
+      ggplot2::geom_path(
+        data = vw_lat_framework,
+        ggplot2::aes(
+          x = .data$ec25,
+          y = .data$ir
+        ),
+        colour = "grey20", linetype = "dashed"
+      )
+  }
 
   # add labels for the reference points
   p_vanwirdum <- p_vanwirdum +
-      ggplot2::geom_text(data = ref_points_rh,
-                         ggplot2::aes(x = .data$ec25_ref,
-                                      y = .data$ir_ref,
-                                      label  = .data$name_ref),
-              vjust = -0.5, hjust = -0.3,
-              colour = "grey20", size = 5) +
-      ggplot2::scale_y_continuous(name = paste(dict_legend %>%
-                                                   filter(.data$language == lang) %>%
-                                                   select("ir") %>% pull(),
-                                               ir_u),
-                                  limits = ir_limits) +
-      ggplot2::scale_x_log10(name = paste(dict_legend %>%
-                                              filter(.data$language == lang) %>%
-                                              select("ec25") %>% pull(),
-                                          ec25_u),
-                             breaks = vw_major_breaks(),
-                             minor_breaks = vw_minor_breaks,
-                             labels = scales::label_number(),
-                             limits = ec25_limits) +
-      ggplot2::theme_bw() +
-      ggplot2::theme(panel.grid.minor = ggplot2::element_line(linewidth = 1),
-                     panel.grid.major = ggplot2::element_line(linewidth = 1))
+    ggplot2::geom_text(
+      data = ref_points_rh,
+      ggplot2::aes(
+        x = .data$ec25_ref,
+        y = .data$ir_ref,
+        label = .data$name_ref
+      ),
+      vjust = -0.5, hjust = -0.3,
+      colour = "grey20", size = 5
+    ) +
+    ggplot2::scale_y_continuous(
+      name = paste(
+        dict_legend %>%
+          filter(.data$language == lang) %>%
+          select("ir") %>% pull(),
+        ir_u
+      ),
+      limits = ir_limits
+    ) +
+    ggplot2::scale_x_log10(
+      name = paste(
+        dict_legend %>%
+          filter(.data$language == lang) %>%
+          select("ec25") %>% pull(),
+        ec25_u
+      ),
+      breaks = vw_major_breaks(),
+      minor_breaks = vw_minor_breaks,
+      labels = scales::label_number(),
+      limits = ec25_limits
+    ) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(
+      panel.grid.minor = ggplot2::element_line(linewidth = 1),
+      panel.grid.major = ggplot2::element_line(linewidth = 1)
+    )
 
   return(p_vanwirdum)
-
 }

@@ -121,20 +121,25 @@ my_data <-
   )
 
 # default version of the basis plot without data
-ggplot_vanwirdum_background(ec25_unit = "micro_cm",
-             contour = "segment",
-             lang = "en",
-             rhine = FALSE)
+ggplot_vanwirdum_background(
+  ec25_unit = "micro_cm",
+  contour = "segment",
+  lang = "en",
+  rhine = FALSE
+)
 
 # add your own data with EC as x and IR as y and format as you wish
-ggplot_vanwirdum_background(contour = "curve",
-             lang = "nl",
-             rhine = TRUE) +
-  geom_point(data = my_data,
-             aes(x = my_ec25, y = my_ir, colour = my_site), size = 3) +
-  theme(axis.text  = element_text(colour = "blue"))
+ggplot_vanwirdum_background(
+  contour = "curve",
+  lang = "nl",
+  rhine = TRUE
+) +
+  geom_point(
+    data = my_data,
+    aes(x = my_ec25, y = my_ir, colour = my_site), size = 3
+  ) +
+  theme(axis.text = element_text(colour = "blue"))
 }
-
 
 }
 \references{
