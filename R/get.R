@@ -1428,7 +1428,8 @@ get_chem <- function(locs,
       chemdata %>%
       # temporary value:
       mutate(lab_sample_id = sql("CAST(StaalID AS varchar)")) %>%
-      select(.data$lab_sample_id,
+      select(
+        .data$lab_sample_id,
         chem_variable = .data$ChemVarCode,
         value_eq = .data$MeetwaardeMEQ
       ) %>%
@@ -1458,15 +1459,19 @@ get_chem <- function(locs,
       if (is.na(en_fecond_threshold) | is.null(en_fecond_threshold)) {
         # I.1 applying the en_range condition:
         chem %>%
-          filter((!is.na(.data$elneutr) & sql(sqlstring_en)) |
-            .data$provide_eq_unit == "FALSE")
+          filter(
+            (!is.na(.data$elneutr) & sql(sqlstring_en)) |
+              .data$provide_eq_unit == "FALSE"
+          )
       } else {
         # I.2 applying the en_fecond_threshold OR the en_range condition:
         chem %>%
           left_join(samples_fecond, by = "lab_sample_id") %>%
-          filter((!is.na(.data$elneutr) & sql(sqlstring_en)) |
-            .data$fecond >= en_fecond_threshold |
-            .data$provide_eq_unit == "FALSE") %>%
+          filter(
+            (!is.na(.data$elneutr) & sql(sqlstring_en)) |
+              .data$fecond >= en_fecond_threshold |
+              .data$provide_eq_unit == "FALSE"
+          ) %>%
           select(-.data$fecond)
       }
     } else {
@@ -1474,17 +1479,21 @@ get_chem <- function(locs,
       if (is.na(en_fecond_threshold) | is.null(en_fecond_threshold)) {
         # II.1 applying the en_range condition:
         chem %>%
-          filter(is.na(.data$elneutr) |
-            sql(sqlstring_en) |
-            .data$provide_eq_unit == "FALSE")
+          filter(
+            is.na(.data$elneutr) |
+              sql(sqlstring_en) |
+              .data$provide_eq_unit == "FALSE"
+          )
       } else {
         # II.2 applying the en_fecond_threshold OR the en_range condition:
         chem %>%
           left_join(samples_fecond, by = "lab_sample_id") %>%
-          filter(is.na(.data$elneutr) |
-            sql(sqlstring_en) |
-            .data$fecond >= en_fecond_threshold |
-            .data$provide_eq_unit == "FALSE") %>%
+          filter(
+            is.na(.data$elneutr) |
+              sql(sqlstring_en) |
+              .data$fecond >= en_fecond_threshold |
+              .data$provide_eq_unit == "FALSE"
+          ) %>%
           select(-.data$fecond)
       }
     }
