@@ -19,7 +19,7 @@ library(knitr)
 ```
 
 _General note: the below vignette contains frozen output of 2 Oct 2019._
-_This makes it possible to build the package with vignettes without access to the Watina database._
+_This makes it possible to build the package with vignettes without access to the Watina data warehouse._
 
 ## Overview
 

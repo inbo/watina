@@ -19,7 +19,7 @@ library(knitr)
 ```
 
 _General note: the below vignette contains frozen output of 16 Sep 2019._
-_This makes it possible to build the package with vignettes without access to the Watina database._
+_This makes it possible to build the package with vignettes without access to the Watina data warehouse._
 
 ## Overview
 
@@ -134,7 +134,7 @@ mylocs %>% get_xg3(watina, 2010, collect = TRUE)
 #> # … with 36 more rows
 ```
 
-By default, the "local" vertical coordinate reference system (CRS) is used to express water levels, but also the CRS Ostend height (EPSG [5710](https://epsg.io/5710), also known as 'TAW' or 'DNG') is available from the database by setting `vert_crs = "ostend"`.
+By default, the "local" vertical coordinate reference system (CRS) is used to express water levels, but also the CRS Ostend height (EPSG [5710](https://epsg.io/5710), also known as 'TAW' or 'DNG') is available from the data warehouse by setting `vert_crs = "ostend"`.
 
 ```{r}
 mylocs %>% get_xg3(watina, 2010, vert_crs = "ostend")

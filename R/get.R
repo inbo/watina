@@ -1,7 +1,7 @@
-#' Get locations from the database
+#' Get locations from the data warehouse
 #'
 #' Returns locations (and optionally, observation wells) from the \emph{Watina}
-#' database that meet
+#' data warehouse that meet
 #' several criteria, either as a lazy object or as a
 #' local tibble.
 #' Criteria refer to spatial or non-spatial physical attributes of the
@@ -199,7 +199,7 @@
 #'
 #' (TO BE ADDED: Explanation on the variable names of the returned object)
 #'
-#' @family functions to query the database
+#' @family functions to query the data warehouse
 #'
 #' @examples
 #' \dontrun{
@@ -769,9 +769,9 @@ get_locs <- function(con,
 }
 
 
-#' Get XG3 values from the database
+#' Get XG3 values from the data warehouse
 #'
-#' Returns XG3 values from the \emph{Watina} database,
+#' Returns XG3 values from the \emph{Watina} data warehouse,
 #' either as a lazy object or as a
 #' local tibble.
 #' The values must belong to selected locations
@@ -824,7 +824,7 @@ get_locs <- function(con,
 #' (which is zero in the case of the local CRS).
 #' @param with_estimated Logical.
 #' If \code{TRUE} (the default), the XG3 values calculations also use estimated
-#' (i.e. non-measured) water level data that are available in the database.
+#' (i.e. non-measured) water level data that are available in the data warehouse.
 #'
 #' @inheritParams get_locs
 #'
@@ -839,7 +839,7 @@ get_locs <- function(con,
 #' \code{vert_crs = "local"} or
 #' "\code{_ost}" for \code{vert_crs = "ostend"}.
 #'
-#' @family functions to query the database
+#' @family functions to query the data warehouse
 #'
 #' @examples
 #' \dontrun{
@@ -993,9 +993,9 @@ get_xg3 <- function(locs,
 }
 
 
-#' Get hydrochemical data from the database
+#' Get hydrochemical data from the data warehouse
 #'
-#' Returns hydrochemical data from the \emph{Watina} database,
+#' Returns hydrochemical data from the \emph{Watina} data warehouse,
 #' either as a lazy object or as a
 #' local tibble.
 #' The values must belong to selected locations
@@ -1164,7 +1164,7 @@ get_xg3 <- function(locs,
 #' - Si: silicon concentration
 #' - SO4: sulphate concentration
 #'
-#' @family functions to query the database
+#' @family functions to query the data warehouse
 #'
 #' @examples
 #' \dontrun{

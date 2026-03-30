@@ -21,7 +21,7 @@ library(ggplot2)
 ```
 
 _General note: the below vignette contains frozen output of 7 Nov 2025._
-_This makes it possible to build the package with vignettes without access to the Watina database._
+_This makes it possible to build the package with vignettes without access to the Watina data warehouse._
 
 ## Retrieve chemical data from Watina
 
@@ -59,7 +59,7 @@ my_chem_data
 #> #   below_loq <lgl>, loq <dbl>, elneutr <dbl>
 ```
 ```{r, include = FALSE}
-# needed if we build the package with vignettes without access to the Watina database
+# needed if we build the package with vignettes without access to the Watina data warehouse
 my_chem_data <- data.frame(
   loc_code = rep(c("KESP001", "KESP003"), each = 6),
   date = as.Date(rep(c("2024-07-04", "2024-11-13"), each = 3, times = 2)),
