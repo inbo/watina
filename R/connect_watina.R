@@ -24,7 +24,7 @@ connect_watina <- function() {
 }
 
 
-#' Disconnect a data warehouse connection
+#' Disconnect a database connection
 #'
 #' This is a re-export of
 #' \code{\link[inbodb:dbDisconnect-OdbcConnection-method]{inbodb::dbDisconnect()}}
