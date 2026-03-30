@@ -1242,6 +1242,7 @@ get_xg3 <- function(locs,
 #' arrange
 #' distinct
 #' sql
+#' rename
 get_chem <- function(locs,
                      con,
                      startdate,
@@ -1322,8 +1323,8 @@ get_chem <- function(locs,
       )
   }
 
-
-  chem <-
+  # filter chemistry data for dates and locations
+  chemdata <-
     tbl(con, "FactChemischeMeting") %>%
     select(
       .data$StaalID,
@@ -1352,6 +1353,26 @@ get_chem <- function(locs,
       by = "DatumWID"
     ) %>%
     mutate(Datum = sql("CAST(Datum AS date)")) %>%
+    filter(
+      .data$Datum >= startdate,
+      .data$Datum <= enddate
+    ) %>%
+    rename(loc_wid = .data$MeetpuntWID) %>%
+    inner_join(
+      locs %>%
+        select(
+          .data$loc_wid,
+          .data$loc_code
+        ) %>%
+        distinct(),
+      .,
+      by = "loc_wid"
+    ) %>%
+    select(-.data$loc_wid)
+
+  # add relevant further attributes and rename
+  chem <-
+    chemdata %>%
     left_join(
       tbl(con, "ssrs_StaalEN") %>%
         select(
@@ -1360,10 +1381,6 @@ get_chem <- function(locs,
         ),
       by = "StaalID"
     ) %>%
-    filter(
-      .data$Datum >= startdate,
-      .data$Datum <= enddate
-    ) %>%
     # temporary values:
     mutate(
       lab_project_id = "0",
@@ -1371,7 +1388,7 @@ get_chem <- function(locs,
       loq = -99
     ) %>%
     select(
-      loc_wid = .data$MeetpuntWID,
+      .data$loc_code,
       date = .data$Datum,
       .data$lab_project_id,
       .data$lab_sample_id,
@@ -1395,18 +1412,7 @@ get_chem <- function(locs,
                  ELSE 0
                  END) AS bit)"
         )
-    ) %>%
-    inner_join(
-      locs %>%
-        select(
-          .data$loc_wid,
-          .data$loc_code
-        ) %>%
-        distinct(),
-      .,
-      by = "loc_wid"
-    ) %>%
-    select(-.data$loc_wid)
+    )
 
   sqlstring_en <-
     paste0(
@@ -1419,34 +1425,7 @@ get_chem <- function(locs,
   # preparing for the application of the en_fecond_threshold:
   if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
     samples_fecond <-
-      tbl(con, "FactChemischeMeting") %>%
-      select(
-        .data$StaalID,
-        .data$DatumWID,
-        .data$ChemVarWID,
-        .data$MeetwaardeMEQ
-      ) %>%
-      inner_join(
-        tbl(con, "DimChemVar") %>%
-          select(
-            .data$ChemVarWID,
-            .data$ChemVarCode
-          ),
-        by = "ChemVarWID"
-      ) %>%
-      inner_join(
-        tbl(con, "DimTijd") %>%
-          select(
-            .data$DatumWID,
-            .data$Datum
-          ),
-        by = "DatumWID"
-      ) %>%
-      mutate(Datum = sql("CAST(Datum AS date)")) %>%
-      filter(
-        .data$Datum >= startdate,
-        .data$Datum <= enddate
-      ) %>%
+      chemdata %>%
       # temporary value:
       mutate(lab_sample_id = sql("CAST(StaalID AS varchar)")) %>%
       select(.data$lab_sample_id,
