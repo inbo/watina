@@ -1435,7 +1435,7 @@ get_chem <- function(locs,
       warning(
         "Zeroes for 'CondL' (lab conductivity) detected. ",
         "These rows will be ignored in calculating the iron / conductivity ",
-        "ratio for the `fecond` condition."
+        "ratio for the `en_fecond_threshold` condition."
       )
     }
     samples_fecond <-
