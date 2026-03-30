@@ -1,11 +1,8 @@
 template:
-  params:
-    bootswatch: cosmo
+  bootstrap: 5
+  bootswatch: cosmo
 
 url: https://inbo.github.io/watina
-
-navbar:
-    type: inverse
 
 reference:
   - title: "Connect"
