@@ -181,32 +181,34 @@ watina <- connect_watina()
 library(dplyr)
 mylocs <- get_locs(watina, area_codes = "ZWA")
 mydata <-
-    mylocs \%>\%
-    get_chem(watina, "1/1/2010")
+  mylocs \%>\%
+  get_chem(watina, "1/1/2010")
 mydata \%>\% arrange(loc_code, date, chem_variable)
 mydata \%>\%
-    pull(date) \%>\%
-    lubridate::year(.) \%>\%
-    (function(x) c(firstyear = min(x), lastyear = max(x)))
+  pull(date) \%>\%
+  lubridate::year(.) \%>\%
+  (function(x) c(firstyear = min(x), lastyear = max(x)))
 
 ## EXAMPLE 1
 # to prepare a condition on 'firstdate', we need its numerical value:
 as.numeric(lubridate::dmy("1/1/2014"))
 conditions_df <-
-    tribble(
-        ~chem_variable, ~statistic, ~criterion, ~direction,
-        "N-NO3", "nrdates", 2, "min",
-        "P-PO4", "nrdates", 2, "min",
-        "P-PO4", "firstdate", 16071, "max",
-        "P-PO4", "timespan_years", 5, "min"
-    )
+  tribble(
+    ~chem_variable, ~statistic, ~criterion, ~direction,
+    "N-NO3", "nrdates", 2, "min",
+    "P-PO4", "nrdates", 2, "min",
+    "P-PO4", "firstdate", 16071, "max",
+    "P-PO4", "timespan_years", 5, "min"
+  )
 conditions_df
 myresult <-
-    mydata \%>\%
-    selectlocs_chem(data_type = "data",
-                    chem_var = c("N-NO3", "P-PO4"),
-                    conditions = conditions_df,
-                    list = TRUE)
+  mydata \%>\%
+  selectlocs_chem(
+    data_type = "data",
+    chem_var = c("N-NO3", "P-PO4"),
+    conditions = conditions_df,
+    list = TRUE
+  )
 myresult
 # or:
 # mystats <- eval_chem(mydata, chem_var = c("N-NO3", "P-PO4"))
@@ -220,16 +222,18 @@ myresult$combined_result_filtered
 ## EXAMPLE 2
 # An example based on numeric statistics:
 conditions_df <-
-    tribble(
-        ~chem_variable, ~statistic, ~criterion, ~direction,
-        "pHF", "val_mean", 5, "max",
-        "CondF", "val_pct50", 100, "min"
-    )
+  tribble(
+    ~chem_variable, ~statistic, ~criterion, ~direction,
+    "pHF", "val_mean", 5, "max",
+    "CondF", "val_pct50", 100, "min"
+  )
 conditions_df
 mydata \%>\%
-    selectlocs_chem(data_type = "data",
-                    chem_var = c("pHF", "CondF"),
-                    conditions = conditions_df)
+  selectlocs_chem(
+    data_type = "data",
+    chem_var = c("pHF", "CondF"),
+    conditions = conditions_df
+  )
 
 # Disconnect:
 dbDisconnect(watina)

@@ -67,13 +67,15 @@
 #' library(dplyr)
 #' mylocs <- get_locs(watina, area_codes = "KAL")
 #' mydata <-
-#'  mylocs %>%
-#'  get_xg3(watina, 1900)
+#'   mylocs %>%
+#'   get_xg3(watina, 1900)
 #' mydata %>% arrange(loc_code, hydroyear)
 #' mydata %>%
-#'   extract_xg3_series(xg3_type = c("L", "V"),
-#'                      max_gap = 2,
-#'                      min_dur = 5)
+#'   extract_xg3_series(
+#'     xg3_type = c("L", "V"),
+#'     max_gap = 2,
+#'     min_dur = 5
+#'   )
 #' # Disconnect:
 #' dbDisconnect(watina)
 #' }
@@ -103,112 +105,132 @@ extract_xg3_series <- function(data,
                                xg3_type = c("L", "H", "V"),
                                max_gap,
                                min_dur) {
+  if (missing(xg3_type)) {
+    xg3_type <- match.arg(xg3_type)
+  } else {
+    assert_that(
+      all(xg3_type %in% c("L", "H", "V")),
+      msg = "You specified at least one unknown xg3_type."
+    )
+  }
 
-    if (missing(xg3_type)) {
-        xg3_type <- match.arg(xg3_type)} else {
-            assert_that(all(xg3_type %in%
-                                c("L", "H", "V")),
-                        msg = "You specified at least one unknown xg3_type.")
-        }
+  assert_that(
+    max_gap %% 1 == 0 & max_gap >= 0,
+    msg = "max_gap must be a positive integer value."
+  )
+  assert_that(
+    min_dur %% 1 == 0 & min_dur > 0,
+    msg = "min_dur must be a strictly positive integer value."
+  )
 
-    assert_that(max_gap %% 1 == 0 & max_gap >= 0,
-                msg = "max_gap must be a positive integer value.")
-    assert_that(min_dur %% 1 == 0 & min_dur > 0,
-                msg = "min_dur must be a strictly positive integer value.")
+  xg3_qualification <-
+    data %>%
+    qualify_xg3(xg3_type = xg3_type)
 
-    xg3_qualification <-
-        data %>%
-        qualify_xg3(xg3_type = xg3_type)
+  # add missing hydroyears per location:
+  xg3_completed <-
+    xg3_qualification %>%
+    group_by(
+      .data$loc_code,
+      .data$xg3_variable
+    ) %>%
+    complete(
+      hydroyear = full_seq(.data$hydroyear, 1),
+      fill = list(available = FALSE)
+    ) %>%
+    arrange(
+      .data$loc_code,
+      .data$xg3_variable,
+      .data$hydroyear
+    )
 
-    # add missing hydroyears per location:
-    xg3_completed <-
-        xg3_qualification %>%
-        group_by(.data$loc_code,
-                 .data$xg3_variable) %>%
-        complete(hydroyear = full_seq(.data$hydroyear, 1),
-                 fill = list(available = FALSE)) %>%
-        arrange(.data$loc_code,
-                .data$xg3_variable,
-                .data$hydroyear)
+  # identify uninterrupted series:
+  xg3_unintseries <-
+    xg3_completed %>%
+    mutate(unint = cumsum(c(1, diff(.data$available) != 0))) %>%
+    filter(.data$available) %>%
+    # consecutively number uninterrupted series:
+    mutate(unint = str_c(
+      .data$xg3_variable,
+      "_unint",
+      cumsum(c(1, diff(.data$unint) != 0))
+    )) %>%
+    select(-.data$available)
 
-    # identify uninterrupted series:
-    xg3_unintseries <-
-        xg3_completed %>%
-        mutate(unint = cumsum(c(1, diff(.data$available) != 0))) %>%
-        filter(.data$available) %>%
-        # consecutively number uninterrupted series:
-        mutate(unint = str_c(.data$xg3_variable,
-                             "_unint",
-                             cumsum(c(1, diff(.data$unint) != 0))
-        )
-        ) %>%
-        select(-.data$available)
+  # identify xg3 series:
+  xg3_series <-
+    xg3_unintseries %>%
+    # characterize uninterrupted series:
+    group_by(
+      .data$loc_code,
+      .data$xg3_variable,
+      .data$unint
+    ) %>%
+    summarise(
+      unint_start = min(.data$hydroyear),
+      unint_end = max(.data$hydroyear)
+    ) %>%
+    mutate(
+      gap_before = .data$unint_start - lag(.data$unint_end) - 1,
+      meets_gap_cond = is.na(.data$gap_before) |
+        .data$gap_before <= max_gap,
+      meets_gap_cond_lead = lead(.data$meets_gap_cond, default = TRUE),
+      is_pot_series_member = .data$meets_gap_cond |
+        .data$meets_gap_cond_lead |
+        .data$unint_end - .data$unint_start + 1 >= min_dur
+    ) %>%
+    # identify potential xg3 series:
+    filter(.data$is_pot_series_member) %>%
+    mutate(series = cumsum(!.data$meets_gap_cond) + 1) %>%
+    select(
+      -.data$meets_gap_cond_lead,
+      -.data$is_pot_series_member
+    ) %>%
+    # remove series that are too short:
+    group_by(
+      .data$loc_code,
+      .data$xg3_variable,
+      .data$series
+    ) %>%
+    mutate(series_length = max(.data$unint_end) -
+      min(.data$unint_start) + 1) %>%
+    group_by(
+      .data$loc_code,
+      .data$xg3_variable
+    ) %>%
+    filter(.data$series_length >= min_dur) %>%
+    # consecutively number series:
+    mutate(series = str_c(
+      .data$xg3_variable,
+      "_series",
+      cumsum(c(1, diff(.data$series) != 0))
+    ))
 
-    # identify xg3 series:
-    xg3_series <-
-        xg3_unintseries %>%
-        # characterize uninterrupted series:
-        group_by(.data$loc_code,
-                 .data$xg3_variable,
-                 .data$unint) %>%
-        summarise(unint_start = min(.data$hydroyear),
-                  unint_end = max(.data$hydroyear)) %>%
-        mutate(gap_before = .data$unint_start - lag(.data$unint_end) - 1,
-               meets_gap_cond = is.na(.data$gap_before) |
-                   .data$gap_before <= max_gap,
-               meets_gap_cond_lead = lead(.data$meets_gap_cond, default = TRUE),
-               is_pot_series_member = .data$meets_gap_cond |
-                   .data$meets_gap_cond_lead |
-                   .data$unint_end - .data$unint_start + 1 >= min_dur) %>%
-        # identify potential xg3 series:
-        filter(.data$is_pot_series_member) %>%
-        mutate(series = cumsum(!.data$meets_gap_cond) + 1) %>%
-        select(-.data$meets_gap_cond_lead,
-               -.data$is_pot_series_member) %>%
-        # remove series that are too short:
-        group_by(.data$loc_code,
-                 .data$xg3_variable,
-                 .data$series) %>%
-        mutate(series_length = max(.data$unint_end) -
-                   min(.data$unint_start) + 1) %>%
-        group_by(.data$loc_code,
-                 .data$xg3_variable) %>%
-        filter(.data$series_length >= min_dur) %>%
-        # consecutively number series:
-        mutate(series = str_c(.data$xg3_variable,
-                              "_series",
-                              cumsum(c(1, diff(.data$series) != 0))
-        )
-        )
+  # return member years per series:
+  series_memberyrs <-
+    xg3_unintseries %>%
+    inner_join(
+      xg3_series %>%
+        select(
+          .data$loc_code,
+          .data$xg3_variable,
+          .data$unint,
+          .data$series,
+          .data$series_length
+        ),
+      by = c(
+        "loc_code",
+        "xg3_variable",
+        "unint"
+      )
+    ) %>%
+    ungroup() %>%
+    select(-.data$unint) %>%
+    arrange(
+      .data$loc_code,
+      .data$xg3_variable,
+      .data$hydroyear
+    )
 
-    # return member years per series:
-    series_memberyrs <-
-        xg3_unintseries %>%
-        inner_join(xg3_series %>%
-                       select(.data$loc_code,
-                              .data$xg3_variable,
-                              .data$unint,
-                              .data$series,
-                              .data$series_length),
-                   by = c("loc_code",
-                          "xg3_variable",
-                          "unint")) %>%
-        ungroup %>%
-        select(-.data$unint) %>%
-        arrange(.data$loc_code,
-                .data$xg3_variable,
-                .data$hydroyear)
-
-    return(series_memberyrs)
+  return(series_memberyrs)
 }
-
-
-
-
-
-
-
-
-
-
-

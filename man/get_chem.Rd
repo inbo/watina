@@ -211,34 +211,46 @@ watina <- connect_watina()
 library(dplyr)
 mylocs <- get_locs(watina, area_codes = "ZWA")
 mylocs \%>\%
-    get_chem(watina, "1/1/2017") \%>\%
-    arrange(loc_code, date, chem_variable)
+  get_chem(watina, "1/1/2017") \%>\%
+  arrange(loc_code, date, chem_variable)
 mylocs \%>\%
-    get_chem(watina, "1/1/2017", collect = TRUE)
+  get_chem(watina, "1/1/2017", collect = TRUE)
 mylocs \%>\%
-    get_chem(watina, "1/1/2017", conc_type = "eq") \%>\%
-    arrange(loc_code, date, chem_variable)
+  get_chem(watina, "1/1/2017", conc_type = "eq") \%>\%
+  arrange(loc_code, date, chem_variable)
 
 # compare the number of returned rows:
-mylocs \%>\% get_chem(watina, "1/1/2017") \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017",
-                    en_fecond_threshold = NA) \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017",
-                    en_exclude_na = TRUE) \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017",
-                    en_exclude_na = TRUE,
-                    en_fecond_threshold = NA) \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017",
-                    en_range = c(-1, 1)) \%>\% count
+mylocs \%>\%
+  get_chem(watina, "1/1/2017") \%>\%
+  count()
+mylocs \%>\%
+  get_chem(watina, "1/1/2017", en_fecond_threshold = NA) \%>\%
+  count()
+mylocs \%>\%
+  get_chem(watina, "1/1/2017", en_exclude_na = TRUE) \%>\%
+  count()
+mylocs \%>\%
+  get_chem(
+    watina,
+    "1/1/2017",
+    en_exclude_na = TRUE,
+    en_fecond_threshold = NA
+  ) \%>\%
+  count()
+mylocs \%>\%
+  get_chem(watina, "1/1/2017", en_range = c(-1, 1)) \%>\%
+  count()
 
 # joining results to mylocs:
 mylocs \%>\%
-get_chem(watina, "1/1/2017") \%>\%
-    left_join(mylocs \%>\%
-                  select(-loc_wid),
-              .) \%>\%
-    collect \%>\%
-    arrange(loc_code, date, chem_variable)
+  get_chem(watina, "1/1/2017") \%>\%
+  left_join(
+    mylocs \%>\%
+      select(-loc_wid),
+    .
+  ) \%>\%
+  collect() \%>\%
+  arrange(loc_code, date, chem_variable)
 
 # Disconnect:
 dbDisconnect(watina)

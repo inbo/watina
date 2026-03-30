@@ -115,8 +115,8 @@ watina <- connect_watina()
 library(dplyr)
 mylocs <- get_locs(watina, area_codes = "ZWA")
 mydata <-
- mylocs \%>\%
- get_chem(watina, "1/1/2010")
+  mylocs \%>\%
+  get_chem(watina, "1/1/2010")
 mydata \%>\% arrange(loc_code, date, chem_variable)
 mydata \%>\%
   pull(date) \%>\%
@@ -126,20 +126,23 @@ mydata \%>\%
   eval_chem(chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4")) \%>\%
   arrange(desc(loc_code))
 mydata \%>\%
-  eval_chem(chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4"),
-            type = "both") \%>\%
+  eval_chem(
+    chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4"),
+    type = "both"
+  ) \%>\%
   arrange(desc(loc_code)) \%>\%
   as.data.frame() \%>\%
   head(10)
 mydata \%>\%
-  eval_chem(chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4"),
-            uniformity_test = TRUE) \%>\%
+  eval_chem(
+    chem_var = c("P-PO4", "N-NO3", "N-NO2", "N-NH4"),
+    uniformity_test = TRUE
+  ) \%>\%
   arrange(desc(loc_code)) \%>\%
   select(loc_code, chem_variable, pval_uniform_totalspan)
 # Disconnect:
 dbDisconnect(watina)
 }
-
 
 }
 \seealso{

@@ -208,71 +208,94 @@
 #' library(dplyr)
 #'
 #' get_locs(watina,
-#'          bbox = c(xmin = 1.4e+5,
-#'                   xmax = 1.7e+5,
-#'                   ymin = 1.6e+5,
-#'                   ymax = 1.9e+5)) %>%
-#'     arrange(area_code, loc_code)
+#'   bbox = c(
+#'     xmin = 1.4e+5,
+#'     xmax = 1.7e+5,
+#'     ymin = 1.6e+5,
+#'     ymax = 1.9e+5
+#'   )
+#' ) %>%
+#'   arrange(area_code, loc_code)
 #'
-#' get_locs(watina,
-#'          area_codes = c("KAL", "KBR"),
-#'          collect = TRUE)
+#' get_locs(
+#'   watina,
+#'   area_codes = c("KAL", "KBR"),
+#'   collect = TRUE
+#' )
 #'
-#' get_locs(watina,
-#'          area_codes = c("KAL", "KBR"),
-#'          loc_type = c("P", "S"),
-#'          collect = TRUE)
+#' get_locs(
+#'   watina,
+#'   area_codes = c("KAL", "KBR"),
+#'   loc_type = c("P", "S"),
+#'   collect = TRUE
+#' )
 #'
-#' get_locs(watina,
-#'          area_codes = "WES") %>%
-#'     count()
+#' get_locs(
+#'   watina,
+#'   area_codes = "WES"
+#' ) %>%
+#'   count()
 #'
-#' get_locs(watina,
-#'          area_codes = "WES",
-#'          filterdepth_guess = TRUE) %>%
-#'     count()
+#' get_locs(
+#'   watina,
+#'   area_codes = "WES",
+#'   filterdepth_guess = TRUE
+#' ) %>%
+#'   count()
 #'
-#' get_locs(watina,
-#'          area_codes = c("KAL", "KBR"),
-#'          loc_type = c("P", "S"),
-#'          filterdepth_na = TRUE,
-#'          collect = TRUE)
+#' get_locs(
+#'   watina,
+#'   area_codes = c("KAL", "KBR"),
+#'   loc_type = c("P", "S"),
+#'   filterdepth_na = TRUE,
+#'   collect = TRUE
+#' )
 #'
 #' # Mark the different output of:
-#'   get_locs(watina,
-#'            loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
-#'            loc_type = c("P", "S"),
-#'            collect = TRUE)
-#'   # versus:
-#'   get_locs(watina,
-#'            loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
-#'            collect = TRUE)
+#' get_locs(
+#'   watina,
+#'   loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
+#'   loc_type = c("P", "S"),
+#'   collect = TRUE
+#' )
+#' # versus:
+#' get_locs(
+#'   watina,
+#'   loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"),
+#'   collect = TRUE
+#' )
 #'
 #' # Returning all individual observation wells:
-#' get_locs(watina,
-#'          obswells = TRUE,
-#'          area_codes = c("KAL", "KBR"),
-#'          loc_type = c("P", "S"),
-#'          collect = TRUE)
+#' get_locs(
+#'   watina,
+#'   obswells = TRUE,
+#'   area_codes = c("KAL", "KBR"),
+#'   loc_type = c("P", "S"),
+#'   collect = TRUE
+#' )
 #'
 #' # Different examples of aggregating observation wells at location level:
-#' get_locs(watina,
-#'          area_codes = "WES",
-#'          filterdepth_na = TRUE,
-#'          filterdepth_guess = TRUE,
-#'          obswell_aggr = "latest",
-#'          collect = TRUE) %>%
-#'     select(loc_code, contains("ost"), contains("filterdepth")) %>%
-#'     head(12)
+#' get_locs(
+#'   watina,
+#'   area_codes = "WES",
+#'   filterdepth_na = TRUE,
+#'   filterdepth_guess = TRUE,
+#'   obswell_aggr = "latest",
+#'   collect = TRUE
+#' ) %>%
+#'   select(loc_code, contains("ost"), contains("filterdepth")) %>%
+#'   head(12)
 #'
-#' get_locs(watina,
-#'          area_codes = "WES",
-#'          filterdepth_na = TRUE,
-#'          filterdepth_guess = TRUE,
-#'          obswell_aggr = "mean",
-#'          collect = TRUE) %>%
-#'     select(loc_code, contains("ost"), contains("filterdepth")) %>%
-#'     head(12)
+#' get_locs(
+#'   watina,
+#'   area_codes = "WES",
+#'   filterdepth_na = TRUE,
+#'   filterdepth_guess = TRUE,
+#'   obswell_aggr = "mean",
+#'   collect = TRUE
+#' ) %>%
+#'   select(loc_code, contains("ost"), contains("filterdepth")) %>%
+#'   head(12)
 #'
 #' # Selecting all piezometers with status VLD of the
 #' # province "West-Vlaanderen" (current polygon taken
@@ -281,20 +304,24 @@
 #' library(purrr)
 #' library(httr)
 #' mymask <-
-#'     "https://geo.api.vlaanderen.be/VRBG/wfs" %>%
-#'     parse_url() %>%
-#'     list_merge(query = list(request = "GetFeature",
-#'                             typeName = "VRBG:Refprv",
-#'                             cql_filter="NAAM='West-Vlaanderen'",
-#'                             srsName = "EPSG:31370",
-#'                             outputFormat = "text/xml; subtype=gml/3.1.1")) %>%
-#'     build_url() %>%
-#'     read_sf(crs = 31370) %>%
-#'     st_cast("GEOMETRYCOLLECTION")
-#' get_locs(watina,
-#'          loc_validity = "VLD",
-#'          mask = mymask,
-#'          buffer = 0)
+#'   "https://geo.api.vlaanderen.be/VRBG/wfs" %>%
+#'   parse_url() %>%
+#'   list_merge(query = list(
+#'     request = "GetFeature",
+#'     typeName = "VRBG:Refprv",
+#'     cql_filter = "NAAM='West-Vlaanderen'",
+#'     srsName = "EPSG:31370",
+#'     outputFormat = "text/xml; subtype=gml/3.1.1"
+#'   )) %>%
+#'   build_url() %>%
+#'   read_sf(crs = 31370) %>%
+#'   st_cast("GEOMETRYCOLLECTION")
+#' get_locs(
+#'   watina,
+#'   loc_validity = "VLD",
+#'   mask = mymask,
+#'   buffer = 0
+#' )
 #'
 #' # Disconnect:
 #' dbDisconnect(watina)
@@ -323,10 +350,12 @@ get_locs <- function(con,
                      filterdepth_guess = FALSE,
                      filterdepth_na = FALSE,
                      obswells = FALSE,
-                     obswell_aggr = c("latest",
-                                      "latest_fd",
-                                      "latest_sso",
-                                      "mean"),
+                     obswell_aggr = c(
+                       "latest",
+                       "latest_fd",
+                       "latest_sso",
+                       "mean"
+                     ),
                      mask = NULL,
                      join_mask = FALSE,
                      buffer = 10,
@@ -336,354 +365,408 @@ get_locs <- function(con,
                      loc_validity = c("VLD", "ENT"),
                      loc_vec = NULL,
                      collect = FALSE) {
+  assert_that(
+    is.numeric(filterdepth_range),
+    length(filterdepth_range) == 2,
+    filterdepth_range[1] <= filterdepth_range[2]
+  )
 
-    assert_that(is.numeric(filterdepth_range),
-                length(filterdepth_range) == 2,
-                filterdepth_range[1] <= filterdepth_range[2])
+  assert_that(is.number(buffer))
+  assert_that(
+    is.null(bbox) | all(sort(names(bbox)) == c("xmax", "xmin", "ymax", "ymin")),
+    msg = "You did not correctly specify bbox."
+  )
+  assert_that(is.null(area_codes) | all(is.character(area_codes)))
+  assert_that(
+    is.null(loc_vec) | all(is.character(loc_vec)),
+    msg = "loc_vec must be a character vector."
+  )
+  assert_that(is.flag(join_mask), assertthat::noNA(join_mask))
+  assert_that(is.flag(collect), assertthat::noNA(collect))
+  assert_that(is.flag(obswells), assertthat::noNA(obswells))
+  assert_that(is.flag(filterdepth_guess), assertthat::noNA(filterdepth_guess))
+  assert_that(is.flag(filterdepth_na), assertthat::noNA(filterdepth_na))
 
-    assert_that(is.number(buffer))
-    assert_that(is.null(bbox) | all(sort(names(bbox)) ==
-                                        c("xmax", "xmin", "ymax", "ymin")),
-                msg = "You did not correctly specify bbox.")
-    assert_that(is.null(area_codes) | all(is.character(area_codes)))
-    assert_that(is.null(loc_vec) | all(is.character(loc_vec)),
-                msg = "loc_vec must be a character vector.")
-    assert_that(is.flag(join_mask), assertthat::noNA(join_mask))
-    assert_that(is.flag(collect), assertthat::noNA(collect))
-    assert_that(is.flag(obswells), assertthat::noNA(obswells))
-    assert_that(is.flag(filterdepth_guess), assertthat::noNA(filterdepth_guess))
-    assert_that(is.flag(filterdepth_na), assertthat::noNA(filterdepth_na))
+  obswell_aggr <- match.arg(obswell_aggr)
 
-    obswell_aggr <- match.arg(obswell_aggr)
+  if (!is.null(mask) & !collect) {
+    message("As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.")
+  }
 
-    if (!is.null(mask) & !collect) {
-        message("As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.")
-    }
+  if (!is.null(mask)) {
+    assert_that(
+      inherits(mask, "sf"),
+      msg = "mask must be an sf object."
+    )
+    require_pkgs("sf")
+    assert_that(
+      sf::st_crs(mask) == sf::st_crs(31370),
+      msg = "The CRS of mask must be Belgian Lambert 72 (EPSG-code 31370)."
+    )
+  }
 
-    if (!is.null(mask)) {
-        assert_that(inherits(mask, "sf"),
-                    msg = "mask must be an sf object.")
-        require_pkgs("sf")
-        assert_that(sf::st_crs(mask) == sf::st_crs(31370),
-                    msg = "The CRS of mask must be Belgian Lambert 72 (EPSG-code 31370).")
-    }
+  if (!is.null(bbox)) {
+    assert_that(
+      bbox["xmax"] >= bbox["xmin"],
+      bbox["ymax"] >= bbox["ymin"]
+    )
+  }
 
-    if (!is.null(bbox)) {
-        assert_that(bbox["xmax"] >= bbox["xmin"],
-                    bbox["ymax"] >= bbox["ymin"])
-    }
+  if (missing(loc_type)) {
+    loc_type <- match.arg(loc_type)
+  } else {
+    assert_that(
+      all(loc_type %in% c("P", "S", "R", "N", "W", "D", "L", "B")),
+      msg = "You specified at least one unknown loc_type."
+    )
+  }
 
-    if (missing(loc_type)) {
-        loc_type <- match.arg(loc_type)} else {
-            assert_that(all(loc_type %in%
-                                c("P", "S", "R", "N", "W", "D", "L", "B")),
-                        msg = "You specified at least one unknown loc_type.")
-        }
+  assert_that(
+    all(loc_validity %in% c("VLD", "ENT", "DEL", "CLD")),
+    msg = "You specified at least one unknown loc_validity."
+  )
 
-    assert_that(all(loc_validity %in%
-                        c("VLD", "ENT", "DEL", "CLD")),
-                msg = "You specified at least one unknown loc_validity.")
+  min_filterdepth <- filterdepth_range[1]
+  max_filterdepth <- filterdepth_range[2]
 
-    min_filterdepth <- filterdepth_range[1]
-    max_filterdepth <- filterdepth_range[2]
+  locs <-
+    tbl(con, "vwDimMeetpunt") %>%
+    filter(
+      .data$MeetpuntTypeCode %in% loc_type,
+      .data$MeetpuntStatusCode %in% loc_validity
+    ) %>%
+    left_join(
+      tbl(con, "vwDimGebied") %>%
+        select(
+          .data$GebiedWID,
+          .data$GebiedCode,
+          .data$GebiedNaam
+        ),
+      by = "GebiedWID"
+    )
+
+  if (!is.null(loc_vec)) {
+    locs <-
+      locs %>%
+      filter(.data$MeetpuntCode %in% loc_vec)
+  }
+
+  if (!is.null(area_codes)) {
+    locs <-
+      locs %>%
+      filter(.data$GebiedCode %in% area_codes)
+  }
+
+  if (!is.null(bbox)) {
+    bbox_xmin <- unname(bbox["xmin"])
+    bbox_xmax <- unname(bbox["xmax"])
+    bbox_ymin <- unname(bbox["ymin"])
+    bbox_ymax <- unname(bbox["ymax"])
+    locs <-
+      locs %>%
+      filter(
+        .data$MeetpuntXCoordinaat >= bbox_xmin,
+        .data$MeetpuntXCoordinaat <= bbox_xmax,
+        .data$MeetpuntYCoordinaat >= bbox_ymin,
+        .data$MeetpuntYCoordinaat <= bbox_ymax
+      )
+  }
+
+  locs <-
+    locs %>%
+    left_join(
+      tbl(con, "vwDimPeilpunt") %>%
+        filter(
+          .data$PeilpuntStatusCode %in% c(
+            "VLD",
+            "ENT",
+            "CLD"
+          ),
+          .data$PeilpuntOpenbaarheidTypeCode == "PLME",
+          .data$PeilpuntOpenbaarheidCode == "UNKWN"
+        ) %>%
+        mutate(
+          PeilpuntPlaatsing =
+            sql("CAST(PeilpuntPlaatsing AS date)"),
+          PeilpuntStopzetting =
+            sql("CAST(PeilpuntStopzetting AS date)")
+        ),
+      by = "MeetpuntWID"
+    ) %>%
+    mutate(
+      tubelength = ifelse(
+        .data$PeilbuisLengte <= 0,
+        NA,
+        .data$PeilbuisLengte
+      ),
+      filterlength = ifelse(
+        is.na(.data$FilterLengte) | .data$FilterLengte == 0,
+        0.3,
+        .data$FilterLengte
+      ),
+      filterdepth = .data$tubelength -
+        .data$ReferentieNiveauMaaiveld -
+        .data$filterlength / 2,
+      soilsurf_ost =
+        .data$ReferentieNiveauTAW -
+          .data$ReferentieNiveauMaaiveld
+    ) %>%
+    select(
+      loc_wid = .data$MeetpuntWID,
+      loc_code = .data$MeetpuntCode,
+      area_code = .data$GebiedCode,
+      area_name = .data$GebiedNaam,
+      x = .data$MeetpuntXCoordinaat,
+      y = .data$MeetpuntYCoordinaat,
+      loc_validitycode = .data$MeetpuntStatusCode,
+      loc_validity = .data$MeetpuntStatus,
+      loc_typecode = .data$MeetpuntTypeCode,
+      loc_typename = .data$MeetpuntType,
+      obswell_code = .data$PeilpuntCode,
+      obswell_rank = .data$PeilpuntVersie,
+      obswell_statecode = .data$PeilpuntToestandCode,
+      obswell_state = .data$PeilpuntToestandNaam,
+      obswell_installdate = .data$PeilpuntPlaatsing,
+      obswell_stopdate = .data$PeilpuntStopzetting,
+      .data$soilsurf_ost,
+      measuringref_ost = .data$ReferentieNiveauTAW,
+      .data$tubelength,
+      .data$filterlength,
+      .data$filterdepth
+    )
+
+  if (filterdepth_guess) {
+    locs <-
+      locs %>%
+      mutate(
+        filterdepth_guessed =
+          is.na(.data$filterdepth) & !is.na(.data$tubelength),
+        filterdepth = ifelse(
+          .data$filterdepth_guessed == 1,
+          # (sql: logical stored as bit)
+          .data$tubelength - .data$filterlength / 2,
+          .data$filterdepth
+        )
+      )
+  }
+
+  if (filterdepth_na) {
+    locs <-
+      locs %>%
+      filter(
+        (.data$loc_typecode == "P" &
+          (.data$filterdepth <= max_filterdepth &
+            .data$filterdepth >= min_filterdepth |
+            is.na(.data$filterdepth))) |
+          .data$loc_typecode != "P"
+      )
+  } else {
+    locs <-
+      locs %>%
+      filter(
+        .data$loc_typecode == "P" &
+          .data$filterdepth <= max_filterdepth &
+          .data$filterdepth >= min_filterdepth |
+          .data$loc_typecode != "P"
+      )
+  }
+
+  if (!obswells) {
+    locs <-
+      locs %>%
+      group_by(.data$loc_code) %>%
+      mutate(
+        obswell_count = n(),
+        obswell_maxrank = max(.data$obswell_rank, na.rm = TRUE),
+        obswell_maxrank_fd =
+          max(
+            ifelse(
+              is.na(.data$filterdepth),
+              NA,
+              .data$obswell_rank
+            ),
+            na.rm = TRUE
+          ),
+        obswell_maxrank_sso =
+          max(
+            ifelse(
+              is.na(.data$soilsurf_ost),
+              NA,
+              .data$obswell_rank
+            ),
+            na.rm = TRUE
+          ),
+        obswell_statecode =
+          max(
+            ifelse(
+              .data$obswell_rank ==
+                .data$obswell_maxrank,
+              .data$obswell_statecode,
+              NA
+            ),
+            na.rm = TRUE
+          ),
+        obswell_state =
+          max(
+            ifelse(
+              .data$obswell_rank ==
+                .data$obswell_maxrank,
+              .data$obswell_state,
+              NA
+            ),
+            na.rm = TRUE
+          )
+      )
 
     locs <-
-        tbl(con, "vwDimMeetpunt") %>%
-        filter(.data$MeetpuntTypeCode %in% loc_type,
-               .data$MeetpuntStatusCode %in% loc_validity
-               ) %>%
-        left_join(tbl(con, "vwDimGebied") %>%
-                      select(.data$GebiedWID,
-                             .data$GebiedCode,
-                             .data$GebiedNaam),
-                  by = "GebiedWID")
-
-    if (!is.null(loc_vec)) {
-        locs <-
-            locs %>%
-            filter(.data$MeetpuntCode %in% loc_vec)
-    }
-
-    if (!is.null(area_codes)) {
-        locs <-
-            locs %>%
-            filter(.data$GebiedCode %in% area_codes)
-    }
-
-    if (!is.null(bbox)) {
-        bbox_xmin <- unname(bbox["xmin"])
-        bbox_xmax <- unname(bbox["xmax"])
-        bbox_ymin <- unname(bbox["ymin"])
-        bbox_ymax <- unname(bbox["ymax"])
-        locs <-
-            locs %>%
-            filter(.data$MeetpuntXCoordinaat >= bbox_xmin,
-                   .data$MeetpuntXCoordinaat <= bbox_xmax,
-                   .data$MeetpuntYCoordinaat >= bbox_ymin,
-                   .data$MeetpuntYCoordinaat <= bbox_ymax)
-    }
-
-    locs <-
-        locs %>%
-        left_join(tbl(con, "vwDimPeilpunt") %>%
-                      filter(.data$PeilpuntStatusCode %in% c("VLD",
-                                                       "ENT",
-                                                       "CLD"),
-                             .data$PeilpuntOpenbaarheidTypeCode == "PLME",
-                             .data$PeilpuntOpenbaarheidCode == "UNKWN") %>%
-                      mutate(PeilpuntPlaatsing =
-                                 sql("CAST(PeilpuntPlaatsing AS date)"),
-                             PeilpuntStopzetting =
-                                 sql("CAST(PeilpuntStopzetting AS date)")
-                             ),
-                  by = "MeetpuntWID") %>%
-        mutate(tubelength = ifelse(.data$PeilbuisLengte <= 0,
-                                   NA,
-                                   .data$PeilbuisLengte),
-               filterlength = ifelse(is.na(.data$FilterLengte) |
-                                         .data$FilterLengte == 0,
-                                     0.3,
-                                     .data$FilterLengte),
-               filterdepth = .data$tubelength -
-                                .data$ReferentieNiveauMaaiveld -
-                                .data$filterlength / 2,
-               soilsurf_ost =
-                   .data$ReferentieNiveauTAW -
-                   .data$ReferentieNiveauMaaiveld) %>%
-        select(loc_wid = .data$MeetpuntWID,
-               loc_code = .data$MeetpuntCode,
-               area_code = .data$GebiedCode,
-               area_name = .data$GebiedNaam,
-               x = .data$MeetpuntXCoordinaat,
-               y = .data$MeetpuntYCoordinaat,
-               loc_validitycode = .data$MeetpuntStatusCode,
-               loc_validity = .data$MeetpuntStatus,
-               loc_typecode = .data$MeetpuntTypeCode,
-               loc_typename = .data$MeetpuntType,
-               obswell_code = .data$PeilpuntCode,
-               obswell_rank = .data$PeilpuntVersie,
-               obswell_statecode = .data$PeilpuntToestandCode,
-               obswell_state = .data$PeilpuntToestandNaam,
-               obswell_installdate = .data$PeilpuntPlaatsing,
-               obswell_stopdate = .data$PeilpuntStopzetting,
-               .data$soilsurf_ost,
-               measuringref_ost = .data$ReferentieNiveauTAW,
-               .data$tubelength,
-               .data$filterlength,
-               .data$filterdepth)
-
-    if (filterdepth_guess) {
-        locs <-
-            locs %>%
-            mutate(filterdepth_guessed =
-                       is.na(.data$filterdepth) &
-                       !is.na(.data$tubelength),
-                   filterdepth = ifelse(.data$filterdepth_guessed == 1,
-                                                # (sql: logical stored as bit)
-                                        .data$tubelength -
-                                            .data$filterlength / 2,
-                                        .data$filterdepth))
-    }
-
-    if (filterdepth_na) {
-        locs <-
-            locs %>%
+      switch(
+        obswell_aggr,
+        "latest" =
+          locs %>%
+            ungroup() %>%
             filter(
-                (.data$loc_typecode == "P" &
-                     (.data$filterdepth <= max_filterdepth &
-                          .data$filterdepth >= min_filterdepth |
-                          is.na(.data$filterdepth))) |
-                    .data$loc_typecode != "P"
+              .data$obswell_count == 1 |
+                .data$obswell_rank == .data$obswell_maxrank
+            ),
+        "latest_fd" =
+          locs %>%
+            ungroup() %>%
+            filter(
+              .data$obswell_count == 1 |
+                (.data$obswell_rank ==
+                  .data$obswell_maxrank_fd) |
+                (is.na(.data$obswell_maxrank_fd) &
+                  (.data$obswell_rank ==
+                    .data$obswell_maxrank))
+            ),
+        "latest_sso" =
+          locs %>%
+            ungroup() %>%
+            filter(
+              .data$obswell_count == 1 |
+                (.data$obswell_rank ==
+                  .data$obswell_maxrank_sso) |
+                (is.na(.data$obswell_maxrank_sso) &
+                  (.data$obswell_rank ==
+                    .data$obswell_maxrank))
+            ),
+        "mean" =
+          locs %>%
+            mutate(
+              soilsurf_ost = mean(.data$soilsurf_ost, na.rm = TRUE),
+              measuringref_ost = mean(.data$measuringref_ost, na.rm = TRUE),
+              filterdepth = mean(.data$filterdepth, na.rm = TRUE),
+              filterlength = mean(.data$filterlength, na.rm = TRUE),
+              tubelength = mean(.data$tubelength, na.rm = TRUE)
+            ) %>%
+            {
+              if ("filterdepth_guessed" %in% colnames(.)) {
+                mutate(
+                  .,
+                  filterdepth_guessed =
+                    max(
+                      ifelse(
+                        .data$filterdepth_guessed == 1,
+                        # (sql: logical stored as bit)
+                        1,
+                        0
+                      ),
+                      na.rm = TRUE
+                    )
+                ) %>%
+                  mutate(
+                    filterdepth_guessed = sql("CAST(filterdepth_guessed AS bit)")
+                  )
+              } else {
+                .
+              }
+            } %>%
+            ungroup() %>%
+            filter(
+              .data$obswell_count == 1 |
+                .data$obswell_rank == .data$obswell_maxrank
             )
+      ) %>%
+      select(
+        -.data$obswell_code,
+        -.data$obswell_rank,
+        -.data$obswell_installdate,
+        -.data$obswell_stopdate,
+        -.data$obswell_count,
+        -.data$obswell_maxrank,
+        -.data$obswell_maxrank_fd,
+        -.data$obswell_maxrank_sso
+      )
+  }
+
+  if (!is.null(mask)) {
+    locs <-
+      locs %>%
+      select(-.data$loc_wid) %>%
+      collect()
+
+    nr_dropped_locs <-
+      locs %>%
+      filter(is.na(.data$x) | is.na(.data$y)) %>%
+      count() %>%
+      .$n
+
+    if (nr_dropped_locs > 0) {
+      warning(
+        "Dropped ",
+        nr_dropped_locs,
+        " locations from which x or y coordinates were missing.\n"
+      )
+    }
+
+    locs <-
+      locs %>%
+      filter(!is.na(.data$x), !is.na(.data$y)) %>%
+      arrange(
+        .data$area_code,
+        .data$loc_code
+      ) %>%
+      as_points(warn_dupl = FALSE)
+
+    if (buffer != 0) {
+      mask_expand <-
+        mask %>%
+        sf::st_buffer(dist = buffer)
     } else {
-        locs <-
-            locs %>%
-            filter(.data$loc_typecode == "P" &
-                       .data$filterdepth <= max_filterdepth &
-                       .data$filterdepth >= min_filterdepth |
-                       .data$loc_typecode != "P"
-            )
+      mask_expand <-
+        mask
     }
 
-    if (!obswells) {
-
-        locs <-
-            locs %>%
-            group_by(.data$loc_code) %>%
-            mutate(obswell_count = n(),
-                   obswell_maxrank = max(.data$obswell_rank,
-                                         na.rm = TRUE),
-                   obswell_maxrank_fd =
-                       max(ifelse(is.na(.data$filterdepth),
-                                         NA,
-                                         .data$obswell_rank),
-                                  na.rm = TRUE),
-                   obswell_maxrank_sso =
-                       max(ifelse(is.na(.data$soilsurf_ost),
-                                         NA,
-                                         .data$obswell_rank),
-                                  na.rm = TRUE),
-                   obswell_statecode =
-                       max(ifelse(.data$obswell_rank ==
-                                             .data$obswell_maxrank,
-                                         .data$obswell_statecode,
-                                         NA),
-                                  na.rm = TRUE),
-                   obswell_state =
-                       max(ifelse(.data$obswell_rank ==
-                                             .data$obswell_maxrank,
-                                         .data$obswell_state,
-                                         NA),
-                                  na.rm = TRUE)
-                   )
-
-        locs <-
-            switch(obswell_aggr,
-
-                   "latest" =
-                       locs %>%
-                       ungroup() %>%
-                       filter(.data$obswell_count == 1 |
-                                  .data$obswell_rank == .data$obswell_maxrank),
-
-                   "latest_fd" =
-                       locs %>%
-                       ungroup() %>%
-                       filter(.data$obswell_count == 1 |
-                                  (.data$obswell_rank ==
-                                       .data$obswell_maxrank_fd) |
-                                  (is.na(.data$obswell_maxrank_fd) &
-                                       (.data$obswell_rank ==
-                                            .data$obswell_maxrank))
-                       ),
-
-                   "latest_sso" =
-                       locs %>%
-                       ungroup() %>%
-                       filter(.data$obswell_count == 1 |
-                                  (.data$obswell_rank ==
-                                       .data$obswell_maxrank_sso) |
-                                  (is.na(.data$obswell_maxrank_sso) &
-                                       (.data$obswell_rank ==
-                                            .data$obswell_maxrank))
-                       ),
-
-                   "mean" =
-                       locs %>%
-                       mutate(soilsurf_ost = mean(.data$soilsurf_ost,
-                                                  na.rm = TRUE),
-                              measuringref_ost = mean(.data$measuringref_ost,
-                                                  na.rm = TRUE),
-                              filterdepth = mean(.data$filterdepth,
-                                                  na.rm = TRUE),
-                              filterlength = mean(.data$filterlength,
-                                                 na.rm = TRUE),
-                              tubelength = mean(.data$tubelength,
-                                                  na.rm = TRUE)) %>%
-                       {if ("filterdepth_guessed" %in% colnames(.)) {
-                           mutate(.,
-                                  filterdepth_guessed =
-                                      max(ifelse(.data$filterdepth_guessed == 1,
-                                                 # (sql: logical stored as bit)
-                                                 1,
-                                                 0),
-                                          na.rm = TRUE)) %>%
-                               mutate(filterdepth_guessed =
-                                          sql("CAST(
-                                              filterdepth_guessed AS bit)"))
-                       } else .} %>%
-                       ungroup() %>%
-                       filter(.data$obswell_count == 1 |
-                                  .data$obswell_rank == .data$obswell_maxrank)
-
-                   ) %>%
-            select(-.data$obswell_code,
-                   -.data$obswell_rank,
-                   -.data$obswell_installdate,
-                   -.data$obswell_stopdate,
-                   -.data$obswell_count,
-                   -.data$obswell_maxrank,
-                   -.data$obswell_maxrank_fd,
-                   -.data$obswell_maxrank_sso)
+    if (join_mask) {
+      locs <-
+        locs %>%
+        sf::st_join(mask_expand, left = FALSE) %>%
+        sf::st_drop_geometry()
+    } else {
+      locs <-
+        locs %>%
+        .[mask_expand, ] %>%
+        sf::st_drop_geometry()
     }
+  }
 
-    if (!is.null(mask)) {
+  if (collect & is.null(mask)) {
+    locs <-
+      locs %>%
+      select(-.data$loc_wid) %>%
+      collect() %>%
+      arrange(
+        .data$area_code,
+        .data$loc_code
+      )
+  }
 
-        locs <-
-            locs %>%
-            select(-.data$loc_wid) %>%
-            collect
+  if (inherits(locs, "data.frame")) {
+    warn_xy_duplicates(locs$x, locs$y)
+  }
 
-        nr_dropped_locs <-
-            locs %>%
-            filter(is.na(.data$x) | is.na(.data$y)) %>%
-            count %>%
-            .$n
-
-        if (nr_dropped_locs > 0) {
-            warning("Dropped ",
-                    nr_dropped_locs,
-                    " locations from which x or y coordinates were missing.\n")
-        }
-
-        locs <-
-            locs %>%
-            filter(!is.na(.data$x), !is.na(.data$y)) %>%
-            arrange(.data$area_code,
-                    .data$loc_code) %>%
-            as_points(warn_dupl = FALSE)
-
-        if (buffer != 0) {
-            mask_expand <-
-                mask %>%
-                sf::st_buffer(dist = buffer)
-        } else {
-            mask_expand <-
-                mask
-        }
-
-        if (join_mask) {
-
-            locs <-
-                locs %>%
-                sf::st_join(mask_expand,
-                        left = FALSE) %>%
-                sf::st_drop_geometry()
-
-        } else {
-
-            locs <-
-                locs %>%
-                .[mask_expand, ] %>%
-                sf::st_drop_geometry()
-
-        }
-
-    }
-
-    if (collect & is.null(mask)) {
-        locs <-
-            locs %>%
-            select(-.data$loc_wid) %>%
-            collect %>%
-            arrange(.data$area_code,
-                    .data$loc_code)
-    }
-
-    if (inherits(locs, "data.frame")) {
-        warn_xy_duplicates(locs$x, locs$y)
-    }
-
-    return(locs)
-
+  return(locs)
 }
-
-
-
-
-
-
-
 
 
 #' Get XG3 values from the database
@@ -764,21 +847,23 @@ get_locs <- function(con,
 #' library(dplyr)
 #' mylocs <- get_locs(watina, area_codes = "KAL")
 #' mylocs %>%
-#'     get_xg3(watina, 2010) %>%
-#'     arrange(loc_code, hydroyear)
+#'   get_xg3(watina, 2010) %>%
+#'   arrange(loc_code, hydroyear)
 #' mylocs %>% get_xg3(watina, 2010, collect = TRUE)
 #' mylocs %>%
-#'     get_xg3(watina, 2010, vert_crs = "ostend") %>%
-#'     arrange(loc_code, hydroyear)
+#'   get_xg3(watina, 2010, vert_crs = "ostend") %>%
+#'   arrange(loc_code, hydroyear)
 #'
 #' # joining results to mylocs:
 #' mylocs %>%
-#'     get_xg3(watina, 2010) %>%
-#'     left_join(mylocs %>%
-#'               select(-loc_wid),
-#'               .) %>%
-#'     collect %>%
-#'     arrange(loc_code, hydroyear)
+#'   get_xg3(watina, 2010) %>%
+#'   left_join(
+#'     mylocs %>%
+#'       select(-loc_wid),
+#'     .
+#'   ) %>%
+#'   collect() %>%
+#'   arrange(loc_code, hydroyear)
 #'
 #' # Disconnect:
 #' dbDisconnect(watina)
@@ -808,97 +893,104 @@ get_xg3 <- function(locs,
                     con,
                     startyear,
                     endyear = year(now()) - 1,
-                    vert_crs = c("local",
-                                 "ostend",
-                                 "both"),
+                    vert_crs = c("local", "ostend", "both"),
                     truncated = TRUE,
                     with_estimated = TRUE,
                     collect = FALSE) {
+  vert_crs <- match.arg(vert_crs)
+  assert_that(is.number(startyear))
+  assert_that(is.number(endyear))
+  assert_that(
+    endyear >= startyear,
+    msg = "startyear must not be larger than endyear."
+  )
+  assert_that(
+    "loc_code" %in% colnames(locs),
+    msg = "locs does not have a column name 'loc_code'."
+  )
+  assert_that(is.flag(truncated), assertthat::noNA(truncated))
+  assert_that(is.flag(collect), assertthat::noNA(collect))
 
-    vert_crs <- match.arg(vert_crs)
-    assert_that(is.number(startyear))
-    assert_that(is.number(endyear))
-    assert_that(endyear >= startyear,
-                msg = "startyear must not be larger than endyear.")
-    assert_that("loc_code" %in% colnames(locs),
-                msg = "locs does not have a column name 'loc_code'.")
-    assert_that(is.flag(truncated), assertthat::noNA(truncated))
-    assert_that(is.flag(collect), assertthat::noNA(collect))
+  if (inherits(locs, "data.frame")) {
+    locs <-
+      locs %>%
+      distinct(.data$loc_code)
 
-    if (inherits(locs, "data.frame")) {
-        locs <-
-            locs %>%
-            distinct(.data$loc_code)
+    require_pkgs("DBI")
 
-        require_pkgs("DBI")
+    try(
+      DBI::dbRemoveTable(con, "#locs"),
+      silent = TRUE
+    )
 
-        try(DBI::dbRemoveTable(con, "#locs"),
-            silent = TRUE)
+    locs <-
+      copy_to(
+        con,
+        locs,
+        "#locs"
+      ) %>%
+      inner_join(
+        tbl(con, "vwDimMeetpunt") %>%
+          select(
+            loc_wid = .data$MeetpuntWID,
+            loc_code = .data$MeetpuntCode
+          ),
+        .,
+        by = "loc_code"
+      )
+  }
 
-        locs <-
-            copy_to(con,
-                    locs,
-                    "#locs") %>%
-            inner_join(tbl(con, "vwDimMeetpunt") %>%
-                          select(loc_wid = .data$MeetpuntWID,
-                                 loc_code = .data$MeetpuntCode),
-                      .,
-                      by = "loc_code")
-    }
+  xg3 <-
+    tbl(con, "ssrs_Precalc") %>%
+    # left_join(tbl(con, "DimMetingType"),
+    #           by = "MetingTypeWID") %>%
+    select(
+      loc_wid = .data$MeetpuntWID,
+      hydroyear = .data$HydroJaar,
+      # method_code = .data$MetingTypeCode,
+      # method_name = .data$MetingTypeNaam,
+      lg3_lcl = .data$GLG_2,
+      hg3_lcl = .data$GHG_2,
+      vg3_lcl = .data$GVG_2,
+      lg3_ost = .data$GLG_1,
+      hg3_ost = .data$GHG_1,
+      vg3_ost = .data$GVG_1
+    ) %>%
+    filter(
+      .data$hydroyear >= startyear,
+      .data$hydroyear <= endyear
+    ) %>%
+    inner_join(
+      locs %>%
+        select(
+          .data$loc_wid,
+          .data$loc_code
+        ) %>%
+        distinct(),
+      .,
+      by = "loc_wid"
+    ) %>%
+    select(-.data$loc_wid)
 
+  xg3 <-
+    switch(vert_crs,
+      local = xg3 %>% select(-contains("ost")),
+      ostend = xg3 %>% select(-contains("lcl")),
+      both = xg3
+    )
+
+  if (collect) {
     xg3 <-
-        tbl(con, "ssrs_Precalc") %>%
-        # left_join(tbl(con, "DimMetingType"),
-        #           by = "MetingTypeWID") %>%
-        select(loc_wid = .data$MeetpuntWID,
-               hydroyear = .data$HydroJaar,
-               # method_code = .data$MetingTypeCode,
-               # method_name = .data$MetingTypeNaam,
-               lg3_lcl = .data$GLG_2,
-               hg3_lcl = .data$GHG_2,
-               vg3_lcl = .data$GVG_2,
-               lg3_ost = .data$GLG_1,
-               hg3_ost = .data$GHG_1,
-               vg3_ost = .data$GVG_1
-               ) %>%
-        filter(.data$hydroyear >= startyear,
-               .data$hydroyear <= endyear) %>%
-        inner_join(locs %>%
-                       select(.data$loc_wid,
-                              .data$loc_code) %>%
-                       distinct,
-                   .,
-                   by = "loc_wid") %>%
-        select(-.data$loc_wid)
+      xg3 %>%
+      arrange(
+        .data$loc_code,
+        .data$hydroyear
+      ) %>%
+      collect()
+  }
 
-    xg3 <-
-        switch(vert_crs,
-               local = xg3 %>% select(-contains("ost")),
-               ostend = xg3 %>% select(-contains("lcl")),
-               both = xg3
-               )
-
-    if (collect) {
-        xg3 <-
-            xg3 %>%
-            arrange(.data$loc_code,
-                    .data$hydroyear) %>%
-            collect
-    }
-
-    return(xg3)
-
+  return(xg3)
 }
-
-
-
-
-
-
-
-
-
-
 
 
 #' Get hydrochemical data from the database
@@ -1080,34 +1172,46 @@ get_xg3 <- function(locs,
 #' library(dplyr)
 #' mylocs <- get_locs(watina, area_codes = "ZWA")
 #' mylocs %>%
-#'     get_chem(watina, "1/1/2017") %>%
-#'     arrange(loc_code, date, chem_variable)
+#'   get_chem(watina, "1/1/2017") %>%
+#'   arrange(loc_code, date, chem_variable)
 #' mylocs %>%
-#'     get_chem(watina, "1/1/2017", collect = TRUE)
+#'   get_chem(watina, "1/1/2017", collect = TRUE)
 #' mylocs %>%
-#'     get_chem(watina, "1/1/2017", conc_type = "eq") %>%
-#'     arrange(loc_code, date, chem_variable)
+#'   get_chem(watina, "1/1/2017", conc_type = "eq") %>%
+#'   arrange(loc_code, date, chem_variable)
 #'
 #' # compare the number of returned rows:
-#' mylocs %>% get_chem(watina, "1/1/2017") %>% count
-#' mylocs %>% get_chem(watina, "1/1/2017",
-#'                     en_fecond_threshold = NA) %>% count
-#' mylocs %>% get_chem(watina, "1/1/2017",
-#'                     en_exclude_na = TRUE) %>% count
-#' mylocs %>% get_chem(watina, "1/1/2017",
-#'                     en_exclude_na = TRUE,
-#'                     en_fecond_threshold = NA) %>% count
-#' mylocs %>% get_chem(watina, "1/1/2017",
-#'                     en_range = c(-1, 1)) %>% count
+#' mylocs %>%
+#'   get_chem(watina, "1/1/2017") %>%
+#'   count()
+#' mylocs %>%
+#'   get_chem(watina, "1/1/2017", en_fecond_threshold = NA) %>%
+#'   count()
+#' mylocs %>%
+#'   get_chem(watina, "1/1/2017", en_exclude_na = TRUE) %>%
+#'   count()
+#' mylocs %>%
+#'   get_chem(
+#'     watina,
+#'     "1/1/2017",
+#'     en_exclude_na = TRUE,
+#'     en_fecond_threshold = NA
+#'   ) %>%
+#'   count()
+#' mylocs %>%
+#'   get_chem(watina, "1/1/2017", en_range = c(-1, 1)) %>%
+#'   count()
 #'
 #' # joining results to mylocs:
 #' mylocs %>%
-#' get_chem(watina, "1/1/2017") %>%
-#'     left_join(mylocs %>%
-#'                   select(-loc_wid),
-#'               .) %>%
-#'     collect %>%
-#'     arrange(loc_code, date, chem_variable)
+#'   get_chem(watina, "1/1/2017") %>%
+#'   left_join(
+#'     mylocs %>%
+#'       select(-loc_wid),
+#'     .
+#'   ) %>%
+#'   collect() %>%
+#'   arrange(loc_code, date, chem_variable)
 #'
 #' # Disconnect:
 #' dbDisconnect(watina)
@@ -1141,245 +1245,296 @@ get_xg3 <- function(locs,
 get_chem <- function(locs,
                      con,
                      startdate,
-                     enddate = paste(day(today()),
-                                     month(today()),
-                                     year(today())),
+                     enddate = paste(
+                       day(today()),
+                       month(today()),
+                       year(today())
+                     ),
                      conc_type = c("mass", "eq"),
                      en_range = c(-0.1, 0.1),
                      en_exclude_na = FALSE,
                      en_fecond_threshold = 0.0023,
                      collect = FALSE) {
+  conc_type <- match.arg(conc_type)
 
-    conc_type <- match.arg(conc_type)
+  assert_that(
+    is.string(startdate),
+    is.date(dmy(startdate))
+  )
+  assert_that(
+    is.string(enddate),
+    is.date(dmy(enddate))
+  )
+  startdate <- dmy(startdate)
+  enddate <- dmy(enddate)
+  assert_that(
+    enddate >= startdate,
+    msg = "startdate must not be larger than enddate."
+  )
 
-    assert_that(is.string(startdate),
-                is.date(dmy(startdate)))
-    assert_that(is.string(enddate),
-                is.date(dmy(enddate)))
-    startdate <- dmy(startdate)
-    enddate <- dmy(enddate)
-    assert_that(enddate >= startdate,
-                msg = "startdate must not be larger than enddate.")
+  assert_that(
+    "loc_code" %in% colnames(locs),
+    msg = "locs does not have a column name 'loc_code'."
+  )
+  assert_that(
+    is.numeric(en_range),
+    length(en_range) == 2,
+    en_range[1] <= en_range[2],
+    en_range[1] >= -1,
+    en_range[2] <= 1
+  )
+  assert_that(is.flag(en_exclude_na), assertthat::noNA(en_exclude_na))
+  assert_that(is.flag(collect), assertthat::noNA(collect))
 
-    assert_that("loc_code" %in% colnames(locs),
-                msg = "locs does not have a column name 'loc_code'.")
-    assert_that(is.numeric(en_range),
-                length(en_range) == 2,
-                en_range[1] <= en_range[2],
-                en_range[1] >= -1,
-                en_range[2] <= 1
-                )
-    assert_that(is.flag(en_exclude_na), assertthat::noNA(en_exclude_na))
-    assert_that(is.flag(collect), assertthat::noNA(collect))
+  if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
+    assert_that(
+      is.number(en_fecond_threshold),
+      en_fecond_threshold > 0
+    )
+  }
 
-    if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
-        assert_that(is.number(en_fecond_threshold),
-                    en_fecond_threshold > 0)
-    }
+  if (inherits(locs, "data.frame")) {
+    locs <-
+      locs %>%
+      distinct(.data$loc_code)
 
-    if (inherits(locs, "data.frame")) {
-        locs <-
-            locs %>%
-            distinct(.data$loc_code)
+    require_pkgs("DBI")
 
-        require_pkgs("DBI")
+    try(
+      DBI::dbRemoveTable(con, "#locs"),
+      silent = TRUE
+    )
 
-        try(DBI::dbRemoveTable(con, "#locs"),
-            silent = TRUE)
+    locs <-
+      copy_to(
+        con,
+        locs,
+        "#locs"
+      ) %>%
+      inner_join(
+        tbl(con, "vwDimMeetpunt") %>%
+          select(
+            loc_wid = .data$MeetpuntWID,
+            loc_code = .data$MeetpuntCode
+          ),
+        .,
+        by = "loc_code"
+      )
+  }
 
-        locs <-
-            copy_to(con,
-                    locs,
-                    "#locs") %>%
-            inner_join(tbl(con, "vwDimMeetpunt") %>%
-                           select(loc_wid = .data$MeetpuntWID,
-                                  loc_code = .data$MeetpuntCode),
-                       .,
-                       by = "loc_code")
-    }
 
-
-    chem <-
-        tbl(con, "FactChemischeMeting") %>%
-        select(.data$StaalID,
-               .data$DatumWID,
-               .data$ChemVarWID,
-               .data$MeetpuntWID,
-               .data$Meetwaarde,
-               .data$MeetwaardeMEQ,
-               .data$IsBelowLOQ) %>%
-        inner_join(tbl(con, "DimChemVar") %>%
-                       select(.data$ChemVarWID,
-                              .data$ChemVarCode,
-                              .data$ChemVarEenheid),
-                   by = "ChemVarWID") %>%
-        inner_join(tbl(con, "DimTijd") %>%
-                       select(.data$DatumWID,
-                              .data$Datum),
-                   by = "DatumWID") %>%
-        mutate(Datum = sql("CAST(Datum AS date)")) %>%
-        left_join(tbl(con, "ssrs_StaalEN") %>%
-                      select(.data$StaalID,
-                             .data$StaalEN),
-                  by = "StaalID") %>%
-        filter(.data$Datum >= startdate,
-               .data$Datum <= enddate) %>%
-        # temporary values:
-        mutate(lab_project_id = "0",
-               lab_sample_id = sql("CAST(StaalID AS varchar)"),
-               loq = -99) %>%
-        select(loc_wid = .data$MeetpuntWID,
-               date = .data$Datum,
-               .data$lab_project_id,
-               .data$lab_sample_id,
-               chem_variable = .data$ChemVarCode,
-               value_mass = .data$Meetwaarde,
-               value_eq = .data$MeetwaardeMEQ,
-               unit = .data$ChemVarEenheid,
-               below_loq = .data$IsBelowLOQ,
-               .data$loq,
-               elneutr = .data$StaalEN
-        ) %>%
-        filter(!is.na(.data$value_mass)) %>%  # empty rows occur in the DWH!
-        mutate(
-            provide_eq_unit = # when are value_eq units effectively meq/l ?
-                sql(
-                 "CAST((CASE
+  chem <-
+    tbl(con, "FactChemischeMeting") %>%
+    select(
+      .data$StaalID,
+      .data$DatumWID,
+      .data$ChemVarWID,
+      .data$MeetpuntWID,
+      .data$Meetwaarde,
+      .data$MeetwaardeMEQ,
+      .data$IsBelowLOQ
+    ) %>%
+    inner_join(
+      tbl(con, "DimChemVar") %>%
+        select(
+          .data$ChemVarWID,
+          .data$ChemVarCode,
+          .data$ChemVarEenheid
+        ),
+      by = "ChemVarWID"
+    ) %>%
+    inner_join(
+      tbl(con, "DimTijd") %>%
+        select(
+          .data$DatumWID,
+          .data$Datum
+        ),
+      by = "DatumWID"
+    ) %>%
+    mutate(Datum = sql("CAST(Datum AS date)")) %>%
+    left_join(
+      tbl(con, "ssrs_StaalEN") %>%
+        select(
+          .data$StaalID,
+          .data$StaalEN
+        ),
+      by = "StaalID"
+    ) %>%
+    filter(
+      .data$Datum >= startdate,
+      .data$Datum <= enddate
+    ) %>%
+    # temporary values:
+    mutate(
+      lab_project_id = "0",
+      lab_sample_id = sql("CAST(StaalID AS varchar)"),
+      loq = -99
+    ) %>%
+    select(
+      loc_wid = .data$MeetpuntWID,
+      date = .data$Datum,
+      .data$lab_project_id,
+      .data$lab_sample_id,
+      chem_variable = .data$ChemVarCode,
+      value_mass = .data$Meetwaarde,
+      value_eq = .data$MeetwaardeMEQ,
+      unit = .data$ChemVarEenheid,
+      below_loq = .data$IsBelowLOQ,
+      .data$loq,
+      elneutr = .data$StaalEN
+    ) %>%
+    filter(!is.na(.data$value_mass)) %>% # empty rows occur in the DWH!
+    mutate(
+      provide_eq_unit = # when are value_eq units effectively meq/l ?
+        sql(
+          "CAST((CASE
                  WHEN chem_variable IN
                  ('P-PO4', 'N-NO3', 'N-NO2', 'N-NH4', 'HCO3',
                  'SO4', 'Cl', 'Na', 'K', 'Ca', 'Mg',
                  'Fe', 'Mn', 'Si', 'Al') THEN 1
                  ELSE 0
                  END) AS bit)"
-                )
+        )
+    ) %>%
+    inner_join(
+      locs %>%
+        select(
+          .data$loc_wid,
+          .data$loc_code
         ) %>%
-        inner_join(locs %>%
-                       select(.data$loc_wid,
-                              .data$loc_code) %>%
-                       distinct,
-                   .,
-                   by = "loc_wid") %>%
-        select(-.data$loc_wid)
+        distinct(),
+      .,
+      by = "loc_wid"
+    ) %>%
+    select(-.data$loc_wid)
 
-    sqlstring_en <-
-        paste0("elneutr BETWEEN ",
-               en_range[1],
-               " AND ",
-               en_range[2])
+  sqlstring_en <-
+    paste0(
+      "elneutr BETWEEN ",
+      en_range[1],
+      " AND ",
+      en_range[2]
+    )
 
-    # preparing for the application of the en_fecond_threshold:
-    if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
-        samples_fecond <-
-            tbl(con, "FactChemischeMeting") %>%
-            select(.data$StaalID,
-                   .data$DatumWID,
-                   .data$ChemVarWID,
-                   .data$MeetwaardeMEQ) %>%
-            inner_join(tbl(con, "DimChemVar") %>%
-                           select(.data$ChemVarWID,
-                                  .data$ChemVarCode),
-                       by = "ChemVarWID") %>%
-            inner_join(tbl(con, "DimTijd") %>%
-                           select(.data$DatumWID,
-                                  .data$Datum),
-                       by = "DatumWID") %>%
-            mutate(Datum = sql("CAST(Datum AS date)")) %>%
-            filter(.data$Datum >= startdate,
-                   .data$Datum <= enddate) %>%
-            # temporary value:
-            mutate(lab_sample_id = sql("CAST(StaalID AS varchar)")) %>%
-            select(.data$lab_sample_id,
-                   chem_variable = .data$ChemVarCode,
-                   value_eq = .data$MeetwaardeMEQ) %>%
-            filter(!is.na(.data$value_eq),
-                   .data$chem_variable %in% c("Fe", "CondL")) %>%
-            db_pivot_wider(names_from = .data$chem_variable,
-                           values_from = .data$value_eq) %>%
-            mutate(fecond = .data$Fe / .data$CondL) %>%
-            select(.data$lab_sample_id,
-                   .data$fecond) %>%
-            filter(!is.na(.data$fecond))
+  # preparing for the application of the en_fecond_threshold:
+  if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
+    samples_fecond <-
+      tbl(con, "FactChemischeMeting") %>%
+      select(
+        .data$StaalID,
+        .data$DatumWID,
+        .data$ChemVarWID,
+        .data$MeetwaardeMEQ
+      ) %>%
+      inner_join(
+        tbl(con, "DimChemVar") %>%
+          select(
+            .data$ChemVarWID,
+            .data$ChemVarCode
+          ),
+        by = "ChemVarWID"
+      ) %>%
+      inner_join(
+        tbl(con, "DimTijd") %>%
+          select(
+            .data$DatumWID,
+            .data$Datum
+          ),
+        by = "DatumWID"
+      ) %>%
+      mutate(Datum = sql("CAST(Datum AS date)")) %>%
+      filter(
+        .data$Datum >= startdate,
+        .data$Datum <= enddate
+      ) %>%
+      # temporary value:
+      mutate(lab_sample_id = sql("CAST(StaalID AS varchar)")) %>%
+      select(.data$lab_sample_id,
+        chem_variable = .data$ChemVarCode,
+        value_eq = .data$MeetwaardeMEQ
+      ) %>%
+      filter(
+        !is.na(.data$value_eq),
+        .data$chem_variable %in% c("Fe", "CondL")
+      ) %>%
+      db_pivot_wider(
+        names_from = .data$chem_variable,
+        values_from = .data$value_eq
+      ) %>%
+      mutate(fecond = .data$Fe / .data$CondL) %>%
+      select(
+        .data$lab_sample_id,
+        .data$fecond
+      ) %>%
+      filter(!is.na(.data$fecond))
+  }
+
+  # filtering chem according to sample characteristics
+  chem <-
+    # all cases return all non-ion measurements, regardless of settings
+
+    # I. don't allow samples with elneutr = NA, except when
+    # en_fecond_threshold is exceeded:
+    if (en_exclude_na) {
+      if (is.na(en_fecond_threshold) | is.null(en_fecond_threshold)) {
+        # I.1 applying the en_range condition:
+        chem %>%
+          filter((!is.na(.data$elneutr) & sql(sqlstring_en)) |
+            .data$provide_eq_unit == "FALSE")
+      } else {
+        # I.2 applying the en_fecond_threshold OR the en_range condition:
+        chem %>%
+          left_join(samples_fecond, by = "lab_sample_id") %>%
+          filter((!is.na(.data$elneutr) & sql(sqlstring_en)) |
+            .data$fecond >= en_fecond_threshold |
+            .data$provide_eq_unit == "FALSE") %>%
+          select(-.data$fecond)
+      }
+    } else {
+      # II. here, all samples with elneutr = NA are kept as well:
+      if (is.na(en_fecond_threshold) | is.null(en_fecond_threshold)) {
+        # II.1 applying the en_range condition:
+        chem %>%
+          filter(is.na(.data$elneutr) |
+            sql(sqlstring_en) |
+            .data$provide_eq_unit == "FALSE")
+      } else {
+        # II.2 applying the en_fecond_threshold OR the en_range condition:
+        chem %>%
+          left_join(samples_fecond, by = "lab_sample_id") %>%
+          filter(is.na(.data$elneutr) |
+            sql(sqlstring_en) |
+            .data$fecond >= en_fecond_threshold |
+            .data$provide_eq_unit == "FALSE") %>%
+          select(-.data$fecond)
+      }
     }
 
-    # filtering chem according to sample characteristics
+  chem <-
+    switch(conc_type,
+      mass = chem %>%
+        rename(value = .data$value_mass),
+      eq = chem %>%
+        rename(value = .data$value_eq) %>%
+        mutate(unit = ifelse(
+          .data$provide_eq_unit == "TRUE",
+          "meq/l",
+          .data$unit
+        ))
+    ) %>%
+    select(-contains("value_"), -.data$provide_eq_unit) %>%
+    mutate(unit = ifelse(.data$unit == "/", NA, .data$unit))
+
+  if (collect) {
     chem <-
-        # all cases return all non-ion measurements, regardless of settings
+      chem %>%
+      arrange(
+        .data$loc_code,
+        .data$date,
+        .data$chem_variable
+      ) %>%
+      collect()
+  }
 
-            # I. don't allow samples with elneutr = NA, except when
-            # en_fecond_threshold is exceeded:
-        if (en_exclude_na) {
-
-            if (is.na(en_fecond_threshold) | is.null(en_fecond_threshold)) {
-                # I.1 applying the en_range condition:
-                chem %>%
-                    filter((!is.na(.data$elneutr) & sql(sqlstring_en)) |
-                               .data$provide_eq_unit == "FALSE")
-            } else {
-                # I.2 applying the en_fecond_threshold OR the en_range condition:
-                chem %>%
-                    left_join(samples_fecond, by = "lab_sample_id") %>%
-                    filter((!is.na(.data$elneutr) & sql(sqlstring_en)) |
-                               .data$fecond >= en_fecond_threshold |
-                               .data$provide_eq_unit == "FALSE") %>%
-                    select(-.data$fecond)
-            }
-
-        } else {
-
-            # II. here, all samples with elneutr = NA are kept as well:
-            if (is.na(en_fecond_threshold) | is.null(en_fecond_threshold)) {
-                # II.1 applying the en_range condition:
-                chem %>%
-                    filter(is.na(.data$elneutr) |
-                               sql(sqlstring_en) |
-                               .data$provide_eq_unit == "FALSE")
-            } else {
-                # II.2 applying the en_fecond_threshold OR the en_range condition:
-                chem %>%
-                    left_join(samples_fecond, by = "lab_sample_id") %>%
-                    filter(is.na(.data$elneutr) |
-                               sql(sqlstring_en) |
-                               .data$fecond >= en_fecond_threshold |
-                               .data$provide_eq_unit == "FALSE") %>%
-                    select(-.data$fecond)
-            }
-
-        }
-
-    chem <-
-        switch(conc_type,
-               mass = chem %>%
-                        rename(value = .data$value_mass),
-               eq = chem %>%
-                        rename(value = .data$value_eq) %>%
-                        mutate(unit = ifelse(.data$provide_eq_unit == "TRUE",
-                                              "meq/l",
-                                             .data$unit))
-        ) %>%
-        select(-contains("value_"), -.data$provide_eq_unit) %>%
-        mutate(unit = ifelse(.data$unit == "/", NA, .data$unit))
-
-    if (collect) {
-        chem <-
-            chem %>%
-            arrange(.data$loc_code,
-                    .data$date,
-                    .data$chem_variable) %>%
-            collect
-    }
-
-    return(chem)
-
+  return(chem)
 }
-
-
-
-
-
-
-
-
-
-
-
-

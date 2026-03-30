@@ -31,17 +31,16 @@
 #'
 #' @examples
 #' \dontrun{
-#'   watina <- connect_watina()
+#' watina <- connect_watina()
 #'
-#'   # get the chemical data
-#'   mydata <-
+#' # get the chemical data
+#' mydata <-
 #'   get_locs(watina, area_codes = "ZWA") %>%
 #'   get_chem(watina, "1/1/2019") %>%
 #'   collect()
 #'
-#'   # compute ionic ratio and add as new field
-#'   mydata_with_ir <- calculate_ir(mydata)
-#'
+#' # compute ionic ratio and add as new field
+#' mydata_with_ir <- calculate_ir(mydata)
 #' }
 #'
 #' @export
@@ -59,82 +58,102 @@
 #' @importFrom tidyr
 #' pivot_wider
 
-calculate_ir <- function(data){
+calculate_ir <- function(data) {
+  # collect the data if needed
+  if (inherits(data, "tbl_sql")) {
+    data <- data %>%
+      collect()
+  }
 
-    # collect the data if needed
-    if (inherits(data, "tbl_sql")) {
-        data <- data %>%
-            collect
-    }
+  assert_that(
+    all(c(
+      "loc_code", "chem_variable",
+      "value", "unit", "date"
+    ) %in% colnames(data)),
+    msg = "Data does not have the necessary 'loc_code', 'chem_variable', 'value', 'unit' and 'date' columns."
+  )
 
-    assert_that(all(c("loc_code", "chem_variable",
-                      "value", "unit", "date") %in% colnames(data)),
-                msg = "Data does not have the necessary 'loc_code', 'chem_variable', 'value', 'unit' and 'date' columns.")
+  assert_that(
+    (data %>% filter(.data$chem_variable == "Ca") %>% nrow() ==
+      data %>%
+        filter(.data$chem_variable == "Cl") %>%
+        nrow() &
+      data %>%
+        filter(.data$chem_variable == "Cl") %>%
+        nrow() > 0),
+    msg = "There are missing observations for the concentrations of Ca and/or Cl."
+  )
 
-    assert_that((data %>% filter(.data$chem_variable == "Ca") %>% nrow() ==
-                     data %>% filter(.data$chem_variable == "Cl") %>% nrow() &
-                     data %>% filter(.data$chem_variable == "Cl") %>% nrow() > 0),
-                msg = "There are missing observations for the concentrations of Ca and/or Cl.")
+  data_ca_cl <- data %>%
+    select("loc_code", "date", "chem_variable", "value", "unit") %>%
+    filter(.data$chem_variable %in% c("Ca", "Cl"))
+  # note: the measurements for Ca and Cl are always > LOQ
 
-    data_ca_cl <- data %>%
-        select("loc_code", "date", "chem_variable", "value", "unit") %>%
-        filter(.data$chem_variable %in% c("Ca", "Cl"))
-    # note: the measurements for Ca and Cl are always > LOQ
+  # check units
+  # the concentrations in the dataset should be all in meq or all in mg,
+  # not in both units
 
-    # check units
-    # the concentrations in the dataset should be all in meq or all in mg,
-    # not in both units
+  assert_that(
+    data_ca_cl %>%
+      select("unit") %>%
+      unique() %>%
+      nrow() == 1,
+    msg = "Please use the same units for Ca and Cl."
+  )
 
-    assert_that(data_ca_cl %>%
-                    select("unit") %>%
-                    unique() %>%
-                    nrow() == 1,
-                msg = "Please use the same units for Ca and Cl.")
+  # calculate ir
 
-    # calculate ir
-
-    # apparently there can be several results for the same loc_code, chem_variable and date
-    # we take the average
-    if (data_ca_cl %>%
-        summarize(n = n(),
-                  .by = c("loc_code", "date",
-                          "chem_variable", "unit")) %>%
-        filter(n > 1) %>%
-        nrow > 0
-        ) {
-        data_ca_cl <- data_ca_cl %>%
-            summarize(value = mean(.data$value, na.rm = TRUE),
-                      .by = c("loc_code", "date",
-                              "chem_variable", "unit"))
-        warning("There are several results for the same 'loc_code', 'chem_variable' and 'date'.
+  # apparently there can be several results for the same loc_code, chem_variable and date
+  # we take the average
+  if (data_ca_cl %>%
+    summarize(
+      n = n(),
+      .by = c(
+        "loc_code", "date",
+        "chem_variable", "unit"
+      )
+    ) %>%
+    filter(n > 1) %>%
+    nrow() > 0
+  ) {
+    data_ca_cl <- data_ca_cl %>%
+      summarize(
+        value = mean(.data$value, na.rm = TRUE),
+        .by = c(
+          "loc_code", "date",
+          "chem_variable", "unit"
+        )
+      )
+    warning("There are several results for the same 'loc_code', 'chem_variable' and 'date'.
 Is it as expected?
 The ionic ratio will be calculated based on the average of the available measurements, but you might want to check your data.")
-    }
+  }
 
-    if ("mg/l" %in% unique(data_ca_cl$unit)) {
-        # mg
-        data_ca_cl <- data_ca_cl %>%
-            select(-"unit") %>%
-            pivot_wider(names_from = "chem_variable", values_from = "value") %>%
-            mutate(Ca_meq = (.data$Ca*2)/40.078,
-                   Cl_meq = .data$Cl/35.453,
-                   ir = .data$Ca_meq/(.data$Ca_meq + .data$Cl_meq))
+  if ("mg/l" %in% unique(data_ca_cl$unit)) {
+    # mg
+    data_ca_cl <- data_ca_cl %>%
+      select(-"unit") %>%
+      pivot_wider(names_from = "chem_variable", values_from = "value") %>%
+      mutate(
+        Ca_meq = (.data$Ca * 2) / 40.078,
+        Cl_meq = .data$Cl / 35.453,
+        ir = .data$Ca_meq / (.data$Ca_meq + .data$Cl_meq)
+      )
+  } else {
+    # meq
+    data_ca_cl <- data_ca_cl %>%
+      select(-"unit") %>%
+      pivot_wider(names_from = "chem_variable", values_from = "value") %>%
+      mutate(ir = .data$Ca / (.data$Ca + .data$Cl))
+  }
 
-    } else {
-        # meq
-        data_ca_cl <- data_ca_cl %>%
-            select(-"unit") %>%
-            pivot_wider(names_from = "chem_variable", values_from = "value") %>%
-            mutate(ir = .data$Ca/(.data$Ca + .data$Cl))
+  data <- data %>%
+    left_join(
+      data_ca_cl %>%
+        select("loc_code", "date", "ir"),
+      by = c("loc_code", "date")
+    )
 
-    }
-
-    data <- data %>%
-        left_join(data_ca_cl %>%
-                      select("loc_code", "date", "ir"),
-                  by = c("loc_code", "date"))
-
-    return(data)
-    # with ir without units (0-1)
-
+  return(data)
+  # with ir without units (0-1)
 }

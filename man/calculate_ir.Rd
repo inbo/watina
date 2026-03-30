@@ -40,17 +40,16 @@ The result is the ionic ratio \code{ir} without units (0-1).
 }
 \examples{
 \dontrun{
-  watina <- connect_watina()
+watina <- connect_watina()
 
-  # get the chemical data
-  mydata <-
+# get the chemical data
+mydata <-
   get_locs(watina, area_codes = "ZWA") \%>\%
   get_chem(watina, "1/1/2019") \%>\%
   collect()
 
-  # compute ionic ratio and add as new field
-  mydata_with_ir <- calculate_ir(mydata)
-
+# compute ionic ratio and add as new field
+mydata_with_ir <- calculate_ir(mydata)
 }
 
 }
