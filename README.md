@@ -28,8 +28,13 @@ Currently the R package won't work outside INBO.
 To install the current package version from the `main` branch (latest stable release), run:
 
 ```r
-install.packages("watina", repos = c(inbo = "https://inbo.r-universe.dev", 
-                                     CRAN = "https://cloud.r-project.org"))
+install.packages(
+  "watina",
+  repos = c(
+    inbo = "https://inbo.r-universe.dev",
+    CRAN = "https://cloud.r-project.org"
+  )
+)
 ```
 
 The above provides a pre-compiled package for Windows and macOS, which should be faster than below approaches.
@@ -50,10 +55,14 @@ You can consult the vignettes of the latest release on the (this) `pkgdown` [web
 ```r
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
 if (!("nycflights13" %in% installed.packages())) {
-    install.packages("nycflights13")} # to prevent dbplyr from interrupting next step
-remotes::install_github("inbo/watina",
-                        build_vignettes = TRUE,
-                        upgrade = TRUE)
+  # to prevent dbplyr from interrupting next step
+  install.packages("nycflights13")
+}
+remotes::install_github(
+  "inbo/watina",
+  build_vignettes = TRUE,
+  upgrade = TRUE
+)
 ```
 
 Note that this will install the package from the `main` branch.
