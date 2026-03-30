@@ -1424,6 +1424,20 @@ get_chem <- function(locs,
 
   # preparing for the application of the en_fecond_threshold:
   if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
+    if (any(
+      chemdata %>%
+      filter(
+        .data$ChemVarCode == "CondL",
+        !is.na(.data$MeetwaardeMEQ)
+      ) %>%
+      pull(.data$MeetwaardeMEQ) == 0
+    )) {
+      warning(
+        "Zeroes for 'CondL' (lab conductivity) detected. ",
+        "These rows will be ignored in calculating the iron / conductivity ",
+        "ratio for the `fecond` condition."
+      )
+    }
     samples_fecond <-
       chemdata %>%
       # temporary value:
