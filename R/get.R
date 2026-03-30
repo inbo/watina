@@ -1441,7 +1441,9 @@ get_chem <- function(locs,
         names_from = .data$chem_variable,
         values_from = .data$value_eq
       ) %>%
-      mutate(fecond = .data$Fe / .data$CondL) %>%
+      mutate(
+        fecond = .data$Fe / ifelse(.data$CondL == 0, NA_real_, .data$CondL)
+      ) %>%
       select(
         .data$lab_sample_id,
         .data$fecond
