@@ -12,6 +12,9 @@ This release provides new functionality with regard to ionic ratios and plotting
 
 - `get_locs()` now substitutes filterlength values of 0 m by 0.3 m (#108).
 Before, this was only done for missing filterlengths.
+- Harden `get_chem()` with regard to the iron / conductivity ratio calculation (used by the `en_fecond_threshold` argument) (#122):
+  - Limit the calculation to the requested locations.
+  - Set as missing if conductivity is set as zero in the data warehouse, and present a warning in case this occurs.
 - Apply tidyverse code style (#119).
 - Various maintenance.
 
