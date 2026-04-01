@@ -77,7 +77,7 @@ Further, a number of smaller fixes and enhancements were made.
 
 # watina 0.2.2 (2019-11-04)
 
-- On Windows, the functions now convert 'weird' characters from the database to proper UTF-8.
+- On Windows, the functions now convert 'weird' characters from the data warehouse to proper UTF-8.
 - Bugfix (#29) in `get_locs()` regarding the default implementation of the `loc_validity` argument.
 
 # watina 0.2.1 (2019-10-14)
