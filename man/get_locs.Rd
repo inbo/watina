@@ -2,7 +2,7 @@
 % Please edit documentation in R/get.R
 \name{get_locs}
 \alias{get_locs}
-\title{Get locations from the database}
+\title{Get locations from the data warehouse}
 \usage{
 get_locs(
   con,
@@ -178,7 +178,7 @@ a local \code{\link[tibble]{tibble}} is returned.
 }
 \description{
 Returns locations (and optionally, observation wells) from the \emph{Watina}
-database that meet
+data warehouse that meet
 several criteria, either as a lazy object or as a
 local tibble.
 Criteria refer to spatial or non-spatial physical attributes of the
@@ -360,8 +360,8 @@ dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to query the database: 
+Other functions to query the data warehouse: 
 \code{\link{get_chem}()},
 \code{\link{get_xg3}()}
 }
-\concept{functions to query the database}
+\concept{functions to query the data warehouse}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get.R
 \name{get_chem}
 \alias{get_chem}
-\title{Get hydrochemical data from the database}
+\title{Get hydrochemical data from the data warehouse}
 \usage{
 get_chem(
   locs,
@@ -144,7 +144,7 @@ for this analysis in the laboratory?
 }
 }
 \description{
-Returns hydrochemical data from the \emph{Watina} database,
+Returns hydrochemical data from the \emph{Watina} data warehouse,
 either as a lazy object or as a
 local tibble.
 The values must belong to selected locations
@@ -258,8 +258,8 @@ dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to query the database: 
+Other functions to query the data warehouse: 
 \code{\link{get_locs}()},
 \code{\link{get_xg3}()}
 }
-\concept{functions to query the database}
+\concept{functions to query the data warehouse}
