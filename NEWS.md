@@ -1,3 +1,20 @@
+# watina (development version)
+
+### New features
+
+This release provides new functionality with regard to ionic ratios and plotting them in a Van Wirdum diagram (#114):
+
+- New function `calculate_ir()` to compute the ionic ratio.
+- New function `ggplot_vanwirdum_background()` to get a Van Wirdum diagram as ggplot object (without custom data), to which data layers can be added by the user.
+- New vignette on plotting chemistry data: `vignette("v230_chem_plots")`.
+
+### Improvements and fixes
+
+- `get_locs()` now substitutes filterlength values of 0 m by 0.3 m (#108).
+Before, this was only done for missing filterlengths.
+- Apply tidyverse code style (#119).
+- Various maintenance.
+
 # watina 0.4.2 (2023-09-15)
 
 - Move package {KSgeneral} to `Suggests` (#103).
@@ -27,7 +44,7 @@ For the moment not taking further measures to protect against it, as the package
 
 # watina 0.3.0 (2020-05-20)
 
-#### New features
+### New features
 
 - New function `cluster_locs()` to spatially cluster locations (well clusters) (#39)
 - More fun with `get_locs()`:
@@ -70,7 +87,7 @@ affecting the installation process on Windows (warnings were thrown).
 
 # watina 0.2.0 (2019-10-02)
 
-#### New features
+### New features
 
 - Several functions have been added to query and process chemical data.
 - Three vignettes have been added.
