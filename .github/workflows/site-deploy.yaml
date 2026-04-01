@@ -23,7 +23,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: ${{ secrets.CACHE_VERSION }}
-          extra-packages: local::., pkgdown@1.6.1
+          extra-packages: local::.
           needs: website
 
       - name: Deploy package
