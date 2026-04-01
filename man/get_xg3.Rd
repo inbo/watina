@@ -2,7 +2,7 @@
 % Please edit documentation in R/get.R
 \name{get_xg3}
 \alias{get_xg3}
-\title{Get XG3 values from the database}
+\title{Get XG3 values from the data warehouse}
 \usage{
 get_xg3(
   locs,
@@ -47,7 +47,7 @@ to the soil surface level itself
 
 \item{with_estimated}{Logical.
 If \code{TRUE} (the default), the XG3 values calculations also use estimated
-(i.e. non-measured) water level data that are available in the database.}
+(i.e. non-measured) water level data that are available in the data warehouse.}
 
 \item{collect}{Should the data be retrieved as a local tibble?
 If \code{FALSE} (the default), a \code{tbl_lazy} object is returned
@@ -67,7 +67,7 @@ The suffix of the XG3 variables is either "\code{_lcl}" for
 "\code{_ost}" for \code{vert_crs = "ostend"}.
 }
 \description{
-Returns XG3 values from the \emph{Watina} database,
+Returns XG3 values from the \emph{Watina} data warehouse,
 either as a lazy object or as a
 local tibble.
 The values must belong to selected locations
@@ -126,8 +126,8 @@ dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to query the database: 
+Other functions to query the data warehouse: 
 \code{\link{get_chem}()},
 \code{\link{get_locs}()}
 }
-\concept{functions to query the database}
+\concept{functions to query the data warehouse}

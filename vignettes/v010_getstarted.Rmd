@@ -21,7 +21,7 @@ library(knitr)
 ```
 
 _General note: the below vignette contains frozen output of 14 Jan 2021._
-_This makes it possible to build the package with vignettes without access to the Watina database._
+_This makes it possible to build the package with vignettes without access to the Watina data warehouse._
 
 ## Connecting
 
@@ -309,7 +309,7 @@ get_locs(
 #> #   filterlength <dbl>, filterdepth <dbl>
 ```
 
-Note that the lazy object contains a `loc_wid` column, which is an internal database variable to identify locations and make relations between tables.
+Note that the lazy object contains a `loc_wid` column, which is an internal data warehouse variable to identify locations and make relations between tables.
 It should not be regarded as a stable ID; hence don't store it for later use (note that lazy objects don't store data).
 Consequently, the `loc_wid` column is omitted when using `collect = TRUE`.
 

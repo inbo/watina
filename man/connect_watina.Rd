@@ -2,7 +2,7 @@
 % Please edit documentation in R/connect_watina.R
 \name{connect_watina}
 \alias{connect_watina}
-\title{Connect to the INBO Watina database}
+\title{Connect to the INBO Watina data warehouse}
 \usage{
 connect_watina()
 }
@@ -10,7 +10,7 @@ connect_watina()
 A \code{DBIConnection} object.
 }
 \description{
-Returns a connection to the INBO \strong{Watina} database.
+Returns a connection to the INBO \strong{Watina} data warehouse.
 The function can only be used from within the INBO network.
 }
 \details{
