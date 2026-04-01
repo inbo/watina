@@ -1,4 +1,4 @@
-# watina (development version)
+# watina 0.5.0 (2026-04-01)
 
 ### New features
 
