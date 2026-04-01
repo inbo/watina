@@ -1242,6 +1242,7 @@ get_xg3 <- function(locs,
 #' arrange
 #' distinct
 #' sql
+#' rename
 get_chem <- function(locs,
                      con,
                      startdate,
@@ -1322,8 +1323,8 @@ get_chem <- function(locs,
       )
   }
 
-
-  chem <-
+  # filter chemistry data for dates and locations
+  chemdata <-
     tbl(con, "FactChemischeMeting") %>%
     select(
       .data$StaalID,
@@ -1352,6 +1353,26 @@ get_chem <- function(locs,
       by = "DatumWID"
     ) %>%
     mutate(Datum = sql("CAST(Datum AS date)")) %>%
+    filter(
+      .data$Datum >= startdate,
+      .data$Datum <= enddate
+    ) %>%
+    rename(loc_wid = .data$MeetpuntWID) %>%
+    inner_join(
+      locs %>%
+        select(
+          .data$loc_wid,
+          .data$loc_code
+        ) %>%
+        distinct(),
+      .,
+      by = "loc_wid"
+    ) %>%
+    select(-.data$loc_wid)
+
+  # add relevant further attributes and rename
+  chem <-
+    chemdata %>%
     left_join(
       tbl(con, "ssrs_StaalEN") %>%
         select(
@@ -1360,10 +1381,6 @@ get_chem <- function(locs,
         ),
       by = "StaalID"
     ) %>%
-    filter(
-      .data$Datum >= startdate,
-      .data$Datum <= enddate
-    ) %>%
     # temporary values:
     mutate(
       lab_project_id = "0",
@@ -1371,7 +1388,7 @@ get_chem <- function(locs,
       loq = -99
     ) %>%
     select(
-      loc_wid = .data$MeetpuntWID,
+      .data$loc_code,
       date = .data$Datum,
       .data$lab_project_id,
       .data$lab_sample_id,
@@ -1395,18 +1412,7 @@ get_chem <- function(locs,
                  ELSE 0
                  END) AS bit)"
         )
-    ) %>%
-    inner_join(
-      locs %>%
-        select(
-          .data$loc_wid,
-          .data$loc_code
-        ) %>%
-        distinct(),
-      .,
-      by = "loc_wid"
-    ) %>%
-    select(-.data$loc_wid)
+    )
 
   sqlstring_en <-
     paste0(
@@ -1418,38 +1424,26 @@ get_chem <- function(locs,
 
   # preparing for the application of the en_fecond_threshold:
   if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
-    samples_fecond <-
-      tbl(con, "FactChemischeMeting") %>%
-      select(
-        .data$StaalID,
-        .data$DatumWID,
-        .data$ChemVarWID,
-        .data$MeetwaardeMEQ
-      ) %>%
-      inner_join(
-        tbl(con, "DimChemVar") %>%
-          select(
-            .data$ChemVarWID,
-            .data$ChemVarCode
-          ),
-        by = "ChemVarWID"
-      ) %>%
-      inner_join(
-        tbl(con, "DimTijd") %>%
-          select(
-            .data$DatumWID,
-            .data$Datum
-          ),
-        by = "DatumWID"
-      ) %>%
-      mutate(Datum = sql("CAST(Datum AS date)")) %>%
+    if (any(
+      chemdata %>%
       filter(
-        .data$Datum >= startdate,
-        .data$Datum <= enddate
+        .data$ChemVarCode == "CondL",
+        !is.na(.data$MeetwaardeMEQ)
       ) %>%
+      pull(.data$MeetwaardeMEQ) == 0
+    )) {
+      warning(
+        "Zeroes for 'CondL' (lab conductivity) detected. ",
+        "These rows will be ignored in calculating the iron / conductivity ",
+        "ratio for the `en_fecond_threshold` condition."
+      )
+    }
+    samples_fecond <-
+      chemdata %>%
       # temporary value:
       mutate(lab_sample_id = sql("CAST(StaalID AS varchar)")) %>%
-      select(.data$lab_sample_id,
+      select(
+        .data$lab_sample_id,
         chem_variable = .data$ChemVarCode,
         value_eq = .data$MeetwaardeMEQ
       ) %>%
@@ -1461,7 +1455,9 @@ get_chem <- function(locs,
         names_from = .data$chem_variable,
         values_from = .data$value_eq
       ) %>%
-      mutate(fecond = .data$Fe / .data$CondL) %>%
+      mutate(
+        fecond = .data$Fe / ifelse(.data$CondL == 0, NA_real_, .data$CondL)
+      ) %>%
       select(
         .data$lab_sample_id,
         .data$fecond
@@ -1479,15 +1475,19 @@ get_chem <- function(locs,
       if (is.na(en_fecond_threshold) | is.null(en_fecond_threshold)) {
         # I.1 applying the en_range condition:
         chem %>%
-          filter((!is.na(.data$elneutr) & sql(sqlstring_en)) |
-            .data$provide_eq_unit == "FALSE")
+          filter(
+            (!is.na(.data$elneutr) & sql(sqlstring_en)) |
+              .data$provide_eq_unit == "FALSE"
+          )
       } else {
         # I.2 applying the en_fecond_threshold OR the en_range condition:
         chem %>%
           left_join(samples_fecond, by = "lab_sample_id") %>%
-          filter((!is.na(.data$elneutr) & sql(sqlstring_en)) |
-            .data$fecond >= en_fecond_threshold |
-            .data$provide_eq_unit == "FALSE") %>%
+          filter(
+            (!is.na(.data$elneutr) & sql(sqlstring_en)) |
+              .data$fecond >= en_fecond_threshold |
+              .data$provide_eq_unit == "FALSE"
+          ) %>%
           select(-.data$fecond)
       }
     } else {
@@ -1495,17 +1495,21 @@ get_chem <- function(locs,
       if (is.na(en_fecond_threshold) | is.null(en_fecond_threshold)) {
         # II.1 applying the en_range condition:
         chem %>%
-          filter(is.na(.data$elneutr) |
-            sql(sqlstring_en) |
-            .data$provide_eq_unit == "FALSE")
+          filter(
+            is.na(.data$elneutr) |
+              sql(sqlstring_en) |
+              .data$provide_eq_unit == "FALSE"
+          )
       } else {
         # II.2 applying the en_fecond_threshold OR the en_range condition:
         chem %>%
           left_join(samples_fecond, by = "lab_sample_id") %>%
-          filter(is.na(.data$elneutr) |
-            sql(sqlstring_en) |
-            .data$fecond >= en_fecond_threshold |
-            .data$provide_eq_unit == "FALSE") %>%
+          filter(
+            is.na(.data$elneutr) |
+              sql(sqlstring_en) |
+              .data$fecond >= en_fecond_threshold |
+              .data$provide_eq_unit == "FALSE"
+          ) %>%
           select(-.data$fecond)
       }
     }
