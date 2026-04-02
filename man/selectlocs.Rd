@@ -17,10 +17,10 @@ selectlocs(
 \arguments{
 \item{data}{Either:
 \itemize{
-\item{a dataset (dataframe or lazy object) with the variable's values}:
+\item{a dataset (data frame or lazy object) with the variable's values}:
 with at least a column \code{loc_code}, a column with the variable name,
 and a column \code{value};
-\item{a dataframe with summary statistics}:
+\item{a data frame with summary statistics}:
 with a first column \code{loc_code} and a second column with the evaluated
 variable names or codes.
 The column name of the second column can vary.
@@ -38,7 +38,7 @@ dataset.}
 \item{eval_args}{The arguments of the evaluation function, as a named list,
 if \code{data} is a dataset.}
 
-\item{conditions}{A dataframe.
+\item{conditions}{A data frame.
 It must have the
 following columns:
 \describe{
@@ -58,8 +58,8 @@ the statistic must be equal to the criterion value.
 }
 }
 
-Each condition is one row of the dataframe.
-The dataframe should have at least one, and may have many.
+Each condition is one row of the data frame.
+The data frame should have at least one, and may have many.
 Each combination of \code{chem_variable} and \code{statistic} must be
 unique.
 Conditions on chemical variables, absent from \code{data} or not implied by
@@ -86,12 +86,12 @@ with intermediate results.
 \description{
 Generic (helper) function to select locations that comply with
 user-specified conditions,
-from either a dataset (dataframe or lazy object) with the variable's values or
-from a dataframe with summary statistics.
+from either a dataset (data frame or lazy object) with the variable's values or
+from a data frame with summary statistics.
 }
 \details{
 The result of the evaluation function (\code{eval_fun}) must produce a
-dataframe, formatted as declared by the second bullet under the
+data frame, formatted as declared by the second bullet under the
 \code{data} argument.
 }
 \keyword{internal}

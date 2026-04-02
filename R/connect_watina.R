@@ -1,6 +1,6 @@
-#' Connect to the INBO Watina database
+#' Connect to the INBO Watina data warehouse
 #'
-#' Returns a connection to the INBO \strong{Watina} database.
+#' Returns a connection to the INBO \strong{Watina} data warehouse.
 #' The function can only be used from within the INBO network.
 #'
 #' Don't forget to disconnect at the end of your R-script using
@@ -20,10 +20,8 @@
 #' @export
 #' @importFrom inbodb connect_inbo_dbase
 connect_watina <- function() {
-    connect_inbo_dbase("W0002_00_Watina",
-                       autoconvert_utf8 = TRUE)
+  connect_inbo_dbase("W0002_00_Watina", autoconvert_utf8 = TRUE)
 }
-
 
 
 #' Disconnect a database connection

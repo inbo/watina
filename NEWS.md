@@ -1,3 +1,23 @@
+# watina 0.5.0 (2026-04-01)
+
+### New features
+
+This release provides new functionality with regard to ionic ratios and plotting them in a Van Wirdum diagram (#114):
+
+- New function `calculate_ir()` to compute the ionic ratio.
+- New function `ggplot_vanwirdum_background()` to get a Van Wirdum diagram as ggplot object (without custom data), to which data layers can be added by the user.
+- New vignette on plotting chemistry data: `vignette("v230_chem_plots")`.
+
+### Improvements and fixes
+
+- `get_locs()` now substitutes filterlength values of 0 m by 0.3 m (#108).
+Before, this was only done for missing filterlengths.
+- Harden `get_chem()` with regard to the iron / conductivity ratio calculation (used by the `en_fecond_threshold` argument) (#122):
+  - Limit the calculation to the requested locations.
+  - Set as missing if conductivity is set as zero in the data warehouse, and present a warning in case this occurs.
+- Apply tidyverse code style (#119).
+- Various maintenance.
+
 # watina 0.4.2 (2023-09-15)
 
 - Move package {KSgeneral} to `Suggests` (#103).
@@ -6,7 +26,7 @@ For the moment not taking further measures to protect against it, as the package
 
 # watina 0.4.1 (2021-06-11)
 
-- Fixed non-working `get_xg3()` and `get_chem()` for dataframe input, by avoiding the currently defunct `dbplyr::db_drop_table()` (#89, [08bc66d](https://github.com/inbo/watina/commit/08bc66d)).
+- Fixed non-working `get_xg3()` and `get_chem()` for data frame input, by avoiding the currently defunct `dbplyr::db_drop_table()` (#89, [08bc66d](https://github.com/inbo/watina/commit/08bc66d)).
 - Various maintenance (#81, #86, #87, #88, [c382499](https://github.com/inbo/watina/commit/c382499)).
 
 # watina 0.4.0 (2021-01-18)
@@ -27,7 +47,7 @@ For the moment not taking further measures to protect against it, as the package
 
 # watina 0.3.0 (2020-05-20)
 
-#### New features
+### New features
 
 - New function `cluster_locs()` to spatially cluster locations (well clusters) (#39)
 - More fun with `get_locs()`:
@@ -60,7 +80,7 @@ Further, a number of smaller fixes and enhancements were made.
 
 # watina 0.2.2 (2019-11-04)
 
-- On Windows, the functions now convert 'weird' characters from the database to proper UTF-8.
+- On Windows, the functions now convert 'weird' characters from the data warehouse to proper UTF-8.
 - Bugfix (#29) in `get_locs()` regarding the default implementation of the `loc_validity` argument.
 
 # watina 0.2.1 (2019-10-14)
@@ -70,7 +90,7 @@ affecting the installation process on Windows (warnings were thrown).
 
 # watina 0.2.0 (2019-10-02)
 
-#### New features
+### New features
 
 - Several functions have been added to query and process chemical data.
 - Three vignettes have been added.

@@ -21,7 +21,7 @@ library(knitr)
 ```
 
 _General note: the below vignette contains frozen output of 14 Jan 2021._
-_This makes it possible to build the package with vignettes without access to the Watina database._
+_This makes it possible to build the package with vignettes without access to the Watina data warehouse._
 
 ## Connecting
 
@@ -44,10 +44,10 @@ The returned data include some essential metadata of the locations.
 The following example shows a few rows:
 
 ```{r}
-get_locs(watina) %>% 
-  head(5) %>% 
-  collect %>% 
-  as.data.frame
+get_locs(watina) %>%
+  head(5) %>%
+  collect() %>%
+  as.data.frame()
 #>   loc_wid loc_code area_code area_name      x      y loc_validitycode
 #> 1      45  AABP001       AAB    Aabeek 177604 209714              VLD
 #> 2    6291  AABP002       AAB    Aabeek 177903 209459              VLD
@@ -79,22 +79,24 @@ Selections can be done in a variety of ways -- and these ways can be combined:
 - by using area codes:
 
 ```{r}
-get_locs(watina,
-         area_codes = c("KAL", "KBR"))
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR")
+)
 #> # Source:   lazy query [?? x 17]
 #> # Database: Microsoft SQL Server
 #>    loc_wid loc_code area_code area_name      x      y loc_validitycode
-#>      <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>           
-#>  1    2824 KALP022  KAL       Kalmthou… 155356 230811 VLD             
-#>  2    1546 KALP030  KAL       Kalmthou… 152990 238600 VLD             
-#>  3    6205 KALP032  KAL       Kalmthou… 159110 239010 VLD             
-#>  4   10069 KALP034  KAL       Kalmthou… 152962 231345 VLD             
-#>  5    1549 KALP035  KAL       Kalmthou… 153000 236850 VLD             
-#>  6    1552 KALP039  KAL       Kalmthou… 160940 235060 VLD             
-#>  7    4327 KALP050  KAL       Kalmthou… 153881 233802 VLD             
-#>  8    6210 KALP051  KAL       Kalmthou… 153822 233761 VLD             
-#>  9    1562 KALP052  KAL       Kalmthou… 153822 233761 VLD             
-#> 10    1563 KALP053  KAL       Kalmthou… 153781 233736 VLD             
+#>      <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>
+#>  1    2824 KALP022  KAL       Kalmthou… 155356 230811 VLD
+#>  2    1546 KALP030  KAL       Kalmthou… 152990 238600 VLD
+#>  3    6205 KALP032  KAL       Kalmthou… 159110 239010 VLD
+#>  4   10069 KALP034  KAL       Kalmthou… 152962 231345 VLD
+#>  5    1549 KALP035  KAL       Kalmthou… 153000 236850 VLD
+#>  6    1552 KALP039  KAL       Kalmthou… 160940 235060 VLD
+#>  7    4327 KALP050  KAL       Kalmthou… 153881 233802 VLD
+#>  8    6210 KALP051  KAL       Kalmthou… 153822 233761 VLD
+#>  9    1562 KALP052  KAL       Kalmthou… 153822 233761 VLD
+#> 10    1563 KALP053  KAL       Kalmthou… 153781 233736 VLD
 #> # … with more rows, and 10 more variables: loc_validity <chr>,
 #> #   loc_typecode <chr>, loc_typename <chr>, obswell_statecode <chr>,
 #> #   obswell_state <chr>, soilsurf_ost <dbl>, measuringref_ost <dbl>,
@@ -104,9 +106,11 @@ get_locs(watina,
 The number of involved locations is given by:
 
 ```{r}
-get_locs(watina,
-         area_codes = c("KAL", "KBR")) %>% 
-  count
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR")
+) %>%
+  count()
 #> # Source:   lazy query [?? x 1]
 #> # Database: Microsoft SQL Server
 #>       n
@@ -118,10 +122,12 @@ get_locs(watina,
 - you can specify the type of location (device):
 
 ```{r}
-get_locs(watina,
-         area_codes = c("KAL", "KBR"),
-         loc_type = c("P", "S")) %>% 
-  count
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S")
+) %>%
+  count()
 #> # Source:   lazy query [?? x 1]
 #> # Database: Microsoft SQL Server
 #>       n
@@ -138,11 +144,13 @@ By default, only filterdepths between 0 and 3 meters below soilsurface are retur
 Indeed, more records are returned when allowing groundwater piezometers with missing filterdepth:
 
 ```{r}
-get_locs(watina,
-         area_codes = c("KAL", "KBR"),
-         loc_type = c("P", "S"),
-         filterdepth_na = TRUE) %>% 
-  count
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S"),
+  filterdepth_na = TRUE
+) %>%
+  count()
 #> # Source:   lazy query [?? x 1]
 #> # Database: Microsoft SQL Server
 #>       n
@@ -153,12 +161,14 @@ get_locs(watina,
 Of course you can set further conditions for other variables, by building upon the lazy result of `get_locs()`, e.g.:
 
 ```{r}
-get_locs(watina,
-         area_codes = c("KAL", "KBR"),
-         loc_type = c("P", "S"),
-         filterdepth_na = TRUE) %>%
-  filter(obswell_state == "OK - niet bemeten") %>% 
-  count
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S"),
+  filterdepth_na = TRUE
+) %>%
+  filter(obswell_state == "OK - niet bemeten") %>%
+  count()
 #> # Source:   lazy query [?? x 1]
 #> # Database: Microsoft SQL Server
 #>       n
@@ -170,25 +180,29 @@ get_locs(watina,
 - by using a spatial bounding box (rectangular area), using the Belgian Lambert 72 coordinate reference system (EPSG-code [31370](https://epsg.io/31370)):
 
 ```{r}
-get_locs(watina,
-         bbox = c(xmin = 1.4e+5,
-                  xmax = 1.7e+5,
-                  ymin = 1.6e+5,
-                  ymax = 1.9e+5))
+get_locs(
+  watina,
+  bbox = c(
+    xmin = 1.4e+5,
+    xmax = 1.7e+5,
+    ymin = 1.6e+5,
+    ymax = 1.9e+5
+  )
+)
 #> # Source:   lazy query [?? x 17]
 #> # Database: Microsoft SQL Server
 #>    loc_wid loc_code area_code area_name      x      y loc_validitycode
-#>      <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>           
-#>  1   10261 ATGP002  ATG       Antitank… 169572 186043 VLD             
-#>  2     777 BABP012  BAB       Barebeek  160190 180988 VLD             
-#>  3    5629 DORP016  DOR       Dorent    158521 186074 VLD             
-#>  4    5630 DORP017  DOR       Dorent    158442 185925 VLD             
-#>  5    5632 DORP019  DOR       Dorent    158304 184915 VLD             
-#>  6    5634 DORP020  DOR       Dorent    158352 184259 VLD             
-#>  7    5635 DORP021  DOR       Dorent    158103 183853 VLD             
-#>  8    5586 DORP022  DOR       Dorent    157715 184013 VLD             
-#>  9    5587 DORP023  DOR       Dorent    154284 182533 VLD             
-#> 10    6420 DORP024  DOR       Dorent    154823 182431 VLD             
+#>      <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>
+#>  1   10261 ATGP002  ATG       Antitank… 169572 186043 VLD
+#>  2     777 BABP012  BAB       Barebeek  160190 180988 VLD
+#>  3    5629 DORP016  DOR       Dorent    158521 186074 VLD
+#>  4    5630 DORP017  DOR       Dorent    158442 185925 VLD
+#>  5    5632 DORP019  DOR       Dorent    158304 184915 VLD
+#>  6    5634 DORP020  DOR       Dorent    158352 184259 VLD
+#>  7    5635 DORP021  DOR       Dorent    158103 183853 VLD
+#>  8    5586 DORP022  DOR       Dorent    157715 184013 VLD
+#>  9    5587 DORP023  DOR       Dorent    154284 182533 VLD
+#> 10    6420 DORP024  DOR       Dorent    154823 182431 VLD
 #> # … with more rows, and 10 more variables: loc_validity <chr>,
 #> #   loc_typecode <chr>, loc_typename <chr>, obswell_statecode <chr>,
 #> #   obswell_state <chr>, soilsurf_ost <dbl>, measuringref_ost <dbl>,
@@ -198,15 +212,17 @@ get_locs(watina,
 - if you already have specific location codes in mind, you can provide these directly as a vector:
 
 ```{r}
-get_locs(watina,
-         loc_vec = c("KBRP081", "KBRP090", "KBRP095"))
+get_locs(
+  watina,
+  loc_vec = c("KBRP081", "KBRP090", "KBRP095")
+)
 #> # Source:   lazy query [?? x 17]
 #> # Database: Microsoft SQL Server
 #>   loc_wid loc_code area_code area_name      x      y loc_validitycode
-#>     <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>           
-#> 1     664 KBRP081  KBR       Polders … 145846 204871 VLD             
-#> 2     698 KBRP090  KBR       Polders … 145988 204702 VLD             
-#> 3     709 KBRP095  KBR       Polders … 145949 204712 VLD             
+#>     <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>
+#> 1     664 KBRP081  KBR       Polders … 145846 204871 VLD
+#> 2     698 KBRP090  KBR       Polders … 145988 204702 VLD
+#> 3     709 KBRP095  KBR       Polders … 145949 204712 VLD
 #> # … with 10 more variables: loc_validity <chr>, loc_typecode <chr>,
 #> #   loc_typename <chr>, obswell_statecode <chr>, obswell_state <chr>,
 #> #   soilsurf_ost <dbl>, measuringref_ost <dbl>, tubelength <dbl>,
@@ -216,40 +232,45 @@ get_locs(watina,
 - you can use a geospatial filter of class [sf](https://r-spatial.github.io/sf/) to make selections, by using the `mask` argument:
 
 ```{r echo=FALSE, include=FALSE}
-westfl <- 
-    "https://geoservices.informatievlaanderen.be/overdrachtdiensten/VRBG/wfs" %>%
-    httr::parse_url() %>%
-    purrr::list_merge(query = list(request = "GetFeature",
-                                   typeName = "VRBG:Refprv",
-                                   cql_filter="NAAM='West-Vlaanderen'",
-                                   srsName = "EPSG:31370",
-                                   outputFormat = "text/xml; subtype=gml/3.1.1")) %>%
-    httr::build_url() %>%
-    read_sf(crs = 31370) %>% 
-    st_cast("GEOMETRYCOLLECTION")
+westfl <-
+  "https://geo.api.vlaanderen.be/VRBG/wfs" %>%
+  httr::parse_url() %>%
+  purrr::list_merge(query = list(
+    request = "GetFeature",
+    typeName = "VRBG:Refprv",
+    cql_filter = "NAAM='West-Vlaanderen'",
+    srsName = "EPSG:31370",
+    outputFormat = "text/xml; subtype=gml/3.1.1"
+  )) %>%
+  httr::build_url() %>%
+  read_sf(crs = 31370) %>%
+  st_cast("GEOMETRYCOLLECTION")
 ```
 
 
 ```{r}
-get_locs(watina,
-         mask = westfl,  # sf polygon of the 'West-Vlaanderen' province
-         buffer = 0)
+get_locs(
+  watina,
+  mask = westfl,
+  # sf polygon of the 'West-Vlaanderen' province
+  buffer = 0
+)
 #> As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.
 #> Warning in get_locs(watina, mask = westfl, buffer = 0): Dropped 44 locations from which x or y coordinates were missing.
 #> Warning in warn_xy_duplicates(locs$x, locs$y): 28 different coordinate pairs occur more than once.
 #> # A tibble: 905 x 16
 #>    loc_code area_code area_name     x      y loc_validitycode loc_validity
-#>  * <chr>    <chr>     <chr>     <dbl>  <dbl> <chr>            <chr>       
-#>  1 ASSP001  ASS       Assebroe… 74324 208838 VLD              Gevalideerd 
-#>  2 ASSP002  ASS       Assebroe… 74526 208787 VLD              Gevalideerd 
-#>  3 ASSP003  ASS       Assebroe… 74169 208790 VLD              Gevalideerd 
-#>  4 ASSP004  ASS       Assebroe… 74108 208605 VLD              Gevalideerd 
-#>  5 ASSP005  ASS       Assebroe… 73910 208646 VLD              Gevalideerd 
-#>  6 ASSP006  ASS       Assebroe… 74033 208916 VLD              Gevalideerd 
-#>  7 ASSP007  ASS       Assebroe… 73609 208954 VLD              Gevalideerd 
-#>  8 ASSP008  ASS       Assebroe… 73948 209104 VLD              Gevalideerd 
-#>  9 ASSP009  ASS       Assebroe… 73613 208584 VLD              Gevalideerd 
-#> 10 ASSP010  ASS       Assebroe… 73583 208390 VLD              Gevalideerd 
+#>  * <chr>    <chr>     <chr>     <dbl>  <dbl> <chr>            <chr>
+#>  1 ASSP001  ASS       Assebroe… 74324 208838 VLD              Gevalideerd
+#>  2 ASSP002  ASS       Assebroe… 74526 208787 VLD              Gevalideerd
+#>  3 ASSP003  ASS       Assebroe… 74169 208790 VLD              Gevalideerd
+#>  4 ASSP004  ASS       Assebroe… 74108 208605 VLD              Gevalideerd
+#>  5 ASSP005  ASS       Assebroe… 73910 208646 VLD              Gevalideerd
+#>  6 ASSP006  ASS       Assebroe… 74033 208916 VLD              Gevalideerd
+#>  7 ASSP007  ASS       Assebroe… 73609 208954 VLD              Gevalideerd
+#>  8 ASSP008  ASS       Assebroe… 73948 209104 VLD              Gevalideerd
+#>  9 ASSP009  ASS       Assebroe… 73613 208584 VLD              Gevalideerd
+#> 10 ASSP010  ASS       Assebroe… 73583 208390 VLD              Gevalideerd
 #> # … with 895 more rows, and 9 more variables: loc_typecode <chr>,
 #> #   loc_typename <chr>, obswell_statecode <chr>, obswell_state <chr>,
 #> #   soilsurf_ost <dbl>, measuringref_ost <dbl>, tubelength <dbl>,
@@ -259,34 +280,36 @@ get_locs(watina,
 Note that the default value for `buffer` is 10 meters; it is used to enlarge mask (or shrink it, if `buffer` < 0).
 Also, note there are a few warnings to inform about dropped locations and duplicated coordinates.
 
-Instead of leaving the output as a `tbl_lazy` object, you can also retrieve it as a tibble (i.e. an easier-to-use type of dataframe) by setting `collect = TRUE`.
+Instead of leaving the output as a `tbl_lazy` object, you can also retrieve it as a tibble (i.e. an easier-to-use type of data frame) by setting `collect = TRUE`.
 
 ```{r}
-get_locs(watina,
-         area_codes = c("KAL", "KBR"),
-         loc_type = c("P", "S"),
-         collect = TRUE)
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S"),
+  collect = TRUE
+)
 #> Warning in warn_xy_duplicates(locs$x, locs$y): 15 different coordinate pairs occur more than once.
 #> # A tibble: 247 x 16
 #>    loc_code area_code area_name      x      y loc_validitycode loc_validity
-#>    <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>            <chr>       
-#>  1 KALP022  KAL       Kalmthou… 155356 230811 VLD              Gevalideerd 
-#>  2 KALP030  KAL       Kalmthou… 152990 238600 VLD              Gevalideerd 
-#>  3 KALP032  KAL       Kalmthou… 159110 239010 VLD              Gevalideerd 
-#>  4 KALP034  KAL       Kalmthou… 152962 231345 VLD              Gevalideerd 
-#>  5 KALP035  KAL       Kalmthou… 153000 236850 VLD              Gevalideerd 
-#>  6 KALP039  KAL       Kalmthou… 160940 235060 VLD              Gevalideerd 
-#>  7 KALP050  KAL       Kalmthou… 153881 233802 VLD              Gevalideerd 
-#>  8 KALP051  KAL       Kalmthou… 153822 233761 VLD              Gevalideerd 
-#>  9 KALP052  KAL       Kalmthou… 153822 233761 VLD              Gevalideerd 
-#> 10 KALP053  KAL       Kalmthou… 153781 233736 VLD              Gevalideerd 
+#>    <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>            <chr>
+#>  1 KALP022  KAL       Kalmthou… 155356 230811 VLD              Gevalideerd
+#>  2 KALP030  KAL       Kalmthou… 152990 238600 VLD              Gevalideerd
+#>  3 KALP032  KAL       Kalmthou… 159110 239010 VLD              Gevalideerd
+#>  4 KALP034  KAL       Kalmthou… 152962 231345 VLD              Gevalideerd
+#>  5 KALP035  KAL       Kalmthou… 153000 236850 VLD              Gevalideerd
+#>  6 KALP039  KAL       Kalmthou… 160940 235060 VLD              Gevalideerd
+#>  7 KALP050  KAL       Kalmthou… 153881 233802 VLD              Gevalideerd
+#>  8 KALP051  KAL       Kalmthou… 153822 233761 VLD              Gevalideerd
+#>  9 KALP052  KAL       Kalmthou… 153822 233761 VLD              Gevalideerd
+#> 10 KALP053  KAL       Kalmthou… 153781 233736 VLD              Gevalideerd
 #> # … with 237 more rows, and 9 more variables: loc_typecode <chr>,
 #> #   loc_typename <chr>, obswell_statecode <chr>, obswell_state <chr>,
 #> #   soilsurf_ost <dbl>, measuringref_ost <dbl>, tubelength <dbl>,
 #> #   filterlength <dbl>, filterdepth <dbl>
 ```
 
-Note that the lazy object contains a `loc_wid` column, which is an internal database variable to identify locations and make relations between tables.
+Note that the lazy object contains a `loc_wid` column, which is an internal data warehouse variable to identify locations and make relations between tables.
 It should not be regarded as a stable ID; hence don't store it for later use (note that lazy objects don't store data).
 Consequently, the `loc_wid` column is omitted when using `collect = TRUE`.
 
@@ -295,10 +318,12 @@ In this case, more attributes are returned (specific observation well attributes
 The below example also demonstrates the use of `tibble::glimpse()` to preview all columns:
 
 ```{r}
-get_locs(watina,
-         obswells = TRUE,
-         area_codes = c("KAL", "KBR"),
-         loc_type = c("P", "S")) %>% 
+get_locs(
+  watina,
+  obswells = TRUE,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S")
+) %>%
   glimpse()
 #> Rows: ??
 #> Columns: 21

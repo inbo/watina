@@ -4,7 +4,7 @@
 \name{watina-package}
 \alias{watina}
 \alias{watina-package}
-\title{watina: Querying and Processing Data from the INBO Watina Database}
+\title{watina: Querying and Processing Data from the INBO Watina Data Warehouse}
 \description{
 The R-package watina contains functions to query and process data from the Watina database at the Research Institute for Nature and Forest (INBO). This database primarily provides groundwater level and chemical data, mainly from natural areas in Flanders (Belgium).
 }
@@ -35,6 +35,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (\href{https://orcid.org/0000-0002-6378-6229}{ORCID})
+
+Authors:
+\itemize{
+  \item Cécile Herr \email{cecile.herr@inbo.be} (\href{https://orcid.org/0000-0002-2833-6046}{ORCID})
+}
 
 Other contributors:
 \itemize{

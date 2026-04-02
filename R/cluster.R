@@ -1,7 +1,7 @@
 #' Detect (spatial) groundwater well clusters
 #'
 #' \code{cluster_locs()} accepts as input a
-#' dataframe with X/Y coordinates, or an \code{sf} object
+#' data frame with X/Y coordinates, or an \code{sf} object
 #' of geometry type \code{POINT}.
 #' The function adds an integer variable that defines cluster membership.
 #' The intention is to detect spatial groundwater well clusters; hence it uses a
@@ -18,9 +18,9 @@
 #'
 #' The function's code was partly inspired by unpublished code from Ivy Jansen.
 #'
-#' @param input A dataframe with X/Y coordinates, or an \code{sf} object of
+#' @param input A data frame with X/Y coordinates, or an \code{sf} object of
 #' geometry type \code{POINT}.
-#' A typical input dataframe is the collected output of \code{\link{get_locs}}.
+#' A typical input data frame is the collected output of \code{\link{get_locs}}.
 #' @param max_dist The maximum geospatial distance between two points to make
 #' them belong to the same cluster.
 #' The default value is sensible for many usecases,
@@ -32,11 +32,11 @@
 #' \code{input}.
 #' @param xvar String.
 #' The X coordinate variable name; only considered when \code{input} is a
-#' dataframe.
+#' data frame.
 #' Defaults to \code{"x"}.
 #' @param yvar String.
 #' The Y coordinate variable name; only considered when \code{input} is a
-#' dataframe.
+#' data frame.
 #' Defaults to \code{"y"}.
 #'
 #' @return
@@ -57,7 +57,7 @@
 #'   arrange(cluster_id)
 #' mydata %>%
 #'   as_points(remove = TRUE) %>%
-#'   cluster_locs %>%
+#'   cluster_locs() %>%
 #'   arrange(cluster_id)
 #'
 #' \dontrun{
@@ -65,9 +65,10 @@
 #'
 #' clusters <-
 #'   get_locs(watina,
-#'            area_codes = "KBR",
-#'            collect = TRUE) %>%
-#'   cluster_locs
+#'     area_codes = "KBR",
+#'     collect = TRUE
+#'   ) %>%
+#'   cluster_locs()
 #'
 #' # inspect result:
 #' clusters %>%
@@ -78,7 +79,7 @@
 #' clusters %>%
 #'   count(cluster_id) %>%
 #'   pull(n) %>%
-#'   table
+#'   table()
 #'
 #' # Disconnect:
 #' dbDisconnect(watina)
@@ -98,54 +99,53 @@
 #' hclust
 #' cutree
 cluster_locs <- function(input,
-                          max_dist = 2,
-                          output_var = "cluster_id",
-                          xvar = "x",
-                          yvar = "y") {
+                         max_dist = 2,
+                         output_var = "cluster_id",
+                         xvar = "x",
+                         yvar = "y") {
+  assert_that(inherits(input, c("data.frame", "sf")))
+  assert_that(is.string(xvar), is.string(yvar), is.string(output_var))
 
-    assert_that(inherits(input, c("data.frame", "sf")))
-    assert_that(is.string(xvar), is.string(yvar), is.string(output_var))
+  require_pkgs("tibble")
 
-    require_pkgs("tibble")
+  if (inherits(input, "sf")) {
+    require_pkgs("sf")
 
-    if (inherits(input, "sf")) {
+    assert_that(
+      unique(sf::st_geometry_type(input)) == "POINT",
+      msg = "Geospatial input must only contain POINT geometries."
+    )
 
-        require_pkgs("sf")
+    coords <-
+      input %>%
+      sf::st_coordinates() %>%
+      as_tibble()
+    xvar <- "X"
+    yvar <- "Y"
+  }
 
-        assert_that(unique(sf::st_geometry_type(input)) == "POINT",
-                    msg = "Geospatial input must only contain POINT geometries.")
+  if (!inherits(input, "sf")) {
+    assert_that(has_name(input, xvar), has_name(input, yvar))
 
-        coords <-
-            input %>%
-            sf::st_coordinates() %>%
-            as_tibble
-        xvar <- "X"
-        yvar <- "Y"
+    input_old <- input
+
+    input <-
+      input[!is.na(input[, xvar]) & !is.na(input[, yvar]), ]
+
+    if (nrow(input) < nrow(input_old)) {
+      warning(
+        nrow(input_old) - nrow(input),
+        " locations were removed because of missing X or Y coordinates."
+      )
     }
 
-    if (!inherits(input, "sf")) {
+    coords <- input[, c(xvar, yvar)]
+  }
 
-        assert_that(has_name(input, xvar), has_name(input, yvar))
-
-        input_old <- input
-
-        input <-
-            input[!is.na(input[,xvar]) & !is.na(input[,yvar]),]
-
-        if (nrow(input) < nrow(input_old)) {
-            warning(nrow(input_old) - nrow(input),
-                    " locations were removed because of missing X or Y coordinates.")
-        }
-
-        coords <- input[, c(xvar, yvar)]
-
-    }
-
-    coords %>%
-        dist %>%
-        hclust(method = "complete") %>%
-        cutree(h = max_dist) %>%
-        tibble::enframe(name = NULL, value = output_var) %>%
-        bind_cols(input, .)
-
+  coords %>%
+    dist() %>%
+    hclust(method = "complete") %>%
+    cutree(h = max_dist) %>%
+    tibble::enframe(name = NULL, value = output_var) %>%
+    bind_cols(input, .)
 }

@@ -1,11 +1,8 @@
 template:
-  params:
-    bootswatch: cosmo
+  bootstrap: 5
+  bootswatch: cosmo
 
 url: https://inbo.github.io/watina
-
-navbar:
-    type: inverse
 
 reference:
   - title: "Connect"
@@ -26,8 +23,12 @@ reference:
       - get_chem
       - eval_chem
       - selectlocs_chem
+  - title: "Plot data"
+    contents:
+      - ggplot_vanwirdum_background
   - title: "Utilities and helpers"
     contents:
       - as_points
       - cluster_locs
       - extract_xg3_series
+      - calculate_ir

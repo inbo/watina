@@ -2,7 +2,7 @@
 % Please edit documentation in R/get.R
 \name{get_chem}
 \alias{get_chem}
-\title{Get hydrochemical data from the database}
+\title{Get hydrochemical data from the data warehouse}
 \usage{
 get_chem(
   locs,
@@ -17,7 +17,7 @@ get_chem(
 )
 }
 \arguments{
-\item{locs}{A \code{tbl_lazy} object or a dataframe, with at least a column
+\item{locs}{A \code{tbl_lazy} object or a data frame, with at least a column
 \code{loc_code} that defines the locations for which values are to be
 returned.
 Typically, this will be the object returned by \code{\link{get_locs}}.}
@@ -103,13 +103,48 @@ By default, a \code{tbl_lazy} object.
 With \code{collect = TRUE},
 a local \code{\link[tibble]{tibble}} is returned.
 
-(TO BE ADDED: Explanation on the variable names of the returned object)
+\strong{Returned Fields}
+\itemize{
+\item \code{loc_code} (chr): location code such as KESP001, ABES001, ...
+\item \code{date} (Date): sampling date
+\item \code{lab_project_id} (chr): code or identifier of the project as used
+by the laboratory
+\item \code{lab_sample_id} (chr): code or identifier of the sample as used
+by the laboratory
+\item \code{chem_variable} (chr): abbreviation for the chemical variable (detailed below)
+\item \code{value} (num): measurement value
+\item \code{unit} (chr): unit
+\item \code{below_loq} (logi): is the value below the limit of quantitation
+for this analysis in the laboratory?
+\item \code{loq} (num): limit of quantitation for this analysis in the laboratory
+\item \code{elneutr} (num): value of the calculated electroneutrality (not in \%)
+}
 
-(TO BE ADDED: Explanation on the different abbreviations in the column
-'chem_variable')
+\strong{Possible values for \code{chem_variable}:}
+\itemize{
+\item Al: aluminium concentration
+\item Ca: calcium concentration
+\item Cl: chloride concentration
+\item CondF: electrical conductivity at 25°C (measured in the field)
+\item CondL: electrical conductivity at 25°C (measured in the laboratory)
+\item Fe: iron concentration
+\item HCO3: bicarbonate concentration
+\item K: potassium concentration
+\item Mg: magnesium concentration
+\item Mn: manganese concentration
+\item N-NH4: ammonium (expressed as ammonium-nitrogen)
+\item N-NO2: nitrite (expressed as nitrite-nitrogen)
+\item N-NO3: nitrate (expressed as nitrate-nitrogen)
+\item Na: sodium concentration
+\item P-PO4: orthophosphate concentration (expressed as orthophosphate-phosphorus)
+\item pHF: pH (measured in the field)
+\item pHL: pH (measured in the laboratory)
+\item Si: silicon concentration
+\item SO4: sulphate concentration
+}
 }
 \description{
-Returns hydrochemical data from the \emph{Watina} database,
+Returns hydrochemical data from the \emph{Watina} data warehouse,
 either as a lazy object or as a
 local tibble.
 The values must belong to selected locations
@@ -122,6 +157,7 @@ a given \code{startdate} and \code{enddate}.
 
 The water samples must meet a specified electroneutrality
 condition, set by \code{en_range}.
+
 \itemize{
 \item This condition is however ignored when the sample's iron (meq/l) /
 conductivity (µS/cm) ratio exceeds \code{en_fecond_threshold} (use
@@ -134,7 +170,30 @@ electroneutrality is \code{NA} (this is controlled by the
 }
 To retrieve all data from all water samples, use \code{en_range = c(-1, 1)}.
 
-TO BE ADDED: What is electroneutrality and why is it used as a criterion?
+\strong{More information about the electroneutrality}
+
+We expect groundwater samples to have no net charge, i.e. the total
+positive charge from cations must equal the total negative charge
+from anions.
+To ensure this is true (if we ignore the inevitable margin of error
+in the laboratory),
+we calculate:
+\itemize{
+\item the sum of charges from anions (AN) in the sample as
+\emph{HCO3 + SO4 + PO4 + Cl + NO3 + NO2}
+\item the sum of charges from cations (CAT) in the sample as
+\emph{Ca + Mg + Na + K + Fe + NH4}
+}
+
+Then we derive the electroneutrality as \emph{(CAT - AN)/(CAT + AN)}
+
+If significant deviation from zero occurs, there must be analytical errors in
+the concentration determinations or ions at significant concentration levels
+that were not included in the analysis.
+
+The \code{get_chem()} function allows for a standard tolerance of +/-0.1 for
+the electroneutrality.
+This value can be adapted using the \code{en_range} argument.
 }
 \note{
 Up to and including \verb{watina 0.3.0}, the result was sorted according to
@@ -152,34 +211,46 @@ watina <- connect_watina()
 library(dplyr)
 mylocs <- get_locs(watina, area_codes = "ZWA")
 mylocs \%>\%
-    get_chem(watina, "1/1/2017") \%>\%
-    arrange(loc_code, date, chem_variable)
+  get_chem(watina, "1/1/2017") \%>\%
+  arrange(loc_code, date, chem_variable)
 mylocs \%>\%
-    get_chem(watina, "1/1/2017", collect = TRUE)
+  get_chem(watina, "1/1/2017", collect = TRUE)
 mylocs \%>\%
-    get_chem(watina, "1/1/2017", conc_type = "eq") \%>\%
-    arrange(loc_code, date, chem_variable)
+  get_chem(watina, "1/1/2017", conc_type = "eq") \%>\%
+  arrange(loc_code, date, chem_variable)
 
 # compare the number of returned rows:
-mylocs \%>\% get_chem(watina, "1/1/2017") \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017",
-                    en_fecond_threshold = NA) \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017",
-                    en_exclude_na = TRUE) \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017",
-                    en_exclude_na = TRUE,
-                    en_fecond_threshold = NA) \%>\% count
-mylocs \%>\% get_chem(watina, "1/1/2017",
-                    en_range = c(-1, 1)) \%>\% count
+mylocs \%>\%
+  get_chem(watina, "1/1/2017") \%>\%
+  count()
+mylocs \%>\%
+  get_chem(watina, "1/1/2017", en_fecond_threshold = NA) \%>\%
+  count()
+mylocs \%>\%
+  get_chem(watina, "1/1/2017", en_exclude_na = TRUE) \%>\%
+  count()
+mylocs \%>\%
+  get_chem(
+    watina,
+    "1/1/2017",
+    en_exclude_na = TRUE,
+    en_fecond_threshold = NA
+  ) \%>\%
+  count()
+mylocs \%>\%
+  get_chem(watina, "1/1/2017", en_range = c(-1, 1)) \%>\%
+  count()
 
 # joining results to mylocs:
 mylocs \%>\%
-get_chem(watina, "1/1/2017") \%>\%
-    left_join(mylocs \%>\%
-                  select(-loc_wid),
-              .) \%>\%
-    collect \%>\%
-    arrange(loc_code, date, chem_variable)
+  get_chem(watina, "1/1/2017") \%>\%
+  left_join(
+    mylocs \%>\%
+      select(-loc_wid),
+    .
+  ) \%>\%
+  collect() \%>\%
+  arrange(loc_code, date, chem_variable)
 
 # Disconnect:
 dbDisconnect(watina)
@@ -187,8 +258,8 @@ dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to query the database: 
+Other functions to query the data warehouse: 
 \code{\link{get_locs}()},
 \code{\link{get_xg3}()}
 }
-\concept{functions to query the database}
+\concept{functions to query the data warehouse}

@@ -19,7 +19,7 @@ library(knitr)
 ```
 
 _General note: the below vignette contains frozen output of 2 Oct 2019._
-_This makes it possible to build the package with vignettes without access to the Watina database._
+_This makes it possible to build the package with vignettes without access to the Watina data warehouse._
 
 ## Overview
 
@@ -29,23 +29,23 @@ The below example requests available hydrochemical data since 2010 from location
 ```{r}
 watina <- connect_watina()
 mydata <-
-    get_locs(watina, area_codes = "ZWA") %>% 
-    get_chem(watina, "1/1/2010")
-mydata %>% 
-  count
+  get_locs(watina, area_codes = "ZWA") %>%
+  get_chem(watina, "1/1/2010")
+mydata %>%
+  count()
 #> # Source:   lazy query [?? x 1]
 #> # Database: Microsoft SQL Server
 #>       n
 #>   <int>
 #> 1  1916
 class(mydata)
-#> [1] "tbl_Microsoft SQL Server" "tbl_dbi"                 
-#> [3] "tbl_sql"                  "tbl_lazy"                
+#> [1] "tbl_Microsoft SQL Server" "tbl_dbi"
+#> [3] "tbl_sql"                  "tbl_lazy"
 #> [5] "tbl"
-mydata %>% 
-  head(15) %>% 
-  collect %>% 
-  as.data.frame
+mydata %>%
+  head(15) %>%
+  collect() %>%
+  as.data.frame()
 #>    loc_code       date lab_project_id lab_sample_id chem_variable   value
 #> 1   ZWAP033 2011-04-14              0         10431            Ca  19.690
 #> 2   ZWAP033 2011-04-14              0         10431            Cl  19.582
@@ -84,10 +84,10 @@ The first and last year of the dataset are:
 
 ```{r}
 mydata %>%
-    pull(date) %>%
-    lubridate::year(.) %>%
-    (function(x) c(firstyear = min(x), lastyear = max(x)))
-#> firstyear  lastyear 
+  pull(date) %>%
+  lubridate::year(.) %>%
+  (function(x) c(firstyear = min(x), lastyear = max(x)))
+#> firstyear  lastyear
 #>      2011      2019
 ```
 
@@ -104,50 +104,52 @@ as.numeric(lubridate::dmy("1/1/2014"))
 #> [1] 16071
 ```
 
-We can store specific conditions in a dataframe; the available statistics are explained by the documentation of `eval_chem()`:
+We can store specific conditions in a data frame; the available statistics are explained by the documentation of `eval_chem()`:
 
 ```{r eval=TRUE}
 conditions_df <-
-    tribble(
-        ~chem_variable, ~statistic, ~criterion, ~direction,
-        "N-NO3", "nrdates", 2, "min",
-        "P-PO4", "nrdates", 2, "min",
-        "P-PO4", "firstdate", 16071, "max",
-        "P-PO4", "timespan_years", 5, "min"
-    )
-conditions_df %>% 
-  kable
+  tribble(
+    ~chem_variable, ~statistic, ~criterion, ~direction,
+    "N-NO3", "nrdates", 2, "min",
+    "P-PO4", "nrdates", 2, "min",
+    "P-PO4", "firstdate", 16071, "max",
+    "P-PO4", "timespan_years", 5, "min"
+  )
+conditions_df %>%
+  kable()
 ```
 
 You can also separately limit the chemical variables to be evaluated with the `chem_var` argument in the `selectlocs_chem()` function:
 
 ```{r}
 myresult <-
-    mydata %>%
-    selectlocs_chem(data_type = "data",
-                    chem_var = c("N-NO3", "P-PO4"),
-                    conditions = conditions_df)
+  mydata %>%
+  selectlocs_chem(
+    data_type = "data",
+    chem_var = c("N-NO3", "P-PO4"),
+    conditions = conditions_df
+  )
 myresult
 #> # A tibble: 18 x 1
 #>    loc_code
-#>    <chr>   
-#>  1 ZWAP034 
-#>  2 ZWAP041 
-#>  3 ZWAP042 
-#>  4 ZWAP051 
-#>  5 ZWAP063 
-#>  6 ZWAP064 
-#>  7 ZWAP067 
-#>  8 ZWAP129 
-#>  9 ZWAP165 
-#> 10 ZWAP170 
-#> 11 ZWAP196 
-#> 12 ZWAP205 
-#> 13 ZWAP208 
-#> 14 ZWAP214 
-#> 15 ZWAP215 
-#> 16 ZWAP216 
-#> 17 ZWAP220 
+#>    <chr>
+#>  1 ZWAP034
+#>  2 ZWAP041
+#>  3 ZWAP042
+#>  4 ZWAP051
+#>  5 ZWAP063
+#>  6 ZWAP064
+#>  7 ZWAP067
+#>  8 ZWAP129
+#>  9 ZWAP165
+#> 10 ZWAP170
+#> 11 ZWAP196
+#> 12 ZWAP205
+#> 13 ZWAP208
+#> 14 ZWAP214
+#> 15 ZWAP215
+#> 16 ZWAP216
+#> 17 ZWAP220
 #> 18 ZWAP221
 ```
 
@@ -173,10 +175,10 @@ mylocs %>% get_chem(watina, "1/1/2017")
 #>    <chr>    <date>     <chr>          <chr>         <chr>          <dbl>
 #>  1 ZWAP034  2018-10-29 0              40121         Al              0.05
 #>  2 ZWAP034  2018-10-29 0              40121         Ca              4.24
-#>  3 ZWAP034  2018-10-29 0              40121         Cl             14.4 
-#>  4 ZWAP034  2018-10-29 0              40121         CondF         135   
-#>  5 ZWAP034  2018-10-29 0              40121         CondL         120.  
-#>  6 ZWAP034  2018-10-29 0              40121         Fe             19.9 
+#>  3 ZWAP034  2018-10-29 0              40121         Cl             14.4
+#>  4 ZWAP034  2018-10-29 0              40121         CondF         135
+#>  5 ZWAP034  2018-10-29 0              40121         CondL         120.
+#>  6 ZWAP034  2018-10-29 0              40121         Fe             19.9
 #>  7 ZWAP034  2018-10-29 0              40121         HCO3            5.97
 #>  8 ZWAP034  2018-10-29 0              40121         K               1.98
 #>  9 ZWAP034  2018-10-29 0              40121         Mg              1.36
@@ -194,10 +196,10 @@ mylocs %>% get_chem(watina, "1/1/2017", collect = TRUE)
 #>    <chr>    <date>     <chr>          <chr>         <chr>          <dbl>
 #>  1 ZWAP034  2018-10-29 0              40121         Al              0.05
 #>  2 ZWAP034  2018-10-29 0              40121         Ca              4.24
-#>  3 ZWAP034  2018-10-29 0              40121         Cl             14.4 
-#>  4 ZWAP034  2018-10-29 0              40121         CondF         135   
-#>  5 ZWAP034  2018-10-29 0              40121         CondL         120.  
-#>  6 ZWAP034  2018-10-29 0              40121         Fe             19.9 
+#>  3 ZWAP034  2018-10-29 0              40121         Cl             14.4
+#>  4 ZWAP034  2018-10-29 0              40121         CondF         135
+#>  5 ZWAP034  2018-10-29 0              40121         CondL         120.
+#>  6 ZWAP034  2018-10-29 0              40121         Fe             19.9
 #>  7 ZWAP034  2018-10-29 0              40121         HCO3            5.97
 #>  8 ZWAP034  2018-10-29 0              40121         K               1.98
 #>  9 ZWAP034  2018-10-29 0              40121         Mg              1.36
@@ -210,19 +212,25 @@ Note below, the different number of results when using non-default settings for 
 The default range of electroneutrality is from -0.1 to 0.1 (argument `en_range`).
 
 ```{r}
-mylocs %>% get_chem(watina, "1/1/2017") %>% count
+mylocs %>%
+  get_chem(watina, "1/1/2017") %>%
+  count()
 #> # Source:   lazy query [?? x 1]
 #> # Database: Microsoft SQL Server
 #>       n
 #>   <int>
 #> 1   608
-mylocs %>% get_chem(watina, "1/1/2017", en_exclude_na = TRUE) %>% count
+mylocs %>%
+  get_chem(watina, "1/1/2017", en_exclude_na = TRUE) %>%
+  count()
 #> # Source:   lazy query [?? x 1]
 #> # Database: Microsoft SQL Server
 #>       n
 #>   <int>
 #> 1   602
-mylocs %>% get_chem(watina, "1/1/2017", en_range = c(-1, 1)) %>% count
+mylocs %>%
+  get_chem(watina, "1/1/2017", en_range = c(-1, 1)) %>%
+  count()
 #> # Source:   lazy query [?? x 1]
 #> # Database: Microsoft SQL Server
 #>       n
@@ -239,7 +247,9 @@ If you want the `en_range` and `en_exclude_na` arguments to take effect also in 
 set `en_fecond_threshold = NA`:
 
 ```{r}
-mylocs %>% get_chem(watina, "1/1/2017", en_fecond_threshold = NA) %>% count
+mylocs %>%
+  get_chem(watina, "1/1/2017", en_fecond_threshold = NA) %>%
+  count()
 #> # Source:   lazy query [?? x 1]
 #> # Database: Microsoft SQL Server
 #>       n
@@ -275,25 +285,27 @@ Joining results to `mylocs`:
 
 ```{r}
 mylocs %>%
-get_chem(watina, "1/1/2017") %>%
-    left_join(mylocs %>%
-                  select(-loc_wid),
-              .) %>%
-    collect
+  get_chem(watina, "1/1/2017") %>%
+  left_join(
+    mylocs %>%
+      select(-loc_wid),
+    .
+  ) %>%
+  collect()
 #> Joining, by = "loc_code"
 #> # A tibble: 765 x 20
 #>    loc_code area_code area_name      x      y loc_validitycode loc_validity
-#>    <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>            <chr>       
-#>  1 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
-#>  2 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
-#>  3 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
-#>  4 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
-#>  5 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
-#>  6 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
-#>  7 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
-#>  8 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
-#>  9 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
-#> 10 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd 
+#>    <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>            <chr>
+#>  1 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
+#>  2 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
+#>  3 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
+#>  4 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
+#>  5 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
+#>  6 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
+#>  7 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
+#>  8 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
+#>  9 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
+#> 10 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
 #> # … with 755 more rows, and 13 more variables: loc_typecode <chr>,
 #> #   loc_typename <chr>, filterdepth <dbl>, soilsurf_ost <dbl>,
 #> #   date <date>, lab_project_id <chr>, lab_sample_id <chr>,
