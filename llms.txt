@@ -1,0 +1,135 @@
+## Welcome
+
+The R-package `watina` contains functions to query and process data from
+the *Watina data warehouse* at the Research Institute for Nature and
+Forest (INBO). This data warehouse is focused on groundwater data in
+natural areas in Flanders (Belgium) and provides:
+
+- groundwater level and chemical data;
+- data from hydrostatic pressure sensors (mainly groundwater);
+- data from atmospheric pressure sensors;
+- a more limited number of surface water level and chemical data.
+
+Currently the R package won’t work outside INBO.
+
+## Installing and using the *watina* package
+
+### Option 1: from r-universe repository (quickest)
+
+To install the current package version from the `main` branch (latest
+stable release), run:
+
+``` r
+install.packages(
+  "watina",
+  repos = c(
+    inbo = "https://inbo.r-universe.dev",
+    CRAN = "https://cloud.r-project.org"
+  )
+)
+```
+
+The above provides a pre-compiled package for Windows and macOS, which
+should be faster than below approaches. INBO staff should have the INBO
+repository enabled already (check with `getOption("repos")`), in which
+case **`install.packages("watina")`** is all you need!
+
+### Option 2, from source: installing without vignettes (quick)
+
+``` r
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
+remotes::install_github("inbo/watina", upgrade = TRUE)
+```
+
+You can consult the vignettes of the latest release on the (this)
+`pkgdown` [website](https://inbo.github.io/watina/): click on ‘Articles’
+at the top.
+
+### Option 3, from source: installing with vignettes
+
+``` r
+Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
+if (!("nycflights13" %in% installed.packages())) {
+  # to prevent dbplyr from interrupting next step
+  install.packages("nycflights13")
+}
+remotes::install_github(
+  "inbo/watina",
+  build_vignettes = TRUE,
+  upgrade = TRUE
+)
+```
+
+Note that this will install the package from the `main` branch. If you
+need a version from another branch, add the `ref` argument in the above
+function to provide the branch name.
+
+## You are welcome to contribute!
+
+Please have a look at our [contributing
+guide](https://inbo.github.io/watina/CONTRIBUTING.md)!
+
+# Package index
+
+## Connect
+
+- [`connect_watina()`](https://inbo.github.io/watina/reference/connect_watina.md)
+  : Connect to the INBO Watina data warehouse
+- [`dbDisconnect`](https://inbo.github.io/watina/reference/dbDisconnect.md)
+  : Disconnect a database connection
+
+## Get locations
+
+- [`get_locs()`](https://inbo.github.io/watina/reference/get_locs.md) :
+  Get locations from the data warehouse
+
+## Processing XG3 (HG3, LG3, VG3)
+
+- [`get_xg3()`](https://inbo.github.io/watina/reference/get_xg3.md) :
+  Get XG3 values from the data warehouse
+- [`eval_xg3_avail()`](https://inbo.github.io/watina/reference/eval_xg3_avail.md)
+  : Evaluate the availability of XG3 values per location
+- [`eval_xg3_series()`](https://inbo.github.io/watina/reference/eval_xg3_series.md)
+  : Identify and evaluate XG3 series per location
+- [`selectlocs_xg3()`](https://inbo.github.io/watina/reference/selectlocs_xg3.md)
+  : Select locations based on XG3 availability and XG3 series'
+  properties
+
+## Processing hydrochemical data
+
+- [`get_chem()`](https://inbo.github.io/watina/reference/get_chem.md) :
+  Get hydrochemical data from the data warehouse
+- [`eval_chem()`](https://inbo.github.io/watina/reference/eval_chem.md)
+  : Evaluate hydrochemical data per location
+- [`selectlocs_chem()`](https://inbo.github.io/watina/reference/selectlocs_chem.md)
+  : Select locations based on hydrochemical data properties
+
+## Plot data
+
+- [`ggplot_vanwirdum_background()`](https://inbo.github.io/watina/reference/ggplot_vanwirdum_background.md)
+  : Plots hydrochemistry: Van Wirdum diagram
+
+## Utilities and helpers
+
+- [`as_points()`](https://inbo.github.io/watina/reference/as_points.md)
+  : Convert a data frame with X and Y coordinates to a geospatial points
+  object
+- [`cluster_locs()`](https://inbo.github.io/watina/reference/cluster_locs.md)
+  : Detect (spatial) groundwater well clusters
+- [`extract_xg3_series()`](https://inbo.github.io/watina/reference/extract_xg3_series.md)
+  : Identify XG3 series per location
+- [`calculate_ir()`](https://inbo.github.io/watina/reference/calculate_ir.md)
+  : Compute the ionic ratio
+
+# Articles
+
+### All vignettes
+
+- [Getting started: connecting and selecting
+  locations](https://inbo.github.io/watina/articles/v010_getstarted.md):
+- [Using XG3 values to characterize and select
+  locations](https://inbo.github.io/watina/articles/v110_xg3.md):
+- [Using hydrochemical data to characterize and select
+  locations](https://inbo.github.io/watina/articles/v210_chem.md):
+- [Creating plots based on hydrochemical
+  data](https://inbo.github.io/watina/articles/v230_chem_plots.md):

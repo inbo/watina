@@ -1,12 +1,12 @@
 pandoc: 3.1.11
-pkgdown: 1.6.1
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   v010_getstarted: v010_getstarted.html
   v110_xg3: v110_xg3.html
   v210_chem: v210_chem.html
-last_built: 2025-03-24T14:29Z
+  v230_chem_plots: v230_chem_plots.html
+last_built: 2026-04-02T03:54Z
 urls:
   reference: https://inbo.github.io/watina/reference
   article: https://inbo.github.io/watina/articles
-

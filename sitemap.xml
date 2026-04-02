@@ -1,72 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://inbo.github.io/watina/index.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/as_points.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/cluster_locs.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/connect_watina.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/dbDisconnect.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/eval_chem.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/eval_xg3_avail.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/eval_xg3_series.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/extract_xg3_series.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/filter_xg3.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/get_chem.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/get_locs.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/get_xg3.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/qualify_xg3.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/require_pkgs.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/selectlocs.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/selectlocs_chem.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/selectlocs_xg3.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/warn_xy_duplicates.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/reference/watina-package.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/articles/v010_getstarted.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/articles/v110_xg3.html</loc>
-  </url>
-  <url>
-    <loc>https://inbo.github.io/watina/articles/v210_chem.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://inbo.github.io/watina/404.html</loc></url>
+<url><loc>https://inbo.github.io/watina/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://inbo.github.io/watina/CONTRIBUTING.html</loc></url>
+<url><loc>https://inbo.github.io/watina/LICENSE.html</loc></url>
+<url><loc>https://inbo.github.io/watina/articles/index.html</loc></url>
+<url><loc>https://inbo.github.io/watina/articles/v010_getstarted.html</loc></url>
+<url><loc>https://inbo.github.io/watina/articles/v110_xg3.html</loc></url>
+<url><loc>https://inbo.github.io/watina/articles/v210_chem.html</loc></url>
+<url><loc>https://inbo.github.io/watina/articles/v230_chem_plots.html</loc></url>
+<url><loc>https://inbo.github.io/watina/authors.html</loc></url>
+<url><loc>https://inbo.github.io/watina/index.html</loc></url>
+<url><loc>https://inbo.github.io/watina/news/index.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/as_points.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/calculate_ir.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/cluster_locs.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/connect_watina.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/dbDisconnect.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/eval_chem.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/eval_xg3_avail.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/eval_xg3_series.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/extract_xg3_series.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/filter_xg3.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/get_chem.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/get_locs.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/get_xg3.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/ggplot_vanwirdum_background.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/index.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/qualify_xg3.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/require_pkgs.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/selectlocs.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/selectlocs_chem.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/selectlocs_xg3.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/vanwirdum_data.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/warn_xy_duplicates.html</loc></url>
+<url><loc>https://inbo.github.io/watina/reference/watina-package.html</loc></url>
 </urlset>
+

@@ -1,0 +1,359 @@
+# Getting started: connecting and selecting locations
+
+*General note: the below vignette contains frozen output of 14 Jan
+2021.* *This makes it possible to build the package with vignettes
+without access to the Watina data warehouse.*
+
+## Connecting
+
+You first need a connection object to connect to Watina; let’s simply
+name it `watina`:
+
+``` r
+watina <- connect_watina()
+```
+
+## Selecting locations
+
+Selecting locations is a typical starting point. Afterwards, you can use
+the returned object as input to other functions.
+
+By default, a `tbl_lazy` object is given (lazy query).[¹](#fn1) The
+returned data include some essential metadata of the locations. The
+following example shows a few rows:
+
+``` r
+get_locs(watina) %>%
+  head(5) %>%
+  collect() %>%
+  as.data.frame()
+#>   loc_wid loc_code area_code area_name      x      y loc_validitycode
+#> 1      45  AABP001       AAB    Aabeek 177604 209714              VLD
+#> 2    6291  AABP002       AAB    Aabeek 177903 209459              VLD
+#> 3      28  AABP003       AAB    Aabeek 178353 209155              VLD
+#> 4      29  AABP004       AAB    Aabeek 179544 210259              VLD
+#> 5      30  AABP005       AAB    Aabeek 179610 210173              VLD
+#>   loc_validity loc_typecode        loc_typename obswell_statecode
+#> 1  Gevalideerd            P Peilbuis/Piëzometer             CONFN
+#> 2  Gevalideerd            P Peilbuis/Piëzometer             CONFN
+#> 3  Gevalideerd            P Peilbuis/Piëzometer             CONFN
+#> 4  Gevalideerd            P Peilbuis/Piëzometer             CONFN
+#> 5  Gevalideerd            P Peilbuis/Piëzometer             CONFN
+#>       obswell_state soilsurf_ost measuringref_ost tubelength filterlength
+#> 1 OK - niet bemeten       10.136           10.656          4            2
+#> 2 OK - niet bemeten        9.590           10.120          4            2
+#> 3 OK - niet bemeten        9.660           10.150          4            2
+#> 4 OK - niet bemeten       10.310           10.730          4            2
+#> 5 OK - niet bemeten       10.480           10.950          4            2
+#>   filterdepth
+#> 1        2.48
+#> 2        2.47
+#> 3        2.51
+#> 4        2.58
+#> 5        2.53
+```
+
+Selections can be done in a variety of ways – and these ways can be
+combined:
+
+- by using area codes:
+
+``` r
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR")
+)
+#> # Source:   lazy query [?? x 17]
+#> # Database: Microsoft SQL Server
+#>    loc_wid loc_code area_code area_name      x      y loc_validitycode
+#>      <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>
+#>  1    2824 KALP022  KAL       Kalmthou… 155356 230811 VLD
+#>  2    1546 KALP030  KAL       Kalmthou… 152990 238600 VLD
+#>  3    6205 KALP032  KAL       Kalmthou… 159110 239010 VLD
+#>  4   10069 KALP034  KAL       Kalmthou… 152962 231345 VLD
+#>  5    1549 KALP035  KAL       Kalmthou… 153000 236850 VLD
+#>  6    1552 KALP039  KAL       Kalmthou… 160940 235060 VLD
+#>  7    4327 KALP050  KAL       Kalmthou… 153881 233802 VLD
+#>  8    6210 KALP051  KAL       Kalmthou… 153822 233761 VLD
+#>  9    1562 KALP052  KAL       Kalmthou… 153822 233761 VLD
+#> 10    1563 KALP053  KAL       Kalmthou… 153781 233736 VLD
+#> # … with more rows, and 10 more variables: loc_validity <chr>,
+#> #   loc_typecode <chr>, loc_typename <chr>, obswell_statecode <chr>,
+#> #   obswell_state <chr>, soilsurf_ost <dbl>, measuringref_ost <dbl>,
+#> #   tubelength <dbl>, filterlength <dbl>, filterdepth <dbl>
+```
+
+The number of involved locations is given by:
+
+``` r
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR")
+) %>%
+  count()
+#> # Source:   lazy query [?? x 1]
+#> # Database: Microsoft SQL Server
+#>       n
+#>   <int>
+#> 1   207
+```
+
+- you can specify the type of location (device):
+
+``` r
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S")
+) %>%
+  count()
+#> # Source:   lazy query [?? x 1]
+#> # Database: Microsoft SQL Server
+#>       n
+#>   <int>
+#> 1   247
+```
+
+- for groundwater piezometers: by setting conditions on filterdepth. The
+  filterdepth is the depth of the piezometer’s filter below soil surface
+  (unit: m), more specifically referring to the position *halfway* the
+  length of the filter. Conditions can be set by the arguments
+  `filterdepth_range` and `filterdepth_na` (see documentation of
+  [`get_locs()`](https://inbo.github.io/watina/reference/get_locs.md)).
+  Moreover, by setting `filterdepth_guess = TRUE` (default `FALSE`) you
+  can replace missing filterdepths by a conservative value, before
+  applying these conditions. By default, only filterdepths between 0 and
+  3 meters below soilsurface are returned and locations with missing
+  filterdepth are dropped.
+
+Indeed, more records are returned when allowing groundwater piezometers
+with missing filterdepth:
+
+``` r
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S"),
+  filterdepth_na = TRUE
+) %>%
+  count()
+#> # Source:   lazy query [?? x 1]
+#> # Database: Microsoft SQL Server
+#>       n
+#>   <int>
+#> 1   289
+```
+
+Of course you can set further conditions for other variables, by
+building upon the lazy result of
+[`get_locs()`](https://inbo.github.io/watina/reference/get_locs.md),
+e.g.:
+
+``` r
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S"),
+  filterdepth_na = TRUE
+) %>%
+  filter(obswell_state == "OK - niet bemeten") %>%
+  count()
+#> # Source:   lazy query [?? x 1]
+#> # Database: Microsoft SQL Server
+#>       n
+#>   <int>
+#> 1   157
+```
+
+- by using a spatial bounding box (rectangular area), using the Belgian
+  Lambert 72 coordinate reference system (EPSG-code
+  [31370](https://epsg.io/31370)):
+
+``` r
+get_locs(
+  watina,
+  bbox = c(
+    xmin = 1.4e+5,
+    xmax = 1.7e+5,
+    ymin = 1.6e+5,
+    ymax = 1.9e+5
+  )
+)
+#> # Source:   lazy query [?? x 17]
+#> # Database: Microsoft SQL Server
+#>    loc_wid loc_code area_code area_name      x      y loc_validitycode
+#>      <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>
+#>  1   10261 ATGP002  ATG       Antitank… 169572 186043 VLD
+#>  2     777 BABP012  BAB       Barebeek  160190 180988 VLD
+#>  3    5629 DORP016  DOR       Dorent    158521 186074 VLD
+#>  4    5630 DORP017  DOR       Dorent    158442 185925 VLD
+#>  5    5632 DORP019  DOR       Dorent    158304 184915 VLD
+#>  6    5634 DORP020  DOR       Dorent    158352 184259 VLD
+#>  7    5635 DORP021  DOR       Dorent    158103 183853 VLD
+#>  8    5586 DORP022  DOR       Dorent    157715 184013 VLD
+#>  9    5587 DORP023  DOR       Dorent    154284 182533 VLD
+#> 10    6420 DORP024  DOR       Dorent    154823 182431 VLD
+#> # … with more rows, and 10 more variables: loc_validity <chr>,
+#> #   loc_typecode <chr>, loc_typename <chr>, obswell_statecode <chr>,
+#> #   obswell_state <chr>, soilsurf_ost <dbl>, measuringref_ost <dbl>,
+#> #   tubelength <dbl>, filterlength <dbl>, filterdepth <dbl>
+```
+
+- if you already have specific location codes in mind, you can provide
+  these directly as a vector:
+
+``` r
+get_locs(
+  watina,
+  loc_vec = c("KBRP081", "KBRP090", "KBRP095")
+)
+#> # Source:   lazy query [?? x 17]
+#> # Database: Microsoft SQL Server
+#>   loc_wid loc_code area_code area_name      x      y loc_validitycode
+#>     <int> <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>
+#> 1     664 KBRP081  KBR       Polders … 145846 204871 VLD
+#> 2     698 KBRP090  KBR       Polders … 145988 204702 VLD
+#> 3     709 KBRP095  KBR       Polders … 145949 204712 VLD
+#> # … with 10 more variables: loc_validity <chr>, loc_typecode <chr>,
+#> #   loc_typename <chr>, obswell_statecode <chr>, obswell_state <chr>,
+#> #   soilsurf_ost <dbl>, measuringref_ost <dbl>, tubelength <dbl>,
+#> #   filterlength <dbl>, filterdepth <dbl>
+```
+
+- you can use a geospatial filter of class
+  [sf](https://r-spatial.github.io/sf/) to make selections, by using the
+  `mask` argument:
+
+``` r
+get_locs(
+  watina,
+  mask = westfl,
+  # sf polygon of the 'West-Vlaanderen' province
+  buffer = 0
+)
+#> As a mask always invokes a collect(), the argument 'collect = FALSE' will be ignored.
+#> Warning in get_locs(watina, mask = westfl, buffer = 0): Dropped 44 locations from which x or y coordinates were missing.
+#> Warning in warn_xy_duplicates(locs$x, locs$y): 28 different coordinate pairs occur more than once.
+#> # A tibble: 905 x 16
+#>    loc_code area_code area_name     x      y loc_validitycode loc_validity
+#>  * <chr>    <chr>     <chr>     <dbl>  <dbl> <chr>            <chr>
+#>  1 ASSP001  ASS       Assebroe… 74324 208838 VLD              Gevalideerd
+#>  2 ASSP002  ASS       Assebroe… 74526 208787 VLD              Gevalideerd
+#>  3 ASSP003  ASS       Assebroe… 74169 208790 VLD              Gevalideerd
+#>  4 ASSP004  ASS       Assebroe… 74108 208605 VLD              Gevalideerd
+#>  5 ASSP005  ASS       Assebroe… 73910 208646 VLD              Gevalideerd
+#>  6 ASSP006  ASS       Assebroe… 74033 208916 VLD              Gevalideerd
+#>  7 ASSP007  ASS       Assebroe… 73609 208954 VLD              Gevalideerd
+#>  8 ASSP008  ASS       Assebroe… 73948 209104 VLD              Gevalideerd
+#>  9 ASSP009  ASS       Assebroe… 73613 208584 VLD              Gevalideerd
+#> 10 ASSP010  ASS       Assebroe… 73583 208390 VLD              Gevalideerd
+#> # … with 895 more rows, and 9 more variables: loc_typecode <chr>,
+#> #   loc_typename <chr>, obswell_statecode <chr>, obswell_state <chr>,
+#> #   soilsurf_ost <dbl>, measuringref_ost <dbl>, tubelength <dbl>,
+#> #   filterlength <dbl>, filterdepth <dbl>
+```
+
+Note that the default value for `buffer` is 10 meters; it is used to
+enlarge mask (or shrink it, if `buffer` \< 0). Also, note there are a
+few warnings to inform about dropped locations and duplicated
+coordinates.
+
+Instead of leaving the output as a `tbl_lazy` object, you can also
+retrieve it as a tibble (i.e. an easier-to-use type of data frame) by
+setting `collect = TRUE`.
+
+``` r
+get_locs(
+  watina,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S"),
+  collect = TRUE
+)
+#> Warning in warn_xy_duplicates(locs$x, locs$y): 15 different coordinate pairs occur more than once.
+#> # A tibble: 247 x 16
+#>    loc_code area_code area_name      x      y loc_validitycode loc_validity
+#>    <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>            <chr>
+#>  1 KALP022  KAL       Kalmthou… 155356 230811 VLD              Gevalideerd
+#>  2 KALP030  KAL       Kalmthou… 152990 238600 VLD              Gevalideerd
+#>  3 KALP032  KAL       Kalmthou… 159110 239010 VLD              Gevalideerd
+#>  4 KALP034  KAL       Kalmthou… 152962 231345 VLD              Gevalideerd
+#>  5 KALP035  KAL       Kalmthou… 153000 236850 VLD              Gevalideerd
+#>  6 KALP039  KAL       Kalmthou… 160940 235060 VLD              Gevalideerd
+#>  7 KALP050  KAL       Kalmthou… 153881 233802 VLD              Gevalideerd
+#>  8 KALP051  KAL       Kalmthou… 153822 233761 VLD              Gevalideerd
+#>  9 KALP052  KAL       Kalmthou… 153822 233761 VLD              Gevalideerd
+#> 10 KALP053  KAL       Kalmthou… 153781 233736 VLD              Gevalideerd
+#> # … with 237 more rows, and 9 more variables: loc_typecode <chr>,
+#> #   loc_typename <chr>, obswell_statecode <chr>, obswell_state <chr>,
+#> #   soilsurf_ost <dbl>, measuringref_ost <dbl>, tubelength <dbl>,
+#> #   filterlength <dbl>, filterdepth <dbl>
+```
+
+Note that the lazy object contains a `loc_wid` column, which is an
+internal data warehouse variable to identify locations and make
+relations between tables. It should not be regarded as a stable ID;
+hence don’t store it for later use (note that lazy objects don’t store
+data). Consequently, the `loc_wid` column is omitted when using
+`collect = TRUE`.
+
+Optionally, you can retrieve the individual **observation wells** that
+are linked to each location (where each observation well is from a
+different timeframe). In this case, more attributes are returned
+(specific observation well attributes). The below example also
+demonstrates the use of
+[`tibble::glimpse()`](https://pillar.r-lib.org/reference/glimpse.html)
+to preview all columns:
+
+``` r
+get_locs(
+  watina,
+  obswells = TRUE,
+  area_codes = c("KAL", "KBR"),
+  loc_type = c("P", "S")
+) %>%
+  glimpse()
+#> Rows: ??
+#> Columns: 21
+#> $ loc_wid             <int> 1546, 1549, 1552, 1562, 1563, 1564, 1565, 1566, 1…
+#> $ loc_code            <chr> "KALP030", "KALP035", "KALP039", "KALP052", "KALP…
+#> $ area_code           <chr> "KAL", "KAL", "KAL", "KAL", "KAL", "KAL", "KAL", …
+#> $ area_name           <chr> "Kalmthoutse heide", "Kalmthoutse heide", "Kalmth…
+#> $ x                   <dbl> 152990, 153000, 160940, 153822, 153781, 154754, 1…
+#> $ y                   <dbl> 238600, 236850, 235060, 233761, 233736, 232459, 2…
+#> $ loc_validitycode    <chr> "VLD", "VLD", "VLD", "VLD", "VLD", "VLD", "VLD", …
+#> $ loc_validity        <chr> "Gevalideerd", "Gevalideerd", "Gevalideerd", "Gev…
+#> $ loc_typecode        <chr> "P", "P", "P", "P", "P", "P", "P", "P", "P", "P",…
+#> $ loc_typename        <chr> "Peilbuis/Piëzometer", "Peilbuis/Piëzometer", "Pe…
+#> $ obswell_code        <chr> "KALP030X", "KALP035X", "KALP039X", "KALP052X", "…
+#> $ obswell_rank        <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1…
+#> $ obswell_statecode   <chr> "CONFN", "CONFN", "CONFN", "CONFN", "CONFN", "CON…
+#> $ obswell_state       <chr> "OK - niet bemeten", "OK - niet bemeten", "OK - n…
+#> $ obswell_installdate <date> 1982-03-06, 1982-06-28, 1982-03-06, 1999-11-03, …
+#> $ obswell_stopdate    <date> NA, NA, NA, NA, NA, NA, NA, NA, NA, 2020-05-10, …
+#> $ soilsurf_ost        <dbl> 13.420, 15.200, 17.270, 21.060, 21.050, 20.540, 2…
+#> $ measuringref_ost    <dbl> 13.580, 15.000, 17.150, 21.580, 21.490, 20.860, 2…
+#> $ tubelength          <dbl> 3.12, 0.50, 2.26, 2.02, 2.04, 1.82, 3.25, 2.82, 2…
+#> $ filterlength        <dbl> 1.00, 0.50, 1.00, 0.20, 0.30, 0.20, 0.20, 0.20, 0…
+#> $ filterdepth         <dbl> 2.460, 0.450, 1.880, 1.400, 1.450, 1.400, 2.700, …
+```
+
+With `get_locs(obswells = FALSE)`, which is the default, the observation
+well variables are aggregated for each location using one of four
+methods. The method is set with the argument `obswell_aggr`. The
+default, `obswell_aggr = "latest"`, returns the attributes of the most
+recent observation well that fulfills the `filterdepth_range` and
+`filterdepth_na` criteria.
+
+## Disconnecting
+
+At the end of your work (a script, a bookdown document etc.), close the
+connection:
+
+``` r
+dbDisconnect(watina)
+```
+
+------------------------------------------------------------------------
+
+1.  See the [dbplyr](https://dbplyr.tidyverse.org/) package to get you
+    started with this type of object.
