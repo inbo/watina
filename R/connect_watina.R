@@ -20,7 +20,7 @@
 #' @export
 #' @importFrom inbodb connect_inbo_dbase
 connect_watina <- function() {
-  connect_inbo_dbase("W0002_00_Watina", autoconvert_utf8 = TRUE)
+  connect_inbo_dbase("W0002_10_Watina", autoconvert_utf8 = TRUE)
 }
 
 
