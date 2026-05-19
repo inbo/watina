@@ -430,13 +430,13 @@ get_locs <- function(con,
   max_filterdepth <- filterdepth_range[2]
 
   locs <-
-    tbl(con, "vwDimMeetpunt") %>%
+    tbl(con, "DimMeetpunt") %>%
     filter(
       .data$MeetpuntTypeCode %in% loc_type,
       .data$MeetpuntStatusCode %in% loc_validity
     ) %>%
     left_join(
-      tbl(con, "vwDimGebied") %>%
+      tbl(con, "DimGebied") %>%
         select(
           .data$GebiedWID,
           .data$GebiedCode,
@@ -475,15 +475,18 @@ get_locs <- function(con,
   locs <-
     locs %>%
     left_join(
-      tbl(con, "vwDimPeilpunt") %>%
+      tbl(con, "DimPeilpunt") %>%
         filter(
           .data$PeilpuntStatusCode %in% c(
             "VLD",
             "ENT",
             "CLD"
-          ),
-          .data$PeilpuntOpenbaarheidTypeCode == "PLME",
-          .data$PeilpuntOpenbaarheidCode == "UNKWN"
+          )
+          #,
+          # .data$PeilpuntOpenbaarheidTypeCode == "PLME", #peilmetingen (vs CHME: chemische metingen)
+          # .data$PeilpuntOpenbaarheidCode == "UNKWN" # UNKWN, PUBL, PUDOV, INCO, OWNCO
+          # nu linken met OpenbaarheidWID met DimOpenbaarheid en kolommen OpenbaarheidBeschrijving of -Code
+          # maar voor mij overbodig
         ) %>%
         mutate(
           PeilpuntPlaatsing =
