@@ -1317,7 +1317,7 @@ get_chem <- function(locs,
         "#locs"
       ) %>%
       inner_join(
-        tbl(con, "vwDimMeetpunt") %>%
+        tbl(con, "DimMeetpunt") %>%
           select(
             loc_wid = .data$MeetpuntWID,
             loc_code = .data$MeetpuntCode
@@ -1349,7 +1349,7 @@ get_chem <- function(locs,
       by = "ChemVarWID"
     ) %>%
     inner_join(
-      tbl(con, "DimTijd") %>%
+      tbl(con, "DimDatum") %>%
         select(
           .data$DatumWID,
           .data$Datum
@@ -1378,31 +1378,43 @@ get_chem <- function(locs,
   chem <-
     chemdata %>%
     left_join(
-      tbl(con, "ssrs_StaalEN") %>%
-        select(
-          .data$StaalID,
-          .data$StaalEN
-        ),
-      by = "StaalID"
-    ) %>%
-    # temporary values:
+      tbl(con, "DimStaal") %>%
+        select(.data$StaalID,
+               .data$StaalElnNbr, # in % uit PRD
+               .data$ENCalculated, # decimal zoals berekend in ETL
+               .data$IR,
+               .data$EC,
+               .data$IsStiffOk,
+               .data$IsMauchaOk,
+               .data$StaalExterneSource, # lab_project_id
+               .data$StaalExterneReferentie), # lab_sample_id
+      by = "StaalID") %>%  # of moet het StaalWID zijn?
     mutate(
-      lab_project_id = "0",
-      lab_sample_id = sql("CAST(StaalID AS varchar)"),
-      loq = -99
-    ) %>%
+      lab_project_id = sql("CAST(StaalExterneSource AS varchar)"),
+      lab_sample_id = sql("CAST(StaalExterneReferentie AS varchar)"),
+      sample_id = sql("CAST(StaalID AS varchar)"),
+      elneutr_prd = .data$StaalElnNbr / 100,
+      # temporary values:
+      loq = -99) %>%
     select(
       .data$loc_code,
       date = .data$Datum,
       .data$lab_project_id,
       .data$lab_sample_id,
+      .data$sample_id,
       chem_variable = .data$ChemVarCode,
       value_mass = .data$Meetwaarde,
       value_eq = .data$MeetwaardeMEQ,
       unit = .data$ChemVarEenheid,
       below_loq = .data$IsBelowLOQ,
       .data$loq,
-      elneutr = .data$StaalEN
+      .data$elneutr_prd,
+      elneutr_etl = .data$ENCalculated,
+      # later: use en from lab if possible, and otherwise calculate
+      ir = .data$IR,
+      ec = .data$EC,
+      stiff_ok = .data$IsStiffOk,
+      maucha_ok = .data$IsMauchaOk
     ) %>%
     filter(!is.na(.data$value_mass)) %>% # empty rows occur in the DWH!
     mutate(
@@ -1420,7 +1432,7 @@ get_chem <- function(locs,
 
   sqlstring_en <-
     paste0(
-      "elneutr BETWEEN ",
+      "elneutr_prd BETWEEN ", # nog beslissen
       en_range[1],
       " AND ",
       en_range[2]
@@ -1429,7 +1441,7 @@ get_chem <- function(locs,
   # preparing for the application of the en_fecond_threshold:
   if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
     if (any(
-      chemdata %>%
+      chemdata %>% # waarom niet chem?
       filter(
         .data$ChemVarCode == "CondL",
         !is.na(.data$MeetwaardeMEQ)
@@ -1443,13 +1455,12 @@ get_chem <- function(locs,
       )
     }
     samples_fecond <-
-      chemdata %>%
-      # temporary value:
-      mutate(lab_sample_id = sql("CAST(StaalID AS varchar)")) %>%
+      # chemdata %>% # waarom niet chem?
+      chem %>%
       select(
-        .data$lab_sample_id,
-        chem_variable = .data$ChemVarCode,
-        value_eq = .data$MeetwaardeMEQ
+        .data$sample_id,
+        .data$chem_variable,
+        .data$value_eq
       ) %>%
       filter(
         !is.na(.data$value_eq),
@@ -1463,7 +1474,7 @@ get_chem <- function(locs,
         fecond = .data$Fe / ifelse(.data$CondL == 0, NA_real_, .data$CondL)
       ) %>%
       select(
-        .data$lab_sample_id,
+        .data$sample_id,
         .data$fecond
       ) %>%
       filter(!is.na(.data$fecond))
@@ -1480,19 +1491,20 @@ get_chem <- function(locs,
         # I.1 applying the en_range condition:
         chem %>%
           filter(
-            (!is.na(.data$elneutr) & sql(sqlstring_en)) |
+            (!is.na(.data$elneutr_prd) & sql(sqlstring_en)) | # nog beslissen voor EN
               .data$provide_eq_unit == "FALSE"
           )
       } else {
         # I.2 applying the en_fecond_threshold OR the en_range condition:
         chem %>%
-          left_join(samples_fecond, by = "lab_sample_id") %>%
+          left_join(samples_fecond, by = "sample_id") %>%
           filter(
-            (!is.na(.data$elneutr) & sql(sqlstring_en)) |
+            (!is.na(.data$elneutr_prd) & sql(sqlstring_en)) | # nog beslissen voor EN
               .data$fecond >= en_fecond_threshold |
               .data$provide_eq_unit == "FALSE"
-          ) %>%
-          select(-.data$fecond)
+          )
+        #%>%
+          #select(-.data$fecond)
       }
     } else {
       # II. here, all samples with elneutr = NA are kept as well:
@@ -1500,21 +1512,22 @@ get_chem <- function(locs,
         # II.1 applying the en_range condition:
         chem %>%
           filter(
-            is.na(.data$elneutr) |
+            is.na(.data$elneutr_prd) | # nog beslissen voor EN
               sql(sqlstring_en) |
               .data$provide_eq_unit == "FALSE"
           )
       } else {
         # II.2 applying the en_fecond_threshold OR the en_range condition:
         chem %>%
-          left_join(samples_fecond, by = "lab_sample_id") %>%
+          left_join(samples_fecond, by = "sample_id") %>%
           filter(
-            is.na(.data$elneutr) |
+            is.na(.data$elneutr_prd) | # nog beslissen voor EN
               sql(sqlstring_en) |
               .data$fecond >= en_fecond_threshold |
               .data$provide_eq_unit == "FALSE"
-          ) %>%
-          select(-.data$fecond)
+          )
+        #%>%
+         # select(-.data$fecond)
       }
     }
 
