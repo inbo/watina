@@ -933,7 +933,7 @@ get_xg3 <- function(locs,
         "#locs"
       ) %>%
       inner_join(
-        tbl(con, "vwDimMeetpunt") %>%
+        tbl(con, "DimMeetpunt") %>%
           select(
             loc_wid = .data$MeetpuntWID,
             loc_code = .data$MeetpuntCode
@@ -944,20 +944,21 @@ get_xg3 <- function(locs,
   }
 
   xg3 <-
-    tbl(con, "ssrs_Precalc") %>%
+    tbl(con, "FactBRPeilMetingJaar") %>%
     # left_join(tbl(con, "DimMetingType"),
     #           by = "MetingTypeWID") %>%
+    filter(.data$IsHydroJaar == 1) %>%
     select(
       loc_wid = .data$MeetpuntWID,
-      hydroyear = .data$HydroJaar,
+      hydroyear = .data$Jaar,
       # method_code = .data$MetingTypeCode,
       # method_name = .data$MetingTypeNaam,
-      lg3_lcl = .data$GLG_2,
-      hg3_lcl = .data$GHG_2,
-      vg3_lcl = .data$GVG_2,
-      lg3_ost = .data$GLG_1,
-      hg3_ost = .data$GHG_1,
-      vg3_ost = .data$GVG_1
+      lg3_lcl = .data$LGmMaaiVeldValue,
+      hg3_lcl = .data$HGmMaaiVeldValue,
+      vg3_lcl = .data$VGmMaaiVeldValue,
+      lg3_ost = .data$LGmTAWValue,
+      hg3_ost = .data$HGmTAWValue,
+      vg3_ost = .data$VGmTAWValue
     ) %>%
     filter(
       .data$hydroyear >= startyear,
