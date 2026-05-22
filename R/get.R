@@ -1,205 +1,159 @@
 #' Get locations from the data warehouse
 #'
 #' Returns locations (and optionally, observation wells) from the \emph{Watina}
-#' data warehouse that meet
-#' several criteria, either as a lazy object or as a
-#' local tibble.
-#' Criteria refer to spatial or non-spatial physical attributes of the
-#' location or the location's observation wells.
-#' Essential metadata are included in the result.
+#' data warehouse that meet several criteria, either as a lazy object or as a
+#' local tibble. Criteria refer to spatial or non-spatial physical attributes of
+#' the location or the location's observation wells. Essential metadata are
+#' included in the result.
 #'
-#' (TO BE ADDED: Explanation on the different available values of loc_type
-#' and loc_validity)
+#' (TO BE ADDED: Explanation on the different available values of loc_type and
+#' loc_validity)
 #'
 #' The lazy object returns a \code{loc_wid} variable, for further use in
-#' \emph{remote} queries.
-#' However, don't use it in local objects: \code{loc_wid} is not to be
-#' regarded as stable.
-#' Therefore, \code{collect = TRUE} does not return \code{loc_wid}.
+#' \emph{remote} queries. However, don't use it in local objects: \code{loc_wid}
+#' is not to be regarded as stable. Therefore, \code{collect = TRUE} does not
+#' return \code{loc_wid}.
 #'
-#' The result also provides metadata at the level of the observation
-#' well, even when \code{obswells = FALSE}.
-#' In the latter case, this refers to the variables
-#' \code{soilsurf_ost},
-#' \code{measuringref_ost},
-#' \code{tubelength},
-#' \code{filterlength},
-#' \code{filterdepth}.
-#' See the argument \code{obswell_aggr} for options of how to aggregate this
-#' information at the location level;
-#' by default the latest observation well is used
-#' (per location) that meets the criteria on filterdepth.
-#' Mind that \code{obswells = FALSE} and \code{filterdepth_na = TRUE} may lead
-#' to missing filterdepth values at locations which do have a
-#' value for an older observation well, but not for the most recent one.
+#' The result also provides metadata at the level of the observation well, even
+#' when \code{obswells = FALSE}. In the latter case, this refers to the
+#' variables \code{soilsurf_ost}, \code{measuringref_ost}, \code{tubelength},
+#' \code{filterlength}, \code{filterdepth}. See the argument \code{obswell_aggr}
+#' for options of how to aggregate this information at the location level; by
+#' default the latest observation well is used (per location) that meets the
+#' criteria on filterdepth. Mind that \code{obswells = FALSE} and
+#' \code{filterdepth_na = TRUE} may lead to missing filterdepth values at
+#' locations which do have a value for an older observation well, but not for
+#' the most recent one.
 #'
 #' Please note the meaning of observation well in Watina: if there are multiple
-#' observation wells attached to one location, these belong to
-#' \emph{other timeframes}!
-#' So one location always coincides with exactly one observation well at
-#' one moment in time.
-#' Multiple observation wells can succeed one another because of physical
-#' alterations (e.g. damage of a piezometer).
-#' Here, the term 'observation well' is used to refer to a fixed installed
-#' device in the field (groundwater piezometer, surface water level
-#' measurement device).
-
+#' observation wells attached to one location, these belong to \emph{other
+#' timeframes}! So one location always coincides with exactly one observation
+#' well at one moment in time. Multiple observation wells can succeed one
+#' another because of physical alterations (e.g. damage of a piezometer). Here,
+#' the term 'observation well' is used to refer to a fixed installed device in
+#' the field (groundwater piezometer, surface water level measurement device).
 #'
 #'
-#' @param con A \code{DBIConnection} object to Watina.
-#' See \code{\link{connect_watina}} to generate one.
-#' @param filterdepth_range Numeric vector of length 2.
-#' Specifies the allowed range of the depth of the filter below soil
-#' surface, as meters (minimum and maximum allowed filterdepth, respectively).
-#' This condition is only applied to groundwater piezometers.
-#' The second vector element cannot be smaller than the first.
-#' Note that 'filterdepth' takes into account \emph{half} the length of the
-#' filter.
-#' It is always assumed that filters are at the bottom of the tube.
-#' Hence
-#' \code{filterdepth = tubelength - filterlength / 2 -
-#' [tubelength part above soil surface]}.
-#' If filterlength is missing, it is assumed to be 0.3 m.
-#' With \code{obswells = FALSE}, a location is kept whenever one observation
-#' well fulfills the condition.
-#' @param filterdepth_guess Logical.
-#' Only relevant for groundwater piezometers.
-#' Defaults to \code{FALSE}.
-#' For observation wells of which tubelength is known, but not
-#' the part of the tubelength above soil surface (height of measuring point),
-#' filterdepth cannot be calculated and is missing.
-#' However, filterdepth will never be larger than tubelength minus half the
-#' filterlength; hence a maximum
-#' possible (i.e. conservative) value for filterdepth is given by
-#' \code{tubelength - filterlength / 2}.
-#' With \code{filterdepth_guess = TRUE}, filterdepth is replaced by this value
-#' when it cannot be calculated and tubelength is available.
-#' This is done before applying the \code{filterdepth_range} condition.
-#' To mark these cases, a logical variable \code{filterdepth_guessed} is added
-#' to the result: \code{TRUE} for wells where filterdepth was replaced;
-#' \code{FALSE} in all other rows.
-#' @param filterdepth_na Logical.
-#' Are observation wells with missing filterdepth value to be included?
-#' Defaults to \code{FALSE}.
-#' With \code{filterdepth_guess = TRUE}, this has only effect on the
-#' \emph{remaining} observation wells with missing filterdepth value.
-#' @param obswells Logical.
-#' If \code{TRUE}, the returned object distinguishes all observation wells
-#' (see \emph{Details}) that
-#' meet the \code{filterdepth_range} condition (or have missing filterdepth, if
-#' \code{filterdepth_na = TRUE}).
-#' If \code{FALSE} (the default), the returned object just distinguishes
-#' locations.
-#' In the latter case, the variables \code{obswell_installdate} and
-#' \code{obswell_stopdate} are not returned.
+#' @param con A \code{DBIConnection} object to Watina. See
+#'   \code{\link{connect_watina}} to generate one.
+#' @param filterdepth_range Numeric vector of length 2. Specifies the allowed
+#'   range of the depth of the filter below soil surface, as meters (minimum and
+#'   maximum allowed filterdepth, respectively). This condition is only applied
+#'   to groundwater piezometers. The second vector element cannot be smaller
+#'   than the first. Note that 'filterdepth' takes into account \emph{half} the
+#'   length of the filter. It is always assumed that filters are at the bottom
+#'   of the tube. Hence \code{filterdepth = tubelength - filterlength / 2 -
+#'   [tubelength part above soil surface]}.
+#'   If filterlength is missing, it is assumed to be 0.3 m. With \code{obswells
+#'   = FALSE}, a location is kept whenever one observation well fulfills the
+#'   condition.
+#' @param filterdepth_guess Logical. Only relevant for groundwater piezometers.
+#'   Defaults to \code{FALSE}. For observation wells of which tubelength is
+#'   known, but not the part of the tubelength above soil surface (height of
+#'   measuring point), filterdepth cannot be calculated and is missing. However,
+#'   filterdepth will never be larger than tubelength minus half the
+#'   filterlength; hence a maximum possible (i.e. conservative) value for
+#'   filterdepth is given by \code{tubelength - filterlength / 2}. With
+#'   \code{filterdepth_guess = TRUE}, filterdepth is replaced by this value when
+#'   it cannot be calculated and tubelength is available. This is done before
+#'   applying the \code{filterdepth_range} condition. To mark these cases, a
+#'   logical variable \code{filterdepth_guessed} is added to the result:
+#'   \code{TRUE} for wells where filterdepth was replaced; \code{FALSE} in all
+#'   other rows.
+#' @param filterdepth_na Logical. Are observation wells with missing filterdepth
+#'   value to be included? Defaults to \code{FALSE}. With
+#'   \code{filterdepth_guess = TRUE}, this has only effect on the
+#'   \emph{remaining} observation wells with missing filterdepth value.
+#' @param obswells Logical. If \code{TRUE}, the returned object distinguishes
+#'   all observation wells (see \emph{Details}) that meet the
+#'   \code{filterdepth_range} condition (or have missing filterdepth, if
+#'   \code{filterdepth_na = TRUE}). If \code{FALSE} (the default), the returned
+#'   object just distinguishes locations. In the latter case, the variables
+#'   \code{obswell_installdate} and \code{obswell_stopdate} are not returned.
+#' @param obswell_aggr String. Defines how the attributes of multiple
+#'   observation wells per location that fulfill the \code{filterdepth_range}
+#'   and \code{filterdepth_na} criteria (after filterdepth adjustment if
+#'   \code{filterdepth_guess = TRUE}), are aggregated into one record
+#'   \strong{per location}:
+#'   \itemize{
+#'   \item \code{"latest"}: return attributes of the most recent observation
+#'      well that fulfills the \code{filterdepth_range} and
+#'      \code{filterdepth_na} criteria;
+#'   \item \code{"latest_fd"}: return attributes of the most recent observation
+#'      well that fulfills the \code{filterdepth_range} condition, i.e.
+#'      filterdepth will not be missing unless \emph{all} retained wells have
+#'      missing filterdepth \emph{and} \code{filterdepth_na = TRUE};
+#'   \item \code{"latest_sso"}: return attributes of the most recent observation
+#'      well that fulfills the \code{filterdepth_range} and
+#'      \code{filterdepth_na} criteria \emph{and} for which \code{soilsurf_ost}
+#'      (soil surface level in the
+#'      \href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
+#'      height} CRS (EPSG \href{https://epsg.io/5710}{5710}) is not missing
+#'      (unless \emph{all} retained wells have missing \code{soilsurf_ost});
+#'   \item \code{"mean"}: aggregation not by selecting an individual observation
+#'      well, but by averaging the values of the associated variables
+#'      \code{soilsurf_ost}, \code{measuringref_ost}, \code{tubelength},
+#'      \code{filterlength}, \code{filterdepth} for the observation wells with
+#'      non-missing values (different wells may be involved for each variable,
+#'      depending on the distribution of missing values). With
+#'      \code{filterdepth_guess = TRUE}, the extra variabele
+#'      \code{filterdepth_guessed} is summarised as \code{TRUE} for a location
+#'      if at least one of the location's observation wells has
+#'      \code{filterdepth_guessed = TRUE}.
+#'   }
+#'   \strong{In all cases} the returned value of \code{obswell_statecode} and
+#'   \code{obswell_state} corresponds to the \code{"latest"} approach. The
+#'   \code{obswell_aggr} argument has no effect on locations with a single
+#'   retained observation well. It is ignored if \code{obswells = TRUE}.
+#' @param mask An optional geospatial filter of class \code{sf}. If provided,
+#'   only locations that intersect with \code{mask} will be returned, with the
+#'   value of \code{buffer} taken into account. The CRS must be Belgian Lambert
+#'   72 (EPSG-code \href{https://epsg.io/31370}{31370}).
+#' @param join_mask Logical. Do you want to spatially join the attribute columns
+#'   of \code{mask} to the resulting tibble? The spatial join is executed with
+#'   \code{\link[sf:geos_binary_pred]{st_intersects()}} as the topological
+#'   operator. Beware: if the same location intersects with more than one
+#'   element of \code{mask} (taking into account the value of \code{buffer}),
+#'   that location will occur multiple times in the result. \code{join_mask} is
+#'   ignored if \code{mask} is not provided.
+#' @param buffer Number of meters taken as a buffer to enlarge \code{mask} (or
+#'   shrink it, if \code{buffer < 0}) if \code{mask} is provided.
+#' @param bbox Optional geospatial fiter (rectangle). A bounding box (class
+#'   \code{bbox}), or a vector of four named elements \code{xmin}, \code{xmax},
+#'   \code{ymin}, \code{ymax} defining the boundary coordinates of a bounding
+#'   box. If provided, only locations within this rectangular area will be
+#'   returned. The CRS must be Belgian Lambert 72 (EPSG-code
+#'   \href{https://epsg.io/31370}{31370}).
+#' @param area_codes An optional vector with area codes. If provided, only
+#'   locations within the areas will be returned.
+#' @param loc_type Type of the location (mainly: the type of measurement
+#'   device). Defaults to \code{"P"}, i.e. only groundwater piezometers are
+#'   returned by default. Can be a vector with multiple selected values.
+#' @param loc_validity Validation status of the location. Can be a vector with
+#'   multiple selected values, which must belong to \code{"VLD"}, \code{"ENT"},
+#'   \code{"DEL"} or \code{"CLD"}. Defaults to \code{c("VLD", "ENT")}.
+#' @param loc_vec An optional vector with location codes. If provided, only
+#'   locations are returned that are present in this vector.
+#' @param collect Should the data be retrieved as a local tibble? If
+#'   \code{FALSE} (the default), a \code{tbl_lazy} object is returned (lazy
+#'   query). Hence the result can be further built upon before retrieving data
+#'   with \code{\link[dplyr:compute]{collect()}}.
 #'
-#' @param obswell_aggr String.
-#' Defines how the attributes of multiple observation wells per location that
-#' fulfill the \code{filterdepth_range} and
-#' \code{filterdepth_na} criteria (after filterdepth adjustment if
-#' \code{filterdepth_guess = TRUE}), are
-#' aggregated into one record \strong{per location}:
-#' \itemize{
-#'
-#' \item \code{"latest"}: return attributes of the most recent observation well
-#' that fulfills the \code{filterdepth_range} and
-#' \code{filterdepth_na} criteria;
-#'
-#' \item \code{"latest_fd"}: return attributes of the most recent observation well
-#' that fulfills the \code{filterdepth_range} condition, i.e.
-#' filterdepth will not be missing unless \emph{all} retained wells have missing
-#' filterdepth \emph{and} \code{filterdepth_na = TRUE};
-#'
-#' \item \code{"latest_sso"}: return attributes of the most recent observation well
-#' that fulfills the \code{filterdepth_range} and
-#' \code{filterdepth_na} criteria \emph{and} for which \code{soilsurf_ost}
-#' (soil surface level in the
-#' \href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend height}
-#' CRS (EPSG \href{https://epsg.io/5710}{5710}) is not missing (unless
-#' \emph{all} retained wells have missing \code{soilsurf_ost});
-#'
-#' \item \code{"mean"}: aggregation not by selecting an individual observation
-#' well, but by averaging the values of the associated variables
-#' \code{soilsurf_ost},
-#' \code{measuringref_ost},
-#' \code{tubelength},
-#' \code{filterlength},
-#' \code{filterdepth}
-#' for the observation wells with non-missing values (different
-#' wells may be involved for each variable, depending on the distribution of
-#' missing values).
-#' With \code{filterdepth_guess = TRUE}, the extra variabele
-#' \code{filterdepth_guessed} is summarised as \code{TRUE} for a location
-#' if at least one of the location's observation wells has
-#' \code{filterdepth_guessed = TRUE}.
-#' }
-#' \strong{In all cases} the returned value of \code{obswell_statecode} and
-#' \code{obswell_state} corresponds to the \code{"latest"} approach.
-#' The \code{obswell_aggr} argument has no effect on locations with a single
-#' retained observation well.
-#' It is ignored if \code{obswells = TRUE}.
-#'
-#' @md
-#'
-#' @note
-#' Up to and including `watina 0.3.0`, the result was sorted according to
-#' `area_code` and `loc_code`,
-#' both for the lazy query and the collected result.
-#' Later versions avoid sorting in case of a lazy result, because
-#' otherwise, when using the result inside another lazy query, this led to
-#' 'ORDER BY' constructs in SQL subqueries, which must be avoided.
-#' If you like to print the lazy object in a sorted manner, you must add
-#' `%>% arrange(...)` yourself.
-#'
-#' @param mask An optional geospatial filter of class \code{sf}.
-#' If provided, only locations that intersect with \code{mask} will be returned,
-#' with the value of \code{buffer} taken into account.
-#' The CRS must be Belgian Lambert 72 (EPSG-code
-#' \href{https://epsg.io/31370}{31370}).
-#' @param join_mask Logical.
-#' Do you want to spatially join the attribute columns of \code{mask} to the
-#' resulting tibble?
-#' The spatial join is executed with
-#' \code{\link[sf:geos_binary_pred]{st_intersects()}} as the topological operator.
-#' Beware: if the same location intersects with more than one element of
-#' \code{mask} (taking into account the value of \code{buffer}), that location
-#' will occur multiple times in the result.
-#' \code{join_mask} is ignored if \code{mask} is not provided.
-#' @param buffer Number of meters taken as a buffer to enlarge
-#' \code{mask} (or shrink it, if \code{buffer < 0}) if \code{mask} is provided.
-#' @param bbox Optional geospatial fiter (rectangle).
-#' A bounding box (class \code{bbox}), or a vector of four named elements
-#' \code{xmin}, \code{xmax}, \code{ymin}, \code{ymax} defining the
-#' boundary coordinates of a bounding box.
-#' If provided, only locations within this rectangular area will be returned.
-#' The CRS must be Belgian Lambert 72 (EPSG-code
-#' \href{https://epsg.io/31370}{31370}).
-#' @param area_codes An optional vector with area codes.
-#' If provided, only locations within the areas will be returned.
-#' @param loc_type Type of the location (mainly: the type of measurement device).
-#' Defaults to \code{"P"}, i.e. only groundwater piezometers are returned by
-#' default.
-#' Can be a vector with multiple selected values.
-#' @param loc_validity Validation status of the location.
-#' Can be a vector with multiple selected values, which must belong to
-#' \code{"VLD"}, \code{"ENT"}, \code{"DEL"} or \code{"CLD"}.
-#' Defaults to \code{c("VLD", "ENT")}.
-#' @param loc_vec An optional vector with location codes.
-#' If provided, only locations are returned that are present in this vector.
-#' @param collect Should the data be retrieved as a local tibble?
-#' If \code{FALSE} (the default), a \code{tbl_lazy} object is returned
-#' (lazy query).
-#' Hence the result can be further built upon before retrieving data with
-#' \code{\link[dplyr:compute]{collect()}}.
-#'
-#' @return
-#' By default, a \code{tbl_lazy} object.
-#' With \code{collect = TRUE} or with a specified \code{mask},
-#' a local \code{\link[tibble]{tibble}} is returned.
+#' @return By default, a \code{tbl_lazy} object. With \code{collect = TRUE} or
+#' with a specified \code{mask}, a local \code{\link[tibble]{tibble}} is
+#' returned.
 #'
 #' (TO BE ADDED: Explanation on the variable names of the returned object)
 #'
 #' @family functions to query the data warehouse
+#'
+#' @md
+#' @note Up to and including `watina 0.3.0`, the result was sorted according to
+#' `area_code` and `loc_code`, both for the lazy query and the collected result.
+#' Later versions avoid sorting in case of a lazy result, because otherwise,
+#' when using the result inside another lazy query, this led to 'ORDER BY'
+#' constructs in SQL subqueries, which must be avoided. If you like to print the
+#' lazy object in a sorted manner, you must add `%>% arrange(...)` yourself.
 #'
 #' @examples
 #' \dontrun{
@@ -329,22 +283,9 @@
 #'
 #' @export
 #' @importFrom rlang .data
-#' @importFrom assertthat
-#' assert_that
-#' is.number
-#' is.flag
-#' noNA
-#' @importFrom dplyr
-#' %>%
-#' tbl
-#' filter
-#' left_join
-#' select
-#' distinct
-#' arrange
-#' group_by
-#' ungroup
-#' sql
+#' @importFrom assertthat assert_that is.number is.flag noNA
+#' @importFrom dplyr %>% tbl filter left_join select distinct arrange group_by
+#'   ungroup sql
 get_locs <- function(con,
                      filterdepth_range = c(0, 3),
                      filterdepth_guess = FALSE,
@@ -619,8 +560,7 @@ get_locs <- function(con,
       )
 
     locs <-
-      switch(
-        obswell_aggr,
+      switch(obswell_aggr,
         "latest" =
           locs %>%
             ungroup() %>%
@@ -1426,11 +1366,11 @@ get_chem <- function(locs,
   if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
     if (any(
       chemdata %>%
-      filter(
-        .data$ChemVarCode == "CondL",
-        !is.na(.data$MeetwaardeMEQ)
-      ) %>%
-      pull(.data$MeetwaardeMEQ) == 0
+        filter(
+          .data$ChemVarCode == "CondL",
+          !is.na(.data$MeetwaardeMEQ)
+        ) %>%
+        pull(.data$MeetwaardeMEQ) == 0
     )) {
       warning(
         "Zeroes for 'CondL' (lab conductivity) detected. ",
