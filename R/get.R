@@ -1,3 +1,4 @@
+# DOCUMENTATION GET LOCS -------------------------------------------------------
 #' Get locations from the data warehouse
 #'
 #' Returns locations (and optionally, observation wells) from the \emph{Watina}
@@ -286,6 +287,7 @@
 #' @importFrom assertthat assert_that is.number is.flag noNA
 #' @importFrom dplyr %>% tbl filter left_join select distinct arrange group_by
 #'   ungroup sql
+# FUNCTION GET LOCS ------------------------------------------------------------
 get_locs <- function(con,
                      filterdepth_range = c(0, 3),
                      filterdepth_guess = FALSE,
@@ -306,6 +308,7 @@ get_locs <- function(con,
                      loc_validity = c("VLD", "ENT"),
                      loc_vec = NULL,
                      collect = FALSE) {
+  # VALIDATE INPUT -------------------------------------------------------------
   assert_that(
     is.numeric(filterdepth_range),
     length(filterdepth_range) == 2,
@@ -367,9 +370,11 @@ get_locs <- function(con,
     msg = "You specified at least one unknown loc_validity."
   )
 
+  # PREPROCESS -----------------------------------------------------------------
   min_filterdepth <- filterdepth_range[1]
   max_filterdepth <- filterdepth_range[2]
 
+  # LOAD LOCATIONS -------------------------------------------------------------
   locs <-
     tbl(con, "vwDimMeetpunt") %>%
     filter(
@@ -386,6 +391,7 @@ get_locs <- function(con,
       by = "GebiedWID"
     )
 
+  # FILTER DATA ----------------------------------------------------------------
   if (!is.null(loc_vec)) {
     locs <-
       locs %>%
@@ -413,6 +419,7 @@ get_locs <- function(con,
       )
   }
 
+  # JOIN OBSERVATION WELLS -----------------------------------------------------
   locs <-
     locs %>%
     left_join(
@@ -476,6 +483,7 @@ get_locs <- function(con,
       .data$filterdepth
     )
 
+  # CALCULATE FILTERDEPTH ------------------------------------------------------
   if (filterdepth_guess) {
     locs <-
       locs %>%
@@ -512,6 +520,7 @@ get_locs <- function(con,
       )
   }
 
+  #  AGGREGATE OBSERVATIONS ----------------------------------------------------
   if (!obswells) {
     locs <-
       locs %>%
@@ -639,6 +648,7 @@ get_locs <- function(con,
       )
   }
 
+  # MASK DATA ------------------------------------------------------------------
   if (!is.null(mask)) {
     locs <-
       locs %>%
@@ -705,10 +715,11 @@ get_locs <- function(con,
     warn_xy_duplicates(locs$x, locs$y)
   }
 
+  # RETURN LOCATIONS -----------------------------------------------------------
   return(locs)
 }
 
-
+# DOCUMENTATION GET XG3 --------------------------------------------------------
 #' Get XG3 values from the data warehouse
 #'
 #' Returns XG3 values from the \emph{Watina} data warehouse,
@@ -829,6 +840,7 @@ get_locs <- function(con,
 #' contains
 #' arrange
 #' distinct
+# FUNCTION GET XG3 -------------------------------------------------------------
 get_xg3 <- function(locs,
                     con,
                     startyear,
@@ -932,7 +944,7 @@ get_xg3 <- function(locs,
   return(xg3)
 }
 
-
+# DOCUMENTATION GET CHEM -------------------------------------------------------
 #' Get hydrochemical data from the data warehouse
 #'
 #' Returns hydrochemical data from the \emph{Watina} data warehouse,
@@ -1183,6 +1195,7 @@ get_xg3 <- function(locs,
 #' distinct
 #' sql
 #' rename
+# FUNTION GET CHEM -------------------------------------------------------------
 get_chem <- function(locs,
                      con,
                      startdate,
