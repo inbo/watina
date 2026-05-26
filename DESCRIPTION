@@ -38,6 +38,7 @@ Suggests:
     rmarkdown,
     scales,
     sf,
+    testthat (>= 3.0.0),
     tibble,
     tidyselect
 Remotes:
@@ -46,3 +47,4 @@ LazyData: true
 Encoding: UTF-8
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
+Config/testthat/edition: 3
