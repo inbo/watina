@@ -328,7 +328,10 @@ get_locs <- function(con,
     collect
   )
 
-  locs <- load_location_data(con) %>%
+  locs <- fetch_location_data(con)
+  obs <- fetch_observation_data(con)
+
+  locs <- locs %>%
     apply_location_filters(
       bbox,
       area_codes,
@@ -336,7 +339,7 @@ get_locs <- function(con,
       loc_validity,
       loc_vec
     ) %>%
-    join_observation_data(con) %>%
+    join_observation_data(obs) %>%
     calculate_filterdepth(
       filterdepth_range,
       filterdepth_guess,
@@ -453,21 +456,53 @@ validate_input_get_locs <- function(
   )
 }
 
-load_location_data <- function(con) {
+fetch_location_data <- function(con) {
   meetpunt <- tbl(con, "vwDimMeetpunt")
-  gebied <- tbl(con, "vwDimGebied") %>%
+  gebied <- tbl(con, "vwDimGebied")
+
+  transform_location_data(meetpunt, gebied)
+}
+
+transform_location_data <- function(meetpunt, gebied) {
+  gebied_filtered <- gebied %>%
     select(
       .data$GebiedWID,
       .data$GebiedCode,
       .data$GebiedNaam
     )
+
   locs <- meetpunt %>%
     left_join(
-      gebied,
+      gebied_filtered,
       by = "GebiedWID"
     )
 
   return(locs)
+}
+
+apply_loc_vec_filter <- function(locs, loc_vec) {
+  locs %>%
+    filter(.data$MeetpuntCode %in% loc_vec)
+}
+
+apply_area_codes_filter <- function(locs, area_codes) {
+  locs %>%
+    filter(.data$GebiedCode %in% area_codes)
+}
+
+apply_bbox_filter <- function(locs, bbox) {
+  bbox_xmin <- unname(bbox["xmin"])
+  bbox_xmax <- unname(bbox["xmax"])
+  bbox_ymin <- unname(bbox["ymin"])
+  bbox_ymax <- unname(bbox["ymax"])
+
+  locs %>%
+    filter(
+      .data$MeetpuntXCoordinaat >= bbox_xmin,
+      .data$MeetpuntXCoordinaat <= bbox_xmax,
+      .data$MeetpuntYCoordinaat >= bbox_ymin,
+      .data$MeetpuntYCoordinaat <= bbox_ymax
+    )
 }
 
 apply_location_filters <- function(
@@ -484,38 +519,25 @@ apply_location_filters <- function(
       .data$MeetpuntStatusCode %in% loc_validity
     )
 
-  if (!is.null(loc_vec)) {
-    locs <-
-      locs %>%
-      filter(.data$MeetpuntCode %in% loc_vec)
-  }
-
-  if (!is.null(area_codes)) {
-    locs <-
-      locs %>%
-      filter(.data$GebiedCode %in% area_codes)
-  }
-
-  if (!is.null(bbox)) {
-    bbox_xmin <- unname(bbox["xmin"])
-    bbox_xmax <- unname(bbox["xmax"])
-    bbox_ymin <- unname(bbox["ymin"])
-    bbox_ymax <- unname(bbox["ymax"])
-    locs <-
-      locs %>%
-      filter(
-        .data$MeetpuntXCoordinaat >= bbox_xmin,
-        .data$MeetpuntXCoordinaat <= bbox_xmax,
-        .data$MeetpuntYCoordinaat >= bbox_ymin,
-        .data$MeetpuntYCoordinaat <= bbox_ymax
-      )
-  }
+  if (!is.null(loc_vec)) locs <- locs %>% apply_loc_vec_filter(loc_vec)
+  if (!is.null(area_codes)) locs <- locs %>% apply_area_codes_filter(area_codes)
+  if (!is.null(bbox)) locs <- locs %>% apply_bbox_filter(bbox)
 
   return(locs)
 }
 
-join_observation_data <- function(locs, con) {
+load_observation_data <- function(con) {
   peilpunt <- tbl(con, "vwDimPeilpunt") %>%
+    mutate(
+      PeilpuntPlaatsing =
+        sql("CAST(PeilpuntPlaatsing AS date)"),
+      PeilpuntStopzetting =
+        sql("CAST(PeilpuntStopzetting AS date)")
+    )
+}
+
+transform_observation_data <- function(peilpunt) {
+  peilpunt <- peilpunt %>%
     filter(
       .data$PeilpuntStatusCode %in% c(
         "VLD",
@@ -524,18 +546,6 @@ join_observation_data <- function(locs, con) {
       ),
       .data$PeilpuntOpenbaarheidTypeCode == "PLME",
       .data$PeilpuntOpenbaarheidCode == "UNKWN"
-    ) %>%
-    mutate(
-      PeilpuntPlaatsing =
-        sql("CAST(PeilpuntPlaatsing AS date)"),
-      PeilpuntStopzetting =
-        sql("CAST(PeilpuntStopzetting AS date)")
-    )
-
-  locs <- locs %>%
-    left_join(
-      peilpunt,
-      by = "MeetpuntWID"
     ) %>%
     mutate(
       tubelength = ifelse(
@@ -554,6 +564,19 @@ join_observation_data <- function(locs, con) {
       soilsurf_ost =
         .data$ReferentieNiveauTAW -
           .data$ReferentieNiveauMaaiveld
+    )
+}
+
+fetch_observation_data <- function(con) {
+  peilpunt <- load_observation_data(con) %>%
+    transform_observation_data()
+}
+
+join_observation_data <- function(locs, obs) {
+  locs <- locs %>%
+    left_join(
+      obs,
+      by = "MeetpuntWID"
     ) %>%
     select(
       loc_wid = .data$MeetpuntWID,
@@ -582,29 +605,33 @@ join_observation_data <- function(locs, con) {
   return(locs)
 }
 
+calculate_guessed_filterdepth <- function(locs) {
+  locs <-
+    locs %>%
+    mutate(
+      filterdepth_guessed =
+        is.na(.data$filterdepth) & !is.na(.data$tubelength),
+      filterdepth = ifelse(
+        .data$filterdepth_guessed == 1,
+        # (sql: logical stored as bit)
+        .data$tubelength - .data$filterlength / 2,
+        .data$filterdepth
+      )
+    )
+
+  return(locs)
+}
+
 calculate_filterdepth <- function(
   locs,
   filterdepth_range,
   filterdepth_guess,
   filterdepth_na
 ) {
+  if (filterdepth_guess) locs <- locs %>% calculate_guessed_filterdepth()
+
   min_filterdepth <- filterdepth_range[1]
   max_filterdepth <- filterdepth_range[2]
-
-  if (filterdepth_guess) {
-    locs <-
-      locs %>%
-      mutate(
-        filterdepth_guessed =
-          is.na(.data$filterdepth) & !is.na(.data$tubelength),
-        filterdepth = ifelse(
-          .data$filterdepth_guessed == 1,
-          # (sql: logical stored as bit)
-          .data$tubelength - .data$filterlength / 2,
-          .data$filterdepth
-        )
-      )
-  }
 
   if (filterdepth_na) {
     locs <-
@@ -630,121 +657,106 @@ calculate_filterdepth <- function(
   return(locs)
 }
 
-aggregate_observations_by_location <- function(locs, obswell_aggr) {
-  locs <-
-    locs %>%
+calculate_location_metrics <- function(locs) {
+  locs %>%
     group_by(.data$loc_code) %>%
     mutate(
       obswell_count = n(),
       obswell_maxrank = max(.data$obswell_rank, na.rm = TRUE),
       obswell_maxrank_fd =
         max(
-          ifelse(
-            is.na(.data$filterdepth),
-            NA,
-            .data$obswell_rank
-          ),
+          ifelse(is.na(.data$filterdepth), NA, .data$obswell_rank),
           na.rm = TRUE
         ),
       obswell_maxrank_sso =
         max(
-          ifelse(
-            is.na(.data$soilsurf_ost),
-            NA,
-            .data$obswell_rank
-          ),
+          ifelse(is.na(.data$soilsurf_ost), NA, .data$obswell_rank),
           na.rm = TRUE
         ),
       obswell_statecode =
         max(
-          ifelse(
-            .data$obswell_rank ==
-              .data$obswell_maxrank,
-            .data$obswell_statecode,
-            NA
-          ),
+          ifelse(.data$obswell_rank == .data$obswell_maxrank, .data$obswell_statecode, NA),
           na.rm = TRUE
         ),
       obswell_state =
         max(
-          ifelse(
-            .data$obswell_rank ==
-              .data$obswell_maxrank,
-            .data$obswell_state,
-            NA
-          ),
+          ifelse(.data$obswell_rank == .data$obswell_maxrank, .data$obswell_state, NA),
           na.rm = TRUE
         )
     )
+}
 
-  locs <-
-    switch(obswell_aggr,
-      "latest" =
-        locs %>%
-          ungroup() %>%
-          filter(
-            .data$obswell_count == 1 |
-              .data$obswell_rank == .data$obswell_maxrank
-          ),
-      "latest_fd" =
-        locs %>%
-          ungroup() %>%
-          filter(
-            .data$obswell_count == 1 |
-              (.data$obswell_rank ==
-                .data$obswell_maxrank_fd) |
-              (is.na(.data$obswell_maxrank_fd) &
-                (.data$obswell_rank ==
-                  .data$obswell_maxrank))
-          ),
-      "latest_sso" =
-        locs %>%
-          ungroup() %>%
-          filter(
-            .data$obswell_count == 1 |
-              (.data$obswell_rank ==
-                .data$obswell_maxrank_sso) |
-              (is.na(.data$obswell_maxrank_sso) &
-                (.data$obswell_rank ==
-                  .data$obswell_maxrank))
-          ),
-      "mean" =
-        locs %>%
-          mutate(
-            soilsurf_ost = mean(.data$soilsurf_ost, na.rm = TRUE),
-            measuringref_ost = mean(.data$measuringref_ost, na.rm = TRUE),
-            filterdepth = mean(.data$filterdepth, na.rm = TRUE),
-            filterlength = mean(.data$filterlength, na.rm = TRUE),
-            tubelength = mean(.data$tubelength, na.rm = TRUE)
-          ) %>%
-          {
-            if ("filterdepth_guessed" %in% colnames(.)) {
-              mutate(
-                .,
-                filterdepth_guessed =
-                  max(
-                    ifelse(
-                      .data$filterdepth_guessed == 1,
-                      # (sql: logical stored as bit)
-                      1,
-                      0
-                    ),
-                    na.rm = TRUE
-                  )
-              ) %>%
-                mutate(
-                  filterdepth_guessed = sql("CAST(filterdepth_guessed AS bit)")
-                )
-            } else {
-              .
-            }
-          } %>%
-          ungroup() %>%
-          filter(
-            .data$obswell_count == 1 |
-              .data$obswell_rank == .data$obswell_maxrank
-          )
+calculate_mean_boolean_flags <- function(locs) {
+  # If the column doesn't exist, just pass the data through untouched
+  if (!("filterdepth_guessed" %in% colnames(locs))) {
+    return(locs)
+  }
+
+  locs %>%
+    mutate(
+      filterdepth_guessed =
+        max(
+          # (sql: logical stored as bit)
+          ifelse(.data$filterdepth_guessed == 1, 1, 0),
+          na.rm = TRUE
+        )
     ) %>%
+    mutate(
+      filterdepth_guessed = sql("CAST(filterdepth_guessed AS bit)")
+    )
+}
+
+apply_aggregation_strategy <- function(locs, obswell_aggr) {
+  switch(obswell_aggr,
+    "latest" =
+      locs %>%
+        ungroup() %>%
+        filter(
+          .data$obswell_count == 1 |
+            .data$obswell_rank == .data$obswell_maxrank
+        ),
+    "latest_fd" =
+      locs %>%
+        ungroup() %>%
+        filter(
+          .data$obswell_count == 1 |
+            (.data$obswell_rank ==
+              .data$obswell_maxrank_fd) |
+            (is.na(.data$obswell_maxrank_fd) &
+              (.data$obswell_rank ==
+                .data$obswell_maxrank))
+        ),
+    "latest_sso" =
+      locs %>%
+        ungroup() %>%
+        filter(
+          .data$obswell_count == 1 |
+            (.data$obswell_rank ==
+              .data$obswell_maxrank_sso) |
+            (is.na(.data$obswell_maxrank_sso) &
+              (.data$obswell_rank ==
+                .data$obswell_maxrank))
+        ),
+    "mean" =
+      locs %>%
+        mutate(
+          soilsurf_ost = mean(.data$soilsurf_ost, na.rm = TRUE),
+          measuringref_ost = mean(.data$measuringref_ost, na.rm = TRUE),
+          filterdepth = mean(.data$filterdepth, na.rm = TRUE),
+          filterlength = mean(.data$filterlength, na.rm = TRUE),
+          tubelength = mean(.data$tubelength, na.rm = TRUE)
+        ) %>%
+        calculate_mean_boolean_flags() %>%
+        ungroup() %>%
+        filter(
+          .data$obswell_count == 1 |
+            .data$obswell_rank == .data$obswell_maxrank
+        )
+  )
+}
+
+remove_observation_columns <- function(locs) {
+  locs %>%
     select(
       -.data$obswell_code,
       -.data$obswell_rank,
@@ -755,8 +767,13 @@ aggregate_observations_by_location <- function(locs, obswell_aggr) {
       -.data$obswell_maxrank_fd,
       -.data$obswell_maxrank_sso
     )
+}
 
-  return(locs)
+aggregate_observations_by_location <- function(locs, obswell_aggr) {
+  locs %>%
+    calculate_location_metrics() %>%
+    apply_aggregation_strategy(obswell_aggr) %>%
+    remove_observation_columns()
 }
 
 apply_geospatial_filter <- function(locs, mask, join_mask, buffer) {
