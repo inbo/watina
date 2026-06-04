@@ -121,22 +121,19 @@ test_that("Test different filters get_locs", {
     select(loc_code, contains("ost"), contains("filterdepth"))
   test_locs(locs, "obswell_aggr_mean")
 
-  library(sf)
-  library(purrr)
-  library(httr)
   mymask <-
     "https://geo.api.vlaanderen.be/VRBG/wfs" %>%
-    parse_url() %>%
-    list_merge(query = list(
+    httr::parse_url() %>%
+    purr::list_merge(query = list(
       request = "GetFeature",
       typeName = "VRBG:Refprv",
       cql_filter = "NAAM='West-Vlaanderen'",
       srsName = "EPSG:31370",
       outputFormat = "text/xml; subtype=gml/3.1.1"
     )) %>%
-    build_url() %>%
-    read_sf(crs = 31370) %>%
-    st_cast("GEOMETRYCOLLECTION")
+    httr::build_url() %>%
+    sf::read_sf(crs = 31370) %>%
+    sf::st_cast("GEOMETRYCOLLECTION")
   locs <- get_locs(watina, loc_validity = "VLD", mask = mymask, buffer = 0)
   test_locs(locs, "mask")
 
