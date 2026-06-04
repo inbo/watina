@@ -124,7 +124,7 @@ test_that("Test different filters get_locs", {
   mymask <-
     "https://geo.api.vlaanderen.be/VRBG/wfs" %>%
     httr::parse_url() %>%
-    purr::list_merge(query = list(
+    purrr::list_merge(query = list(
       request = "GetFeature",
       typeName = "VRBG:Refprv",
       cql_filter = "NAAM='West-Vlaanderen'",
