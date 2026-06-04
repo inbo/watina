@@ -339,7 +339,31 @@ get_locs <- function(con,
       loc_validity,
       loc_vec
     ) %>%
-    join_observation_data(obs) %>%
+    left_join(obs, by = "MeetpuntWID") %>%
+    calculate_extra_observation_columns() %>%
+    select(
+      loc_wid = .data$MeetpuntWID,
+      loc_code = .data$MeetpuntCode,
+      area_code = .data$GebiedCode,
+      area_name = .data$GebiedNaam,
+      x = .data$MeetpuntXCoordinaat,
+      y = .data$MeetpuntYCoordinaat,
+      loc_validitycode = .data$MeetpuntStatusCode,
+      loc_validity = .data$MeetpuntStatus,
+      loc_typecode = .data$MeetpuntTypeCode,
+      loc_typename = .data$MeetpuntType,
+      obswell_code = .data$PeilpuntCode,
+      obswell_rank = .data$PeilpuntVersie,
+      obswell_statecode = .data$PeilpuntToestandCode,
+      obswell_state = .data$PeilpuntToestandNaam,
+      obswell_installdate = .data$PeilpuntPlaatsing,
+      obswell_stopdate = .data$PeilpuntStopzetting,
+      .data$soilsurf_ost,
+      measuringref_ost = .data$ReferentieNiveauTAW,
+      .data$tubelength,
+      .data$filterlength,
+      .data$filterdepth
+    ) %>%
     calculate_filterdepth(
       filterdepth_range,
       filterdepth_guess,
@@ -546,7 +570,16 @@ transform_observation_data <- function(peilpunt) {
       ),
       .data$PeilpuntOpenbaarheidTypeCode == "PLME",
       .data$PeilpuntOpenbaarheidCode == "UNKWN"
-    ) %>%
+    )
+}
+
+fetch_observation_data <- function(con) {
+  peilpunt <- load_observation_data(con) %>%
+    transform_observation_data()
+}
+
+calculate_extra_observation_columns <- function(locs) {
+  locs <- locs %>%
     mutate(
       tubelength = ifelse(
         .data$PeilbuisLengte <= 0,
@@ -563,46 +596,8 @@ transform_observation_data <- function(peilpunt) {
         .data$filterlength / 2,
       soilsurf_ost =
         .data$ReferentieNiveauTAW -
-          .data$ReferentieNiveauMaaiveld
-    )
-}
-
-fetch_observation_data <- function(con) {
-  peilpunt <- load_observation_data(con) %>%
-    transform_observation_data()
-}
-
-join_observation_data <- function(locs, obs) {
-  locs <- locs %>%
-    left_join(
-      obs,
-      by = "MeetpuntWID"
-    ) %>%
-    select(
-      loc_wid = .data$MeetpuntWID,
-      loc_code = .data$MeetpuntCode,
-      area_code = .data$GebiedCode,
-      area_name = .data$GebiedNaam,
-      x = .data$MeetpuntXCoordinaat,
-      y = .data$MeetpuntYCoordinaat,
-      loc_validitycode = .data$MeetpuntStatusCode,
-      loc_validity = .data$MeetpuntStatus,
-      loc_typecode = .data$MeetpuntTypeCode,
-      loc_typename = .data$MeetpuntType,
-      obswell_code = .data$PeilpuntCode,
-      obswell_rank = .data$PeilpuntVersie,
-      obswell_statecode = .data$PeilpuntToestandCode,
-      obswell_state = .data$PeilpuntToestandNaam,
-      obswell_installdate = .data$PeilpuntPlaatsing,
-      obswell_stopdate = .data$PeilpuntStopzetting,
-      .data$soilsurf_ost,
-      measuringref_ost = .data$ReferentieNiveauTAW,
-      .data$tubelength,
-      .data$filterlength,
-      .data$filterdepth
-    )
-
-  return(locs)
+        .data$ReferentieNiveauMaaiveld
+  )
 }
 
 calculate_guessed_filterdepth <- function(locs) {
