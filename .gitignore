@@ -41,6 +41,7 @@ rsconnect/
 
 # testing snapshots created for local testing
 /tests/testthat/_snaps/*
+/tests/testthat/fixtures/*.rds
 
 # Mac OS X
 .DS_Store

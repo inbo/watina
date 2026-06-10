@@ -410,7 +410,7 @@ test_that("execute_spatial_filter", {
   expect_contains(colnames(result), "mask_column")
 })
 
-test_that("spatial_filter gives warning, filters and drops temperory columns", {
+test_that("filter_by_spatial_mask gives warning, filters and drops temperory columns", {
   mask <- create_testing_mask()
   locs <- mock_data_from_db(
     loc_wid = c(101, 102, 103), # Should be dropped by select()
@@ -421,7 +421,7 @@ test_that("spatial_filter gives warning, filters and drops temperory columns", {
   )
 
   expect_warning(
-    result <- spatial_filter(locs = locs, mask = mask, join_mask = TRUE, buffer = 0),
+    result <- filter_by_spatial_mask(locs = locs, mask = mask, join_mask = TRUE, buffer = 0),
     "Dropped 1 locations"
   )
   expect_equal(result$loc_code, "LOC1")
