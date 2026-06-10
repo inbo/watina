@@ -311,7 +311,7 @@ get_locs <- function(con,
   if (missing(obswell_aggr)) obswell_aggr <- match.arg(obswell_aggr)
   if (missing(loc_type)) loc_type <- match.arg(loc_type)
 
-  validate_input_get_locs(
+  validate_input(
     filterdepth_range,
     filterdepth_guess,
     filterdepth_na,
@@ -328,19 +328,25 @@ get_locs <- function(con,
     collect
   )
 
-  locs <- fetch_location_data(con)
-  obs <- fetch_observation_data(con)
+  meetpunt <- tbl(con, "vwDimMeetpunt")
+  gebied <- tbl(con, "vwDimGebied")
+  peilpunt <- tbl(con, "vwDimPeilpunt")
 
-  locs <- locs %>%
-    apply_location_filters(
+  locations <- meetpunt %>%
+    join_area_metadata(gebied) %>%
+    filter_locations(
       bbox,
       area_codes,
       loc_type,
       loc_validity,
       loc_vec
-    ) %>%
-    left_join(obs, by = "MeetpuntWID") %>%
-    calculate_extra_observation_columns() %>%
+    )
+  observation_wells <- peilpunt %>%
+    process_observation_wells()
+
+  locs <- locations %>%
+    left_join(observation_wells, by = "MeetpuntWID") %>%
+    compute_observation_metrics() %>%
     select(
       loc_wid = .data$MeetpuntWID,
       loc_code = .data$MeetpuntCode,
@@ -364,7 +370,7 @@ get_locs <- function(con,
       .data$filterlength,
       .data$filterdepth
     ) %>%
-    calculate_filterdepth(
+    estimate_filterdepth(
       filterdepth_range,
       filterdepth_guess,
       filterdepth_na
@@ -373,21 +379,19 @@ get_locs <- function(con,
   if (!obswells) {
     locs <-
       locs %>%
-      aggregate_observations_by_location(obswell_aggr)
+      aggregate_observations(obswell_aggr)
   }
 
   if (!is.null(mask)) {
     locs <-
       locs %>%
-      apply_geospatial_filter(mask, join_mask, buffer)
+      filter_by_spatial_mask(mask, join_mask, buffer)
   }
 
   if (collect & is.null(mask)) {
     locs <-
       locs %>%
       select(-.data$loc_wid) %>%
-      # Why is collect dependent on mask?
-      # --> Because we already collect during masking (but why?)
       collect() %>%
       arrange(
         .data$area_code,
@@ -403,7 +407,7 @@ get_locs <- function(con,
 }
 
 # HELPER FUNCTIONS GET LOCS ----------------------------------------------------
-validate_input_get_locs <- function(
+validate_input <- function(
   filterdepth_range,
   filterdepth_guess,
   filterdepth_na,
@@ -480,14 +484,7 @@ validate_input_get_locs <- function(
   )
 }
 
-fetch_location_data <- function(con) {
-  meetpunt <- tbl(con, "vwDimMeetpunt")
-  gebied <- tbl(con, "vwDimGebied")
-
-  transform_location_data(meetpunt, gebied)
-}
-
-transform_location_data <- function(meetpunt, gebied) {
+join_area_metadata <- function(meetpunt, gebied) {
   gebied_filtered <- gebied %>%
     select(
       .data$GebiedWID,
@@ -504,17 +501,17 @@ transform_location_data <- function(meetpunt, gebied) {
   return(locs)
 }
 
-apply_loc_vec_filter <- function(locs, loc_vec) {
+filter_by_location_code <- function(locs, loc_vec) {
   locs %>%
     filter(.data$MeetpuntCode %in% loc_vec)
 }
 
-apply_area_codes_filter <- function(locs, area_codes) {
+filter_by_area_code <- function(locs, area_codes) {
   locs %>%
     filter(.data$GebiedCode %in% area_codes)
 }
 
-apply_bbox_filter <- function(locs, bbox) {
+filter_by_bbox <- function(locs, bbox) {
   bbox_xmin <- unname(bbox["xmin"])
   bbox_xmax <- unname(bbox["xmax"])
   bbox_ymin <- unname(bbox["ymin"])
@@ -529,7 +526,7 @@ apply_bbox_filter <- function(locs, bbox) {
     )
 }
 
-apply_location_filters <- function(
+filter_locations <- function(
   locs,
   bbox,
   area_codes,
@@ -543,25 +540,21 @@ apply_location_filters <- function(
       .data$MeetpuntStatusCode %in% loc_validity
     )
 
-  if (!is.null(loc_vec)) locs <- locs %>% apply_loc_vec_filter(loc_vec)
-  if (!is.null(area_codes)) locs <- locs %>% apply_area_codes_filter(area_codes)
-  if (!is.null(bbox)) locs <- locs %>% apply_bbox_filter(bbox)
+  if (!is.null(loc_vec)) locs <- locs %>% filter_by_location_code(loc_vec)
+  if (!is.null(area_codes)) locs <- locs %>% filter_by_area_code(area_codes)
+  if (!is.null(bbox)) locs <- locs %>% filter_by_bbox(bbox)
 
   return(locs)
 }
 
-load_observation_data <- function(con) {
-  peilpunt <- tbl(con, "vwDimPeilpunt") %>%
+process_observation_wells <- function(observations) {
+  observations %>%
     mutate(
       PeilpuntPlaatsing =
         sql("CAST(PeilpuntPlaatsing AS date)"),
       PeilpuntStopzetting =
         sql("CAST(PeilpuntStopzetting AS date)")
-    )
-}
-
-transform_observation_data <- function(peilpunt) {
-  peilpunt <- peilpunt %>%
+    ) %>%
     filter(
       .data$PeilpuntStatusCode %in% c(
         "VLD",
@@ -573,12 +566,7 @@ transform_observation_data <- function(peilpunt) {
     )
 }
 
-fetch_observation_data <- function(con) {
-  peilpunt <- load_observation_data(con) %>%
-    transform_observation_data()
-}
-
-calculate_extra_observation_columns <- function(locs) {
+compute_observation_metrics <- function(locs) {
   locs <- locs %>%
     mutate(
       tubelength = ifelse(
@@ -600,7 +588,7 @@ calculate_extra_observation_columns <- function(locs) {
   )
 }
 
-calculate_guessed_filterdepth <- function(locs) {
+add_filterdepth_estimation_flag <- function(locs) {
   locs <-
     locs %>%
     mutate(
@@ -617,13 +605,13 @@ calculate_guessed_filterdepth <- function(locs) {
   return(locs)
 }
 
-calculate_filterdepth <- function(
+estimate_filterdepth <- function(
   locs,
   filterdepth_range,
   filterdepth_guess,
   filterdepth_na
 ) {
-  if (filterdepth_guess) locs <- locs %>% calculate_guessed_filterdepth()
+  if (filterdepth_guess) locs <- locs %>% add_filterdepth_estimation_flag()
 
   min_filterdepth <- filterdepth_range[1]
   max_filterdepth <- filterdepth_range[2]
@@ -652,7 +640,7 @@ calculate_filterdepth <- function(
   return(locs)
 }
 
-calculate_location_metrics <- function(locs) {
+compute_observation_aggregations <- function(locs) {
   locs %>%
     group_by(.data$loc_code) %>%
     mutate(
@@ -681,7 +669,7 @@ calculate_location_metrics <- function(locs) {
     )
 }
 
-calculate_mean_boolean_flags <- function(locs) {
+aggregate_guessed_flags <- function(locs) {
   # If the column doesn't exist, just pass the data through untouched
   if (!("filterdepth_guessed" %in% colnames(locs))) {
     return(locs)
@@ -701,7 +689,7 @@ calculate_mean_boolean_flags <- function(locs) {
     )
 }
 
-apply_aggregation_strategy <- function(locs, obswell_aggr) {
+aggregate_by_strategy <- function(locs, obswell_aggr) {
   switch(obswell_aggr,
     "latest" =
       locs %>%
@@ -741,7 +729,7 @@ apply_aggregation_strategy <- function(locs, obswell_aggr) {
           filterlength = mean(.data$filterlength, na.rm = TRUE),
           tubelength = mean(.data$tubelength, na.rm = TRUE)
         ) %>%
-        calculate_mean_boolean_flags() %>%
+        aggregate_guessed_flags() %>%
         ungroup() %>%
         filter(
           .data$obswell_count == 1 |
@@ -750,7 +738,7 @@ apply_aggregation_strategy <- function(locs, obswell_aggr) {
   )
 }
 
-remove_observation_columns <- function(locs) {
+drop_observation_metadata <- function(locs) {
   locs %>%
     select(
       -.data$obswell_code,
@@ -764,19 +752,34 @@ remove_observation_columns <- function(locs) {
     )
 }
 
-aggregate_observations_by_location <- function(locs, obswell_aggr) {
+aggregate_observations <- function(locs, obswell_aggr) {
   locs %>%
-    calculate_location_metrics() %>%
-    apply_aggregation_strategy(obswell_aggr) %>%
-    remove_observation_columns()
+    compute_observation_aggregations() %>%
+    aggregate_by_strategy(obswell_aggr) %>%
+    drop_observation_metadata()
 }
 
-apply_geospatial_filter <- function(locs, mask, join_mask, buffer) {
+expand_mask <- function(mask, buffer) {
+  if (buffer == 0) return(mask)
+  sf::st_buffer(mask, dist = buffer)
+}
+
+execute_spatial_filter <- function(locs, mask, join_mask) {
+  if (join_mask) {
+    locs <- locs %>%
+      sf::st_join(mask, left = FALSE)
+  } else {
+    locs <- locs %>%
+      .[mask, ]
+  }
+  return(sf::st_drop_geometry(locs))
+}
+
+filter_by_spatial_mask <- function(locs, mask, join_mask, buffer) {
   locs <-
     locs %>%
     select(-.data$loc_wid) %>%
-    # Why is the collect necessary here?
-    collect()
+    collect() # SF (Spatial Features) filters not possible on database engines
 
   nr_dropped_locs <-
     locs %>%
@@ -795,32 +798,12 @@ apply_geospatial_filter <- function(locs, mask, join_mask, buffer) {
   locs <-
     locs %>%
     filter(!is.na(.data$x), !is.na(.data$y)) %>%
-    arrange(
-      .data$area_code,
-      .data$loc_code
-    ) %>%
+    arrange(.data$area_code, .data$loc_code) %>%
     as_points(warn_dupl = FALSE)
 
-  if (buffer != 0) {
-    mask_expand <-
-      mask %>%
-      sf::st_buffer(dist = buffer)
-  } else {
-    mask_expand <-
-      mask
-  }
+  mask_expand <- expand_mask(mask, buffer)
 
-  if (join_mask) {
-    locs <-
-      locs %>%
-      sf::st_join(mask_expand, left = FALSE) %>%
-      sf::st_drop_geometry()
-  } else {
-    locs <-
-      locs %>%
-      .[mask_expand, ] %>%
-      sf::st_drop_geometry()
-  }
+  locs <- locs %>% execute_spatial_filter(mask_expand, join_mask)
 
   return(locs)
 }
