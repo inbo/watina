@@ -307,7 +307,9 @@ get_locs <- function(con,
                      loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"),
                      loc_validity = c("VLD", "ENT"),
                      loc_vec = NULL,
-                     collect = FALSE) {
+                     collect = FALSE,
+                     new_dwh = FALSE,
+                     date_filter = "2025-12-31") {
   if (missing(obswell_aggr)) obswell_aggr <- match.arg(obswell_aggr)
   if (missing(loc_type)) loc_type <- match.arg(loc_type)
 
@@ -328,9 +330,15 @@ get_locs <- function(con,
     collect
   )
 
-  meetpunt <- tbl(con, "vwDimMeetpunt")
-  gebied <- tbl(con, "vwDimGebied")
-  peilpunt <- tbl(con, "vwDimPeilpunt")
+  if (new_dwh){
+    meetpunt <- tbl(con, "DimMeetpunt")
+    gebied <- tbl(con, "DimGebied")
+    peilpunt <- tbl(con, "DimPeilpunt")
+  } else{
+    meetpunt <- tbl(con, "vwDimMeetpunt")
+    gebied <- tbl(con, "vwDimGebied")
+    peilpunt <- tbl(con, "vwDimPeilpunt")
+  }
 
   locations <- meetpunt %>%
     join_area_metadata(gebied) %>%
@@ -342,10 +350,11 @@ get_locs <- function(con,
       loc_vec
     )
   observation_wells <- peilpunt %>%
-    process_observation_wells()
+    process_observation_wells(new_dwh)
 
   locs <- locations %>%
     left_join(observation_wells, by = "MeetpuntWID") %>%
+    filter(.data$PeilpuntPlaatsing <= date_filter) %>%
     compute_observation_metrics() %>%
     select(
       loc_wid = .data$MeetpuntWID,
@@ -547,8 +556,8 @@ filter_locations <- function(
   return(locs)
 }
 
-process_observation_wells <- function(observations) {
-  observations %>%
+process_observation_wells <- function(observations, new_dwh) {
+  observations <- observations %>%
     mutate(
       PeilpuntPlaatsing =
         sql("CAST(PeilpuntPlaatsing AS date)"),
@@ -560,10 +569,17 @@ process_observation_wells <- function(observations) {
         "VLD",
         "ENT",
         "CLD"
-      ),
-      .data$PeilpuntOpenbaarheidTypeCode == "PLME",
-      .data$PeilpuntOpenbaarheidCode == "UNKWN"
+      )
     )
+
+  if (!new_dwh) {
+    observations <- observations %>%
+      filter(
+        .data$PeilpuntOpenbaarheidTypeCode == "PLME",
+        .data$PeilpuntOpenbaarheidCode == "UNKWN"
+      )
+  }
+  return(observations)
 }
 
 compute_observation_metrics <- function(locs) {

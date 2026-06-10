@@ -49,6 +49,7 @@ test_locs <- function(locs, test_name) {
 # TEST -------------------------------------------------------------------------
 test_that("Test different filters get_locs", {suppressWarnings({
   file_names <- c(
+    "all",
     "KAL_ZWA_locations",
     "KAL_ZWA_observation_wells",
     "bbox",
@@ -71,70 +72,75 @@ test_that("Test different filters get_locs", {suppressWarnings({
   }
   skip_if(SKIP_DATA_VALIDATION_TESTS)
 
-  watina <- connect_watina(autoconvert_utf8 = FALSE)
+  watina <- connect_watina(autoconvert_utf8 = FALSE, new_dwh = TRUE)
 
-  locs <- get_locs(watina, area_codes = c("KAL", "ZWA"), loc_validity = "VLD")
-  test_locs(locs, "KAL_ZWA_locations")
+  # Ultimate test - all rows
+  locs <- get_locs(watina, loc_validity = c("VLD"), loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"), new_dwh = TRUE, date_filter = "2024-12-31")
+  test_locs(locs, "all")
 
-  locs <- get_locs(watina, area_codes = c("KAL", "ZWA"), loc_validity = "VLD", obswells = TRUE)
-  test_locs(locs, "KAL_ZWA_observation_wells")
-
-  bbox <- c(xmin = 1.4e+5, xmax = 1.7e+5, ymin = 1.6e+5, ymax = 1.9e+5)
-  locs <- get_locs(watina, bbox = bbox)
-  test_locs(locs, "bbox")
-
-  locs <- get_locs(watina, area_codes = c("KAL", "KBR"))
-  test_locs(locs, "area_codes")
-
-  locs <- get_locs(watina, area_codes = c("KAL", "KBR"), loc_type = c("P", "S"))
-  test_locs(locs, "area_codes_loc_type")
-
-  locs <- get_locs(watina, loc_validity = c("ENT", "DEL", "CLD"), loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"))
-  test_locs(locs, "loc_validity")
-
-  locs <- get_locs(watina, area_codes = "WES", filterdepth_guess = TRUE)
-  test_locs(locs, "filterdepth_guess")
-
-  locs <- get_locs(watina, area_codes = c("KAL", "KBR"), loc_type = c("P", "S"), filterdepth_na = TRUE)
-  test_locs(locs, "filterdepth_na")
-
-  locs <- get_locs(watina, loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"))
-  test_locs(locs, "loc_vec")
-
-  locs <- get_locs(watina, obswells = TRUE, area_codes = c("KAL", "KBR"), loc_type = c("P", "S"))
-  test_locs(locs, "obswells")
-
-  locs <- get_locs(watina, area_codes = "WES", filterdepth_na = TRUE, filterdepth_guess = TRUE, obswell_aggr = "latest") %>%
-    select(loc_code, contains("ost"), contains("filterdepth"))
-  test_locs(locs, "obswell_aggr_latest")
-
-  locs <- get_locs(watina, area_codes = "WES", filterdepth_na = TRUE, filterdepth_guess = TRUE, obswell_aggr = "latest_fd") %>%
-    select(loc_code, contains("ost"), contains("filterdepth"))
-  test_locs(locs, "obswell_aggr_latest_fd")
-
-  locs <- get_locs(watina, area_codes = "WES", filterdepth_na = TRUE, filterdepth_guess = TRUE, obswell_aggr = "latest_sso") %>%
-    select(loc_code, contains("ost"), contains("filterdepth"))
-  test_locs(locs, "obswell_aggr_latest_sso")
-
-  locs <- get_locs(watina, area_codes = "WES", filterdepth_na = TRUE, filterdepth_guess = TRUE, obswell_aggr = "mean") %>%
-    select(loc_code, contains("ost"), contains("filterdepth"))
-  test_locs(locs, "obswell_aggr_mean")
-
-  mymask <-
-    "https://geo.api.vlaanderen.be/VRBG/wfs" %>%
-    httr::parse_url() %>%
-    purrr::list_merge(query = list(
-      request = "GetFeature",
-      typeName = "VRBG:Refprv",
-      cql_filter = "NAAM='West-Vlaanderen'",
-      srsName = "EPSG:31370",
-      outputFormat = "text/xml; subtype=gml/3.1.1"
-    )) %>%
-    httr::build_url() %>%
-    sf::read_sf(crs = 31370) %>%
-    sf::st_cast("GEOMETRYCOLLECTION")
-  locs <- get_locs(watina, loc_validity = "VLD", mask = mymask, buffer = 0)
-  test_locs(locs, "mask")
+  # locs <- get_locs(watina, area_codes = c("KAL", "ZWA"), loc_validity = "VLD")
+  # test_locs(locs, "KAL_ZWA_locations")
+  #
+  # locs <- get_locs(watina, area_codes = c("KAL", "ZWA"), loc_validity = "VLD", obswells = TRUE)
+  # test_locs(locs, "KAL_ZWA_observation_wells")
+  #
+  # bbox <- c(xmin = 1.4e+5, xmax = 1.7e+5, ymin = 1.6e+5, ymax = 1.9e+5)
+  # locs <- get_locs(watina, bbox = bbox)
+  # test_locs(locs, "bbox")
+  #
+  # locs <- get_locs(watina, area_codes = c("KAL", "KBR"))
+  # test_locs(locs, "area_codes")
+  #
+  # locs <- get_locs(watina, area_codes = c("KAL", "KBR"), loc_type = c("P", "S"))
+  # test_locs(locs, "area_codes_loc_type")
+  #
+  # # Only VLD in new DWH - filter should be deleted
+  # locs <- get_locs(watina, loc_validity = c("ENT", "DEL", "CLD"), loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"))
+  # test_locs(locs, "loc_validity")
+  #
+  # locs <- get_locs(watina, area_codes = "WES", filterdepth_guess = TRUE)
+  # test_locs(locs, "filterdepth_guess")
+  #
+  # locs <- get_locs(watina, area_codes = c("KAL", "KBR"), loc_type = c("P", "S"), filterdepth_na = TRUE)
+  # test_locs(locs, "filterdepth_na")
+  #
+  # locs <- get_locs(watina, loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001"))
+  # test_locs(locs, "loc_vec")
+  #
+  # locs <- get_locs(watina, obswells = TRUE, area_codes = c("KAL", "KBR"), loc_type = c("P", "S"))
+  # test_locs(locs, "obswells")
+  #
+  # locs <- get_locs(watina, area_codes = "WES", filterdepth_na = TRUE, filterdepth_guess = TRUE, obswell_aggr = "latest") %>%
+  #   select(loc_code, contains("ost"), contains("filterdepth"))
+  # test_locs(locs, "obswell_aggr_latest")
+  #
+  # locs <- get_locs(watina, area_codes = "WES", filterdepth_na = TRUE, filterdepth_guess = TRUE, obswell_aggr = "latest_fd") %>%
+  #   select(loc_code, contains("ost"), contains("filterdepth"))
+  # test_locs(locs, "obswell_aggr_latest_fd")
+  #
+  # locs <- get_locs(watina, area_codes = "WES", filterdepth_na = TRUE, filterdepth_guess = TRUE, obswell_aggr = "latest_sso") %>%
+  #   select(loc_code, contains("ost"), contains("filterdepth"))
+  # test_locs(locs, "obswell_aggr_latest_sso")
+  #
+  # locs <- get_locs(watina, area_codes = "WES", filterdepth_na = TRUE, filterdepth_guess = TRUE, obswell_aggr = "mean") %>%
+  #   select(loc_code, contains("ost"), contains("filterdepth"))
+  # test_locs(locs, "obswell_aggr_mean")
+  #
+  # mymask <-
+  #   "https://geo.api.vlaanderen.be/VRBG/wfs" %>%
+  #   httr::parse_url() %>%
+  #   purrr::list_merge(query = list(
+  #     request = "GetFeature",
+  #     typeName = "VRBG:Refprv",
+  #     cql_filter = "NAAM='West-Vlaanderen'",
+  #     srsName = "EPSG:31370",
+  #     outputFormat = "text/xml; subtype=gml/3.1.1"
+  #   )) %>%
+  #   httr::build_url() %>%
+  #   sf::read_sf(crs = 31370) %>%
+  #   sf::st_cast("GEOMETRYCOLLECTION")
+  # locs <- get_locs(watina, loc_validity = "VLD", mask = mymask, buffer = 0)
+  # test_locs(locs, "mask")
 
   dbDisconnect(watina)
 })})

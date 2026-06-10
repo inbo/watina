@@ -25,8 +25,12 @@
 #'
 #' @export
 #' @importFrom inbodb connect_inbo_dbase
-connect_watina <- function(autoconvert_utf8 = TRUE) {
-  connect_inbo_dbase("W0002_00_Watina", autoconvert_utf8 = autoconvert_utf8)
+connect_watina <- function(autoconvert_utf8 = TRUE, new_dwh = FALSE) {
+  if (new_dwh) {
+    connect_inbo_dbase("W0002_10_Watina", autoconvert_utf8 = autoconvert_utf8)
+  } else {
+    connect_inbo_dbase("W0002_00_Watina", autoconvert_utf8 = autoconvert_utf8)
+  }
 }
 
 
