@@ -31,17 +31,20 @@ Imports:
     tidyr
 Suggests:
     DBI,
+    dbplyr,
     ggplot2,
     httr,
     knitr,
     KSgeneral,
     purrr,
     rmarkdown,
+    RSQLite,
     scales,
     sf,
     testthat (>= 3.0.0),
     tibble,
-    tidyselect
+    tidyselect,
+    withr
 Remotes:
     inbo/inbodb
 LazyData: true
