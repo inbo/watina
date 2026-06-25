@@ -50,8 +50,8 @@ test_locs <- function(locs, test_name) {
 
 test_that("Test different filters get_locs", {
   file_names <- c(
-    "locations_KAL_ZWA",
-    "observation_wells_KAL_ZWA",
+    "KAL_ZWA_locations",
+    "KAL_ZWA_observation_wells",
     "bbox",
     "area_codes",
     "area_codes_loc_type",
@@ -72,7 +72,7 @@ test_that("Test different filters get_locs", {
   }
   skip_if(SKIP_DATA_VALIDATION_TESTS)
 
-  watina <- connect_watina(autoconvert_utf8 = FALSE)
+  watina <- connect_watina()
 
   locs <- get_locs(watina, area_codes = c("KAL", "ZWA"), loc_validity = "VLD")
   test_locs(locs, "KAL_ZWA_locations")
@@ -124,7 +124,7 @@ test_that("Test different filters get_locs", {
   mymask <-
     "https://geo.api.vlaanderen.be/VRBG/wfs" %>%
     httr::parse_url() %>%
-    purr::list_merge(query = list(
+    purrr::list_merge(query = list(
       request = "GetFeature",
       typeName = "VRBG:Refprv",
       cql_filter = "NAAM='West-Vlaanderen'",
