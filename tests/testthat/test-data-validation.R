@@ -50,6 +50,7 @@ test_locs <- function(locs, test_name) {
 test_that("Test different filters get_locs", {suppressWarnings({
   file_names <- c(
     "all",
+    "all_obswells",
     "KAL_ZWA_locations",
     "KAL_ZWA_observation_wells",
     "bbox",
@@ -77,6 +78,10 @@ test_that("Test different filters get_locs", {suppressWarnings({
   # Ultimate test - all rows
   locs <- get_locs(watina, loc_validity = c("VLD"), loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"), new_dwh = TRUE, date_filter = "2024-12-31")
   test_locs(locs, "all")
+
+  # Ultimate test - all rows in observations
+  locs <- get_locs(watina, obswells = TRUE, loc_validity = c("VLD"), loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"), new_dwh = TRUE, date_filter = "2024-12-31")
+  test_locs(locs, "all_obswells")
 
   # locs <- get_locs(watina, area_codes = c("KAL", "ZWA"), loc_validity = "VLD")
   # test_locs(locs, "KAL_ZWA_locations")
