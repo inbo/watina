@@ -23,6 +23,7 @@ Depends:
 Imports:
     assertthat,
     dplyr,
+    dbplyr (>= 2.3.4),
     inbodb,
     lubridate,
     rlang,
