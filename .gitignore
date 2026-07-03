@@ -39,6 +39,10 @@ rsconnect/
 # pkgdown website is built by travis on gh-pages
 /docs/
 
+# testing snapshots created for local testing
+/tests/testthat/_snaps/*
+
 # Mac OS X
 .DS_Store
 inst/doc
+.positai
