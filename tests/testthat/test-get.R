@@ -282,7 +282,7 @@ test_that("Test different filters get_chem", {
       "ZWA_excludeNA",
       "ZWA_thresholdNA_excludeNA",
       "ZWA_range",
-      "all_20170101",
+      "all_20170101"
     )
 
     for (f in file_names) {

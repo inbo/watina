@@ -1243,6 +1243,8 @@ get_xg3 <- function(locs,
 #' distinct
 #' sql
 #' rename
+#' between
+#' @importFrom dbplyr .sql
 get_chem <- function(locs,
                      con,
                      startdate,
