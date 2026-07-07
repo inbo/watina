@@ -9,3 +9,5 @@
 ^appveyor\.yml$
 ^\.zenodo\.json$
 ^\.github$
+^\.positai$
+^\.claude$
