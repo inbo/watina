@@ -90,3 +90,7 @@ expect_xg3 <- function(xg3, test_name) {
 expect_chem <- function(chem, test_name) {
   expect_data(chem, "chem", test_name)
 }
+
+expect_migration <- function(data, test_name) {
+  expect_data(data, "dwh_migration", test_name)
+}
