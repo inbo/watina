@@ -373,112 +373,17 @@ get_locs <- function(
     msg = "You specified at least one unknown loc_validity."
   )
 
+  locs <- build_locs_query(
+    con = con,
+    bbox = bbox,
+    area_codes = area_codes,
+    loc_type = loc_type,
+    loc_validity = loc_validity,
+    loc_vec = loc_vec
+  )
+
   min_filterdepth <- filterdepth_range[1]
   max_filterdepth <- filterdepth_range[2]
-
-  locs <-
-    tbl(con, "vwDimMeetpunt") %>%
-    filter(
-      .data$MeetpuntTypeCode %in% loc_type,
-      .data$MeetpuntStatusCode %in% loc_validity
-    ) %>%
-    left_join(
-      tbl(con, "vwDimGebied") %>%
-        select(
-          .data$GebiedWID,
-          .data$GebiedCode,
-          .data$GebiedNaam
-        ),
-      by = "GebiedWID"
-    )
-
-  if (!is.null(loc_vec)) {
-    locs <-
-      locs %>%
-      filter(.data$MeetpuntCode %in% loc_vec)
-  }
-
-  if (!is.null(area_codes)) {
-    locs <-
-      locs %>%
-      filter(.data$GebiedCode %in% area_codes)
-  }
-
-  if (!is.null(bbox)) {
-    bbox_xmin <- unname(bbox["xmin"])
-    bbox_xmax <- unname(bbox["xmax"])
-    bbox_ymin <- unname(bbox["ymin"])
-    bbox_ymax <- unname(bbox["ymax"])
-    locs <-
-      locs %>%
-      filter(
-        .data$MeetpuntXCoordinaat >= bbox_xmin,
-        .data$MeetpuntXCoordinaat <= bbox_xmax,
-        .data$MeetpuntYCoordinaat >= bbox_ymin,
-        .data$MeetpuntYCoordinaat <= bbox_ymax
-      )
-  }
-
-  locs <-
-    locs %>%
-    left_join(
-      tbl(con, "vwDimPeilpunt") %>%
-        filter(
-          .data$PeilpuntStatusCode %in%
-            c(
-              "VLD",
-              "ENT",
-              "CLD"
-            ),
-          .data$PeilpuntOpenbaarheidTypeCode == "PLME",
-          .data$PeilpuntOpenbaarheidCode == "UNKWN"
-        ) %>%
-        mutate(
-          PeilpuntPlaatsing = sql("CAST(PeilpuntPlaatsing AS date)"),
-          PeilpuntStopzetting = sql("CAST(PeilpuntStopzetting AS date)")
-        ),
-      by = "MeetpuntWID"
-    ) %>%
-    mutate(
-      tubelength = ifelse(
-        .data$PeilbuisLengte <= 0,
-        NA,
-        .data$PeilbuisLengte
-      ),
-      filterlength = ifelse(
-        is.na(.data$FilterLengte) | .data$FilterLengte == 0,
-        0.3,
-        .data$FilterLengte
-      ),
-      filterdepth = .data$tubelength -
-        .data$ReferentieNiveauMaaiveld -
-        .data$filterlength / 2,
-      soilsurf_ost = .data$ReferentieNiveauTAW -
-        .data$ReferentieNiveauMaaiveld
-    ) %>%
-    select(
-      loc_wid = .data$MeetpuntWID,
-      loc_code = .data$MeetpuntCode,
-      area_code = .data$GebiedCode,
-      area_name = .data$GebiedNaam,
-      x = .data$MeetpuntXCoordinaat,
-      y = .data$MeetpuntYCoordinaat,
-      loc_validitycode = .data$MeetpuntStatusCode,
-      loc_validity = .data$MeetpuntStatus,
-      loc_typecode = .data$MeetpuntTypeCode,
-      loc_typename = .data$MeetpuntType,
-      obswell_code = .data$PeilpuntCode,
-      obswell_rank = .data$PeilpuntVersie,
-      obswell_statecode = .data$PeilpuntToestandCode,
-      obswell_state = .data$PeilpuntToestandNaam,
-      obswell_installdate = .data$PeilpuntPlaatsing,
-      obswell_stopdate = .data$PeilpuntStopzetting,
-      .data$soilsurf_ost,
-      measuringref_ost = .data$ReferentieNiveauTAW,
-      .data$tubelength,
-      .data$filterlength,
-      .data$filterdepth
-    )
 
   if (filterdepth_guess) {
     locs <-
@@ -694,6 +599,121 @@ get_locs <- function(
   if (inherits(locs, "data.frame")) {
     warn_xy_duplicates(locs$x, locs$y)
   }
+
+  return(locs)
+}
+
+build_locs_query <- function(
+  con,
+  bbox,
+  area_codes,
+  loc_type,
+  loc_validity,
+  loc_vec
+) {
+  locs <-
+    tbl(con, "vwDimMeetpunt") %>%
+    filter(
+      .data$MeetpuntTypeCode %in% loc_type,
+      .data$MeetpuntStatusCode %in% loc_validity
+    ) %>%
+    left_join(
+      tbl(con, "vwDimGebied") %>%
+        select(
+          .data$GebiedWID,
+          .data$GebiedCode,
+          .data$GebiedNaam
+        ),
+      by = "GebiedWID"
+    )
+
+  if (!is.null(loc_vec)) {
+    locs <-
+      locs %>%
+      filter(.data$MeetpuntCode %in% loc_vec)
+  }
+
+  if (!is.null(area_codes)) {
+    locs <-
+      locs %>%
+      filter(.data$GebiedCode %in% area_codes)
+  }
+
+  if (!is.null(bbox)) {
+    bbox_xmin <- unname(bbox["xmin"])
+    bbox_xmax <- unname(bbox["xmax"])
+    bbox_ymin <- unname(bbox["ymin"])
+    bbox_ymax <- unname(bbox["ymax"])
+    locs <-
+      locs %>%
+      filter(
+        .data$MeetpuntXCoordinaat >= bbox_xmin,
+        .data$MeetpuntXCoordinaat <= bbox_xmax,
+        .data$MeetpuntYCoordinaat >= bbox_ymin,
+        .data$MeetpuntYCoordinaat <= bbox_ymax
+      )
+  }
+
+  locs <-
+    locs %>%
+    left_join(
+      tbl(con, "vwDimPeilpunt") %>%
+        filter(
+          .data$PeilpuntStatusCode %in%
+            c(
+              "VLD",
+              "ENT",
+              "CLD"
+            ),
+          .data$PeilpuntOpenbaarheidTypeCode == "PLME",
+          .data$PeilpuntOpenbaarheidCode == "UNKWN"
+        ) %>%
+        mutate(
+          PeilpuntPlaatsing = sql("CAST(PeilpuntPlaatsing AS date)"),
+          PeilpuntStopzetting = sql("CAST(PeilpuntStopzetting AS date)")
+        ),
+      by = "MeetpuntWID"
+    ) %>%
+    mutate(
+      tubelength = ifelse(
+        .data$PeilbuisLengte <= 0,
+        NA,
+        .data$PeilbuisLengte
+      ),
+      filterlength = ifelse(
+        is.na(.data$FilterLengte) | .data$FilterLengte == 0,
+        0.3,
+        .data$FilterLengte
+      ),
+      filterdepth = .data$tubelength -
+        .data$ReferentieNiveauMaaiveld -
+        .data$filterlength / 2,
+      soilsurf_ost = .data$ReferentieNiveauTAW -
+        .data$ReferentieNiveauMaaiveld
+    ) %>%
+    select(
+      loc_wid = .data$MeetpuntWID,
+      loc_code = .data$MeetpuntCode,
+      area_code = .data$GebiedCode,
+      area_name = .data$GebiedNaam,
+      x = .data$MeetpuntXCoordinaat,
+      y = .data$MeetpuntYCoordinaat,
+      loc_validitycode = .data$MeetpuntStatusCode,
+      loc_validity = .data$MeetpuntStatus,
+      loc_typecode = .data$MeetpuntTypeCode,
+      loc_typename = .data$MeetpuntType,
+      obswell_code = .data$PeilpuntCode,
+      obswell_rank = .data$PeilpuntVersie,
+      obswell_statecode = .data$PeilpuntToestandCode,
+      obswell_state = .data$PeilpuntToestandNaam,
+      obswell_installdate = .data$PeilpuntPlaatsing,
+      obswell_stopdate = .data$PeilpuntStopzetting,
+      .data$soilsurf_ost,
+      measuringref_ost = .data$ReferentieNiveauTAW,
+      .data$tubelength,
+      .data$filterlength,
+      .data$filterdepth
+    )
 
   return(locs)
 }
