@@ -130,9 +130,9 @@
 #' @param loc_type Type of the location (mainly: the type of measurement
 #'   device). Defaults to \code{"P"}, i.e. only groundwater piezometers are
 #'   returned by default. Can be a vector with multiple selected values.
-#' @param loc_validity Validation status of the location. Can be a vector with
-#'   multiple selected values, which must belong to \code{"VLD"}, \code{"ENT"},
-#'   \code{"DEL"} or \code{"CLD"}. Defaults to \code{c("VLD", "ENT")}.
+#' @param loc_validity Validation status of the location. The new DWH only
+#'   contains records with status \code{"VLD"}. This argument is deprecated and
+#'   will be removed in a future version.
 #' @param loc_vec An optional vector with location codes. If provided, only
 #'   locations are returned that are present in this vector.
 #' @param collect Should the data be retrieved as a local tibble? If
@@ -287,6 +287,7 @@
 #' @importFrom assertthat assert_that is.number is.flag noNA
 #' @importFrom dplyr %>% tbl filter left_join select distinct arrange group_by
 #'   ungroup sql
+#' @importFrom lifecycle deprecated
 # FUNCTION GET LOCS ------------------------------------------------------------
 get_locs <- function(
   con,
@@ -306,10 +307,24 @@ get_locs <- function(
   bbox = NULL,
   area_codes = NULL,
   loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"),
-  loc_validity = c("VLD", "ENT"),
+  loc_validity = "VLD",
   loc_vec = NULL,
   collect = FALSE
 ) {
+  if (!missing(loc_validity) && !identical(loc_validity, "VLD")) {
+    lifecycle::deprecate_warn(
+      when = "1.0.0",
+      what = "get_locs(loc_validity)",
+      details = paste(
+        "The new DWH only contains records with validity status 'VLD'. Your",
+        "input will be ignored. This argument will be removed in a future",
+        "version."
+      )
+    )
+  }
+
+  loc_validity <- "VLD"
+
   assert_that(
     is.numeric(filterdepth_range),
     length(filterdepth_range) == 2,
@@ -612,13 +627,13 @@ build_locs_query <- function(
   loc_vec
 ) {
   locs <-
-    tbl(con, "vwDimMeetpunt") %>%
+    tbl(con, "DimMeetpunt") %>%
     filter(
       .data$MeetpuntTypeCode %in% loc_type,
       .data$MeetpuntStatusCode %in% loc_validity
     ) %>%
     left_join(
-      tbl(con, "vwDimGebied") %>%
+      tbl(con, "DimGebied") %>%
         select(
           .data$GebiedWID,
           .data$GebiedCode,
@@ -657,16 +672,15 @@ build_locs_query <- function(
   locs <-
     locs %>%
     left_join(
-      tbl(con, "vwDimPeilpunt") %>%
+      tbl(con, "DimPeilpunt") %>%
         filter(
+          # Filter is unnecessary (only options in DWH are "VLD" and "CLD")
+          # Keep it for now (DWH field might change to extra options)
           .data$PeilpuntStatusCode %in%
             c(
               "VLD",
-              "ENT",
               "CLD"
             ),
-          .data$PeilpuntOpenbaarheidTypeCode == "PLME",
-          .data$PeilpuntOpenbaarheidCode == "UNKWN"
         ) %>%
         mutate(
           PeilpuntPlaatsing = sql("CAST(PeilpuntPlaatsing AS date)"),
