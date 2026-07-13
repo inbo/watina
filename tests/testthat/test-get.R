@@ -3,99 +3,25 @@
 # therefore only stored locally via gitignore in the folder _snaps/. See the
 # testing README for the recommended workflow.
 
-# HELPER FUNCTIONS -------------------------------------------------------------
-create_file_name <- function(function_name, test_name) {
-  file_end <- "data.csv"
-
-  paste0(function_name, "_", test_name, "_", file_end)
-}
-
-clean_up_table <- function(table) {
-  floor_0 <- c(
-    "x",
-    "y"
-  )
-  round_2 <- c(
-    "soilsurf_ost",
-    "measuringref_ost",
-    "tubelength",
-    "filterlength",
-    "filterdepth"
-  )
-
-  floor_0 <- intersect(floor_0, colnames(table))
-  round_2 <- intersect(round_2, colnames(table))
-
-  table <- table %>%
-    # Primary keys can change in DWH (exclude from comparison)
-    select(-ends_with("_wid")) %>%
-    mutate(
-      # Round to only view big numerical changes in comparison view
-      across(all_of(floor_0), floor),
-      across(all_of(round_2), ~ round(.x, digits = 2))
-    ) %>%
-    # Order to ease comparison view
-    arrange(
-      pick(ends_with("_code")),
-      pick(ends_with("year")),
-      pick(ends_with("_ost")),
-      pick(ends_with("_lcl")),
-      pick(ends_with("_variable"))
-    )
-
-  return(table)
-}
-
-write_file <- function(path, table) {
-  write.csv(clean_up_table(table), path, row.names = FALSE)
-}
-
-test_data <- function(data, function_name, test_name) {
-  path <- tempfile(fileext = ".csv")
-  write_file(path, data)
-  expect_snapshot_file(path, create_file_name(function_name, test_name))
-}
-
-# TEST -------------------------------------------------------------------------
-test_that("Test different filters get_locs", {
+# get_locs snapshot tests ------------------------------------------------------
+test_that("get_locs filters locations correctly using standard attributes", {
   suppressWarnings({
     file_names <- c(
       "KAL_ZWA_locations",
       "KAL_ZWA_observation_wells",
-      "bbox",
       "area_codes",
       "area_codes_loc_type",
       "loc_validity",
-      "filterdepth_guess",
-      "filterdepth_na",
-      "loc_vec",
-      "obswells",
-      "obswell_aggr_latest",
-      "obswell_aggr_latest_fd",
-      "obswell_aggr_latest_sso",
-      "obswell_aggr_mean",
-      "mask",
-      "all",
-      "all_obswells"
+      "loc_vec"
     )
+    announce_files_locs(file_names)
 
-    for (f in file_names) {
-      announce_snapshot_file(name = create_file_name("locs", f))
-    }
-    skip_if(SKIP_SNAPSHOT_TESTS)
-    skip_if_not(
-      exists("watina_test_con"),
-      message = "Geen actieve database connectie gevonden."
-    )
+    skip_if(getOption("test.skip_snapshot"))
+    watina <- fetch_watina_connection()
 
-    test_locs <- function(locs, test_name) {
-      test_data(locs, "locs", test_name)
-    }
-
-    watina <- watina_test_con
-
+    # Default validity - locations and observations
     locs <- get_locs(watina, area_codes = c("KAL", "ZWA"), loc_validity = "VLD")
-    test_locs(locs, "KAL_ZWA_locations")
+    expect_locs(locs, "KAL_ZWA_locations")
 
     locs <- get_locs(
       watina,
@@ -103,53 +29,119 @@ test_that("Test different filters get_locs", {
       loc_validity = "VLD",
       obswells = TRUE
     )
-    test_locs(locs, "KAL_ZWA_observation_wells")
+    expect_locs(locs, "KAL_ZWA_observation_wells")
 
-    bbox <- c(xmin = 1.4e+5, xmax = 1.7e+5, ymin = 1.6e+5, ymax = 1.9e+5)
-    locs <- get_locs(watina, bbox = bbox)
-    test_locs(locs, "bbox")
-
+    # Area and location type filters
     locs <- get_locs(watina, area_codes = c("KAL", "KBR"))
-    test_locs(locs, "area_codes")
+    expect_locs(locs, "area_codes")
 
     locs <- get_locs(
       watina,
       area_codes = c("KAL", "KBR"),
       loc_type = c("P", "S")
     )
-    test_locs(locs, "area_codes_loc_type")
+    expect_locs(locs, "area_codes_loc_type")
 
+    # Select all validity options and location types
     locs <- get_locs(
       watina,
       loc_validity = c("ENT", "DEL", "CLD"),
       loc_type = c("P", "S", "R", "N", "W", "D", "L", "B")
     )
-    test_locs(locs, "loc_validity")
+    expect_locs(locs, "loc_validity")
 
+    # Exact location matching
+    locs <- get_locs(
+      watina,
+      loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001")
+    )
+    expect_locs(locs, "loc_vec")
+  })
+})
+
+test_that("get_locs applies spatial queries correctly", {
+  suppressWarnings({
+    file_names <- c(
+      "bbox",
+      "mask"
+    )
+    announce_files_locs(file_names)
+
+    skip_if(getOption("test.skip_snapshot"))
+    watina <- fetch_watina_connection()
+
+    # Bounding box filter
+    bbox <- c(xmin = 1.4e+5, xmax = 1.7e+5, ymin = 1.6e+5, ymax = 1.9e+5)
+    locs <- get_locs(watina, bbox = bbox)
+    expect_locs(locs, "bbox")
+
+    # Spatial mask filter using httr2
+    wfs_url <- "https://geo.api.vlaanderen.be/VRBG/wfs" %>%
+      httr2::request() %>%
+      httr2::req_url_query(
+        request = "GetFeature",
+        typeName = "VRBG:Refprv",
+        cql_filter = "NAAM='West-Vlaanderen'",
+        srsName = "EPSG:31370",
+        outputFormat = "text/xml; subtype=gml/3.1.1"
+      )
+
+    mymask <- sf::read_sf(wfs_url$url, crs = 31370) %>%
+      sf::st_cast("GEOMETRYCOLLECTION")
+
+    locs <- get_locs(watina, loc_validity = "VLD", mask = mymask, buffer = 0, collect = TRUE)
+    expect_locs(locs, "mask")
+  })
+})
+
+test_that("get_locs calculates filterdepth correctly with different filters", {
+  suppressWarnings({
+    file_names <- c(
+      "filterdepth_guess",
+      "filterdepth_na",
+      "obswells"
+    )
+    announce_files_locs(file_names)
+
+    skip_if(getOption("test.skip_snapshot"))
+    watina <- fetch_watina_connection()
+
+    # Guessed filterdepth correctly calculated
     locs <- get_locs(watina, area_codes = "WES", filterdepth_guess = TRUE)
-    test_locs(locs, "filterdepth_guess")
+    expect_locs(locs, "filterdepth_guess")
 
+    # NA filterdepth filters correctly
     locs <- get_locs(
       watina,
       area_codes = c("KAL", "KBR"),
       loc_type = c("P", "S"),
       filterdepth_na = TRUE
     )
-    test_locs(locs, "filterdepth_na")
+    expect_locs(locs, "filterdepth_na")
 
-    locs <- get_locs(
-      watina,
-      loc_vec = c("KBRP081", "KBRP090", "KBRP095", "KBRS001")
-    )
-    test_locs(locs, "loc_vec")
-
+    # Select observation wells
     locs <- get_locs(
       watina,
       obswells = TRUE,
       area_codes = c("KAL", "KBR"),
       loc_type = c("P", "S")
     )
-    test_locs(locs, "obswells")
+    expect_locs(locs, "obswells")
+  })
+})
+
+test_that("get_locs applies observation wells aggregation logic correctly", {
+  suppressWarnings({
+    file_names <- c(
+      "obswell_aggr_latest",
+      "obswell_aggr_latest_fd",
+      "obswell_aggr_latest_sso",
+      "obswell_aggr_mean"
+    )
+    announce_files_locs(file_names)
+
+    skip_if(getOption("test.skip_snapshot"))
+    watina <- fetch_watina_connection()
 
     locs <- get_locs(
       watina,
@@ -159,7 +151,7 @@ test_that("Test different filters get_locs", {
       obswell_aggr = "latest"
     ) %>%
       select(loc_code, contains("ost"), contains("filterdepth"))
-    test_locs(locs, "obswell_aggr_latest")
+    expect_locs(locs, "obswell_aggr_latest")
 
     locs <- get_locs(
       watina,
@@ -169,7 +161,7 @@ test_that("Test different filters get_locs", {
       obswell_aggr = "latest_fd"
     ) %>%
       select(loc_code, contains("ost"), contains("filterdepth"))
-    test_locs(locs, "obswell_aggr_latest_fd")
+    expect_locs(locs, "obswell_aggr_latest_fd")
 
     locs <- get_locs(
       watina,
@@ -179,7 +171,7 @@ test_that("Test different filters get_locs", {
       obswell_aggr = "latest_sso"
     ) %>%
       select(loc_code, contains("ost"), contains("filterdepth"))
-    test_locs(locs, "obswell_aggr_latest_sso")
+    expect_locs(locs, "obswell_aggr_latest_sso")
 
     locs <- get_locs(
       watina,
@@ -189,27 +181,21 @@ test_that("Test different filters get_locs", {
       obswell_aggr = "mean"
     ) %>%
       select(loc_code, contains("ost"), contains("filterdepth"))
-    test_locs(locs, "obswell_aggr_mean")
+    expect_locs(locs, "obswell_aggr_mean")
+  })
+})
 
-    mymask <-
-      "https://geo.api.vlaanderen.be/VRBG/wfs" %>%
-      httr::parse_url() %>%
-      purrr::list_merge(
-        query = list(
-          request = "GetFeature",
-          typeName = "VRBG:Refprv",
-          cql_filter = "NAAM='West-Vlaanderen'",
-          srsName = "EPSG:31370",
-          outputFormat = "text/xml; subtype=gml/3.1.1"
-        )
-      ) %>%
-      httr::build_url() %>%
-      sf::read_sf(crs = 31370) %>%
-      sf::st_cast("GEOMETRYCOLLECTION")
-    locs <- get_locs(watina, loc_validity = "VLD", mask = mymask, buffer = 0)
-    test_locs(locs, "mask")
+test_that("get_locs output matches exactly during extensive evaluation", {
+  suppressWarnings({
+    file_names <- c(
+      "all",
+      "all_obswells"
+    )
+    announce_files_locs(file_names)
 
-    skip_if(SKIP_DATA_VALIDATION_TESTS)
+    skip_if(getOption("test.skip_snapshot"))
+    skip_if(getOption("test.skip_data_validation"))
+    watina <- fetch_watina_connection()
 
     # Extensive test - all rows
     locs <- get_locs(
@@ -217,7 +203,7 @@ test_that("Test different filters get_locs", {
       loc_validity = c("VLD"),
       loc_type = c("P", "S", "R", "N", "W", "D", "L", "B")
     )
-    test_locs(locs, "all")
+    expect_locs(locs, "all")
 
     # Extensive test - all rows in observations
     locs <- get_locs(
@@ -226,54 +212,57 @@ test_that("Test different filters get_locs", {
       loc_validity = c("VLD"),
       loc_type = c("P", "S", "R", "N", "W", "D", "L", "B")
     )
-    test_locs(locs, "all_obswells")
+    expect_locs(locs, "all_obswells")
   })
 })
 
-test_that("Test different filters get_xg3", {
+# get_xg3 snapshot tests -------------------------------------------------------
+test_that("get_xg3 applies different filters correctly", {
+  suppressWarnings({
+    file_names <- c(
+      "KAL_2010",
+      "KAL_2010_ostend"
+    )
+    announce_files_xg3(file_names)
+
+    skip_if(getOption("test.skip_snapshot"))
+    watina <- fetch_watina_connection()
+
+    locs <- get_locs(watina, area_codes = "KAL")
+
+    xg3 <- locs %>% get_xg3(watina, 2010) %>% collect()
+    expect_xg3(xg3, "KAL_2010")
+
+    xg3 <- locs %>% get_xg3(watina, 2010, vert_crs = "ostend") %>% collect()
+    expect_xg3(xg3, "KAL_2010_ostend")
+  })
+})
+
+test_that("get_xg3 output matches exactly during extensive evaluation", {
   suppressWarnings({
     file_names <- c(
       "KAL_2010",
       "KAL_2010_ostend",
       "all_2010"
     )
+    announce_files_xg3(file_names)
 
-    for (f in file_names) {
-      announce_snapshot_file(name = create_file_name("xg3", f))
-    }
-    skip_if(SKIP_SNAPSHOT_TESTS)
-    skip_if_not(
-      exists("watina_test_con"),
-      message = "Geen actieve database connectie gevonden."
-    )
+    skip_if(getOption("test.skip_snapshot"))
+    skip_if(getOption("test.skip_data_validation"))
+    watina <- fetch_watina_connection()
 
-    test_xg3 <- function(xg3, test_name) {
-      test_data(xg3, "xg3", test_name)
-    }
-
-    watina <- watina_test_con
-
-    locs <- get_locs(watina, area_codes = "KAL")
-    xg3 <- locs %>% get_xg3(watina, 2010) %>% collect()
-    test_xg3(xg3, "KAL_2010")
-
-    xg3 <- locs %>% get_xg3(watina, 2010, vert_crs = "ostend") %>% collect()
-    test_xg3(xg3, "KAL_2010_ostend")
-
-    skip_if(SKIP_DATA_VALIDATION_TESTS)
-
-    # Extensive test - all rows
     locs <- get_locs(
       watina,
       loc_validity = c("VLD"),
       loc_type = c("P", "S", "R", "N", "W", "D", "L", "B")
     )
     xg3 <- locs %>% get_xg3(watina, 2010) %>% collect()
-    test_xg3(xg3, "all_2010")
+    expect_xg3(xg3, "all_2010")
   })
 })
 
-test_that("Test different filters get_chem", {
+# get_chem snapshot tests ------------------------------------------------------
+test_that("get_chem applies different filters correctly", {
   suppressWarnings({
     file_names <- c(
       "ZWA",
@@ -281,36 +270,24 @@ test_that("Test different filters get_chem", {
       "ZWA_thresholdNA",
       "ZWA_excludeNA",
       "ZWA_thresholdNA_excludeNA",
-      "ZWA_range",
-      "all_20170101"
+      "ZWA_range"
     )
+    announce_files_chem(file_names)
 
-    for (f in file_names) {
-      announce_snapshot_file(name = create_file_name("chem", f))
-    }
-    skip_if(SKIP_SNAPSHOT_TESTS)
-    skip_if_not(
-      exists("watina_test_con"),
-      message = "Geen actieve database connectie gevonden."
-    )
-
-    test_chem <- function(chem, test_name) {
-      test_data(chem, "chem", test_name)
-    }
-
-    watina <- watina_test_con
+    skip_if(getOption("test.skip_snapshot"))
+    watina <- fetch_watina_connection()
 
     locs <- get_locs(watina, area_codes = "ZWA")
 
     chem <- locs %>%
       get_chem(watina, "1/1/2017", enddate = "31-12-2018") %>%
       collect()
-    test_chem(chem, "ZWA")
+    expect_chem(chem, "ZWA")
 
     chem <- locs %>%
       get_chem(watina, "1/1/2017", enddate = "31-12-2018", conc_type = "eq") %>%
       collect()
-    test_chem(chem, "ZWA_eq")
+    expect_chem(chem, "ZWA_eq")
 
     chem <- locs %>%
       get_chem(
@@ -320,7 +297,7 @@ test_that("Test different filters get_chem", {
         en_fecond_threshold = NA
       ) %>%
       collect()
-    test_chem(chem, "ZWA_thresholdNA")
+    expect_chem(chem, "ZWA_thresholdNA")
 
     chem <- locs %>%
       get_chem(
@@ -330,7 +307,7 @@ test_that("Test different filters get_chem", {
         en_exclude_na = TRUE
       ) %>%
       collect()
-    test_chem(chem, "ZWA_excludeNA")
+    expect_chem(chem, "ZWA_excludeNA")
 
     chem <- locs %>%
       get_chem(
@@ -341,7 +318,7 @@ test_that("Test different filters get_chem", {
         en_fecond_threshold = NA
       ) %>%
       collect()
-    test_chem(chem, "ZWA_thresholdNA_excludeNA")
+    expect_chem(chem, "ZWA_thresholdNA_excludeNA")
 
     chem <- locs %>%
       get_chem(
@@ -351,17 +328,27 @@ test_that("Test different filters get_chem", {
         en_range = c(-1, 1)
       ) %>%
       collect()
-    test_chem(chem, "ZWA_range")
+    expect_chem(chem, "ZWA_range")
+  })
+})
 
-    skip_if(SKIP_DATA_VALIDATION_TESTS)
+test_that("get_chem output matches exactly during extensive evaluation", {
+  suppressWarnings({
+    file_names <- c(
+      "all_20170101"
+    )
+    announce_files_chem(file_names)
 
-    # Extensive test - all rows
+    skip_if(getOption("test.skip_snapshot"))
+    skip_if(getOption("test.skip_data_validation"))
+    watina <- fetch_watina_connection()
+
     locs <- get_locs(
       watina,
       loc_validity = c("VLD"),
       loc_type = c("P", "S", "R", "N", "W", "D", "L", "B")
     )
     chem <- locs %>% get_chem(watina, "1/1/2017") %>% collect()
-    test_chem(chem, "all_20170101")
+    expect_chem(chem, "all_20170101")
   })
 })

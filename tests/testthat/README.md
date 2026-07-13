@@ -16,13 +16,13 @@ Since untracked local snapshot files persist across git branch switches, you can
 
 ### 1. Set up a database connection
 
-Create a database connection with the variable name 'watina_test_con'. If this variable is not found, the snapshot tests will be skipped.
+Create a database connection with the variable name 'test_con'. If this variable is not found, the snapshot tests will be skipped.
 
 ``` r
-watina_test_con <- connect_watina()
+test_con <- connect_watina()
 ```
 
-### 1. Set up your ground truth baseline
+### 2. Set up your ground truth baseline
 
 *When reviewing a PR, switch to the stable main branch (`git switch main`).*
 
@@ -34,11 +34,11 @@ devtools::test(filter = "get")
 
 This will create local snapshot files that are stored in tests/testthat/\_snaps.
 
-### 2. Modify your code
+### 3. Modify your code
 
 Switch to your feature branch if you're reviewing a PR or apply your changes when developing a feature.
 
-### 3. Compare to the baseline
+### 4. Compare to the baseline
 
 Execute the test code with the applied changes:
 
@@ -50,9 +50,25 @@ devtools::test(filter = "get")
 
 **If the tests fail**: testthat will automatically open a Shiny app displaying a row-by-row visual diff highlighting any changes. You can decide to **accept** (if it were expected changes) or **decline** (if it were unintended changes). If you decline, alter your code to assure the output remains unchanged.
 
-## Testing Configuration
+## Testing Configuration ⚙️
 
-To keep local development fast, the testing setup includes two boolean flags that act as manual on/off switches:
+Testing behavior is managed dynamically through R session `options()`. When you open the project, your `.Rprofile` automatically initializes them.
 
-- **SKIP_SNAPSHOT_TESTS**: Set to TRUE when working on non-database features (like documentation, evaluation or plot functions) to make devtools::test() complete instantly. Set to FALSE when you need to test database logic.
-- **SKIP_DATA_VALIDATION_TESTS**: Controls the execution of extensive validation checks (e.g., retrieving all historical rows). Leave this set to TRUE for day-to-day work, and only switch it to FALSE when finalizing a major data warehouse migration to verify absolute database parity.
+- **test.run_snapshot** (*default is FALSE*): Toggle to test database query changes. When FALSE, database snapshot tests are skipped.
+- **test.run_data_validation** (*default is FALSE*): Toggle to execute extensive end-to-end table checks (e.g., retrieving all historical rows). Keep FALSE unless verifying a major data warehouse migration.
+
+You can flip these switches directly in your RStudio console at any time. Never modify the default settings in the `.Rprofile`!
+
+``` r
+# Activate snapshot tests
+options(test.run_snapshot = TRUE)
+
+# Activate extensive data validation tests
+options(test.run_data_validation = TRUE)
+
+# Return to default mode
+options(test.run_snapshot = FALSE)
+options(test.run_data_validation = FALSE)
+```
+
+💡 Under the hood: When you run `devtools::test()`, `setup.R` automatically reads these console options. If no active database connection (`test_con`) is found in your Global Environment, database tests will always automatically skip for safety (e.g., on GitHub Actions).
