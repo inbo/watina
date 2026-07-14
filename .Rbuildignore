@@ -9,5 +9,6 @@
 ^appveyor\.yml$
 ^\.zenodo\.json$
 ^\.github$
+^\.git-blame-ignore-revs
 ^\.positai$
 ^\.claude$
