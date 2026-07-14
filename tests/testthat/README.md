@@ -38,7 +38,7 @@ Or, if you are verifying a data warehouse migration, run the migration tests:
 devtools::test(filter = "dwh-migration")
 ```
 
-This will create local snapshot files that are stored in `tests/testthat/_snaps`.
+The tests will create local snapshot files that are stored in `tests/testthat/_snaps`.
 
 ### 3. Modify your code
 
