@@ -34,6 +34,10 @@ announce_files_chem <- function(file_names) {
   announce_files(file_names, "chem")
 }
 
+announce_files_migration <- function(file_names) {
+  announce_files(file_names, "dwh_migration")
+}
+
 clean_up_table <- function(table) {
   floor_0 <- c(
     "x",
@@ -59,7 +63,9 @@ clean_up_table <- function(table) {
     arrange(
       pick(
         ends_with("_code"),
+        ends_with("_id"),
         ends_with("year"),
+        ends_with("date"),
         ends_with("_ost"),
         ends_with("_lcl"),
         ends_with("_variable")
