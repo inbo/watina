@@ -1,0 +1,6 @@
+# Run this command to always ignore the commits from this file with git blame
+# git blame on Github will automatically take this file into account
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Apply air formatter and RStudio Reflow Comment to R/get.R
+59153b4c1ea47a4500f9bbff1261e3edf5a4a63d
