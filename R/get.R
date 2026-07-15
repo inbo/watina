@@ -1243,6 +1243,7 @@ get_xg3 <- function(locs,
 #' distinct
 #' sql
 #' rename
+#' between
 get_chem <- function(locs,
                      con,
                      startdate,
@@ -1414,14 +1415,6 @@ get_chem <- function(locs,
         )
     )
 
-  sqlstring_en <-
-    paste0(
-      "elneutr BETWEEN ",
-      en_range[1],
-      " AND ",
-      en_range[2]
-    )
-
   # preparing for the application of the en_fecond_threshold:
   if (!is.na(en_fecond_threshold) & !is.null(en_fecond_threshold)) {
     if (any(
@@ -1476,7 +1469,7 @@ get_chem <- function(locs,
         # I.1 applying the en_range condition:
         chem %>%
           filter(
-            (!is.na(.data$elneutr) & sql(sqlstring_en)) |
+            (!is.na(.data$elneutr) & between(.data$elneutr, !!en_range[1], !!en_range[2])) |
               .data$provide_eq_unit == "FALSE"
           )
       } else {
@@ -1484,7 +1477,7 @@ get_chem <- function(locs,
         chem %>%
           left_join(samples_fecond, by = "lab_sample_id") %>%
           filter(
-            (!is.na(.data$elneutr) & sql(sqlstring_en)) |
+            (!is.na(.data$elneutr) & between(.data$elneutr, !!en_range[1], !!en_range[2])) |
               .data$fecond >= en_fecond_threshold |
               .data$provide_eq_unit == "FALSE"
           ) %>%
@@ -1497,7 +1490,7 @@ get_chem <- function(locs,
         chem %>%
           filter(
             is.na(.data$elneutr) |
-              sql(sqlstring_en) |
+              between(.data$elneutr, !!en_range[1], !!en_range[2]) |
               .data$provide_eq_unit == "FALSE"
           )
       } else {
@@ -1506,7 +1499,7 @@ get_chem <- function(locs,
           left_join(samples_fecond, by = "lab_sample_id") %>%
           filter(
             is.na(.data$elneutr) |
-              sql(sqlstring_en) |
+              between(.data$elneutr, !!en_range[1], !!en_range[2]) |
               .data$fecond >= en_fecond_threshold |
               .data$provide_eq_unit == "FALSE"
           ) %>%

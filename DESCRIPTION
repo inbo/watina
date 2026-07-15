@@ -32,17 +32,21 @@ Imports:
 Suggests:
     DBI,
     ggplot2,
+    httr2,
     knitr,
     KSgeneral,
     purrr,
     rmarkdown,
     scales,
     sf,
+    testthat (>= 3.0.0),
     tibble,
-    tidyselect
+    tidyselect,
+    withr
 Remotes:
     inbo/inbodb
 LazyData: true
 Encoding: UTF-8
-RoxygenNote: 7.3.3
 VignetteBuilder: knitr
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
