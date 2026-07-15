@@ -89,7 +89,13 @@ test_that("get_locs applies spatial queries correctly", {
     mymask <- sf::read_sf(wfs_url$url, crs = 31370) %>%
       sf::st_cast("GEOMETRYCOLLECTION")
 
-    locs <- get_locs(watina, loc_validity = "VLD", mask = mymask, buffer = 0, collect = TRUE)
+    locs <- get_locs(
+      watina,
+      loc_validity = "VLD",
+      mask = mymask,
+      buffer = 0,
+      collect = TRUE
+    )
     expect_locs(locs, "mask")
   })
 })
