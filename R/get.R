@@ -842,6 +842,40 @@ get_xg3 <- function(
   assert_that(is.flag(truncated), assertthat::noNA(truncated))
   assert_that(is.flag(collect), assertthat::noNA(collect))
 
+  xg3 <- build_xg3_query(
+    locs,
+    con,
+    startyear,
+    endyear
+  )
+
+  xg3 <-
+    switch(
+      vert_crs,
+      local = xg3 %>% select(-contains("ost")),
+      ostend = xg3 %>% select(-contains("lcl")),
+      both = xg3
+    )
+
+  if (collect) {
+    xg3 <-
+      xg3 %>%
+      arrange(
+        .data$loc_code,
+        .data$hydroyear
+      ) %>%
+      collect()
+  }
+
+  return(xg3)
+}
+
+build_xg3_query <- function(
+  locs,
+  con,
+  startyear,
+  endyear
+) {
   if (inherits(locs, "data.frame")) {
     locs <- stage_locs(locs, con)
   }
@@ -877,24 +911,6 @@ get_xg3 <- function(
       by = "loc_wid"
     ) %>%
     select(-.data$loc_wid)
-
-  xg3 <-
-    switch(
-      vert_crs,
-      local = xg3 %>% select(-contains("ost")),
-      ostend = xg3 %>% select(-contains("lcl")),
-      both = xg3
-    )
-
-  if (collect) {
-    xg3 <-
-      xg3 %>%
-      arrange(
-        .data$loc_code,
-        .data$hydroyear
-      ) %>%
-      collect()
-  }
 
   return(xg3)
 }
