@@ -218,3 +218,55 @@ test_that("get_gx3 works with different filters and dwh settings", {
   })
 })
 
+test_that("get_chem works with different filters and dwh settings", {
+  suppressWarnings({
+    file_names <- c(
+      "chem_eq",
+      "chem_en_range",
+      "chem_exclude_na",
+      "chem_threshold_na",
+      "chem_exclude_na_threshold_na"
+    )
+    announce_files_migration(file_names)
+
+    skip_if(getOption("test.skip_dwh_migration"))
+    watina <- fetch_watina_connection()
+
+    locs <- get_locs(
+      watina,
+      loc_vec = dwh_test_locations,
+      loc_validity = dwh_test_validity,
+      loc_type = dwh_test_types
+    )
+
+    chem <- locs %>%
+      get_chem(watina, "1/1/2017", conc_type = "eq") %>%
+      collect()
+    expect_migration(chem, "chem_eq")
+
+    chem <- locs %>%
+      get_chem(watina, "1/1/2017", en_range = c(-0.05, 0.05)) %>%
+      collect()
+    expect_migration(chem, "chem_en_range")
+
+    chem <- locs %>%
+      get_chem(watina, "1/1/2017", en_exclude_na = TRUE) %>%
+      collect()
+    expect_migration(chem, "chem_exclude_na")
+
+    chem <- locs %>%
+      get_chem(watina, "1/1/2017", en_fecond_threshold = NA) %>%
+      collect()
+    expect_migration(chem, "chem_threshold_na")
+
+    chem <- locs %>%
+      get_chem(
+        watina,
+        "1/1/2017",
+        en_exclude_na = TRUE,
+        en_fecond_threshold = NA
+      ) %>%
+      collect()
+    expect_migration(chem, "chem_exclude_na_threshold_na")
+  })
+})
