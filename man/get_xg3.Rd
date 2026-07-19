@@ -10,8 +10,8 @@ get_xg3(
   startyear,
   endyear = year(now()) - 1,
   vert_crs = c("local", "ostend", "both"),
-  truncated = TRUE,
-  with_estimated = TRUE,
+  truncated = FALSE,
+  with_estimated = FALSE,
   collect = FALSE
 )
 }
@@ -126,7 +126,7 @@ dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to query the data warehouse: 
+Other functions to query the data warehouse:
 \code{\link{get_chem}()},
 \code{\link{get_locs}()}
 }

@@ -733,10 +733,6 @@ build_locs_query <- function(
 #' The timeframe is a selection interval between a given first and last
 #' hydroyear.
 #'
-#' Note: the arguments \code{truncated} and \code{with_estimated} are currently
-#' not used. Currently, non-truncated values are returned, with usage of
-#' estimated values.
-#'
 #' (TO BE ADDED: What are XG3 values? What is a hydroyear? Why truncate, and why
 #' truncate by default? When to choose which \code{vert_crs}?)
 #'
@@ -744,8 +740,9 @@ build_locs_query <- function(
 #'   \code{loc_code} that defines the locations for which values are to be
 #'   returned. Typically, this will be the object returned by
 #'   \code{\link{get_locs}}.
+#' @param con A database connection object to the Watina data warehouse.
 #' @param startyear First hydroyear of the timeframe.
-#' @param endyear Last hydroyear of the timeframe.
+#' @param endyear Last hydroyear of the timeframe. Defaults to the previous calendar year.
 #' @param vert_crs A string, defining the 1-dimensional vertical coordinate
 #'   reference system (CRS) of the XG3 water levels. Either \code{"local"} (the
 #'   default, i.e. returned values are relative to soil surface level, with
@@ -755,13 +752,15 @@ build_locs_query <- function(
 #'   height} (EPSG \href{https://epsg.io/5710}{5710}), also known as 'TAW' or
 #'   'DNG'), or \code{"both"}, where the values for both CRS options are
 #'   returned. The units are always meters.
-#' @param truncated Logical. If \code{TRUE} (the default), the XG3 values are
-#'   calculated after having set the underlying water level measurements that
-#'   are above soil surface level to the soil surface level itself (which is
-#'   zero in the case of the local CRS).
-#' @param with_estimated Logical. If \code{TRUE} (the default), the XG3 values
-#'   calculations also use estimated (i.e. non-measured) water level data that
-#'   are available in the data warehouse.
+#' @param truncated Logical. If \code{TRUE}, the XG3 values are calculated
+#'   after having capped the underlying water level measurements that are above
+#'   soil surface level to the soil surface level itself (zero in the local CRS).
+#'   Defaults to \code{FALSE}.
+#' @param with_estimated Logical. If \code{TRUE}, the XG3 calculation includes
+#'   estimated or simulated (e.g. Menyanthes model) water level data alongside
+#'   raw measurements. Defaults to \code{FALSE}.
+#' @param collect Logical. If \code{TRUE}, the lazy query is executed and
+#'   brought into local R memory as a tibble. Defaults to \code{FALSE}.
 #'
 #' @inheritParams get_locs
 #'
@@ -824,8 +823,8 @@ get_xg3 <- function(
   startyear,
   endyear = year(now()) - 1,
   vert_crs = c("local", "ostend", "both"),
-  truncated = TRUE,
-  with_estimated = TRUE,
+  truncated = FALSE,
+  with_estimated = FALSE,
   collect = FALSE
 ) {
   vert_crs <- match.arg(vert_crs)
@@ -846,7 +845,9 @@ get_xg3 <- function(
     locs,
     con,
     startyear,
-    endyear
+    endyear,
+    truncated,
+    with_estimated
   )
 
   xg3 <-
@@ -874,31 +875,78 @@ build_xg3_query <- function(
   locs,
   con,
   startyear,
-  endyear
+  endyear,
+  truncated,
+  with_estimated
 ) {
   if (inherits(locs, "data.frame")) {
     locs <- stage_locs(locs, con)
   }
 
+  param_query <- tbl(con, "DimParameterSet") %>%
+    filter(
+      .data$IsAfgetopt == truncated,
+      .data$IsEstimated == with_estimated
+    )
+
+  matching_params <- param_query %>% collect()
+  param_count <- nrow(matching_params)
+
+  str_settings <- sprintf(
+    "settings truncated = '%s' and with_estimated = '%s'",
+    truncated,
+    with_estimated
+  )
+
+  if (param_count == 0) {
+    stop(
+      sprintf(
+        "No parameters found with %s",
+        str_settings
+      ),
+      call. = FALSE
+    )
+  }
+  if (param_count > 1) {
+    str_param_options <- paste0(matching_params$Omschrijving, collapse = ", ")
+
+    selected_id <- max((matching_params$ParameterSetWID))
+    selected_option <- matching_params$Omschrijving[
+      matching_params$ParameterSetWID == selected_id
+    ]
+
+    message(sprintf(
+      "Multiple parameter options found with %s. The options are: %s. Option '%s' selected. Contact package maintainer if another parameter should be selected and extra filters are needed. Maybe create your first issue?",
+      str_settings,
+      str_param_options,
+      selected_option
+    ))
+
+    param_query <- param_query %>%
+      filter(.data$ParameterSetWID == selected_id)
+  }
+
   xg3 <-
-    tbl(con, "ssrs_Precalc") %>%
-    # left_join(tbl(con, "DimMetingType"),
-    #           by = "MetingTypeWID") %>%
-    select(
-      loc_wid = .data$MeetpuntWID,
-      hydroyear = .data$HydroJaar,
-      # method_code = .data$MetingTypeCode,
-      # method_name = .data$MetingTypeNaam,
-      lg3_lcl = .data$GLG_2,
-      hg3_lcl = .data$GHG_2,
-      vg3_lcl = .data$GVG_2,
-      lg3_ost = .data$GLG_1,
-      hg3_ost = .data$GHG_1,
-      vg3_ost = .data$GVG_1
+    tbl(con, "FactBRPeilMetingJaar") %>%
+    inner_join(
+      param_query,
+      by = "ParameterSetWID"
     ) %>%
     filter(
-      .data$hydroyear >= startyear,
-      .data$hydroyear <= endyear
+      # CRITICAL: Keep only Hydroyears
+      .data$IsHydroJaar == 1,
+      .data$Jaar >= startyear,
+      .data$Jaar <= endyear
+    ) %>%
+    select(
+      loc_wid = .data$MeetpuntWID,
+      hydroyear = .data$Jaar,
+      lg3_lcl = .data$LGmMaaiVeldValue,
+      hg3_lcl = .data$HGmMaaiVeldValue,
+      vg3_lcl = .data$VGmMaaiVeldValue,
+      lg3_ost = .data$LGmTAWValue,
+      hg3_ost = .data$HGmTAWValue,
+      vg3_ost = .data$VGmTAWValue
     ) %>%
     inner_join(
       locs %>%
