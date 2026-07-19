@@ -30,6 +30,10 @@ clean_up_table <- function(table) {
     "filterlength",
     "filterdepth"
   )
+  round_3 <- c("value")
+  round_5 <- c(
+    "elneutr"
+  )
 
   table <- table %>%
     # Primary keys can change in DWH (exclude from comparison)
@@ -37,7 +41,18 @@ clean_up_table <- function(table) {
     mutate(
       # Round to only view big numerical changes in comparison view
       across(any_of(floor_0), floor),
-      across(any_of(round_2), \(x) round(x, digits = 2))
+      across(matches("^[lhv]g3_"), \(x) {
+        round(x, digits = 1)
+      }),
+      across(any_of(round_2), \(x) {
+        round(x, digits = 2)
+      }),
+      across(any_of(round_3), \(x) {
+        round(x, digits = 3)
+      }),
+      across(any_of(round_5), \(x) {
+        round(x, digits = 5)
+      })
     ) %>%
     # Order to ease comparison view
     arrange(
@@ -156,4 +171,3 @@ dwh_test_locations <- c(
 dwh_test_validity <- c("VLD")
 # Include all loc_types
 dwh_test_types <- c("P", "S", "R", "N", "W", "D", "L", "B")
-
