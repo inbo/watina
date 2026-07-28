@@ -673,15 +673,6 @@ build_locs_query <- function(
     locs %>%
     left_join(
       tbl(con, "DimPeilpunt") %>%
-        filter(
-          # Filter is unnecessary (only options in DWH are "VLD" and "CLD")
-          # Keep it for now (DWH field might change to extra options)
-          .data$PeilpuntStatusCode %in%
-            c(
-              "VLD",
-              "CLD"
-            ),
-        ) %>%
         mutate(
           PeilpuntPlaatsing = sql("CAST(PeilpuntPlaatsing AS date)"),
           PeilpuntStopzetting = sql("CAST(PeilpuntStopzetting AS date)")
