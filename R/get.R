@@ -818,32 +818,7 @@ get_xg3 <- function(
   assert_that(is.flag(collect), assertthat::noNA(collect))
 
   if (inherits(locs, "data.frame")) {
-    locs <-
-      locs %>%
-      distinct(.data$loc_code)
-
-    require_pkgs("DBI")
-
-    try(
-      DBI::dbRemoveTable(con, "#locs"),
-      silent = TRUE
-    )
-
-    locs <-
-      copy_to(
-        con,
-        locs,
-        "#locs"
-      ) %>%
-      inner_join(
-        tbl(con, "vwDimMeetpunt") %>%
-          select(
-            loc_wid = .data$MeetpuntWID,
-            loc_code = .data$MeetpuntCode
-          ),
-        .,
-        by = "loc_code"
-      )
+    locs <- stage_locs(locs, con)
   }
 
   xg3 <-
@@ -1162,32 +1137,7 @@ get_chem <- function(
   }
 
   if (inherits(locs, "data.frame")) {
-    locs <-
-      locs %>%
-      distinct(.data$loc_code)
-
-    require_pkgs("DBI")
-
-    try(
-      DBI::dbRemoveTable(con, "#locs"),
-      silent = TRUE
-    )
-
-    locs <-
-      copy_to(
-        con,
-        locs,
-        "#locs"
-      ) %>%
-      inner_join(
-        tbl(con, "vwDimMeetpunt") %>%
-          select(
-            loc_wid = .data$MeetpuntWID,
-            loc_code = .data$MeetpuntCode
-          ),
-        .,
-        by = "loc_code"
-      )
+    locs <- stage_locs(locs, con)
   }
 
   # filter chemistry data for dates and locations
@@ -1408,4 +1358,36 @@ get_chem <- function(
   }
 
   return(chem)
+}
+
+# HELPER FUNCTIONS -------------------------------------------------------------
+stage_locs <- function(locs, con) {
+  locs <-
+    locs %>%
+    distinct(.data$loc_code)
+
+  require_pkgs("DBI")
+
+  try(
+    DBI::dbRemoveTable(con, "#locs"),
+    silent = TRUE
+  )
+
+  locs <-
+    copy_to(
+      con,
+      locs,
+      "#locs"
+    ) %>%
+    inner_join(
+      tbl(con, "vwDimMeetpunt") %>%
+        select(
+          loc_wid = .data$MeetpuntWID,
+          loc_code = .data$MeetpuntCode
+        ),
+      .,
+      by = "loc_code"
+    )
+
+  return(locs)
 }
