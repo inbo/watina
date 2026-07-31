@@ -1239,64 +1239,11 @@ get_chem <- function(
     locs <- stage_locs(locs, con)
   }
 
-  # filter chemistry data for dates and locations
-  chemdata <-
-    tbl(con, "FactChemischeMeting") %>%
-    select(
-      .data$StaalID,
-      .data$DatumWID,
-      .data$ChemVarWID,
-      .data$MeetpuntWID,
-      .data$Meetwaarde,
-      .data$MeetwaardeMEQ,
-      .data$IsBelowLOQ
-    ) %>%
-    inner_join(
-      tbl(con, "DimChemVar") %>%
-        select(
-          .data$ChemVarWID,
-          .data$ChemVarCode,
-          .data$ChemVarEenheid
-        ),
-      by = "ChemVarWID"
-    ) %>%
-    inner_join(
-      tbl(con, "DimTijd") %>%
-        select(
-          .data$DatumWID,
-          .data$Datum
-        ),
-      by = "DatumWID"
-    ) %>%
-    mutate(Datum = sql("CAST(Datum AS date)")) %>%
-    filter(
-      .data$Datum >= startdate,
-      .data$Datum <= enddate
-    ) %>%
-    rename(loc_wid = .data$MeetpuntWID) %>%
-    inner_join(
-      locs %>%
-        select(
-          .data$loc_wid,
-          .data$loc_code
-        ) %>%
-        distinct(),
-      .,
-      by = "loc_wid"
-    ) %>%
-    select(-.data$loc_wid)
+  chemdata <- locs %>% build_chem_query(con, startdate, enddate)
 
   # add relevant further attributes and rename
   chem <-
     chemdata %>%
-    left_join(
-      tbl(con, "ssrs_StaalEN") %>%
-        select(
-          .data$StaalID,
-          .data$StaalEN
-        ),
-      by = "StaalID"
-    ) %>%
     # temporary values:
     mutate(
       lab_project_id = "0",
@@ -1457,6 +1404,68 @@ get_chem <- function(
   }
 
   return(chem)
+}
+
+build_chem_query <- function(
+  locs,
+  con,
+  startdate,
+  enddate
+) {
+  # filter chemistry data for dates and locations
+  chemdata <-
+    tbl(con, "FactChemischeMeting") %>%
+    select(
+      .data$StaalID,
+      .data$DatumWID,
+      .data$ChemVarWID,
+      .data$MeetpuntWID,
+      .data$Meetwaarde,
+      .data$MeetwaardeMEQ,
+      .data$IsBelowLOQ
+    ) %>%
+    inner_join(
+      tbl(con, "DimChemVar") %>%
+        select(
+          .data$ChemVarWID,
+          .data$ChemVarCode,
+          .data$ChemVarEenheid
+        ),
+      by = "ChemVarWID"
+    ) %>%
+    inner_join(
+      tbl(con, "DimTijd") %>%
+        select(
+          .data$DatumWID,
+          .data$Datum
+        ),
+      by = "DatumWID"
+    ) %>%
+    mutate(Datum = sql("CAST(Datum AS date)")) %>%
+    filter(
+      .data$Datum >= startdate,
+      .data$Datum <= enddate
+    ) %>%
+    rename(loc_wid = .data$MeetpuntWID) %>%
+    inner_join(
+      locs %>%
+        select(
+          .data$loc_wid,
+          .data$loc_code
+        ) %>%
+        distinct(),
+      .,
+      by = "loc_wid"
+    ) %>%
+    select(-.data$loc_wid) %>%
+    left_join(
+      tbl(con, "ssrs_StaalEN") %>%
+        select(
+          .data$StaalID,
+          .data$StaalEN
+        ),
+      by = "StaalWID"
+    )
 }
 
 # HELPER FUNCTIONS -------------------------------------------------------------
