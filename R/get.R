@@ -1261,7 +1261,7 @@ get_chem <- function(
       unit = .data$ChemVarEenheid,
       below_loq = .data$IsBelowLOQ,
       .data$loq,
-      elneutr = .data$StaalEN
+      elneutr = .data$ENCalculated
     ) %>%
     filter(!is.na(.data$value_mass)) %>% # empty rows occur in the DWH!
     mutate(
@@ -1417,6 +1417,7 @@ build_chem_query <- function(
     tbl(con, "FactChemischeMeting") %>%
     select(
       .data$StaalID,
+      .data$StaalWID,
       .data$DatumWID,
       .data$ChemVarWID,
       .data$MeetpuntWID,
@@ -1430,11 +1431,12 @@ build_chem_query <- function(
           .data$ChemVarWID,
           .data$ChemVarCode,
           .data$ChemVarEenheid
-        ),
+        ) %>%
+        filter(.data$ChemVarWID != 24),
       by = "ChemVarWID"
     ) %>%
     inner_join(
-      tbl(con, "DimTijd") %>%
+      tbl(con, "DimDatum") %>%
         select(
           .data$DatumWID,
           .data$Datum
@@ -1459,10 +1461,11 @@ build_chem_query <- function(
     ) %>%
     select(-.data$loc_wid) %>%
     left_join(
-      tbl(con, "ssrs_StaalEN") %>%
+      tbl(con, "DimStaal") %>%
         select(
-          .data$StaalID,
-          .data$StaalEN
+          .data$StaalWID,
+          .data$StaalElnNbr,
+          .data$ENCalculated
         ),
       by = "StaalWID"
     )
