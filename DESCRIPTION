@@ -8,6 +8,7 @@ Description: The R-package watina contains functions to query
     areas in Flanders (Belgium).
 Authors@R: c(
     person("Floris", "Vanderhaeghe", role = c("aut", "cre"), email = "floris.vanderhaeghe@inbo.be", comment = c(ORCID = "0000-0002-6378-6229")),
+    person("Droomelot", "De Gendt", role = c("aut"), email = "droomelot.degendt@inbo.be", comment = c(ORCID = "0009-0004-8532-1870")),
     person("Cécile", "Herr", role = c("aut"), email = "cecile.herr@inbo.be", comment = c(ORCID = "0000-0002-2833-6046")),
     person("Peter", "Desmet", role = c("ctb"), email = "peter.desmet@inbo.be", comment = c(ORCID = "0000-0002-8442-8025")),
     person("Jan", "Wouters", email = "jan.wouters@inbo.be", role = c("ctb"), comment = c(ORCID = "0000-0001-8200-9102")), 
