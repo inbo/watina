@@ -177,3 +177,96 @@ test_that("get_locs applies different aggregation logic correctly with dwh setti
     expect_migration(locs, "locs_obswell_aggr_mean")
   })
 })
+
+test_that("get_gx3 works with different filters and dwh settings", {
+  suppressWarnings({
+    file_names <- c(
+      "xg3_ostend",
+      "xg3_both",
+      "xg3_year_range",
+      "xg3_local_locs"
+    )
+    announce_files_migration(file_names)
+
+    skip_if(getOption("test.skip_dwh_migration"))
+    watina <- fetch_watina_connection()
+
+    locs <- get_locs(
+      watina,
+      loc_vec = dwh_test_locations,
+      loc_validity = dwh_test_validity,
+      loc_type = dwh_test_types
+    )
+
+    xg3_ostend <- locs %>%
+      get_xg3(watina, 2010, vert_crs = "ostend") %>%
+      collect()
+    expect_migration(xg3_ostend, "xg3_ostend")
+
+    xg3_both <- locs %>% get_xg3(watina, 2010, vert_crs = "both") %>% collect()
+    expect_migration(xg3_both, "xg3_both")
+
+    xg3_range <- locs %>%
+      get_xg3(watina, 2010, endyear = 2012) %>%
+      collect()
+    expect_migration(xg3_range, "xg3_year_range")
+
+    # Convert lazy locs to a local data.frame first, then pass to get_xg3
+    local_locs <- locs %>% select(loc_code) %>% collect()
+    xg3_from_local_df <- get_xg3(local_locs, watina, 2010) %>% collect()
+    expect_migration(xg3_from_local_df, "xg3_local_locs")
+  })
+})
+
+test_that("get_chem works with different filters and dwh settings", {
+  suppressWarnings({
+    file_names <- c(
+      "chem_eq",
+      "chem_en_range",
+      "chem_exclude_na",
+      "chem_threshold_na",
+      "chem_exclude_na_threshold_na"
+    )
+    announce_files_migration(file_names)
+
+    skip_if(getOption("test.skip_dwh_migration"))
+    watina <- fetch_watina_connection()
+
+    locs <- get_locs(
+      watina,
+      loc_vec = dwh_test_locations,
+      loc_validity = dwh_test_validity,
+      loc_type = dwh_test_types
+    )
+
+    chem <- locs %>%
+      get_chem(watina, "1/1/2017", conc_type = "eq") %>%
+      collect()
+    expect_migration(chem, "chem_eq")
+
+    chem <- locs %>%
+      get_chem(watina, "1/1/2017", en_range = c(-0.05, 0.05)) %>%
+      collect()
+    expect_migration(chem, "chem_en_range")
+
+    chem <- locs %>%
+      get_chem(watina, "1/1/2017", en_exclude_na = TRUE) %>%
+      collect()
+    expect_migration(chem, "chem_exclude_na")
+
+    chem <- locs %>%
+      get_chem(watina, "1/1/2017", en_fecond_threshold = NA) %>%
+      collect()
+    expect_migration(chem, "chem_threshold_na")
+
+    chem <- locs %>%
+      get_chem(
+        watina,
+        "1/1/2017",
+        en_exclude_na = TRUE,
+        en_fecond_threshold = NA
+      ) %>%
+      collect()
+    expect_migration(chem, "chem_exclude_na_threshold_na")
+  })
+})
