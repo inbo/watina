@@ -1405,7 +1405,7 @@ stage_locs <- function(locs, con) {
       "#locs"
     ) %>%
     inner_join(
-      tbl(con, "vwDimMeetpunt") %>%
+      tbl(con, "DimMeetpunt") %>%
         select(
           loc_wid = .data$MeetpuntWID,
           loc_code = .data$MeetpuntCode
