@@ -885,6 +885,7 @@ build_xg3_query <- function(
 
   param_query <- tbl(con, "DimParameterSet") %>%
     filter(
+      .data$MinMetingen > 0,
       .data$IsAfgetopt == truncated,
       .data$IsEstimated == with_estimated
     )
