@@ -825,7 +825,8 @@ get_xg3 <- function(
   vert_crs = c("local", "ostend", "both"),
   truncated = FALSE,
   with_estimated = FALSE,
-  collect = FALSE
+  collect = FALSE,
+  debug = FALSE
 ) {
   vert_crs <- match.arg(vert_crs)
   assert_that(is.number(startyear))
@@ -847,7 +848,8 @@ get_xg3 <- function(
     startyear,
     endyear,
     truncated,
-    with_estimated
+    with_estimated,
+    debug
   )
 
   xg3 <-
@@ -877,7 +879,8 @@ build_xg3_query <- function(
   startyear,
   endyear,
   truncated,
-  with_estimated
+  with_estimated,
+  debug = FALSE
 ) {
   if (inherits(locs, "data.frame")) {
     locs <- stage_locs(locs, con)
@@ -917,11 +920,17 @@ build_xg3_query <- function(
     ]
 
     message(sprintf(
-      "Multiple parameter options found with %s. The options are: %s. Option '%s' selected. Contact package maintainer if another parameter should be selected and extra filters are needed. Maybe create your first issue?",
-      str_settings,
-      str_param_options,
-      selected_option
+      "Multiple parameter options found with %s. Contact package maintainer if more information is needed.",
+      str_settings
     ))
+
+    if (debug) {
+      message(sprintf(
+        "The options are: %s. Option '%s' selected.",
+        str_param_options,
+        selected_option
+      ))
+    }
 
     param_query <- param_query %>%
       filter(.data$ParameterSetWID == selected_id)
