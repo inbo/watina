@@ -1246,14 +1246,13 @@ get_chem <- function(
     chemdata %>%
     # temporary values:
     mutate(
-      lab_project_id = "0",
       lab_sample_id = sql("CAST(StaalID AS varchar)"),
       loq = -99
     ) %>%
     select(
       .data$loc_code,
       date = .data$Datum,
-      .data$lab_project_id,
+      lab_project_id = .data$StaalExterneSource,
       .data$lab_sample_id,
       chem_variable = .data$ChemVarCode,
       value_mass = .data$Meetwaarde,
@@ -1465,7 +1464,8 @@ build_chem_query <- function(
         select(
           .data$StaalWID,
           .data$StaalElnNbr,
-          .data$ENCalculated
+          .data$ENCalculated,
+          .data$StaalExterneSource
         ),
       by = "StaalWID"
     )
