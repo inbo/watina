@@ -12,89 +12,81 @@ get_xg3(
   vert_crs = c("local", "ostend", "both"),
   truncated = FALSE,
   with_estimated = FALSE,
-  collect = FALSE
+  collect = FALSE,
+  drop_all_na = FALSE,
+  debug = FALSE
 )
 }
 \arguments{
 \item{locs}{A \code{tbl_lazy} object or a data frame, with at least a column
 \code{loc_code} that defines the locations for which values are to be
-returned.
-Typically, this will be the object returned by \code{\link{get_locs}}.}
+returned. Typically, this will be the object returned by
+\code{\link{get_locs}}.}
 
-\item{con}{A \code{DBIConnection} object to Watina.
-See \code{\link{connect_watina}} to generate one.}
+\item{con}{A database connection object to the Watina data warehouse.}
 
 \item{startyear}{First hydroyear of the timeframe.}
 
-\item{endyear}{Last hydroyear of the timeframe.}
+\item{endyear}{Last hydroyear of the timeframe. Defaults to the previous calendar year.}
 
 \item{vert_crs}{A string, defining the 1-dimensional vertical coordinate
-reference system (CRS) of the XG3 water levels.
-Either \code{"local"} (the default, i.e. returned values are relative to
-soil surface level, with positive values = above soil surface),
-or \code{"ostend"} (values are from the CRS
-\href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend height}
-(EPSG \href{https://epsg.io/5710}{5710}),
-also known as 'TAW' or 'DNG'),
-or \code{"both"}, where the values for both CRS options are returned.
-The units are always meters.}
+reference system (CRS) of the XG3 water levels. Either \code{"local"} (the
+default, i.e. returned values are relative to soil surface level, with
+positive values = above soil surface), or \code{"ostend"} (values are from
+the CRS
+\href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
+height} (EPSG \href{https://epsg.io/5710}{5710}), also known as 'TAW' or
+'DNG'), or \code{"both"}, where the values for both CRS options are
+returned. The units are always meters.}
 
-\item{truncated}{Logical.
-If \code{TRUE} (the default), the XG3 values are calculated after having set
-the underlying water level measurements that are above soil surface level
-to the soil surface level itself
-(which is zero in the case of the local CRS).}
+\item{truncated}{Logical. If \code{TRUE}, the XG3 values are calculated
+after having capped the underlying water level measurements that are above
+soil surface level to the soil surface level itself (zero in the local CRS).
+Defaults to \code{FALSE}.}
 
-\item{with_estimated}{Logical.
-If \code{TRUE} (the default), the XG3 values calculations also use estimated
-(i.e. non-measured) water level data that are available in the data warehouse.}
+\item{with_estimated}{Logical. If \code{TRUE}, the XG3 calculation includes
+estimated or simulated (e.g. Menyanthes model) water level data alongside
+raw measurements. Defaults to \code{FALSE}.}
 
-\item{collect}{Should the data be retrieved as a local tibble?
-If \code{FALSE} (the default), a \code{tbl_lazy} object is returned
-(lazy query).
-Hence the result can be further built upon before retrieving data with
-\code{\link[dplyr:compute]{collect()}}.}
+\item{collect}{Logical. If \code{TRUE}, the lazy query is executed and
+brought into local R memory as a tibble. Defaults to \code{FALSE}.}
+
+\item{drop_all_na}{Logical. If \code{TRUE}, rows where all XG3 values
+(\code{lg3}, \code{hg3}, and \code{vg3}) are \code{NA} are filtered out of
+the result. Defaults to \code{FALSE} to preserve all requested hydroyears
+and locations.}
+
+\item{debug}{Logical. If \code{TRUE}, returns debug messages or objects.
+Defaults to \code{FALSE}.}
 }
 \value{
-By default, a \code{tbl_lazy} object.
-With \code{collect = TRUE},
-a local \code{\link[tibble]{tibble}} is returned.
+By default, a \code{tbl_lazy} object. With \code{collect = TRUE}, a
+local \code{\link[tibble]{tibble}} is returned.
 
 (TO BE ADDED: Explanation on the variable names of the returned object)
 
-The suffix of the XG3 variables is either "\code{_lcl}" for
-\code{vert_crs = "local"} or
-"\code{_ost}" for \code{vert_crs = "ostend"}.
+The suffix of the XG3 variables is either "\code{_lcl}" for \code{vert_crs =
+"local"} or "\code{_ost}" for \code{vert_crs = "ostend"}.
 }
 \description{
-Returns XG3 values from the \emph{Watina} data warehouse,
-either as a lazy object or as a
-local tibble.
-The values must belong to selected locations
-and
+Returns XG3 values from the \emph{Watina} data warehouse, either as a lazy
+object or as a local tibble. The values must belong to selected locations and
 to a specified timeframe.
 }
 \details{
-The timeframe is a selection interval between
-a given first and last hydroyear.
+The timeframe is a selection interval between a given first and last
+hydroyear.
 
-Note: the arguments \code{truncated} and \code{with_estimated} are currently
-not used.
-Currently, non-truncated values are returned, with usage of estimated values.
-
-(TO BE ADDED: What are XG3 values? What is a hydroyear?
-Why truncate, and why truncate by default?
-When to choose which \code{vert_crs}?)
+(TO BE ADDED: What are XG3 values? What is a hydroyear? Why truncate, and why
+truncate by default? When to choose which \code{vert_crs}?)
 }
 \note{
 Up to and including \verb{watina 0.3.0}, the result was sorted according to
-\code{loc_code} and \code{hydroyear}, both for the lazy query and the
-collected result.
-Later versions avoid sorting in case of a lazy result, because
-otherwise, when using the result inside another lazy query, this led to
-'ORDER BY' constructs in SQL subqueries, which must be avoided.
-If you like to print the lazy object in a sorted manner, you must add
-\verb{\%>\% arrange(...)} yourself.
+\code{loc_code} and \code{hydroyear}, both for the lazy query and the collected result.
+Later versions avoid sorting in case of a lazy result, because otherwise,
+when using the result inside another lazy query, this led to 'ORDER BY'
+constructs in SQL subqueries, which must be avoided. If you like to print the
+lazy object in a sorted manner, you must add \verb{\%>\% arrange(...)} yourself.
 }
 \examples{
 \dontrun{
@@ -127,7 +119,7 @@ dbDisconnect(watina)
 }
 \seealso{
 Other functions to query the data warehouse:
-\code{\link{get_chem}()},
-\code{\link{get_locs}()}
+\code{\link[=get_chem]{get_chem()}},
+\code{\link[=get_locs]{get_locs()}}
 }
 \concept{functions to query the data warehouse}

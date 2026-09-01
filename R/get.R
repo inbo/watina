@@ -761,6 +761,12 @@ build_locs_query <- function(
 #'   raw measurements. Defaults to \code{FALSE}.
 #' @param collect Logical. If \code{TRUE}, the lazy query is executed and
 #'   brought into local R memory as a tibble. Defaults to \code{FALSE}.
+#' @param drop_all_na Logical. If \code{TRUE}, rows where all XG3 values
+#'   (\code{lg3}, \code{hg3}, and \code{vg3}) are \code{NA} are filtered out of
+#'   the result. Defaults to \code{FALSE} to preserve all requested hydroyears
+#'   and locations.
+#' @param debug Logical. If \code{TRUE}, returns debug messages or objects.
+#'   Defaults to \code{FALSE}.
 #'
 #' @inheritParams get_locs
 #'
@@ -815,7 +821,7 @@ build_locs_query <- function(
 #' @importFrom rlang .data
 #' @importFrom lubridate year now
 #' @importFrom dplyr %>% copy_to filter left_join inner_join select contains
-#'   arrange distinct
+#'   arrange distinct if_all matches
 # FUNCTION GET XG3 -------------------------------------------------------------
 get_xg3 <- function(
   locs,
@@ -826,6 +832,7 @@ get_xg3 <- function(
   truncated = FALSE,
   with_estimated = FALSE,
   collect = FALSE,
+  drop_all_na = FALSE,
   debug = FALSE
 ) {
   vert_crs <- match.arg(vert_crs)
@@ -859,6 +866,13 @@ get_xg3 <- function(
       ostend = xg3 %>% select(-contains("lcl")),
       both = xg3
     )
+
+  # filter after select to assure only selected columns are taken into account
+  if (drop_all_na) {
+    xg3 <-
+      xg3 %>%
+      filter(!if_all(matches("^[lhv]g3_"), is.na))
+  }
 
   if (collect) {
     xg3 <-
