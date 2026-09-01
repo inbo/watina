@@ -1,3 +1,24 @@
+# watina 0.6.0 (TBD)
+
+### Testing
+
+This release is focused on setting up a testing infrastructure (in preparation for the DWH migration).
+
+- Setup testing environment variables through Rprofile.
+- Add testing setup and helper framework for functions requiring a database connection (`get_locs()` , `get_xg3()`, `get_chem()`).
+- Add test suite for database functions to validate DWH migration using a static subset of closed locations.
+- Clarify testing instructions in testing README.
+
+### Improvements and fixes
+
+- Replace raw SQL filter in `get_chem()` with native dbplyr syntax (`dplyr::between()`) for compatibility with newer dbplyr versions.
+- Extract internal `stage_locs()` helper function to simplify `get.R` logic.
+
+### Maintenance
+
+- Update function dependencies across documentation, `DESCRIPTION`, and `NAMESPACE`.
+- Apply code formatting using air and reflow comment styling (add commits to `git-blame-ignore` to keep git blame history clean).
+
 # watina 0.5.0 (2026-04-01)
 
 ### New features
@@ -10,8 +31,7 @@ This release provides new functionality with regard to ionic ratios and plotting
 
 ### Improvements and fixes
 
-- `get_locs()` now substitutes filterlength values of 0 m by 0.3 m (#108).
-Before, this was only done for missing filterlengths.
+- `get_locs()` now substitutes filterlength values of 0 m by 0.3 m (#108). Before, this was only done for missing filterlengths.
 - Harden `get_chem()` with regard to the iron / conductivity ratio calculation (used by the `en_fecond_threshold` argument) (#122):
   - Limit the calculation to the requested locations.
   - Set as missing if conductivity is set as zero in the data warehouse, and present a warning in case this occurs.
@@ -20,9 +40,7 @@ Before, this was only done for missing filterlengths.
 
 # watina 0.4.2 (2023-09-15)
 
-- Move package {KSgeneral} to `Suggests` (#103).
-This avoids package breaking when {KSgeneral} is not available on CRAN.
-For the moment not taking further measures to protect against it, as the package is currently back on CRAN.
+- Move package {KSgeneral} to `Suggests` (#103). This avoids package breaking when {KSgeneral} is not available on CRAN. For the moment not taking further measures to protect against it, as the package is currently back on CRAN.
 
 # watina 0.4.1 (2021-06-11)
 
@@ -33,9 +51,7 @@ For the moment not taking further measures to protect against it, as the package
 
 - This release has been made compatible with `dbplyr` 2.0.0 (on CRAN); the `dbplyr` fork is not needed anymore ([e66e58f](https://github.com/inbo/watina/commit/e66e58f), #74).
   - Follow the installation procedure on the homepage (readme) to upgrade.
-  - Lazy results of `get_locs()`, `get_xg3()` and `get_chem()` are not sorted anymore.
-  Sorting is done in tibbles only, i.e. if `collect = TRUE`.
-  For more information, consult the _Note_ added in the documentation of these functions.
+  - Lazy results of `get_locs()`, `get_xg3()` and `get_chem()` are not sorted anymore. Sorting is done in tibbles only, i.e. if `collect = TRUE`. For more information, consult the *Note* added in the documentation of these functions.
 - Fix broken `selectlocs_xg3()` and `selectlocs_chem()` (#73).
 - Fix `get_locs()` error when no locations remain after spatial masking ([c96421e](https://github.com/inbo/watina/commit/c96421e)).
 - Fix `get_locs()` error when `obswell_aggr = "mean"` (#80).
@@ -44,18 +60,17 @@ For the moment not taking further measures to protect against it, as the package
   - transfer handling of character encoding to `inbodb`.
 - Improve documentation and `pkgdown` website (#76, #77, [3986b4e](https://github.com/inbo/watina/commit/3986b4e)).
 
-
 # watina 0.3.0 (2020-05-20)
 
 ### New features
 
 - New function `cluster_locs()` to spatially cluster locations (well clusters) (#39)
 - More fun with `get_locs()`:
-    - optionally allow groundwater piezometers with missing `filterdepth` (argument `filterdepth_na`)
-    - optionally replace missing `filterdepth` values in a conservative way, based on `tubelength` (argument `filterdepth_guess`, #44)
-    - return eight more observation well attributes beside `filterdepth` (#44)
-    - four methods are available to aggregate observation well attributes per location (argument `obswell_aggr`, #44)
-    - applying a spatial mask is now a little speedier (#57)
+  - optionally allow groundwater piezometers with missing `filterdepth` (argument `filterdepth_na`)
+  - optionally replace missing `filterdepth` values in a conservative way, based on `tubelength` (argument `filterdepth_guess`, #44)
+  - return eight more observation well attributes beside `filterdepth` (#44)
+  - four methods are available to aggregate observation well attributes per location (argument `obswell_aggr`, #44)
+  - applying a spatial mask is now a little speedier (#57)
 - `as_points()` and `get_locs()` return a warning when duplicated coordinates occur in their local result (#51, thanks @w-jan)
 - Package dependency moved from [inborutils](https://inbo.github.io/inborutils) to [inbodb](https://inbo.github.io/inbodb): this is a change within `connect_watina()` which should not affect its behaviour and which reduces overall package dependencies.
 
@@ -85,8 +100,7 @@ Further, a number of smaller fixes and enhancements were made.
 
 # watina 0.2.1 (2019-10-14)
 
-- Fixed bug in some hyperlinks in function documentation, 
-affecting the installation process on Windows (warnings were thrown).
+- Fixed bug in some hyperlinks in function documentation, affecting the installation process on Windows (warnings were thrown).
 
 # watina 0.2.0 (2019-10-02)
 
@@ -95,6 +109,3 @@ affecting the installation process on Windows (warnings were thrown).
 - Several functions have been added to query and process chemical data.
 - Three vignettes have been added.
 - Improved various existing functionalities from version 0.1.0, based on user's feedback.
-
-
-
