@@ -4,7 +4,7 @@
 
 This release is focused on setting up a testing infrastructure (in preparation for the DWH migration).
 
-- Setup testing environment variables through Rprofile.
+- Set up testing environment variables through Rprofile.
 - Add testing setup and helper framework for functions requiring a database connection (`get_locs()` , `get_xg3()`, `get_chem()`).
 - Add test suite for database functions to validate DWH migration using a static subset of closed locations.
 - Clarify testing instructions in testing README.
