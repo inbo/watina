@@ -1,4 +1,4 @@
-# DOOCUMENTATION GET LOCS ------------------------------------------------------
+# DOCUMENTATION GET LOCS ------------------------------------------------------
 #' Get locations from the data warehouse
 #'
 #' Returns locations (and optionally, observation wells) from the \emph{Watina}
@@ -723,7 +723,7 @@ build_locs_query <- function(
   return(locs)
 }
 
-# DOOCUMENTATION GET XG3 -------------------------------------------------------
+# DOCUMENTATION GET XG3 -------------------------------------------------------
 #' Get XG3 values from the data warehouse
 #'
 #' Returns XG3 values from the \emph{Watina} data warehouse, either as a lazy
@@ -987,7 +987,7 @@ build_xg3_query <- function(
   return(xg3)
 }
 
-# DOOCUMENTATION GET CHEM ------------------------------------------------------
+# DOCUMENTATION GET CHEM ------------------------------------------------------
 #' Get hydrochemical data from the data warehouse
 #'
 #' Returns hydrochemical data from the \emph{Watina} data warehouse, either as a
