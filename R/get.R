@@ -1,4 +1,4 @@
-# DOOCUMENTATION GET LOCS ------------------------------------------------------
+# DOCUMENTATION GET LOCS ------------------------------------------------------
 #' Get locations from the data warehouse
 #'
 #' Returns locations (and optionally, observation wells) from the \emph{Watina}
@@ -723,7 +723,7 @@ build_locs_query <- function(
   return(locs)
 }
 
-# DOOCUMENTATION GET XG3 -------------------------------------------------------
+# DOCUMENTATION GET XG3 -------------------------------------------------------
 #' Get XG3 values from the data warehouse
 #'
 #' Returns XG3 values from the \emph{Watina} data warehouse, either as a lazy
@@ -763,8 +763,9 @@ build_locs_query <- function(
 #'   brought into local R memory as a tibble. Defaults to \code{FALSE}.
 #' @param drop_all_na Logical. If \code{TRUE}, rows where all XG3 values
 #'   (\code{lg3}, \code{hg3}, and \code{vg3}) are \code{NA} are filtered out of
-#'   the result. Defaults to \code{FALSE} to preserve all requested hydroyears
-#'   and locations.
+#'   the result. Defaults to \code{FALSE} to preserve all hydroyears with water
+#'   level records even when all XG3 values are NA. Note: Hydroyears with no
+#'   water level records are never included.
 #' @param debug Logical. If \code{TRUE}, returns debug messages or objects.
 #'   Defaults to \code{FALSE}.
 #'
@@ -911,7 +912,7 @@ build_xg3_query <- function(
   param_count <- nrow(matching_params)
 
   str_settings <- sprintf(
-    "settings truncated = '%s' and with_estimated = '%s'",
+    "settings (truncated = '%s' and with_estimated = '%s')",
     truncated,
     with_estimated
   )
@@ -919,7 +920,7 @@ build_xg3_query <- function(
   if (param_count == 0) {
     stop(
       sprintf(
-        "No parameters found with %s",
+        "No xg3 in the database yet with selected %s.",
         str_settings
       ),
       call. = FALSE
@@ -933,8 +934,14 @@ build_xg3_query <- function(
       matching_params$ParameterSetWID == selected_id
     ]
 
+    message <- paste0(
+      "No unambiguous results can be returned because the database contains ",
+      "multiple xg3 values computed with the same %s, but different quality ",
+      "criteria. Contact package maintainer (check DimParameterSet)."
+    )
+
     message(sprintf(
-      "Multiple parameter options found with %s. Contact package maintainer if more information is needed.",
+      message,
       str_settings
     ))
 
@@ -987,7 +994,7 @@ build_xg3_query <- function(
   return(xg3)
 }
 
-# DOOCUMENTATION GET CHEM ------------------------------------------------------
+# DOCUMENTATION GET CHEM ------------------------------------------------------
 #' Get hydrochemical data from the data warehouse
 #'
 #' Returns hydrochemical data from the \emph{Watina} data warehouse, either as a
