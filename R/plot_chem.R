@@ -34,9 +34,6 @@
 #' The \code{vanwirdum_data} dataframe as a
 #' \code{\link[tibble:tbl_df-class]{tibble}}
 #'
-#' @importFrom dplyr
-#' tribble
-#'
 #' @keywords internal
 #'
 #' @references Van Wirdum, Geert (1991). Vegetation and hydrology of floating
@@ -44,7 +41,7 @@
 #' \href{https://publicwiki.deltares.nl/display/VWD/Home}{dataset available
 #' here}
 
-vanwirdum_data <- tribble(
+vanwirdum_data <- tibble::tribble(
   ~ec25, ~ir,
   63.30956284, 94.31498538,
   35.93464093, 93.32760382,
