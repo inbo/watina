@@ -911,7 +911,7 @@ build_xg3_query <- function(
   param_count <- nrow(matching_params)
 
   str_settings <- sprintf(
-    "settings truncated = '%s' and with_estimated = '%s'",
+    "settings (truncated = '%s' and with_estimated = '%s')",
     truncated,
     with_estimated
   )
@@ -919,7 +919,7 @@ build_xg3_query <- function(
   if (param_count == 0) {
     stop(
       sprintf(
-        "No parameters found with %s",
+        "No xg3 in the database yet with selected %s.",
         str_settings
       ),
       call. = FALSE
@@ -933,8 +933,14 @@ build_xg3_query <- function(
       matching_params$ParameterSetWID == selected_id
     ]
 
+    message <- paste0(
+      "No unambiguous results can be returned because the database contains ",
+      "multiple xg3 values computed with the same %s, but different quality ",
+      "criteria. Contact package maintainer (check DimParameterSet)."
+    )
+
     message(sprintf(
-      "Multiple parameter options found with %s. Contact package maintainer if more information is needed.",
+      message,
       str_settings
     ))
 
