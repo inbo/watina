@@ -15,44 +15,36 @@ selectlocs_chem(
 )
 }
 \arguments{
-\item{data}{An object as returned by either \code{\link{get_chem}}
-(the object corresponds to real 'data') or
-\code{\link{eval_chem}} (the object contains summary values).}
+\item{data}{An object as returned by either \code{\link{get_chem}} (the
+object corresponds to real 'data') or \code{\link{eval_chem}} (the object
+contains summary values).}
 
-\item{data_type}{A string.
-Either \code{"data"} (the default) or \code{"summary"}, in correspondence
-with the choice made for \code{data}.}
+\item{data_type}{A string. Either \code{"data"} (the default) or
+\code{"summary"}, in correspondence with the choice made for \code{data}.}
 
-\item{chem_var}{Only relevant
-when data is an object formatted as returned by
-\code{\link{get_chem}}.
-Is a character vector to select chemical variables for which
-statistics will be computed.
-To specify chemical variables, use the
-codes from the column \code{chem_variable} in \code{data}.
-Together with the available variables in \code{data},
-\code{chem_var} determines the meaning of the variable \code{"combined"}.}
+\item{chem_var}{Only relevant when data is an object formatted as returned by
+\code{\link{get_chem}}. Is a character vector to select chemical variables
+for which statistics will be computed. To specify chemical variables, use
+the codes from the column \code{chem_variable} in \code{data}. Together
+with the available variables in \code{data}, \code{chem_var} determines the
+meaning of the variable \code{"combined"}.}
 
-\item{conditions}{A data frame.
-See the devoted section below.}
+\item{conditions}{A data frame. See the devoted section below.}
 
-\item{verbose}{Logical.
-If \code{TRUE}, give feedback on dropped locations because of
-(specific) unused conditions and other 'mismatch' reasons.}
+\item{verbose}{Logical. If \code{TRUE}, give feedback on dropped locations
+because of (specific) unused conditions and other 'mismatch' reasons.}
 
-\item{list}{Logical.
-If \code{FALSE} (the default), the function only returns the end-result
-(a tibble with selected location codes).
-If \code{TRUE}, the function returns a list with the end-result plus useful
-intermediate results (see Value).}
+\item{list}{Logical. If \code{FALSE} (the default), the function only returns
+the end-result (a tibble with selected location codes). If \code{TRUE}, the
+function returns a list with the end-result plus useful intermediate
+results (see Value).}
 }
 \value{
 If \code{list = FALSE}: a tibble with one column \code{loc_code} that
 provides the locations selected by the conditions.
 
 If \code{list = TRUE}: a list of tibbles that extends the previous end-result
-with intermediate results.
-All list elements are named:
+with intermediate results. All list elements are named:
 \enumerate{
 \item{\code{combined_result_filtered}}:
 the end-result, same as given by \code{list = FALSE}.
@@ -72,25 +64,21 @@ per location.
 }
 }
 \description{
-Select locations that comply with user-specified conditions,
-from a dataset as returned by either \code{\link{get_chem}} or
+Select locations that comply with user-specified conditions, from a dataset
+as returned by either \code{\link{get_chem}} or \code{\link{eval_chem}}.
+Conditions can be specified for each of the summary statistics returned by
 \code{\link{eval_chem}}.
-Conditions can be specified for each of the summary statistics returned
-by \code{\link{eval_chem}}.
 }
 \details{
 \code{selectlocs_chem()} separately runs \code{eval_chem} on the input
-(\code{data}) if \code{data_type = "data"}.
-See the documentation of
-\code{\link{eval_chem}}
-to learn more about the available summary statistics.
-Each condition for evaluation + selection of locations
-is specific to a chemical \emph{variable}, which can also be
-the level 'combined'.
-Hence, the result will depend both on the \emph{chemical variables} for
-which statistics have been computed (specified by \code{chem_var}),
-and on the conditions, specified by \code{conditions}.
-See the devoted section on the \code{conditions} data frame.
+(\code{data}) if \code{data_type = "data"}. See the documentation of
+\code{\link{eval_chem}} to learn more about the available summary statistics.
+Each condition for evaluation + selection of locations is specific to a
+chemical \emph{variable}, which can also be the level 'combined'. Hence, the
+result will depend both on the \emph{chemical variables} for which statistics
+have been computed (specified by \code{chem_var}), and on the conditions,
+specified by \code{conditions}. See the devoted section on the
+\code{conditions} data frame.
 
 Only locations are returned:
 \itemize{
@@ -105,40 +93,35 @@ conditions are met;
 }
 }
 As the conditions imposed by the \code{conditions} data frame are always
-evaluated as a
-required combination of conditions ('and'), the user must make different
-calls to \code{selectlocs_chem()}
-if different sets of conditions are to be allowed ('or').
+evaluated as a required combination of conditions ('and'), the user must make
+different calls to \code{selectlocs_chem()} if different sets of conditions
+are to be allowed ('or').
 
 If \code{data_type = "data"}, \code{selectlocs_chem()} calls
-\code{\link{eval_chem}}.
-Its \code{type} and \code{uniformity_test} arguments are derived from the
-user-specified \code{conditions} data frame.
+\code{\link{eval_chem}}. Its \code{type} and \code{uniformity_test} arguments
+are derived from the user-specified \code{conditions} data frame.
 
 \code{selectlocs_chem()} joins the long-formatted results of
-\code{\link{eval_chem}}
-with the \code{conditions} data frame in order to evaluate the conditions.
-Often, this join in itself already leads to dropping specific
-combinations of \code{loc_code} and \code{chem_variable}.
-At least the locations that are completely dropped in this step are reported
-when \code{verbose = TRUE}.
+\code{\link{eval_chem}} with the \code{conditions} data frame in order to
+evaluate the conditions. Often, this join in itself already leads to dropping
+specific combinations of \code{loc_code} and \code{chem_variable}. At least
+the locations that are completely dropped in this step are reported when
+\code{verbose = TRUE}.
 
-The user may want to repeatedly try different sets of conditions
-until a satisfying selection of locations is returned.
-However the output of \code{\link{eval_chem}}
-will not change as long as the data are not altered.
-For that reason, the user can also feed the
-result of \code{eval_chem()} to the \code{data} argument,
-with \code{data_type = "summary"}.
-In that case the argument \code{chem_var} is ignored.
+The user may want to repeatedly try different sets of conditions until a
+satisfying selection of locations is returned. However the output of
+\code{\link{eval_chem}} will not change as long as the data are not altered.
+For that reason, the user can also feed the result of \code{eval_chem()} to
+the \code{data} argument, with \code{data_type = "summary"}. In that case the
+argument \code{chem_var} is ignored.
 }
 \section{Specification of the conditions data frame}{
+ Conditions can be
+  specified for each of the summary statistics returned by
+  \code{\link{eval_chem}}.
 
-Conditions can be specified for each of the summary statistics returned
-by \code{\link{eval_chem}}.
-
-The \code{conditions} parameter takes a data frame that must have the
-following columns:
+  The \code{conditions} parameter takes a data frame that must have the
+  following columns:
 \describe{
 \item{\code{chem_variable}}{Can be any chemical variable code,
 including \code{"combined"}.}
@@ -163,16 +146,14 @@ the statistic must be equal to the criterion value.
 }
 }
 
-Each condition is one row of the data frame.
-The data frame should have at least one, and may have many.
-Each combination of \code{chem_variable} and \code{statistic} must be
-unique.
-Conditions on chemical variables, absent from \code{data} or not implied by
-\code{chem_var}, will be dropped without warning.
-Hence, it is up to the user to do sensible things.
+  Each condition is one row of the data frame. The data frame should have at
+  least one, and may have many. Each combination of \code{chem_variable} and
+  \code{statistic} must be unique. Conditions on chemical variables, absent
+  from \code{data} or not implied by \code{chem_var}, will be dropped without
+  warning. Hence, it is up to the user to do sensible things.
 
-The possible statistics for conditions on chemical variables are documented
-by \code{\link{eval_chem}}.
+  The possible statistics for conditions on chemical variables are documented
+  by \code{\link{eval_chem}}.
 }
 
 \examples{
@@ -243,7 +224,7 @@ dbDisconnect(watina)
 \seealso{
 \code{\link{eval_chem}}
 
-Other functions to select locations: 
-\code{\link{selectlocs_xg3}()}
+Other functions to select locations:
+\code{\link[=selectlocs_xg3]{selectlocs_xg3()}}
 }
 \concept{functions to select locations}
