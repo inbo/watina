@@ -31,7 +31,7 @@ jobs:
           Rscript -e 'options(rmarkdown.html_vignette.check_title = FALSE); pkgdown::build_site()'
 
       - name: Upload pkgdown-site as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pkgdown-site
           path: docs
