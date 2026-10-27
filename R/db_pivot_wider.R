@@ -5,16 +5,8 @@
 # Minor modifications were made in the approach to import rlang functions and to
 # avoid global variables.
 
-#' @importFrom rlang
-#' .data
-#' sym
-#' syms
-#' set_names
-#' flatten
-#' enquo
-#' enquos
-#' quo_get_expr
-#' expr
+#' @importFrom rlang .data sym syms set_names flatten enquo enquos quo_get_expr
+#'   expr
 #' @keywords internal
 db_pivot_wider <- function(data,
                            id_cols = NULL,

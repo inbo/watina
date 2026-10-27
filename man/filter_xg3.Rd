@@ -9,14 +9,13 @@ filter_xg3(data, xg3_type)
 \arguments{
 \item{data}{An object returned by \code{\link{get_xg3}}.}
 
-\item{xg3_type}{Character vector of length 1, 2 or 3.
-Defines the types of XG3 which are taken from \code{data}.
-Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
-Defaults to \code{"L"}.}
+\item{xg3_type}{Character vector of length 1, 2 or 3. Defines the types of
+XG3 which are taken from \code{data}. Specifies the 'X' in 'XG3': either
+\code{"L"}, \code{"H"} and/or \code{"V"}. Defaults to \code{"L"}.}
 }
 \value{
-A \code{tbl_lazy} object or a tibble, which is like \code{data} but with
-non-requested XG3 variables discarded.
+A \code{tbl_lazy} object or a tibble, which is like \code{data} but
+with non-requested XG3 variables discarded.
 }
 \description{
 Helper function to select the specified XG3 columns per location x hydroyear.

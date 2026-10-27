@@ -1,26 +1,22 @@
 #' Select locations based on XG3 availability and XG3 series' properties
 #'
-#' Select locations that comply with user-specified conditions,
-#' from a dataset as returned by \code{\link{get_xg3}},
-#' \emph{or} from a list with the outputs of
+#' Select locations that comply with user-specified conditions, from a dataset
+#' as returned by \code{\link{get_xg3}}, \emph{or} from a list with the outputs
+#' of \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}. Conditions
+#' can be specified for each of the summary statistics returned by
 #' \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}.
-#' Conditions can be specified for each of the summary statistics returned
-#' by \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}.
 #'
 #' \code{selectlocs_xg3()} separately runs \code{eval_xg3_avail()} and
-#' \code{eval_xg3_series()} on the input (\code{data}) if the latter
-#' conforms to the output of \code{\link{get_xg3}}.
-#' See the documentation of
-#' \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}
-#' to learn more about how an 'XG3 variable'
-#' and an 'XG3 series' are defined, and about the available summary statistics.
-#' Each condition for evaluation + selection of locations
-#' is specific to an XG3 \emph{variable}, which can also be
-#' the level 'combined'.
-#' Hence, the result will depend both on the XG3 \emph{types} (HG3, LG3 and/or
-#' VG3) for which statistics have been computed (specified by \code{xg3_type}),
-#' and on the conditions, specified by \code{conditions}.
-#' See the devoted section on the \code{conditions} data frame.
+#' \code{eval_xg3_series()} on the input (\code{data}) if the latter conforms to
+#' the output of \code{\link{get_xg3}}. See the documentation of
+#' \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}} to learn more
+#' about how an 'XG3 variable' and an 'XG3 series' are defined, and about the
+#' available summary statistics. Each condition for evaluation + selection of
+#' locations is specific to an XG3 \emph{variable}, which can also be the level
+#' 'combined'. Hence, the result will depend both on the XG3 \emph{types} (HG3,
+#' LG3 and/or VG3) for which statistics have been computed (specified by
+#' \code{xg3_type}), and on the conditions, specified by \code{conditions}. See
+#' the devoted section on the \code{conditions} data frame.
 #'
 #' Only locations are returned:
 #' \itemize{
@@ -35,48 +31,44 @@
 #' }
 #' }
 #' As the conditions imposed by the \code{conditions} data frame are always
-#' evaluated as a
-#' required combination of conditions ('and'), the user must make different
-#' calls to \code{selectlocs_xg3()}
-#' if different sets of conditions are to be allowed ('or').
+#' evaluated as a required combination of conditions ('and'), the user must make
+#' different calls to \code{selectlocs_xg3()} if different sets of conditions
+#' are to be allowed ('or').
 #'
 #' Regarding conditions that evaluate XG3 \emph{series}, it is taken into
-#' account that one location can have multiple series for the same XG3
-#' variable.
+#' account that one location can have multiple series for the same XG3 variable.
 #' When the user provides one or more conditions for the series of a specific
 #' XG3 variable, the condition(s) are regarded as fulfilled ('condition met')
-#' when \strong{at least one} series is present of that XG3 variable
-#' for which \strong{all} those conditions are met.
+#' when \strong{at least one} series is present of that XG3 variable for which
+#' \strong{all} those conditions are met.
 #'
 #' \code{selectlocs_xg3()} joins the long-formatted results of
-#' \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}
-#' with the \code{conditions} data frame in order to evaluate the conditions.
-#' Often, this join in itself already leads to dropping specific
-#' combinations of \code{loc_code} and \code{xg3_variable}.
-#' At least the locations that are completely dropped in this step are reported
-#' when \code{verbose = TRUE}.
+#' \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}} with the
+#' \code{conditions} data frame in order to evaluate the conditions. Often, this
+#' join in itself already leads to dropping specific combinations of
+#' \code{loc_code} and \code{xg3_variable}. At least the locations that are
+#' completely dropped in this step are reported when \code{verbose = TRUE}.
 #'
 #' For larger datasets \code{eval_xg3_series()} can take quite some time,
 #' whereas the user may want to repeatedly try different sets of conditions
-#' until a satisfying selection of locations is returned.
-#' However the output of both \code{eval_xg3_avail()} and
-#' \code{eval_xg3_series()} will not change as long as the data and the chosen
-#' values of \code{max_gap} and \code{min_dur} are not altered.
-#' For that reason, the user can also prepare a list object with the
-#' respective results of \code{eval_xg3_avail()} and \code{eval_xg3_series()},
-#' which must be named as \code{"avail"} and \code{"ser"}, respectively.
-#' This list can instead be used as data-input, and in that case
-#' \code{xg3_type}, \code{max_gap} and \code{min_dur} are not needed
-#' (they will be ignored).
+#' until a satisfying selection of locations is returned. However the output of
+#' both \code{eval_xg3_avail()} and \code{eval_xg3_series()} will not change as
+#' long as the data and the chosen values of \code{max_gap} and \code{min_dur}
+#' are not altered. For that reason, the user can also prepare a list object
+#' with the respective results of \code{eval_xg3_avail()} and
+#' \code{eval_xg3_series()}, which must be named as \code{"avail"} and
+#' \code{"ser"}, respectively. This list can instead be used as data-input, and
+#' in that case \code{xg3_type}, \code{max_gap} and \code{min_dur} are not
+#' needed (they will be ignored).
 #'
-#' @section Specification of the conditions data frame:
-#' Conditions can be specified for each of the summary statistics returned
-#' by \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}.
-#' Consequently, XG3 availability conditions and
-#' XG3 series conditions can be distinguished.
+#' @section Specification of the conditions data frame: Conditions can be
+#'   specified for each of the summary statistics returned by
+#'   \code{\link{eval_xg3_avail}} and \code{\link{eval_xg3_series}}.
+#'   Consequently, XG3 availability conditions and XG3 series conditions can be
+#'   distinguished.
 #'
-#' The \code{conditions} parameter takes a data frame that must have the
-#' following columns:
+#'   The \code{conditions} parameter takes a data frame that must have the
+#'   following columns:
 #' \describe{
 #' \item{\code{xg3_variable}}{One of: \code{"combined","lg3_lcl","lg3_ost",
 #' "vg3_lcl",
@@ -95,13 +87,11 @@
 #' }
 #' }
 #'
-#' Each condition is one row of the data frame.
-#' The data frame should have at least one, and may have many.
-#' Each combination of \code{xg3_variable} and \code{statistic} must be
-#' unique.
-#' Conditions on XG3 variables, absent from \code{data} or not implied by
-#' \code{xg3_type}, will be dropped without warning.
-#' Hence, it is up to the user to do sensible things.
+#'   Each condition is one row of the data frame. The data frame should have at
+#'   least one, and may have many. Each combination of \code{xg3_variable} and
+#'   \code{statistic} must be unique. Conditions on XG3 variables, absent from
+#'   \code{data} or not implied by \code{xg3_type}, will be dropped without
+#'   warning. Hence, it is up to the user to do sensible things.
 #'
 #' The possible statistics for XG3 availability conditions are: \emph{nryears,
 #' firstyear, lastyear}.
@@ -110,51 +100,40 @@
 #' ser_nryears, ser_rel_nryears, ser_firstyear, ser_lastyear,
 #' ser_pval_uniform, ser_mean, ser_sd, ser_se_6y, ser_rel_sd_lcl,
 #' ser_rel_se_6y_lcl}. The last six are not defined for the XG3 variable
-#' 'combined', and the last two are only defined for variables with a local
-#' vertical CRS.
+#'   'combined', and the last two are only defined for variables with a local
+#'   vertical CRS.
 #'
-#' @param data Either an object returned by \code{\link{get_xg3}},
-#' or a named list of two tibbles: \code{"avail"} and \code{"ser"}.
-#' In the latter case, \code{"avail"} must be the output of
-#' \code{\link{eval_xg3_avail}} and \code{"ser"} must be the output of
-#' \code{\link{eval_xg3_series}}, whereby each function was applied to the same
-#' dataset and used the same setting for the \code{xg3_type} argument.
-#' See Details.
-#' @param xg3_type Only relevant
-#' when data is an object formatted as returned by
-#' \code{\link{get_xg3}}.
-#' In that case, must be a character vector of length 1, 2 or 3,
-#' which will default to \code{"L"} if not specified.
-#' Defines the types of XG3 which are taken from \code{data} for the
-#' \code{eval_xg3_xxx()} functions.
-#' Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
-#' Together with the available variables in \code{data},
-#' \code{xg3_type} determines the meaning of the variable \code{"combined"}.
-#' @param conditions A data frame.
-#' See the devoted section below.
-#' @param verbose Logical.
-#' If \code{TRUE}, give feedback on dropped locations because of
-#' (specific) unused conditions and other 'mismatch' reasons.
-#' @param list Logical.
-#' If \code{FALSE} (the default), the function only returns the end-result
-#' (a tibble with selected location codes).
-#' If \code{TRUE}, the function returns a list with the end-result plus useful
-#' intermediate results (see Value).
+#' @param data Either an object returned by \code{\link{get_xg3}}, or a named
+#'   list of two tibbles: \code{"avail"} and \code{"ser"}. In the latter case,
+#'   \code{"avail"} must be the output of \code{\link{eval_xg3_avail}} and
+#'   \code{"ser"} must be the output of \code{\link{eval_xg3_series}}, whereby
+#'   each function was applied to the same dataset and used the same setting for
+#'   the \code{xg3_type} argument. See Details.
+#' @param xg3_type Only relevant when data is an object formatted as returned by
+#'   \code{\link{get_xg3}}. In that case, must be a character vector of length
+#'   1, 2 or 3, which will default to \code{"L"} if not specified. Defines the
+#'   types of XG3 which are taken from \code{data} for the \code{eval_xg3_xxx()}
+#'   functions. Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or
+#'   \code{"V"}. Together with the available variables in \code{data},
+#'   \code{xg3_type} determines the meaning of the variable \code{"combined"}.
+#' @param conditions A data frame. See the devoted section below.
+#' @param verbose Logical. If \code{TRUE}, give feedback on dropped locations
+#'   because of (specific) unused conditions and other 'mismatch' reasons.
+#' @param list Logical. If \code{FALSE} (the default), the function only returns
+#'   the end-result (a tibble with selected location codes). If \code{TRUE}, the
+#'   function returns a list with the end-result plus useful intermediate
+#'   results (see Value).
 #'
 #' @inheritParams extract_xg3_series
 #'
-#' @return
-#' If \code{list = FALSE}: a tibble with one column \code{loc_code} that
+#' @return If \code{list = FALSE}: a tibble with one column \code{loc_code} that
 #' provides the locations selected by the conditions.
 #'
 #' If \code{list = TRUE}: a list of tibbles that extends the previous end-result
-#' with intermediate results.
-#' The below elements nrs. 2 and 3 are only given when at least one XG3
-#' availability
-#' condition was given, nrs. 4, 5 and 6 only when at least one XG3 series
-#' condition was given,
-#' and nr. 7 is only returned when both types of condition were given.
-#' All list elements are named:
+#' with intermediate results. The below elements nrs. 2 and 3 are only given
+#' when at least one XG3 availability condition was given, nrs. 4, 5 and 6 only
+#' when at least one XG3 series condition was given, and nr. 7 is only returned
+#' when both types of condition were given. All list elements are named:
 #' \enumerate{
 #' \item{\code{combined_result_filtered}}:
 #' the end-result, same as given by \code{list = FALSE}.
@@ -237,8 +216,7 @@
 #' }
 #' }
 #'
-#' @seealso
-#' \code{\link{eval_xg3_avail}}, \code{\link{eval_xg3_series}}
+#' @seealso \code{\link{eval_xg3_avail}}, \code{\link{eval_xg3_series}}
 #'
 #' @family functions to select locations
 #'
@@ -303,37 +281,12 @@
 #'
 #' @export
 #' @importFrom rlang .data
-#' @importFrom assertthat
-#' assert_that
-#' is.flag
-#' noNA
-#' @importFrom stringr
-#' str_detect
-#' @importFrom tidyr
-#' gather
-#' complete
-#' nesting
-#' @importFrom dplyr
-#' %>%
-#' tribble
-#' tibble
-#' count
-#' distinct
-#' inner_join
-#' right_join
-#' anti_join
-#' semi_join
-#' pull
-#' mutate
-#' group_by
-#' ungroup
-#' summarise
-#' arrange
-#' filter
-#' select
-#' rename
-#' rowwise
-#' n
+#' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom stringr str_detect
+#' @importFrom tidyr gather complete nesting
+#' @importFrom dplyr %>% tribble tibble count distinct inner_join right_join
+#'   anti_join semi_join pull mutate group_by ungroup summarise arrange filter
+#'   select rename rowwise n
 selectlocs_xg3 <- function(data,
                            xg3_type = NULL,
                            max_gap = NULL,
@@ -769,24 +722,20 @@ selectlocs_xg3 <- function(data,
 
 #' Select locations based on hydrochemical data properties
 #'
-#' Select locations that comply with user-specified conditions,
-#' from a dataset as returned by either \code{\link{get_chem}} or
+#' Select locations that comply with user-specified conditions, from a dataset
+#' as returned by either \code{\link{get_chem}} or \code{\link{eval_chem}}.
+#' Conditions can be specified for each of the summary statistics returned by
 #' \code{\link{eval_chem}}.
-#' Conditions can be specified for each of the summary statistics returned
-#' by \code{\link{eval_chem}}.
 #'
 #' \code{selectlocs_chem()} separately runs \code{eval_chem} on the input
-#' (\code{data}) if \code{data_type = "data"}.
-#' See the documentation of
-#' \code{\link{eval_chem}}
-#' to learn more about the available summary statistics.
-#' Each condition for evaluation + selection of locations
-#' is specific to a chemical \emph{variable}, which can also be
-#' the level 'combined'.
-#' Hence, the result will depend both on the \emph{chemical variables} for
-#' which statistics have been computed (specified by \code{chem_var}),
-#' and on the conditions, specified by \code{conditions}.
-#' See the devoted section on the \code{conditions} data frame.
+#' (\code{data}) if \code{data_type = "data"}. See the documentation of
+#' \code{\link{eval_chem}} to learn more about the available summary statistics.
+#' Each condition for evaluation + selection of locations is specific to a
+#' chemical \emph{variable}, which can also be the level 'combined'. Hence, the
+#' result will depend both on the \emph{chemical variables} for which statistics
+#' have been computed (specified by \code{chem_var}), and on the conditions,
+#' specified by \code{conditions}. See the devoted section on the
+#' \code{conditions} data frame.
 #'
 #' Only locations are returned:
 #' \itemize{
@@ -801,39 +750,34 @@ selectlocs_xg3 <- function(data,
 #' }
 #' }
 #' As the conditions imposed by the \code{conditions} data frame are always
-#' evaluated as a
-#' required combination of conditions ('and'), the user must make different
-#' calls to \code{selectlocs_chem()}
-#' if different sets of conditions are to be allowed ('or').
+#' evaluated as a required combination of conditions ('and'), the user must make
+#' different calls to \code{selectlocs_chem()} if different sets of conditions
+#' are to be allowed ('or').
 #'
 #' If \code{data_type = "data"}, \code{selectlocs_chem()} calls
-#' \code{\link{eval_chem}}.
-#' Its \code{type} and \code{uniformity_test} arguments are derived from the
-#' user-specified \code{conditions} data frame.
+#' \code{\link{eval_chem}}. Its \code{type} and \code{uniformity_test} arguments
+#' are derived from the user-specified \code{conditions} data frame.
 #'
 #' \code{selectlocs_chem()} joins the long-formatted results of
-#' \code{\link{eval_chem}}
-#' with the \code{conditions} data frame in order to evaluate the conditions.
-#' Often, this join in itself already leads to dropping specific
-#' combinations of \code{loc_code} and \code{chem_variable}.
-#' At least the locations that are completely dropped in this step are reported
-#' when \code{verbose = TRUE}.
+#' \code{\link{eval_chem}} with the \code{conditions} data frame in order to
+#' evaluate the conditions. Often, this join in itself already leads to dropping
+#' specific combinations of \code{loc_code} and \code{chem_variable}. At least
+#' the locations that are completely dropped in this step are reported when
+#' \code{verbose = TRUE}.
 #'
-#' The user may want to repeatedly try different sets of conditions
-#' until a satisfying selection of locations is returned.
-#' However the output of \code{\link{eval_chem}}
-#' will not change as long as the data are not altered.
-#' For that reason, the user can also feed the
-#' result of \code{eval_chem()} to the \code{data} argument,
-#' with \code{data_type = "summary"}.
-#' In that case the argument \code{chem_var} is ignored.
+#' The user may want to repeatedly try different sets of conditions until a
+#' satisfying selection of locations is returned. However the output of
+#' \code{\link{eval_chem}} will not change as long as the data are not altered.
+#' For that reason, the user can also feed the result of \code{eval_chem()} to
+#' the \code{data} argument, with \code{data_type = "summary"}. In that case the
+#' argument \code{chem_var} is ignored.
 #'
-#' @section Specification of the conditions data frame:
-#' Conditions can be specified for each of the summary statistics returned
-#' by \code{\link{eval_chem}}.
+#' @section Specification of the conditions data frame: Conditions can be
+#'   specified for each of the summary statistics returned by
+#'   \code{\link{eval_chem}}.
 #'
-#' The \code{conditions} parameter takes a data frame that must have the
-#' following columns:
+#'   The \code{conditions} parameter takes a data frame that must have the
+#'   following columns:
 #' \describe{
 #' \item{\code{chem_variable}}{Can be any chemical variable code,
 #' including \code{"combined"}.}
@@ -858,49 +802,39 @@ selectlocs_xg3 <- function(data,
 #' }
 #' }
 #'
-#' Each condition is one row of the data frame.
-#' The data frame should have at least one, and may have many.
-#' Each combination of \code{chem_variable} and \code{statistic} must be
-#' unique.
-#' Conditions on chemical variables, absent from \code{data} or not implied by
-#' \code{chem_var}, will be dropped without warning.
-#' Hence, it is up to the user to do sensible things.
+#'   Each condition is one row of the data frame. The data frame should have at
+#'   least one, and may have many. Each combination of \code{chem_variable} and
+#'   \code{statistic} must be unique. Conditions on chemical variables, absent
+#'   from \code{data} or not implied by \code{chem_var}, will be dropped without
+#'   warning. Hence, it is up to the user to do sensible things.
 #'
-#' The possible statistics for conditions on chemical variables are documented
-#' by \code{\link{eval_chem}}.
+#'   The possible statistics for conditions on chemical variables are documented
+#'   by \code{\link{eval_chem}}.
 #'
-#' @param data An object as returned by either \code{\link{get_chem}}
-#' (the object corresponds to real 'data') or
-#' \code{\link{eval_chem}} (the object contains summary values).
-#' @param chem_var Only relevant
-#' when data is an object formatted as returned by
-#' \code{\link{get_chem}}.
-#' Is a character vector to select chemical variables for which
-#' statistics will be computed.
-#' To specify chemical variables, use the
-#' codes from the column \code{chem_variable} in \code{data}.
-#' Together with the available variables in \code{data},
-#' \code{chem_var} determines the meaning of the variable \code{"combined"}.
-#' @param conditions A data frame.
-#' See the devoted section below.
-#' @param verbose Logical.
-#' If \code{TRUE}, give feedback on dropped locations because of
-#' (specific) unused conditions and other 'mismatch' reasons.
-#' @param list Logical.
-#' If \code{FALSE} (the default), the function only returns the end-result
-#' (a tibble with selected location codes).
-#' If \code{TRUE}, the function returns a list with the end-result plus useful
-#' intermediate results (see Value).
+#' @param data An object as returned by either \code{\link{get_chem}} (the
+#'   object corresponds to real 'data') or \code{\link{eval_chem}} (the object
+#'   contains summary values).
+#' @param chem_var Only relevant when data is an object formatted as returned by
+#'   \code{\link{get_chem}}. Is a character vector to select chemical variables
+#'   for which statistics will be computed. To specify chemical variables, use
+#'   the codes from the column \code{chem_variable} in \code{data}. Together
+#'   with the available variables in \code{data}, \code{chem_var} determines the
+#'   meaning of the variable \code{"combined"}.
+#' @param conditions A data frame. See the devoted section below.
+#' @param verbose Logical. If \code{TRUE}, give feedback on dropped locations
+#'   because of (specific) unused conditions and other 'mismatch' reasons.
+#' @param list Logical. If \code{FALSE} (the default), the function only returns
+#'   the end-result (a tibble with selected location codes). If \code{TRUE}, the
+#'   function returns a list with the end-result plus useful intermediate
+#'   results (see Value).
 #'
 #' @inheritParams selectlocs
 #'
-#' @return
-#' If \code{list = FALSE}: a tibble with one column \code{loc_code} that
+#' @return If \code{list = FALSE}: a tibble with one column \code{loc_code} that
 #' provides the locations selected by the conditions.
 #'
 #' If \code{list = TRUE}: a list of tibbles that extends the previous end-result
-#' with intermediate results.
-#' All list elements are named:
+#' with intermediate results. All list elements are named:
 #' \enumerate{
 #' \item{\code{combined_result_filtered}}:
 #' the end-result, same as given by \code{list = FALSE}.
@@ -919,8 +853,7 @@ selectlocs_xg3 <- function(data,
 #' per location.
 #' }
 #'
-#' @seealso
-#' \code{\link{eval_chem}}
+#' @seealso \code{\link{eval_chem}}
 #'
 #' @family functions to select locations
 #'
@@ -990,12 +923,8 @@ selectlocs_xg3 <- function(data,
 #'
 #' @export
 #' @importFrom rlang .data
-#' @importFrom assertthat
-#' assert_that
-#' is.flag
-#' noNA
-#' @importFrom dplyr
-#' %>%
+#' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom dplyr %>%
 selectlocs_chem <- function(data,
                             data_type = c("data", "summary"),
                             chem_var = c(
@@ -1083,14 +1012,13 @@ selectlocs_chem <- function(data,
 
 #' Select locations based on summary statistics (generic function)
 #'
-#' Generic (helper) function to select locations that comply with
-#' user-specified conditions,
-#' from either a dataset (data frame or lazy object) with the variable's values or
-#' from a data frame with summary statistics.
+#' Generic (helper) function to select locations that comply with user-specified
+#' conditions, from either a dataset (data frame or lazy object) with the
+#' variable's values or from a data frame with summary statistics.
 #'
-#' The result of the evaluation function (\code{eval_fun}) must produce a
-#' data frame, formatted as declared by the second bullet under the
-#' \code{data} argument.
+#' The result of the evaluation function (\code{eval_fun}) must produce a data
+#' frame, formatted as declared by the second bullet under the \code{data}
+#' argument.
 #'
 #' @param data Either:
 #' \itemize{
@@ -1104,16 +1032,13 @@ selectlocs_chem <- function(data,
 #' All other columns should have the name of the summary statistic, and hold
 #' its value for \code{loc_code} x variable.
 #' }
-#' @param data_type A string.
-#' Either \code{"data"} (the default) or \code{"summary"}, in correspondence
-#' with the choice made for \code{data}.
+#' @param data_type A string. Either \code{"data"} (the default) or
+#'   \code{"summary"}, in correspondence with the choice made for \code{data}.
 #' @param eval_fun The evaluation function to be run, if \code{data} is a
-#' dataset.
+#'   dataset.
 #' @param eval_args The arguments of the evaluation function, as a named list,
-#' if \code{data} is a dataset.
-#' @param conditions A data frame.
-#' It must have the
-#' following columns:
+#'   if \code{data} is a dataset.
+#' @param conditions A data frame. It must have the following columns:
 #' \describe{
 #' \item{\code{variable}}{Can be any variable,
 #' including \code{"combined"}.}
@@ -1131,24 +1056,19 @@ selectlocs_chem <- function(data,
 #' }
 #' }
 #'
-#' Each condition is one row of the data frame.
-#' The data frame should have at least one, and may have many.
-#' Each combination of \code{chem_variable} and \code{statistic} must be
-#' unique.
-#' Conditions on chemical variables, absent from \code{data} or not implied by
-#' \code{chem_var}, will be dropped without warning.
-#' Hence, it is up to the user to do sensible things.
-#' @param verbose Logical.
-#' If \code{TRUE}, give feedback on dropped locations because of
-#' (specific) unused conditions and other 'mismatch' reasons.
-#' @param list Logical.
-#' If \code{FALSE} (the default), the function only returns the end-result
-#' (a tibble with selected location codes).
-#' If \code{TRUE}, the function returns a list with the end-result plus useful
-#' intermediate results.
+#'   Each condition is one row of the data frame. The data frame should have at
+#'   least one, and may have many. Each combination of \code{chem_variable} and
+#'   \code{statistic} must be unique. Conditions on chemical variables, absent
+#'   from \code{data} or not implied by \code{chem_var}, will be dropped without
+#'   warning. Hence, it is up to the user to do sensible things.
+#' @param verbose Logical. If \code{TRUE}, give feedback on dropped locations
+#'   because of (specific) unused conditions and other 'mismatch' reasons.
+#' @param list Logical. If \code{FALSE} (the default), the function only returns
+#'   the end-result (a tibble with selected location codes). If \code{TRUE}, the
+#'   function returns a list with the end-result plus useful intermediate
+#'   results.
 #'
-#' @return
-#' If \code{list = FALSE}: a tibble with one column \code{loc_code} that
+#' @return If \code{list = FALSE}: a tibble with one column \code{loc_code} that
 #' provides the locations selected by the conditions.
 #'
 #' If \code{list = TRUE}: a list of tibbles that extends the previous end-result
@@ -1157,33 +1077,10 @@ selectlocs_chem <- function(data,
 #' @keywords internal
 #'
 #' @importFrom rlang .data
-#' @importFrom assertthat
-#' assert_that
-#' is.flag
-#' noNA
-#' is.string
-#' has_args
-#' @importFrom tidyr
-#' gather
-#' complete
-#' nesting
-#' @importFrom dplyr
-#' %>%
-#' count
-#' distinct
-#' inner_join
-#' right_join
-#' anti_join
-#' semi_join
-#' pull
-#' mutate
-#' group_by
-#' summarise
-#' arrange
-#' filter
-#' select
-#' rename
-#' n
+#' @importFrom assertthat assert_that is.flag noNA is.string has_args
+#' @importFrom tidyr gather complete nesting
+#' @importFrom dplyr %>% count distinct inner_join right_join anti_join
+#'   semi_join pull mutate group_by summarise arrange filter select rename n
 selectlocs <- function(data,
                        data_type = c("data", "summary"),
                        eval_fun = NULL,
