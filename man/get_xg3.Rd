@@ -53,8 +53,9 @@ brought into local R memory as a tibble. Defaults to \code{FALSE}.}
 
 \item{drop_all_na}{Logical. If \code{TRUE}, rows where all XG3 values
 (\code{lg3}, \code{hg3}, and \code{vg3}) are \code{NA} are filtered out of
-the result. Defaults to \code{FALSE} to preserve all requested hydroyears
-and locations.}
+the result. Defaults to \code{FALSE} to preserve all hydroyears with water
+level records even when all XG3 values are NA. Note: Hydroyears with no
+water level records are never included.}
 
 \item{debug}{Logical. If \code{TRUE}, returns debug messages or objects.
 Defaults to \code{FALSE}.}

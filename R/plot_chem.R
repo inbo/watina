@@ -34,14 +34,15 @@
 #' The \code{vanwirdum_data} dataframe as a
 #' \code{\link[tibble:tbl_df-class]{tibble}}
 #'
+#' @importFrom dplyr tribble
+#'
 #' @keywords internal
 #'
 #' @references Van Wirdum, Geert (1991). Vegetation and hydrology of floating
 #' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
 #' \href{https://publicwiki.deltares.nl/display/VWD/Home}{dataset available
 #' here}
-
-vanwirdum_data <- tibble::tribble(
+vanwirdum_data <- tribble(
   ~ec25, ~ir,
   63.30956284, 94.31498538,
   35.93464093, 93.32760382,
@@ -90,8 +91,8 @@ vanwirdum_data <- tibble::tribble(
 
 #' Plots hydrochemistry: Van Wirdum diagram
 #'
-#' Creates the background of a Van Wirdum diagram for water samples
-#' in ggplot (ionic ratio - log electrical conductivity).
+#' Creates the background of a Van Wirdum diagram for water samples in ggplot
+#' (ionic ratio - log electrical conductivity).
 #'
 #' Creates a ggplot object of the ionic ratio (IR) as Y axis against the
 #' electrical conductivity at 25°C (EC25) as X axis and adds reference data.
@@ -119,7 +120,8 @@ vanwirdum_data <- tibble::tribble(
 #'
 #' Compute the ionic ratio as follows:
 #'
-#' ionic ratio = [Ca2+] / ([Ca2+] + [Cl-]) with the Ca and Cl concentrations in meq/l
+#' ionic ratio = [Ca2+] / ([Ca2+] + [Cl-]) with the Ca and Cl concentrations in
+#' meq/l
 #'
 #' \preformatted{
 #' mydata <- mydata \%>\%
@@ -128,15 +130,15 @@ vanwirdum_data <- tibble::tribble(
 #'   mutate(ir = Ca_meq/(Ca_meq + Cl_meq)) # ir without units (0-1)
 #' }
 #'
-#'   or use the helper function \code{\link{calculate_ir}} to calculate the ionic
-#'   ratio based on the Ca and Cl concentrations obtained through
-#'   the \code{\link{get_chem}} function.
+#' or use the helper function \code{\link{calculate_ir}} to calculate the ionic
+#' ratio based on the Ca and Cl concentrations obtained through the
+#' \code{\link{get_chem}} function.
 #'
 #'
 #' @section Reference data on the Van Wirdum diagram:
 #'
-#' The reference points are benchmark water samples (defined in Van Wirdum 1991)
-#' for:
+#'   The reference points are benchmark water samples (defined in Van Wirdum
+#'   1991) for:
 #'
 #' \enumerate{
 #'  \item{\strong{lithotrophic water LI}: a calcium-bicarbonate type of water, usually
@@ -149,38 +151,36 @@ vanwirdum_data <- tibble::tribble(
 #'  \item{\strong{molunotrophic water RH}: polluted water as presently found in the Rhine.}
 #'  }
 #'
-#' You can also show the \strong{mixing contours} between the reference points LI, AT
-#' and TH as curves or as lines. The curved contour encloses the
-#' plotting area of all possible, simple mixtures of the reference water
-#' samples LI-ANG (a relatively calcium-rich groundwater sample ), AT-WTV
-#' (a precipitation sample caught in a relatively unpolluted inland area of
-#' The Netherlands) and TH-N70 (a representative analysis from the North Sea
-#' monitoring program, 70 km from the coast).
-#' Most water analyses plot within the area bounded by the (curved) lines
-#' LI-AT-TH-LI.
+#'   You can also show the \strong{mixing contours} between the reference points
+#'   LI, AT and TH as curves or as lines. The curved contour encloses the
+#'   plotting area of all possible, simple mixtures of the reference water
+#'   samples LI-ANG (a relatively calcium-rich groundwater sample ), AT-WTV (a
+#'   precipitation sample caught in a relatively unpolluted inland area of The
+#'   Netherlands) and TH-N70 (a representative analysis from the North Sea
+#'   monitoring program, 70 km from the coast). Most water analyses plot within
+#'   the area bounded by the (curved) lines LI-AT-TH-LI.
 #'
 #' @encoding UTF-8
 #'
-#' @param ir_format The format for the ionic ratio, can be "decimal" (default, axis 0-1)
-#' or "pct" (\%, axis 0-100). Choose this parameter according to the format used
-#' in your dataset.
-#' @param ec25_unit The units for the electrical conductivity at 25°C:
-#' can be "micro_cm" (default, µS/cm) or "milli_m" (mS/m).
-#' Choose this parameter according to the unit used in your dataset.
+#' @param ir_format The format for the ionic ratio, can be "decimal" (default,
+#'   axis 0-1) or "pct" (\%, axis 0-100). Choose this parameter according to the
+#'   format used in your dataset.
+#' @param ec25_unit The units for the electrical conductivity at 25°C: can be
+#'   "micro_cm" (default, µS/cm) or "milli_m" (mS/m). Choose this parameter
+#'   according to the unit used in your dataset.
 #' @param contour Draw the mixing contours of the reference water samples,
-#' "segment" (default), "curve" or "none" (do not draw).
+#'   "segment" (default), "curve" or "none" (do not draw).
 #' @param lang Which language should be used for the legend, "en" (English,
-#' default) or "nl" (Dutch)?
+#'   default) or "nl" (Dutch)?
 #' @param rhine Should the reference point for Rhine be shown? FALSE (default)
-#' or TRUE.
+#'   or TRUE.
 #'
-#' @return
-#' A ggplot object with the Van Wirdum IR-log EC25 diagram, the reference points
-#' for the water types LI-AT-TH and the mixing contours between the reference
-#' water samples LI-AT-TH.
+#' @return A ggplot object with the Van Wirdum IR-log EC25 diagram, the
+#' reference points for the water types LI-AT-TH and the mixing contours between
+#' the reference water samples LI-AT-TH.
 #'
 #' @references Van Wirdum, Geert (1991). Vegetation and hydrology of floating
-#' rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
+#'   rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
 #'
 #' @examples
 #' \dontrun{
@@ -216,14 +216,8 @@ vanwirdum_data <- tibble::tribble(
 #' }
 #'
 #' @export
-#' @importFrom rlang
-#' .data
-#' @importFrom dplyr
-#' %>%
-#' filter
-#' mutate
-#'
-
+#' @importFrom rlang .data
+#' @importFrom dplyr %>% filter mutate
 ggplot_vanwirdum_background <- function(ir_format = c("decimal", "pct"),
                                         ec25_unit = c("micro_cm", "milli_m"),
                                         contour = c("segment", "curve", "none"),
