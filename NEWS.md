@@ -18,6 +18,8 @@ This release is focused on setting up a testing infrastructure (in preparation f
 
 - Update function dependencies across documentation, `DESCRIPTION`, and `NAMESPACE`.
 - Apply code formatting using air and reflow comment styling (add commits to `git-blame-ignore` to keep git blame history clean).
+- Reflow Roxygen comments to satisfy formatting requirements of {roxygen2} 8.1.1.
+- Apply minor upgrades and improvements to GitHub Action workflows.
 
 # watina 0.5.0 (2026-04-01)
 
