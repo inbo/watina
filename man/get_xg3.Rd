@@ -10,9 +10,11 @@ get_xg3(
   startyear,
   endyear = year(now()) - 1,
   vert_crs = c("local", "ostend", "both"),
-  truncated = TRUE,
-  with_estimated = TRUE,
-  collect = FALSE
+  truncated = FALSE,
+  with_estimated = FALSE,
+  collect = FALSE,
+  drop_all_na = FALSE,
+  debug = FALSE
 )
 }
 \arguments{
@@ -26,7 +28,7 @@ returned. Typically, this will be the object returned by
 
 \item{startyear}{First hydroyear of the timeframe.}
 
-\item{endyear}{Last hydroyear of the timeframe.}
+\item{endyear}{Last hydroyear of the timeframe. Defaults to the previous calendar year.}
 
 \item{vert_crs}{A string, defining the 1-dimensional vertical coordinate
 reference system (CRS) of the XG3 water levels. Either \code{"local"} (the
@@ -38,19 +40,28 @@ height} (EPSG \href{https://epsg.io/5710}{5710}), also known as 'TAW' or
 'DNG'), or \code{"both"}, where the values for both CRS options are
 returned. The units are always meters.}
 
-\item{truncated}{Logical. If \code{TRUE} (the default), the XG3 values are
-calculated after having set the underlying water level measurements that
-are above soil surface level to the soil surface level itself (which is
-zero in the case of the local CRS).}
+\item{truncated}{Logical. If \code{TRUE}, the XG3 values are calculated
+after having capped the underlying water level measurements that are above
+soil surface level to the soil surface level itself (zero in the local CRS).
+Defaults to \code{FALSE}.}
 
-\item{with_estimated}{Logical. If \code{TRUE} (the default), the XG3 values
-calculations also use estimated (i.e. non-measured) water level data that
-are available in the data warehouse.}
+\item{with_estimated}{Logical. If \code{TRUE}, the XG3 calculation includes
+estimated or simulated (e.g. Menyanthes model) water level data alongside
+raw measurements. Defaults to \code{FALSE}.}
 
 \item{collect}{Should the data be retrieved as a local tibble? If
 \code{FALSE} (the default), a \code{tbl_lazy} object is returned (lazy
 query). Hence the result can be further built upon before retrieving data
 with \code{\link[dplyr:compute]{collect()}}.}
+
+\item{drop_all_na}{Logical. If \code{TRUE}, rows where all XG3 values
+(\code{lg3}, \code{hg3}, and \code{vg3}) are \code{NA} are filtered out of
+the result. Defaults to \code{FALSE} to preserve all hydroyears with water
+level records even when all XG3 values are NA. Note: Hydroyears with no
+water level records are never included.}
+
+\item{debug}{Logical. If \code{TRUE}, returns debug messages or objects.
+Defaults to \code{FALSE}.}
 }
 \value{
 By default, a \code{tbl_lazy} object. With \code{collect = TRUE}, a
@@ -69,10 +80,6 @@ to a specified timeframe.
 \details{
 The timeframe is a selection interval between a given first and last
 hydroyear.
-
-Note: the arguments \code{truncated} and \code{with_estimated} are currently
-not used. Currently, non-truncated values are returned, with usage of
-estimated values.
 
 (TO BE ADDED: What are XG3 values? What is a hydroyear? Why truncate, and why
 truncate by default? When to choose which \code{vert_crs}?)

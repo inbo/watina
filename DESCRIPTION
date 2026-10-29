@@ -29,7 +29,8 @@ Imports:
     rlang,
     stringr,
     stats,
-    tidyr
+    tidyr,
+    lifecycle
 Suggests:
     DBI,
     ggplot2,

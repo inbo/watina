@@ -1,4 +1,4 @@
-# DOOCUMENTATION GET LOCS ------------------------------------------------------
+# DOCUMENTATION GET LOCS ------------------------------------------------------
 #' Get locations from the data warehouse
 #'
 #' Returns locations (and optionally, observation wells) from the \emph{Watina}
@@ -130,9 +130,9 @@
 #' @param loc_type Type of the location (mainly: the type of measurement
 #'   device). Defaults to \code{"P"}, i.e. only groundwater piezometers are
 #'   returned by default. Can be a vector with multiple selected values.
-#' @param loc_validity Validation status of the location. Can be a vector with
-#'   multiple selected values, which must belong to \code{"VLD"}, \code{"ENT"},
-#'   \code{"DEL"} or \code{"CLD"}. Defaults to \code{c("VLD", "ENT")}.
+#' @param loc_validity Validation status of the location. The new DWH only
+#'   contains records with status \code{"VLD"}. This argument is deprecated and
+#'   will be removed in a future version.
 #' @param loc_vec An optional vector with location codes. If provided, only
 #'   locations are returned that are present in this vector.
 #' @param collect Should the data be retrieved as a local tibble? If
@@ -287,6 +287,7 @@
 #' @importFrom assertthat assert_that is.number is.flag noNA
 #' @importFrom dplyr %>% tbl filter left_join select distinct arrange group_by
 #'   ungroup sql
+#' @importFrom lifecycle deprecated
 # FUNCTION GET LOCS ------------------------------------------------------------
 get_locs <- function(
   con,
@@ -306,10 +307,24 @@ get_locs <- function(
   bbox = NULL,
   area_codes = NULL,
   loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"),
-  loc_validity = c("VLD", "ENT"),
+  loc_validity = "VLD",
   loc_vec = NULL,
   collect = FALSE
 ) {
+  if (!missing(loc_validity) && !identical(loc_validity, "VLD")) {
+    lifecycle::deprecate_warn(
+      when = "1.0.0",
+      what = "get_locs(loc_validity)",
+      details = paste(
+        "The new DWH only contains records with validity status 'VLD'. Your",
+        "input will be ignored. This argument will be removed in a future",
+        "version."
+      )
+    )
+  }
+
+  loc_validity <- "VLD"
+
   assert_that(
     is.numeric(filterdepth_range),
     length(filterdepth_range) == 2,
@@ -373,112 +388,17 @@ get_locs <- function(
     msg = "You specified at least one unknown loc_validity."
   )
 
+  locs <- build_locs_query(
+    con = con,
+    bbox = bbox,
+    area_codes = area_codes,
+    loc_type = loc_type,
+    loc_validity = loc_validity,
+    loc_vec = loc_vec
+  )
+
   min_filterdepth <- filterdepth_range[1]
   max_filterdepth <- filterdepth_range[2]
-
-  locs <-
-    tbl(con, "vwDimMeetpunt") %>%
-    filter(
-      .data$MeetpuntTypeCode %in% loc_type,
-      .data$MeetpuntStatusCode %in% loc_validity
-    ) %>%
-    left_join(
-      tbl(con, "vwDimGebied") %>%
-        select(
-          .data$GebiedWID,
-          .data$GebiedCode,
-          .data$GebiedNaam
-        ),
-      by = "GebiedWID"
-    )
-
-  if (!is.null(loc_vec)) {
-    locs <-
-      locs %>%
-      filter(.data$MeetpuntCode %in% loc_vec)
-  }
-
-  if (!is.null(area_codes)) {
-    locs <-
-      locs %>%
-      filter(.data$GebiedCode %in% area_codes)
-  }
-
-  if (!is.null(bbox)) {
-    bbox_xmin <- unname(bbox["xmin"])
-    bbox_xmax <- unname(bbox["xmax"])
-    bbox_ymin <- unname(bbox["ymin"])
-    bbox_ymax <- unname(bbox["ymax"])
-    locs <-
-      locs %>%
-      filter(
-        .data$MeetpuntXCoordinaat >= bbox_xmin,
-        .data$MeetpuntXCoordinaat <= bbox_xmax,
-        .data$MeetpuntYCoordinaat >= bbox_ymin,
-        .data$MeetpuntYCoordinaat <= bbox_ymax
-      )
-  }
-
-  locs <-
-    locs %>%
-    left_join(
-      tbl(con, "vwDimPeilpunt") %>%
-        filter(
-          .data$PeilpuntStatusCode %in%
-            c(
-              "VLD",
-              "ENT",
-              "CLD"
-            ),
-          .data$PeilpuntOpenbaarheidTypeCode == "PLME",
-          .data$PeilpuntOpenbaarheidCode == "UNKWN"
-        ) %>%
-        mutate(
-          PeilpuntPlaatsing = sql("CAST(PeilpuntPlaatsing AS date)"),
-          PeilpuntStopzetting = sql("CAST(PeilpuntStopzetting AS date)")
-        ),
-      by = "MeetpuntWID"
-    ) %>%
-    mutate(
-      tubelength = ifelse(
-        .data$PeilbuisLengte <= 0,
-        NA,
-        .data$PeilbuisLengte
-      ),
-      filterlength = ifelse(
-        is.na(.data$FilterLengte) | .data$FilterLengte == 0,
-        0.3,
-        .data$FilterLengte
-      ),
-      filterdepth = .data$tubelength -
-        .data$ReferentieNiveauMaaiveld -
-        .data$filterlength / 2,
-      soilsurf_ost = .data$ReferentieNiveauTAW -
-        .data$ReferentieNiveauMaaiveld
-    ) %>%
-    select(
-      loc_wid = .data$MeetpuntWID,
-      loc_code = .data$MeetpuntCode,
-      area_code = .data$GebiedCode,
-      area_name = .data$GebiedNaam,
-      x = .data$MeetpuntXCoordinaat,
-      y = .data$MeetpuntYCoordinaat,
-      loc_validitycode = .data$MeetpuntStatusCode,
-      loc_validity = .data$MeetpuntStatus,
-      loc_typecode = .data$MeetpuntTypeCode,
-      loc_typename = .data$MeetpuntType,
-      obswell_code = .data$PeilpuntCode,
-      obswell_rank = .data$PeilpuntVersie,
-      obswell_statecode = .data$PeilpuntToestandCode,
-      obswell_state = .data$PeilpuntToestandNaam,
-      obswell_installdate = .data$PeilpuntPlaatsing,
-      obswell_stopdate = .data$PeilpuntStopzetting,
-      .data$soilsurf_ost,
-      measuringref_ost = .data$ReferentieNiveauTAW,
-      .data$tubelength,
-      .data$filterlength,
-      .data$filterdepth
-    )
 
   if (filterdepth_guess) {
     locs <-
@@ -698,7 +618,112 @@ get_locs <- function(
   return(locs)
 }
 
-# DOOCUMENTATION GET XG3 -------------------------------------------------------
+build_locs_query <- function(
+  con,
+  bbox,
+  area_codes,
+  loc_type,
+  loc_validity,
+  loc_vec
+) {
+  locs <-
+    tbl(con, "DimMeetpunt") %>%
+    filter(
+      .data$MeetpuntTypeCode %in% loc_type,
+      .data$MeetpuntStatusCode %in% loc_validity
+    ) %>%
+    left_join(
+      tbl(con, "DimGebied") %>%
+        select(
+          .data$GebiedWID,
+          .data$GebiedCode,
+          .data$GebiedNaam
+        ),
+      by = "GebiedWID"
+    )
+
+  if (!is.null(loc_vec)) {
+    locs <-
+      locs %>%
+      filter(.data$MeetpuntCode %in% loc_vec)
+  }
+
+  if (!is.null(area_codes)) {
+    locs <-
+      locs %>%
+      filter(.data$GebiedCode %in% area_codes)
+  }
+
+  if (!is.null(bbox)) {
+    bbox_xmin <- unname(bbox["xmin"])
+    bbox_xmax <- unname(bbox["xmax"])
+    bbox_ymin <- unname(bbox["ymin"])
+    bbox_ymax <- unname(bbox["ymax"])
+    locs <-
+      locs %>%
+      filter(
+        .data$MeetpuntXCoordinaat >= bbox_xmin,
+        .data$MeetpuntXCoordinaat <= bbox_xmax,
+        .data$MeetpuntYCoordinaat >= bbox_ymin,
+        .data$MeetpuntYCoordinaat <= bbox_ymax
+      )
+  }
+
+  locs <-
+    locs %>%
+    left_join(
+      tbl(con, "DimPeilpunt") %>%
+        mutate(
+          PeilpuntPlaatsing = sql("CAST(PeilpuntPlaatsing AS date)"),
+          PeilpuntStopzetting = sql("CAST(PeilpuntStopzetting AS date)")
+        ),
+      by = "MeetpuntWID"
+    ) %>%
+    mutate(
+      tubelength = ifelse(
+        .data$PeilbuisLengte <= 0,
+        NA,
+        .data$PeilbuisLengte
+      ),
+      filterlength = ifelse(
+        is.na(.data$FilterLengte) | .data$FilterLengte == 0,
+        0.3,
+        .data$FilterLengte
+      ),
+      filterdepth = .data$tubelength -
+        .data$ReferentieNiveauMaaiveld -
+        .data$filterlength / 2,
+      soilsurf_ost = .data$ReferentieNiveauTAW -
+        .data$ReferentieNiveauMaaiveld
+    ) %>%
+    select(
+      loc_wid = .data$MeetpuntWID,
+      loc_code = .data$MeetpuntCode,
+      area_code = .data$GebiedCode,
+      area_name = .data$GebiedNaam,
+      x = .data$MeetpuntXCoordinaat,
+      y = .data$MeetpuntYCoordinaat,
+      loc_validitycode = .data$MeetpuntStatusCode,
+      loc_validity = .data$MeetpuntStatus,
+      loc_typecode = .data$MeetpuntTypeCode,
+      loc_typename = .data$MeetpuntType,
+      obswell_code = .data$PeilpuntCode,
+      obswell_rank = .data$PeilpuntVersie,
+      obswell_statecode = .data$PeilpuntToestandCode,
+      obswell_state = .data$PeilpuntToestandNaam,
+      obswell_installdate = .data$PeilpuntPlaatsing,
+      obswell_stopdate = .data$PeilpuntStopzetting,
+      .data$soilsurf_ost,
+      measuringref_ost = .data$ReferentieNiveauTAW,
+      .data$tubelength,
+      .data$filterlength,
+      .data$filterdepth
+    )
+
+  return(locs)
+}
+
+# DOCUMENTATION GET XG3 -------------------------------------------------------
 #' Get XG3 values from the data warehouse
 #'
 #' Returns XG3 values from the \emph{Watina} data warehouse, either as a lazy
@@ -708,10 +733,6 @@ get_locs <- function(
 #' The timeframe is a selection interval between a given first and last
 #' hydroyear.
 #'
-#' Note: the arguments \code{truncated} and \code{with_estimated} are currently
-#' not used. Currently, non-truncated values are returned, with usage of
-#' estimated values.
-#'
 #' (TO BE ADDED: What are XG3 values? What is a hydroyear? Why truncate, and why
 #' truncate by default? When to choose which \code{vert_crs}?)
 #'
@@ -720,7 +741,7 @@ get_locs <- function(
 #'   returned. Typically, this will be the object returned by
 #'   \code{\link{get_locs}}.
 #' @param startyear First hydroyear of the timeframe.
-#' @param endyear Last hydroyear of the timeframe.
+#' @param endyear Last hydroyear of the timeframe. Defaults to the previous calendar year.
 #' @param vert_crs A string, defining the 1-dimensional vertical coordinate
 #'   reference system (CRS) of the XG3 water levels. Either \code{"local"} (the
 #'   default, i.e. returned values are relative to soil surface level, with
@@ -730,13 +751,20 @@ get_locs <- function(
 #'   height} (EPSG \href{https://epsg.io/5710}{5710}), also known as 'TAW' or
 #'   'DNG'), or \code{"both"}, where the values for both CRS options are
 #'   returned. The units are always meters.
-#' @param truncated Logical. If \code{TRUE} (the default), the XG3 values are
-#'   calculated after having set the underlying water level measurements that
-#'   are above soil surface level to the soil surface level itself (which is
-#'   zero in the case of the local CRS).
-#' @param with_estimated Logical. If \code{TRUE} (the default), the XG3 values
-#'   calculations also use estimated (i.e. non-measured) water level data that
-#'   are available in the data warehouse.
+#' @param truncated Logical. If \code{TRUE}, the XG3 values are calculated
+#'   after having capped the underlying water level measurements that are above
+#'   soil surface level to the soil surface level itself (zero in the local CRS).
+#'   Defaults to \code{FALSE}.
+#' @param with_estimated Logical. If \code{TRUE}, the XG3 calculation includes
+#'   estimated or simulated (e.g. Menyanthes model) water level data alongside
+#'   raw measurements. Defaults to \code{FALSE}.
+#' @param drop_all_na Logical. If \code{TRUE}, rows where all XG3 values
+#'   (\code{lg3}, \code{hg3}, and \code{vg3}) are \code{NA} are filtered out of
+#'   the result. Defaults to \code{FALSE} to preserve all hydroyears with water
+#'   level records even when all XG3 values are NA. Note: Hydroyears with no
+#'   water level records are never included.
+#' @param debug Logical. If \code{TRUE}, returns debug messages or objects.
+#'   Defaults to \code{FALSE}.
 #'
 #' @inheritParams get_locs
 #'
@@ -791,7 +819,7 @@ get_locs <- function(
 #' @importFrom rlang .data
 #' @importFrom lubridate year now
 #' @importFrom dplyr %>% copy_to filter left_join inner_join select contains
-#'   arrange distinct
+#'   arrange distinct if_all matches
 # FUNCTION GET XG3 -------------------------------------------------------------
 get_xg3 <- function(
   locs,
@@ -799,9 +827,11 @@ get_xg3 <- function(
   startyear,
   endyear = year(now()) - 1,
   vert_crs = c("local", "ostend", "both"),
-  truncated = TRUE,
-  with_estimated = TRUE,
-  collect = FALSE
+  truncated = FALSE,
+  with_estimated = FALSE,
+  collect = FALSE,
+  drop_all_na = FALSE,
+  debug = FALSE
 ) {
   vert_crs <- match.arg(vert_crs)
   assert_that(is.number(startyear))
@@ -817,41 +847,15 @@ get_xg3 <- function(
   assert_that(is.flag(truncated), assertthat::noNA(truncated))
   assert_that(is.flag(collect), assertthat::noNA(collect))
 
-  if (inherits(locs, "data.frame")) {
-    locs <- stage_locs(locs, con)
-  }
-
-  xg3 <-
-    tbl(con, "ssrs_Precalc") %>%
-    # left_join(tbl(con, "DimMetingType"),
-    #           by = "MetingTypeWID") %>%
-    select(
-      loc_wid = .data$MeetpuntWID,
-      hydroyear = .data$HydroJaar,
-      # method_code = .data$MetingTypeCode,
-      # method_name = .data$MetingTypeNaam,
-      lg3_lcl = .data$GLG_2,
-      hg3_lcl = .data$GHG_2,
-      vg3_lcl = .data$GVG_2,
-      lg3_ost = .data$GLG_1,
-      hg3_ost = .data$GHG_1,
-      vg3_ost = .data$GVG_1
-    ) %>%
-    filter(
-      .data$hydroyear >= startyear,
-      .data$hydroyear <= endyear
-    ) %>%
-    inner_join(
-      locs %>%
-        select(
-          .data$loc_wid,
-          .data$loc_code
-        ) %>%
-        distinct(),
-      .,
-      by = "loc_wid"
-    ) %>%
-    select(-.data$loc_wid)
+  xg3 <- build_xg3_query(
+    locs,
+    con,
+    startyear,
+    endyear,
+    truncated,
+    with_estimated,
+    debug
+  )
 
   xg3 <-
     switch(
@@ -860,6 +864,13 @@ get_xg3 <- function(
       ostend = xg3 %>% select(-contains("lcl")),
       both = xg3
     )
+
+  # filter after select to assure only selected columns are taken into account
+  if (drop_all_na) {
+    xg3 <-
+      xg3 %>%
+      filter(!if_all(matches("^[lhv]g3_"), is.na))
+  }
 
   if (collect) {
     xg3 <-
@@ -874,7 +885,113 @@ get_xg3 <- function(
   return(xg3)
 }
 
-# DOOCUMENTATION GET CHEM ------------------------------------------------------
+build_xg3_query <- function(
+  locs,
+  con,
+  startyear,
+  endyear,
+  truncated,
+  with_estimated,
+  debug = FALSE
+) {
+  if (inherits(locs, "data.frame")) {
+    locs <- stage_locs(locs, con)
+  }
+
+  param_query <- tbl(con, "DimParameterSet") %>%
+    filter(
+      .data$MinMetingen > 0,
+      .data$IsAfgetopt == truncated,
+      .data$IsEstimated == with_estimated
+    )
+
+  matching_params <- param_query %>% collect()
+  param_count <- nrow(matching_params)
+
+  str_settings <- sprintf(
+    "settings (truncated = '%s' and with_estimated = '%s')",
+    truncated,
+    with_estimated
+  )
+
+  if (param_count == 0) {
+    stop(
+      sprintf(
+        "No xg3 in the database yet with selected %s.",
+        str_settings
+      ),
+      call. = FALSE
+    )
+  }
+  if (param_count > 1) {
+    str_param_options <- paste0(matching_params$Omschrijving, collapse = ", ")
+
+    selected_id <- max((matching_params$ParameterSetWID))
+    selected_option <- matching_params$Omschrijving[
+      matching_params$ParameterSetWID == selected_id
+    ]
+
+    message <- paste0(
+      "No unambiguous results can be returned because the database contains ",
+      "multiple xg3 values computed with the same %s, but different quality ",
+      "criteria. Contact package maintainer (check DimParameterSet)."
+    )
+
+    message(sprintf(
+      message,
+      str_settings
+    ))
+
+    if (debug) {
+      message(sprintf(
+        "The options are: %s. Option '%s' selected.",
+        str_param_options,
+        selected_option
+      ))
+    }
+
+    param_query <- param_query %>%
+      filter(.data$ParameterSetWID == selected_id)
+  }
+
+  xg3 <-
+    tbl(con, "FactBRPeilMetingJaar") %>%
+    inner_join(
+      param_query,
+      by = "ParameterSetWID"
+    ) %>%
+    filter(
+      # CRITICAL: Keep only Hydroyears
+      .data$IsHydroJaar == 1,
+      .data$Jaar >= startyear,
+      .data$Jaar <= endyear
+    ) %>%
+    select(
+      loc_wid = .data$MeetpuntWID,
+      hydroyear = .data$Jaar,
+      lg3_lcl = .data$LGmMaaiVeldValue,
+      hg3_lcl = .data$HGmMaaiVeldValue,
+      vg3_lcl = .data$VGmMaaiVeldValue,
+      lg3_ost = .data$LGmTAWValue,
+      hg3_ost = .data$HGmTAWValue,
+      vg3_ost = .data$VGmTAWValue
+    ) %>%
+    inner_join(
+      locs %>%
+        select(
+          .data$loc_wid,
+          .data$loc_code
+        ) %>%
+        distinct(),
+      .,
+      by = "loc_wid"
+    ) %>%
+    select(-.data$loc_wid)
+
+  return(xg3)
+}
+
+# DOCUMENTATION GET CHEM ------------------------------------------------------
 #' Get hydrochemical data from the data warehouse
 #'
 #' Returns hydrochemical data from the \emph{Watina} data warehouse, either as a
@@ -1140,74 +1257,20 @@ get_chem <- function(
     locs <- stage_locs(locs, con)
   }
 
-  # filter chemistry data for dates and locations
-  chemdata <-
-    tbl(con, "FactChemischeMeting") %>%
-    select(
-      .data$StaalID,
-      .data$DatumWID,
-      .data$ChemVarWID,
-      .data$MeetpuntWID,
-      .data$Meetwaarde,
-      .data$MeetwaardeMEQ,
-      .data$IsBelowLOQ
-    ) %>%
-    inner_join(
-      tbl(con, "DimChemVar") %>%
-        select(
-          .data$ChemVarWID,
-          .data$ChemVarCode,
-          .data$ChemVarEenheid
-        ),
-      by = "ChemVarWID"
-    ) %>%
-    inner_join(
-      tbl(con, "DimTijd") %>%
-        select(
-          .data$DatumWID,
-          .data$Datum
-        ),
-      by = "DatumWID"
-    ) %>%
-    mutate(Datum = sql("CAST(Datum AS date)")) %>%
-    filter(
-      .data$Datum >= startdate,
-      .data$Datum <= enddate
-    ) %>%
-    rename(loc_wid = .data$MeetpuntWID) %>%
-    inner_join(
-      locs %>%
-        select(
-          .data$loc_wid,
-          .data$loc_code
-        ) %>%
-        distinct(),
-      .,
-      by = "loc_wid"
-    ) %>%
-    select(-.data$loc_wid)
+  chemdata <- locs %>% build_chem_query(con, startdate, enddate)
 
   # add relevant further attributes and rename
   chem <-
     chemdata %>%
-    left_join(
-      tbl(con, "ssrs_StaalEN") %>%
-        select(
-          .data$StaalID,
-          .data$StaalEN
-        ),
-      by = "StaalID"
-    ) %>%
     # temporary values:
     mutate(
-      lab_project_id = "0",
       lab_sample_id = sql("CAST(StaalID AS varchar)"),
       loq = -99
     ) %>%
     select(
       .data$loc_code,
       date = .data$Datum,
-      .data$lab_project_id,
+      lab_project_id = .data$StaalExterneSource,
       .data$lab_sample_id,
       chem_variable = .data$ChemVarCode,
       value_mass = .data$Meetwaarde,
@@ -1215,7 +1278,7 @@ get_chem <- function(
       unit = .data$ChemVarEenheid,
       below_loq = .data$IsBelowLOQ,
       .data$loq,
-      elneutr = .data$StaalEN
+      elneutr = .data$ENCalculated
     ) %>%
     filter(!is.na(.data$value_mass)) %>% # empty rows occur in the DWH!
     mutate(
@@ -1360,6 +1423,72 @@ get_chem <- function(
   return(chem)
 }
 
+build_chem_query <- function(
+  locs,
+  con,
+  startdate,
+  enddate
+) {
+  # filter chemistry data for dates and locations
+  chemdata <-
+    tbl(con, "FactChemischeMeting") %>%
+    select(
+      .data$StaalID,
+      .data$StaalWID,
+      .data$DatumWID,
+      .data$ChemVarWID,
+      .data$MeetpuntWID,
+      .data$Meetwaarde,
+      .data$MeetwaardeMEQ,
+      .data$IsBelowLOQ
+    ) %>%
+    inner_join(
+      tbl(con, "DimChemVar") %>%
+        select(
+          .data$ChemVarWID,
+          .data$ChemVarCode,
+          .data$ChemVarEenheid
+        ) %>%
+        filter(.data$ChemVarWID != 24),
+      by = "ChemVarWID"
+    ) %>%
+    inner_join(
+      tbl(con, "DimDatum") %>%
+        select(
+          .data$DatumWID,
+          .data$Datum
+        ),
+      by = "DatumWID"
+    ) %>%
+    mutate(Datum = sql("CAST(Datum AS date)")) %>%
+    filter(
+      .data$Datum >= startdate,
+      .data$Datum <= enddate
+    ) %>%
+    rename(loc_wid = .data$MeetpuntWID) %>%
+    inner_join(
+      locs %>%
+        select(
+          .data$loc_wid,
+          .data$loc_code
+        ) %>%
+        distinct(),
+      .,
+      by = "loc_wid"
+    ) %>%
+    select(-.data$loc_wid) %>%
+    left_join(
+      tbl(con, "DimStaal") %>%
+        select(
+          .data$StaalWID,
+          .data$StaalElnNbr,
+          .data$ENCalculated,
+          .data$StaalExterneSource
+        ),
+      by = "StaalWID"
+    )
+}
+
 # HELPER FUNCTIONS -------------------------------------------------------------
 stage_locs <- function(locs, con) {
   locs <-
@@ -1380,7 +1509,7 @@ stage_locs <- function(locs, con) {
       "#locs"
     ) %>%
     inner_join(
-      tbl(con, "vwDimMeetpunt") %>%
+      tbl(con, "DimMeetpunt") %>%
         select(
           loc_wid = .data$MeetpuntWID,
           loc_code = .data$MeetpuntCode
