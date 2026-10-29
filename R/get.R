@@ -740,7 +740,6 @@ build_locs_query <- function(
 #'   \code{loc_code} that defines the locations for which values are to be
 #'   returned. Typically, this will be the object returned by
 #'   \code{\link{get_locs}}.
-#' @param con A database connection object to the Watina data warehouse.
 #' @param startyear First hydroyear of the timeframe.
 #' @param endyear Last hydroyear of the timeframe. Defaults to the previous calendar year.
 #' @param vert_crs A string, defining the 1-dimensional vertical coordinate
@@ -759,8 +758,6 @@ build_locs_query <- function(
 #' @param with_estimated Logical. If \code{TRUE}, the XG3 calculation includes
 #'   estimated or simulated (e.g. Menyanthes model) water level data alongside
 #'   raw measurements. Defaults to \code{FALSE}.
-#' @param collect Logical. If \code{TRUE}, the lazy query is executed and
-#'   brought into local R memory as a tibble. Defaults to \code{FALSE}.
 #' @param drop_all_na Logical. If \code{TRUE}, rows where all XG3 values
 #'   (\code{lg3}, \code{hg3}, and \code{vg3}) are \code{NA} are filtered out of
 #'   the result. Defaults to \code{FALSE} to preserve all hydroyears with water

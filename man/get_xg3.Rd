@@ -23,7 +23,8 @@ get_xg3(
 returned. Typically, this will be the object returned by
 \code{\link{get_locs}}.}
 
-\item{con}{A database connection object to the Watina data warehouse.}
+\item{con}{A \code{DBIConnection} object to Watina. See
+\code{\link{connect_watina}} to generate one.}
 
 \item{startyear}{First hydroyear of the timeframe.}
 
@@ -48,8 +49,10 @@ Defaults to \code{FALSE}.}
 estimated or simulated (e.g. Menyanthes model) water level data alongside
 raw measurements. Defaults to \code{FALSE}.}
 
-\item{collect}{Logical. If \code{TRUE}, the lazy query is executed and
-brought into local R memory as a tibble. Defaults to \code{FALSE}.}
+\item{collect}{Should the data be retrieved as a local tibble? If
+\code{FALSE} (the default), a \code{tbl_lazy} object is returned (lazy
+query). Hence the result can be further built upon before retrieving data
+with \code{\link[dplyr:compute]{collect()}}.}
 
 \item{drop_all_na}{Logical. If \code{TRUE}, rows where all XG3 values
 (\code{lg3}, \code{hg3}, and \code{vg3}) are \code{NA} are filtered out of

@@ -22,7 +22,8 @@ get_chem(
 returned. Typically, this will be the object returned by
 \code{\link{get_locs}}.}
 
-\item{con}{A database connection object to the Watina data warehouse.}
+\item{con}{A \code{DBIConnection} object to Watina. See
+\code{\link{connect_watina}} to generate one.}
 
 \item{startdate}{First date of the timeframe, as a string. The string must
 use a formatting of the order 'day month year', i.e. a format which can be
@@ -78,8 +79,10 @@ the conditions imposed by \code{en_range} and \code{en_exclude_na}
 returned).
 }}
 
-\item{collect}{Logical. If \code{TRUE}, the lazy query is executed and
-brought into local R memory as a tibble. Defaults to \code{FALSE}.}
+\item{collect}{Should the data be retrieved as a local tibble? If
+\code{FALSE} (the default), a \code{tbl_lazy} object is returned (lazy
+query). Hence the result can be further built upon before retrieving data
+with \code{\link[dplyr:compute]{collect()}}.}
 }
 \value{
 By default, a \code{tbl_lazy} object. With \code{collect = TRUE}, a
