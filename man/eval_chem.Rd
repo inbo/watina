@@ -16,13 +16,11 @@ eval_chem(
 \item{data}{An object returned by \code{\link{get_chem}}.}
 
 \item{chem_var}{A character vector to select chemical variables for which
-statistics will be computed.
-To specify chemical variables, use the
-codes from the column \code{chem_variable} in \code{data}.}
+statistics will be computed. To specify chemical variables, use the codes
+from the column \code{chem_variable} in \code{data}.}
 
-\item{type}{A string defining the requested type of summary statistics.
-See section 'Value'.
-Either:
+\item{type}{A string defining the requested type of summary statistics. See
+  section 'Value'. Either:
 \itemize{
 \item{\code{"avail"}:} availability statistics (the default);
 \item{\code{"num"}:} numeric summary statistics;
@@ -30,17 +28,16 @@ Either:
 }}
 
 \item{uniformity_test}{Should the availability statistic
-\code{pval_uniform_totalspan} be added (see section 'Value')?
-Defaults to \code{FALSE} as this takes much more time to calculate than
-everything else.}
+\code{pval_uniform_totalspan} be added (see section 'Value')? Defaults to
+\code{FALSE} as this takes much more time to calculate than everything
+else.}
 }
 \value{
 A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
 \code{chem_variable} (character; see Details)
 and summary statistics (\emph{at the level
 of \code{loc_code} x \code{chem_variable}}) depending on the state of
-\code{type}
-(\code{type = "both"} combines both cases):
+\code{type} (\code{type = "both"} combines both cases):
 
 With \code{type = "avail"} (the default):
 \itemize{
@@ -95,17 +92,14 @@ If all measurements have value \code{NA} for
 }
 }
 \description{
-For a dataset as returned by \code{\link{get_chem}},
-return summary statistics (data availability and/or
-numeric properties) of
-the specified hydrochemical variables, for each location.
+For a dataset as returned by \code{\link{get_chem}}, return summary
+statistics (data availability and/or numeric properties) of the specified
+hydrochemical variables, for each location.
 }
 \details{
-For the availability statistics, an extra level
-"\code{combined}" is added in the column \code{chem_variable} whenever the
-arguments \code{data} and
-\code{chem_var} imply more than one
-chemical variable to be investigated.
+For the availability statistics, an extra level "\code{combined}" is added in
+the column \code{chem_variable} whenever the arguments \code{data} and
+\code{chem_var} imply more than one chemical variable to be investigated.
 This 'combined' level defines data availability for a water sample as the
 availability of data for \strong{all} corresponding chemical variables.
 }
@@ -146,8 +140,8 @@ dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to evaluate locations: 
-\code{\link{eval_xg3_avail}()},
-\code{\link{eval_xg3_series}()}
+Other functions to evaluate locations:
+\code{\link[=eval_xg3_avail]{eval_xg3_avail()}},
+\code{\link[=eval_xg3_series]{eval_xg3_series()}}
 }
 \concept{functions to evaluate locations}

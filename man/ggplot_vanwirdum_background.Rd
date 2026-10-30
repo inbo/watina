@@ -14,13 +14,13 @@ ggplot_vanwirdum_background(
 )
 }
 \arguments{
-\item{ir_format}{The format for the ionic ratio, can be "decimal" (default, axis 0-1)
-or "pct" (\%, axis 0-100). Choose this parameter according to the format used
-in your dataset.}
+\item{ir_format}{The format for the ionic ratio, can be "decimal" (default,
+axis 0-1) or "pct" (\%, axis 0-100). Choose this parameter according to the
+format used in your dataset.}
 
-\item{ec25_unit}{The units for the electrical conductivity at 25°C:
-can be "micro_cm" (default, µS/cm) or "milli_m" (mS/m).
-Choose this parameter according to the unit used in your dataset.}
+\item{ec25_unit}{The units for the electrical conductivity at 25°C: can be
+"micro_cm" (default, µS/cm) or "milli_m" (mS/m). Choose this parameter
+according to the unit used in your dataset.}
 
 \item{contour}{Draw the mixing contours of the reference water samples,
 "segment" (default), "curve" or "none" (do not draw).}
@@ -32,13 +32,13 @@ default) or "nl" (Dutch)?}
 or TRUE.}
 }
 \value{
-A ggplot object with the Van Wirdum IR-log EC25 diagram, the reference points
-for the water types LI-AT-TH and the mixing contours between the reference
-water samples LI-AT-TH.
+A ggplot object with the Van Wirdum IR-log EC25 diagram, the
+reference points for the water types LI-AT-TH and the mixing contours between
+the reference water samples LI-AT-TH.
 }
 \description{
-Creates the background of a Van Wirdum diagram for water samples
-in ggplot (ionic ratio - log electrical conductivity).
+Creates the background of a Van Wirdum diagram for water samples in ggplot
+(ionic ratio - log electrical conductivity).
 }
 \details{
 Creates a ggplot object of the ionic ratio (IR) as Y axis against the
@@ -67,7 +67,8 @@ as columns:
 
 Compute the ionic ratio as follows:
 
-ionic ratio = [Ca2+] / ([Ca2+] + [Cl-]) with the Ca and Cl concentrations in meq/l
+ionic ratio = [Ca2+] / ([Ca2+] + [Cl-]) with the Ca and Cl concentrations in
+meq/l
 
 \preformatted{
 mydata <- mydata \%>\%
@@ -76,15 +77,15 @@ mydata <- mydata \%>\%
   mutate(ir = Ca_meq/(Ca_meq + Cl_meq)) # ir without units (0-1)
 }
 
-  or use the helper function \code{\link{calculate_ir}} to calculate the ionic
-  ratio based on the Ca and Cl concentrations obtained through
-  the \code{\link{get_chem}} function.
+or use the helper function \code{\link{calculate_ir}} to calculate the ionic
+ratio based on the Ca and Cl concentrations obtained through the
+\code{\link{get_chem}} function.
 }
 \section{Reference data on the Van Wirdum diagram}{
 
 
-The reference points are benchmark water samples (defined in Van Wirdum 1991)
-for:
+  The reference points are benchmark water samples (defined in Van Wirdum
+  1991) for:
 
 \enumerate{
  \item{\strong{lithotrophic water LI}: a calcium-bicarbonate type of water, usually
@@ -97,15 +98,14 @@ found in the oceans;}
  \item{\strong{molunotrophic water RH}: polluted water as presently found in the Rhine.}
  }
 
-You can also show the \strong{mixing contours} between the reference points LI, AT
-and TH as curves or as lines. The curved contour encloses the
-plotting area of all possible, simple mixtures of the reference water
-samples LI-ANG (a relatively calcium-rich groundwater sample ), AT-WTV
-(a precipitation sample caught in a relatively unpolluted inland area of
-The Netherlands) and TH-N70 (a representative analysis from the North Sea
-monitoring program, 70 km from the coast).
-Most water analyses plot within the area bounded by the (curved) lines
-LI-AT-TH-LI.
+  You can also show the \strong{mixing contours} between the reference points
+  LI, AT and TH as curves or as lines. The curved contour encloses the
+  plotting area of all possible, simple mixtures of the reference water
+  samples LI-ANG (a relatively calcium-rich groundwater sample ), AT-WTV (a
+  precipitation sample caught in a relatively unpolluted inland area of The
+  Netherlands) and TH-N70 (a representative analysis from the North Sea
+  monitoring program, 70 km from the coast). Most water analyses plot within
+  the area bounded by the (curved) lines LI-AT-TH-LI.
 }
 
 \examples{
@@ -144,5 +144,5 @@ ggplot_vanwirdum_background(
 }
 \references{
 Van Wirdum, Geert (1991). Vegetation and hydrology of floating
-rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
+  rich-fens. Datawyse, Maastricht. 316 p. ISBN 90-5291-045-6. (Appendix D)
 }

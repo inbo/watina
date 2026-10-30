@@ -8,4 +8,8 @@
 ^pkgdown$
 ^appveyor\.yml$
 ^\.zenodo\.json$
+^\.git$
 ^\.github$
+^\.git-blame-ignore-revs
+^\.positai$
+^\.claude$
