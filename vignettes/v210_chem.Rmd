@@ -130,7 +130,7 @@ myresult <-
     conditions = conditions_df
   )
 myresult
-# Note: this output is outdated (created on 2 Oct 2019 as there is a know bug)
+# Note: this output is outdated (created on 2 Oct 2019 as there is a known bug)
 
 #> # A tibble: 18 x 1
 #>    loc_code
