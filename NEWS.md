@@ -22,7 +22,7 @@ This release migrates the package to the new Watina data warehouse, `W0002_10_Wa
 - Clarify `drop_all_na` documentation: hydroyears with water-level records can be returned with all XG3 values missing, but hydroyears without records are not returned (#140).
 - Update the static output of the vignettes to use he latest code changes and data form the new DWH.
 
-# watina (development version #143)
+# watina 0.6.0 (2026-11-12)
 
 ### Testing
 
