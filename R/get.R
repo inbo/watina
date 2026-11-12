@@ -731,7 +731,8 @@ build_locs_query <- function(
 #'   returned. Typically, this will be the object returned by
 #'   \code{\link{get_locs}}.
 #' @param startyear First hydroyear of the timeframe.
-#' @param endyear Last hydroyear of the timeframe. Defaults to the previous calendar year.
+#' @param endyear Last hydroyear of the timeframe. Defaults to the value of the
+#'   previous calendar year.
 #' @param vert_crs A string, defining the 1-dimensional vertical coordinate
 #'   reference system (CRS) of the XG3 water levels. Either \code{"local"} (the
 #'   default, i.e. returned values are relative to soil surface level, with

@@ -28,7 +28,8 @@ returned. Typically, this will be the object returned by
 
 \item{startyear}{First hydroyear of the timeframe.}
 
-\item{endyear}{Last hydroyear of the timeframe. Defaults to the previous calendar year.}
+\item{endyear}{Last hydroyear of the timeframe. Defaults to the value of the
+previous calendar year.}
 
 \item{vert_crs}{A string, defining the 1-dimensional vertical coordinate
 reference system (CRS) of the XG3 water levels. Either \code{"local"} (the
