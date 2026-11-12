@@ -28,9 +28,8 @@ All other columns should have the name of the summary statistic, and hold
 its value for \code{loc_code} x variable.
 }}
 
-\item{data_type}{A string.
-Either \code{"data"} (the default) or \code{"summary"}, in correspondence
-with the choice made for \code{data}.}
+\item{data_type}{A string. Either \code{"data"} (the default) or
+\code{"summary"}, in correspondence with the choice made for \code{data}.}
 
 \item{eval_fun}{The evaluation function to be run, if \code{data} is a
 dataset.}
@@ -38,9 +37,7 @@ dataset.}
 \item{eval_args}{The arguments of the evaluation function, as a named list,
 if \code{data} is a dataset.}
 
-\item{conditions}{A data frame.
-It must have the
-following columns:
+\item{conditions}{A data frame. It must have the following columns:
 \describe{
 \item{\code{variable}}{Can be any variable,
 including \code{"combined"}.}
@@ -58,23 +55,19 @@ the statistic must be equal to the criterion value.
 }
 }
 
-Each condition is one row of the data frame.
-The data frame should have at least one, and may have many.
-Each combination of \code{chem_variable} and \code{statistic} must be
-unique.
-Conditions on chemical variables, absent from \code{data} or not implied by
-\code{chem_var}, will be dropped without warning.
-Hence, it is up to the user to do sensible things.}
+  Each condition is one row of the data frame. The data frame should have at
+  least one, and may have many. Each combination of \code{chem_variable} and
+  \code{statistic} must be unique. Conditions on chemical variables, absent
+  from \code{data} or not implied by \code{chem_var}, will be dropped without
+  warning. Hence, it is up to the user to do sensible things.}
 
-\item{verbose}{Logical.
-If \code{TRUE}, give feedback on dropped locations because of
-(specific) unused conditions and other 'mismatch' reasons.}
+\item{verbose}{Logical. If \code{TRUE}, give feedback on dropped locations
+because of (specific) unused conditions and other 'mismatch' reasons.}
 
-\item{list}{Logical.
-If \code{FALSE} (the default), the function only returns the end-result
-(a tibble with selected location codes).
-If \code{TRUE}, the function returns a list with the end-result plus useful
-intermediate results.}
+\item{list}{Logical. If \code{FALSE} (the default), the function only returns
+the end-result (a tibble with selected location codes). If \code{TRUE}, the
+function returns a list with the end-result plus useful intermediate
+results.}
 }
 \value{
 If \code{list = FALSE}: a tibble with one column \code{loc_code} that
@@ -84,14 +77,13 @@ If \code{list = TRUE}: a list of tibbles that extends the previous end-result
 with intermediate results.
 }
 \description{
-Generic (helper) function to select locations that comply with
-user-specified conditions,
-from either a dataset (data frame or lazy object) with the variable's values or
-from a data frame with summary statistics.
+Generic (helper) function to select locations that comply with user-specified
+conditions, from either a dataset (data frame or lazy object) with the
+variable's values or from a data frame with summary statistics.
 }
 \details{
-The result of the evaluation function (\code{eval_fun}) must produce a
-data frame, formatted as declared by the second bullet under the
-\code{data} argument.
+The result of the evaluation function (\code{eval_fun}) must produce a data
+frame, formatted as declared by the second bullet under the \code{data}
+argument.
 }
 \keyword{internal}

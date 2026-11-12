@@ -1,27 +1,23 @@
 #' Evaluate the availability of XG3 values per location
 #'
-#' For a dataset as returned by \code{\link{get_xg3}},
-#' return for each location the first and
-#' last (hydro)year and the number of (hydro)years with available XG3 values
-#' of the specified type(s) (LG3, HG3 and/or VG3).
+#' For a dataset as returned by \code{\link{get_xg3}}, return for each location
+#' the first and last (hydro)year and the number of (hydro)years with available
+#' XG3 values of the specified type(s) (LG3, HG3 and/or VG3).
 #'
-#' The column \code{xg3_variable} in the resulting tibble
-#' stands for the XG3 type + the vertical CRS (see \code{\link{get_xg3}}).
-#' \code{xg3_variable} is restricted to the requested XG3 types (LG3, HG3
-#' and/or VG3) via the \code{xg3_type} argument, but adds an extra level
-#' "\code{combined}" whenever the combination of \code{data} (which may have
-#' both
-#' vertical CRSes) and \code{xg3_type} implies more than one requested
-#' variable.
-#' The "\code{combined}" level evaluates the combined presence of all selected
-#' XG3 variables at each location.
+#' The column \code{xg3_variable} in the resulting tibble stands for the XG3
+#' type + the vertical CRS (see \code{\link{get_xg3}}). \code{xg3_variable} is
+#' restricted to the requested XG3 types (LG3, HG3 and/or VG3) via the
+#' \code{xg3_type} argument, but adds an extra level "\code{combined}" whenever
+#' the combination of \code{data} (which may have both vertical CRSes) and
+#' \code{xg3_type} implies more than one requested variable. The
+#' "\code{combined}" level evaluates the combined presence of all selected XG3
+#' variables at each location.
 #'
 #' @inheritParams filter_xg3
 #'
-#' @return
-#' A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
-#' \code{xg3_variable} (character; see Details),
-#' \code{nryears}, \code{firstyear} and \code{lastyear}.
+#' @return A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
+#' \code{xg3_variable} (character; see Details), \code{nryears},
+#' \code{firstyear} and \code{lastyear}.
 #'
 #' @family functions to evaluate locations
 #'
@@ -41,14 +37,8 @@
 #'
 #' @export
 #' @importFrom rlang .data
-#' @importFrom assertthat
-#' assert_that
-#' @importFrom dplyr
-#' %>%
-#' mutate
-#' group_by
-#' summarise
-#' ungroup
+#' @importFrom assertthat assert_that
+#' @importFrom dplyr %>% mutate group_by summarise ungroup
 eval_xg3_avail <- function(data,
                            xg3_type = c("L", "H", "V")) {
   if (missing(xg3_type)) {
@@ -98,25 +88,17 @@ eval_xg3_avail <- function(data,
 #' Helper function to select the specified XG3 columns per location x hydroyear.
 #'
 #' @param data An object returned by \code{\link{get_xg3}}.
-#' @param xg3_type Character vector of length 1, 2 or 3.
-#' Defines the types of XG3 which are taken from \code{data}.
-#' Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
-#' Defaults to \code{"L"}.
+#' @param xg3_type Character vector of length 1, 2 or 3. Defines the types of
+#'   XG3 which are taken from \code{data}. Specifies the 'X' in 'XG3': either
+#'   \code{"L"}, \code{"H"} and/or \code{"V"}. Defaults to \code{"L"}.
 #'
-#' @return
-#' A \code{tbl_lazy} object or a tibble, which is like \code{data} but with
-#' non-requested XG3 variables discarded.
+#' @return A \code{tbl_lazy} object or a tibble, which is like \code{data} but
+#' with non-requested XG3 variables discarded.
 #'
 #' @keywords internal
-#' @importFrom assertthat
-#' assert_that
+#' @importFrom assertthat assert_that
 #' @importFrom rlang .data
-#' @importFrom dplyr
-#' %>%
-#' select
-#' contains
-#' arrange
-#' filter
+#' @importFrom dplyr %>% select contains arrange filter
 filter_xg3 <- function(data,
                        xg3_type) {
   assert_that(
@@ -156,35 +138,26 @@ filter_xg3 <- function(data,
 
 #' Qualify XG3 data per location x hydroyear
 #'
-#' Helper function to determine
-#' the availability of the specified XG3 types per location x hydroyear.
+#' Helper function to determine the availability of the specified XG3 types per
+#' location x hydroyear.
 #'
-#' The column \code{xg3_variable} in the resulting tibble
-#' lists the requested XG3 types, for each location and hydroyear.
-#' If more than one XG3 type is requested, or if \code{data} contains both
-#' vertical CRSes, an extra value "\code{combined}" is listed in the
-#' \code{xg3_variable} column.
-#' It evaluates the combined presence of all selected XG3 variables at each
-#' location and hydroyear.
+#' The column \code{xg3_variable} in the resulting tibble lists the requested
+#' XG3 types, for each location and hydroyear. If more than one XG3 type is
+#' requested, or if \code{data} contains both vertical CRSes, an extra value
+#' "\code{combined}" is listed in the \code{xg3_variable} column. It evaluates
+#' the combined presence of all selected XG3 variables at each location and
+#' hydroyear.
 #'
 #' @inheritParams filter_xg3
 #'
-#' @return
-#' A tibble, with columns \code{xg3_variable}
-#' (character; see Details) and \code{available} (logical) to denote at each
-#' location whether the hydroyear has the requested XG3 values available.
+#' @return A tibble, with columns \code{xg3_variable} (character; see Details)
+#' and \code{available} (logical) to denote at each location whether the
+#' hydroyear has the requested XG3 values available.
 #'
 #' @keywords internal
 #' @importFrom rlang .data
-#' @importFrom tidyr
-#' gather
-#' @importFrom dplyr
-#' %>%
-#' select
-#' contains
-#' vars
-#' mutate_at
-#' collect
+#' @importFrom tidyr gather
+#' @importFrom dplyr %>% select contains vars mutate_at collect
 qualify_xg3 <- function(data,
                         xg3_type) {
   xg3_qualified <-
@@ -223,46 +196,37 @@ qualify_xg3 <- function(data,
 
 #' Identify and evaluate XG3 series per location
 #'
-#' For a dataset as returned by \code{\link{get_xg3}},
-#' determine for each location the available multi-year XG3 series
-#' and calculate summary statistics for each series.
-#' Note that 'years' in this context always refers to hydroyears.
+#' For a dataset as returned by \code{\link{get_xg3}}, determine for each
+#' location the available multi-year XG3 series and calculate summary statistics
+#' for each series. Note that 'years' in this context always refers to
+#' hydroyears.
 #'
-#' An XG3 series is a location-specific, multi-year series of
-#' LG3, HG3 and/or VG3 variables
-#' and is user-restricted by \code{max_gap} (maximum allowed number of empty
-#' years between 'series member' years) and
-#' \code{min_dur} (minimum required length of the series).
-#' Further, given a dataset of XG3 values per year and location, XG3 series are
-#' always constructed \emph{as long as possible} given the aforementioned
-#' restrictions.
-#' For one location and XG3 variable, more than one such XG3 series may be
-#' available, which implies that those XG3 series are separated by more years
-#' than the
-#' value of \code{max_gap}.
+#' An XG3 series is a location-specific, multi-year series of LG3, HG3 and/or
+#' VG3 variables and is user-restricted by \code{max_gap} (maximum allowed
+#' number of empty years between 'series member' years) and \code{min_dur}
+#' (minimum required length of the series). Further, given a dataset of XG3
+#' values per year and location, XG3 series are always constructed \emph{as long
+#' as possible} given the aforementioned restrictions. For one location and XG3
+#' variable, more than one such XG3 series may be available, which implies that
+#' those XG3 series are separated by more years than the value of
+#' \code{max_gap}.
 #'
 #' The function returns summary statistics for the XG3 series that are available
-#' in the dataset.
-#' The XG3 series of each site
-#' are numbered as 'prefix_series1', 'prefix_series2' with the
-#' prefix being the value of \code{xg3_variable}.
+#' in the dataset. The XG3 series of each site are numbered as 'prefix_series1',
+#' 'prefix_series2' with the prefix being the value of \code{xg3_variable}.
 #'
-#' The column \code{xg3_variable} in the resulting tibble
-#' stands for the XG3 type + the vertical CRS (see \code{\link{get_xg3}})
-#' to which a series belongs.
-#' \code{xg3_variable} is restricted to the requested XG3 types (LG3, HG3
-#' and/or VG3) via the \code{xg3_type} argument, but adds an extra level
+#' The column \code{xg3_variable} in the resulting tibble stands for the XG3
+#' type + the vertical CRS (see \code{\link{get_xg3}}) to which a series
+#' belongs. \code{xg3_variable} is restricted to the requested XG3 types (LG3,
+#' HG3 and/or VG3) via the \code{xg3_type} argument, but adds an extra level
 #' "\code{combined}" whenever the combination of \code{data} (which may have
-#' both
-#' vertical CRSes) and \code{xg3_type} implies more than one requested
-#' variable.
-#' This 'combined' level defines an XG3 series as an XG3 series where each
-#' 'member' year has \strong{all} selected XG3 variables available.
+#' both vertical CRSes) and \code{xg3_type} implies more than one requested
+#' variable. This 'combined' level defines an XG3 series as an XG3 series where
+#' each 'member' year has \strong{all} selected XG3 variables available.
 #'
 #' @inheritParams extract_xg3_series
 #'
-#' @return
-#' A tibble with variables:
+#' @return A tibble with variables:
 #' \itemize{
 #' \item{\code{loc_code}}: see \code{\link{get_locs}}
 #' \item{\code{xg3_variable}}: character; see Details
@@ -332,29 +296,12 @@ qualify_xg3 <- function(data,
 #'
 #' @export
 #' @importFrom rlang .data
-#' @importFrom assertthat
-#' assert_that
-#' @importFrom stringr
-#' str_detect
-#' @importFrom stats
-#' sd
-#' var
-#' ecdf
-#' @importFrom utils
-#' capture.output
-#' @importFrom dplyr
-#' %>%
-#' mutate
-#' group_by
-#' summarise
-#' arrange
-#' filter
-#' select
-#' inner_join
-#' n
-#' first
-#' ungroup
-#' collect
+#' @importFrom assertthat assert_that
+#' @importFrom stringr str_detect
+#' @importFrom stats sd var ecdf
+#' @importFrom utils capture.output
+#' @importFrom dplyr %>% mutate group_by summarise arrange filter select
+#'   inner_join n first ungroup collect
 eval_xg3_series <- function(data,
                             xg3_type = c("L", "H", "V"),
                             max_gap,
@@ -475,44 +422,37 @@ eval_xg3_series <- function(data,
 
 #' Evaluate hydrochemical data per location
 #'
-#' For a dataset as returned by \code{\link{get_chem}},
-#' return summary statistics (data availability and/or
-#' numeric properties) of
-#' the specified hydrochemical variables, for each location.
+#' For a dataset as returned by \code{\link{get_chem}}, return summary
+#' statistics (data availability and/or numeric properties) of the specified
+#' hydrochemical variables, for each location.
 #'
-#' For the availability statistics, an extra level
-#' "\code{combined}" is added in the column \code{chem_variable} whenever the
-#' arguments \code{data} and
-#' \code{chem_var} imply more than one
-#' chemical variable to be investigated.
+#' For the availability statistics, an extra level "\code{combined}" is added in
+#' the column \code{chem_variable} whenever the arguments \code{data} and
+#' \code{chem_var} imply more than one chemical variable to be investigated.
 #' This 'combined' level defines data availability for a water sample as the
 #' availability of data for \strong{all} corresponding chemical variables.
 #'
 #' @param data An object returned by \code{\link{get_chem}}.
 #' @param chem_var A character vector to select chemical variables for which
-#' statistics will be computed.
-#' To specify chemical variables, use the
-#' codes from the column \code{chem_variable} in \code{data}.
-#' @param type A string defining the requested type of summary statistics.
-#' See section 'Value'.
-#' Either:
+#'   statistics will be computed. To specify chemical variables, use the codes
+#'   from the column \code{chem_variable} in \code{data}.
+#' @param type A string defining the requested type of summary statistics. See
+#'   section 'Value'. Either:
 #' \itemize{
 #' \item{\code{"avail"}:} availability statistics (the default);
 #' \item{\code{"num"}:} numeric summary statistics;
 #' \item{\code{"both"}:} both types will be returned.
 #' }
 #' @param uniformity_test Should the availability statistic
-#' \code{pval_uniform_totalspan} be added (see section 'Value')?
-#' Defaults to \code{FALSE} as this takes much more time to calculate than
-#' everything else.
+#'   \code{pval_uniform_totalspan} be added (see section 'Value')? Defaults to
+#'   \code{FALSE} as this takes much more time to calculate than everything
+#'   else.
 #'
-#' @return
-#' A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
+#' @return A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
 #' \code{chem_variable} (character; see Details)
 #' and summary statistics (\emph{at the level
 #' of \code{loc_code} x \code{chem_variable}}) depending on the state of
-#' \code{type}
-#' (\code{type = "both"} combines both cases):
+#' \code{type} (\code{type = "both"} combines both cases):
 #'
 #' With \code{type = "avail"} (the default):
 #' \itemize{
@@ -605,28 +545,12 @@ eval_xg3_series <- function(data,
 #'
 #' @export
 #' @importFrom rlang .data
-#' @importFrom assertthat
-#' assert_that
-#' is.flag
-#' noNA
-#' @importFrom dplyr
-#' %>%
-#' mutate
-#' mutate_at
-#' group_by
-#' summarise
-#' ungroup
-#' left_join
-#' filter
-#' first
-#' collect
-#' @importFrom tidyr
-#' spread
-#' gather
-#' @importFrom lubridate
-#' as_date
-#' @importFrom stats
-#' quantile
+#' @importFrom assertthat assert_that is.flag noNA
+#' @importFrom dplyr %>% mutate mutate_at group_by summarise ungroup left_join
+#'   filter first collect
+#' @importFrom tidyr spread gather
+#' @importFrom lubridate as_date
+#' @importFrom stats quantile
 eval_chem <- function(data,
                       chem_var = c(
                         "P-PO4", "N-NO3", "N-NO2", "N-NH4",

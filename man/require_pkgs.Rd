@@ -11,9 +11,9 @@ require_pkgs(pkgs)
 }
 \description{
 Takes a vector of package names and passes each name to
-\code{\link[base:ns-load]{requireNamespace()}};
-if package(s) are missing, returns an error message providing the basic
-\code{install.packages()} command to install them.
+\code{\link[base:ns-load]{requireNamespace()}}; if package(s) are missing,
+returns an error message providing the basic \code{install.packages()}
+command to install them.
 }
 \examples{
 \dontrun{

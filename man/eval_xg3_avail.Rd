@@ -9,33 +9,29 @@ eval_xg3_avail(data, xg3_type = c("L", "H", "V"))
 \arguments{
 \item{data}{An object returned by \code{\link{get_xg3}}.}
 
-\item{xg3_type}{Character vector of length 1, 2 or 3.
-Defines the types of XG3 which are taken from \code{data}.
-Specifies the 'X' in 'XG3': either \code{"L"}, \code{"H"} and/or \code{"V"}.
-Defaults to \code{"L"}.}
+\item{xg3_type}{Character vector of length 1, 2 or 3. Defines the types of
+XG3 which are taken from \code{data}. Specifies the 'X' in 'XG3': either
+\code{"L"}, \code{"H"} and/or \code{"V"}. Defaults to \code{"L"}.}
 }
 \value{
 A tibble with variables \code{loc_code} (see \code{\link{get_locs}}),
-\code{xg3_variable} (character; see Details),
-\code{nryears}, \code{firstyear} and \code{lastyear}.
+\code{xg3_variable} (character; see Details), \code{nryears},
+\code{firstyear} and \code{lastyear}.
 }
 \description{
-For a dataset as returned by \code{\link{get_xg3}},
-return for each location the first and
-last (hydro)year and the number of (hydro)years with available XG3 values
-of the specified type(s) (LG3, HG3 and/or VG3).
+For a dataset as returned by \code{\link{get_xg3}}, return for each location
+the first and last (hydro)year and the number of (hydro)years with available
+XG3 values of the specified type(s) (LG3, HG3 and/or VG3).
 }
 \details{
-The column \code{xg3_variable} in the resulting tibble
-stands for the XG3 type + the vertical CRS (see \code{\link{get_xg3}}).
-\code{xg3_variable} is restricted to the requested XG3 types (LG3, HG3
-and/or VG3) via the \code{xg3_type} argument, but adds an extra level
-"\code{combined}" whenever the combination of \code{data} (which may have
-both
-vertical CRSes) and \code{xg3_type} implies more than one requested
-variable.
-The "\code{combined}" level evaluates the combined presence of all selected
-XG3 variables at each location.
+The column \code{xg3_variable} in the resulting tibble stands for the XG3
+type + the vertical CRS (see \code{\link{get_xg3}}). \code{xg3_variable} is
+restricted to the requested XG3 types (LG3, HG3 and/or VG3) via the
+\code{xg3_type} argument, but adds an extra level "\code{combined}" whenever
+the combination of \code{data} (which may have both vertical CRSes) and
+\code{xg3_type} implies more than one requested variable. The
+"\code{combined}" level evaluates the combined presence of all selected XG3
+variables at each location.
 }
 \examples{
 \dontrun{
@@ -53,8 +49,8 @@ dbDisconnect(watina)
 
 }
 \seealso{
-Other functions to evaluate locations: 
-\code{\link{eval_chem}()},
-\code{\link{eval_xg3_series}()}
+Other functions to evaluate locations:
+\code{\link[=eval_chem]{eval_chem()}},
+\code{\link[=eval_xg3_series]{eval_xg3_series()}}
 }
 \concept{functions to evaluate locations}

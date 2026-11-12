@@ -1,7 +1,8 @@
 #' Compute the ionic ratio
 #'
 #' Calculate the ionic ratio of a water sample based on the output of
-#' \code{\link{get_chem}} and add it to the input data as a new column \code{ir}.
+#' \code{\link{get_chem}} and add it to the input data as a new column
+#' \code{ir}.
 #'
 #' Depending on the units of the Ca and Cl concentrations, the ionic ratio gets
 #' calculated as follows:
@@ -18,16 +19,13 @@
 #' The result is the ionic ratio \code{ir} without units (0-1).
 #'
 #' @param data Output of the \code{get_chem} function (hydrochemical data
-#' retrieved from Watina) or any dataset with at least the columns
-#' \code{loc_code},
-#' \code{chem_variable} (with at least concentrations for Ca and Cl),
-#' \code{value}, \code{unit} and \code{date}.
-#' It can be a lazy object as well as a local object
-#' \code{(get_chem(collect = TRUE))}.
+#'   retrieved from Watina) or any dataset with at least the columns
+#'   \code{loc_code}, \code{chem_variable} (with at least concentrations for Ca
+#'   and Cl), \code{value}, \code{unit} and \code{date}. It can be a lazy object
+#'   as well as a local object \code{(get_chem(collect = TRUE))}.
 #'
-#' @return
-#' A tibble similar to the input \code{data} but with an extra column \code{ir}
-#' with the calculated ionic ratio.
+#' @return A tibble similar to the input \code{data} but with an extra column
+#' \code{ir} with the calculated ionic ratio.
 #'
 #' @examples
 #' \dontrun{
@@ -44,19 +42,10 @@
 #' }
 #'
 #' @export
-#' @importFrom assertthat
-#' assert_that
-#' @importFrom dplyr
-#' %>%
-#' filter
-#' left_join
-#' mutate
-#' select
-#' summarize
-#' @importFrom rlang
-#' .data
-#' @importFrom tidyr
-#' pivot_wider
+#' @importFrom assertthat assert_that
+#' @importFrom dplyr %>% filter left_join mutate select summarize
+#' @importFrom rlang .data
+#' @importFrom tidyr pivot_wider
 
 calculate_ir <- function(data) {
   # collect the data if needed

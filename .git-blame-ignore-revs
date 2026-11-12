@@ -1,0 +1,11 @@
+# Run this command to always ignore the commits from this file with git blame
+# git blame on Github will automatically take this file into account
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style(R/get.R): apply air formatter and RStudio Reflow Comment to get functions
+2d0a5e47a9ac6e9afa9e3b5358ffb5b25ba1c746
+# Reflow Roxygen comments wrt @importFrom Roxygen 8.1.1 warnings
+2c983ee70980c56956ea7cf4afacc055ba1926e0
+# docs: update to Roxygen 8.1.1
+a2aef649b2dc388023c44faf2943a274203c5d7e
+

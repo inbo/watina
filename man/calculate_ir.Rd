@@ -9,19 +9,18 @@ calculate_ir(data)
 \arguments{
 \item{data}{Output of the \code{get_chem} function (hydrochemical data
 retrieved from Watina) or any dataset with at least the columns
-\code{loc_code},
-\code{chem_variable} (with at least concentrations for Ca and Cl),
-\code{value}, \code{unit} and \code{date}.
-It can be a lazy object as well as a local object
-\code{(get_chem(collect = TRUE))}.}
+\code{loc_code}, \code{chem_variable} (with at least concentrations for Ca
+and Cl), \code{value}, \code{unit} and \code{date}. It can be a lazy object
+as well as a local object \code{(get_chem(collect = TRUE))}.}
 }
 \value{
-A tibble similar to the input \code{data} but with an extra column \code{ir}
-with the calculated ionic ratio.
+A tibble similar to the input \code{data} but with an extra column
+\code{ir} with the calculated ionic ratio.
 }
 \description{
 Calculate the ionic ratio of a water sample based on the output of
-\code{\link{get_chem}} and add it to the input data as a new column \code{ir}.
+\code{\link{get_chem}} and add it to the input data as a new column
+\code{ir}.
 }
 \details{
 Depending on the units of the Ca and Cl concentrations, the ionic ratio gets
