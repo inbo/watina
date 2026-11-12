@@ -323,8 +323,6 @@ get_locs <- function(
     )
   }
 
-  loc_validity <- "VLD"
-
   assert_that(
     is.numeric(filterdepth_range),
     length(filterdepth_range) == 2,
@@ -383,17 +381,11 @@ get_locs <- function(
     )
   }
 
-  assert_that(
-    all(loc_validity %in% c("VLD", "ENT", "DEL", "CLD")),
-    msg = "You specified at least one unknown loc_validity."
-  )
-
   locs <- build_locs_query(
     con = con,
     bbox = bbox,
     area_codes = area_codes,
     loc_type = loc_type,
-    loc_validity = loc_validity,
     loc_vec = loc_vec
   )
 
@@ -623,14 +615,12 @@ build_locs_query <- function(
   bbox,
   area_codes,
   loc_type,
-  loc_validity,
   loc_vec
 ) {
   locs <-
     tbl(con, "DimMeetpunt") %>%
     filter(
-      .data$MeetpuntTypeCode %in% loc_type,
-      .data$MeetpuntStatusCode %in% loc_validity
+      .data$MeetpuntTypeCode %in% loc_type
     ) %>%
     left_join(
       tbl(con, "DimGebied") %>%
