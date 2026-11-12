@@ -9,11 +9,6 @@ Returns the included data source 'vanwirdum_data' as a
 vanwirdum_data
 ```
 
-## Format
-
-An object of class `tbl_df` (inherits from `tbl`, `data.frame`) with 42
-rows and 2 columns.
-
 ## Value
 
 The `vanwirdum_data` dataframe as a

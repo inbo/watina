@@ -1,5 +1,42 @@
 # Changelog
 
+## watina 0.6.0 (2026-11-12)
+
+#### Testing
+
+This release is focused on setting up a testing infrastructure (in
+preparation for the DWH migration).
+
+- Set up testing environment variables through Rprofile.
+- Add testing setup and helper framework for functions requiring a
+  database connection
+  ([`get_locs()`](https://inbo.github.io/watina/reference/get_locs.md) ,
+  [`get_xg3()`](https://inbo.github.io/watina/reference/get_xg3.md),
+  [`get_chem()`](https://inbo.github.io/watina/reference/get_chem.md)).
+- Add test suite for database functions to validate DWH migration using
+  a static subset of closed locations.
+- Clarify testing instructions in testing README.
+
+#### Improvements and fixes
+
+- Replace raw SQL filter in
+  [`get_chem()`](https://inbo.github.io/watina/reference/get_chem.md)
+  with native dbplyr syntax
+  ([`dplyr::between()`](https://dplyr.tidyverse.org/reference/between.html))
+  for compatibility with newer dbplyr versions.
+- Extract internal `stage_locs()` helper function to simplify `get.R`
+  logic.
+
+#### Maintenance
+
+- Update function dependencies across documentation, `DESCRIPTION`, and
+  `NAMESPACE`.
+- Apply code formatting using air and reflow comment styling (add
+  commits to `git-blame-ignore` to keep git blame history clean).
+- Reflow Roxygen comments to satisfy formatting requirements of
+  {roxygen2} 8.1.1.
+- Apply minor upgrades and improvements to GitHub Action workflows.
+
 ## watina 0.5.0 (2026-04-01)
 
 #### New features

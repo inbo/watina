@@ -11,6 +11,7 @@ like. The below example requests available hydrochemical data since 2010
 from locations in the area ‘Zwarte Beek’:
 
 ``` r
+
 watina <- connect_watina()
 mydata <-
   get_locs(watina, area_codes = "ZWA") %>%
@@ -67,6 +68,7 @@ mydata %>%
 The first and last year of the dataset are:
 
 ``` r
+
 mydata %>%
   pull(date) %>%
   lubridate::year(.) %>%
@@ -86,6 +88,7 @@ Let’s suppose that we now want to select locations for which:
 To express criteria, we need the numerical value of a date:
 
 ``` r
+
 as.numeric(lubridate::dmy("1/1/2014"))
 #> [1] 16071
 ```
@@ -95,6 +98,7 @@ statistics are explained by the documentation of
 [`eval_chem()`](https://inbo.github.io/watina/reference/eval_chem.md):
 
 ``` r
+
 conditions_df <-
   tribble(
     ~chem_variable, ~statistic, ~criterion, ~direction,
@@ -120,6 +124,7 @@ with the `chem_var` argument in the
 function:
 
 ``` r
+
 myresult <-
   mydata %>%
   selectlocs_chem(
@@ -166,6 +171,7 @@ and `enddate`). By default, the `enddate` argument is set as *today*.
 Here we only provide the `startdate`:
 
 ``` r
+
 mylocs <- get_locs(watina, area_codes = "ZWA")
 mylocs %>% get_chem(watina, "1/1/2017")
 #> # Source:     lazy query [?? x 10]
@@ -191,6 +197,7 @@ mylocs %>% get_chem(watina, "1/1/2017")
 Retrieving the data locally:
 
 ``` r
+
 mylocs %>% get_chem(watina, "1/1/2017", collect = TRUE)
 #> # A tibble: 608 x 10
 #>    loc_code date       lab_project_id lab_sample_id chem_variable  value
@@ -214,6 +221,7 @@ settings for filtering according to *electroneutrality*! The default
 range of electroneutrality is from -0.1 to 0.1 (argument `en_range`).
 
 ``` r
+
 mylocs %>%
   get_chem(watina, "1/1/2017") %>%
   count()
@@ -251,6 +259,7 @@ and `en_exclude_na` arguments are ignored). This is controlled by the
 iron-rich water samples, set `en_fecond_threshold = NA`:
 
 ``` r
+
 mylocs %>%
   get_chem(watina, "1/1/2017", en_fecond_threshold = NA) %>%
   count()
@@ -265,6 +274,7 @@ Equivalence concentrations instead of mass concentrations can be
 returned with `conc_type = "eq"`:
 
 ``` r
+
 mylocs %>% get_chem(watina, "1/1/2017", conc_type = "eq")
 #> # Source:     lazy query [?? x 10]
 #> # Database:   Microsoft SQL Server
@@ -289,6 +299,7 @@ mylocs %>% get_chem(watina, "1/1/2017", conc_type = "eq")
 Joining results to `mylocs`:
 
 ``` r
+
 mylocs %>%
   get_chem(watina, "1/1/2017") %>%
   left_join(

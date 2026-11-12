@@ -20,6 +20,7 @@ To install the current package version from the `main` branch (latest
 stable release), run:
 
 ``` r
+
 install.packages(
   "watina",
   repos = c(
@@ -37,6 +38,7 @@ case **`install.packages("watina")`** is all you need!
 ### Option 2, from source: installing without vignettes (quick)
 
 ``` r
+
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
 remotes::install_github("inbo/watina", upgrade = TRUE)
 ```
@@ -48,6 +50,7 @@ at the top.
 ### Option 3, from source: installing with vignettes
 
 ``` r
+
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS = "true") # as a precaution
 if (!("nycflights13" %in% installed.packages())) {
   # to prevent dbplyr from interrupting next step

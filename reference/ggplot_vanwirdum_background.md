@@ -61,6 +61,7 @@ data.
 Add your own water samples as data points (and any other information you
 would like to plot) to the Van Wirdum diagram, for instance:
 
+
     ggplot_vanwirdum_background() +
              geom_point(data = my_data,
                         aes(x = my_ec25, y = my_ir))
@@ -79,6 +80,7 @@ Compute the ionic ratio as follows:
 
 ionic ratio = \[Ca2+\] / (\[Ca2+\] + \[Cl-\]) with the Ca and Cl
 concentrations in meq/l
+
 
     mydata <- mydata %>%
       mutate(Ca_meq = (Ca_mg*2)/40.078,

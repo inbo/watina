@@ -10,6 +10,7 @@ You first need a connection object to connect to Watina; let’s simply
 name it `watina`:
 
 ``` r
+
 watina <- connect_watina()
 ```
 
@@ -18,11 +19,12 @@ watina <- connect_watina()
 Selecting locations is a typical starting point. Afterwards, you can use
 the returned object as input to other functions.
 
-By default, a `tbl_lazy` object is given (lazy query).[¹](#fn1) The
-returned data include some essential metadata of the locations. The
-following example shows a few rows:
+By default, a `tbl_lazy` object is given (lazy query).[^1] The returned
+data include some essential metadata of the locations. The following
+example shows a few rows:
 
 ``` r
+
 get_locs(watina) %>%
   head(5) %>%
   collect() %>%
@@ -59,6 +61,7 @@ combined:
 - by using area codes:
 
 ``` r
+
 get_locs(
   watina,
   area_codes = c("KAL", "KBR")
@@ -86,6 +89,7 @@ get_locs(
 The number of involved locations is given by:
 
 ``` r
+
 get_locs(
   watina,
   area_codes = c("KAL", "KBR")
@@ -101,6 +105,7 @@ get_locs(
 - you can specify the type of location (device):
 
 ``` r
+
 get_locs(
   watina,
   area_codes = c("KAL", "KBR"),
@@ -130,6 +135,7 @@ Indeed, more records are returned when allowing groundwater piezometers
 with missing filterdepth:
 
 ``` r
+
 get_locs(
   watina,
   area_codes = c("KAL", "KBR"),
@@ -150,6 +156,7 @@ building upon the lazy result of
 e.g.:
 
 ``` r
+
 get_locs(
   watina,
   area_codes = c("KAL", "KBR"),
@@ -170,6 +177,7 @@ get_locs(
   [31370](https://epsg.io/31370)):
 
 ``` r
+
 get_locs(
   watina,
   bbox = c(
@@ -203,6 +211,7 @@ get_locs(
   these directly as a vector:
 
 ``` r
+
 get_locs(
   watina,
   loc_vec = c("KBRP081", "KBRP090", "KBRP095")
@@ -225,6 +234,7 @@ get_locs(
   `mask` argument:
 
 ``` r
+
 get_locs(
   watina,
   mask = westfl,
@@ -263,6 +273,7 @@ retrieve it as a tibble (i.e. an easier-to-use type of data frame) by
 setting `collect = TRUE`.
 
 ``` r
+
 get_locs(
   watina,
   area_codes = c("KAL", "KBR"),
@@ -305,6 +316,7 @@ demonstrates the use of
 to preview all columns:
 
 ``` r
+
 get_locs(
   watina,
   obswells = TRUE,
@@ -350,10 +362,9 @@ At the end of your work (a script, a bookdown document etc.), close the
 connection:
 
 ``` r
+
 dbDisconnect(watina)
 ```
 
-------------------------------------------------------------------------
-
-1.  See the [dbplyr](https://dbplyr.tidyverse.org/) package to get you
+[^1]: See the [dbplyr](https://dbplyr.tidyverse.org/) package to get you
     started with this type of object.

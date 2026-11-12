@@ -29,6 +29,7 @@ Using watina for a paper you are writing? Consider [citing
 it](https://inbo.github.io/watina/authors.html).
 
 ``` r
+
 # with the watina package installed, this will return a bibliography entry:
 citation("watina")
 ```

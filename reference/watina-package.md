@@ -1,9 +1,9 @@
 # watina: Querying and Processing Data from the INBO Watina Data Warehouse
 
 The R-package watina contains functions to query and process data from
-the Watina database at the Research Institute for Nature and Forest
-(INBO). This database primarily provides groundwater level and chemical
-data, mainly from natural areas in Flanders (Belgium).
+the Watina data warehouse at the Research Institute for Nature and
+Forest (INBO). This data warehouse primarily provides groundwater level
+and chemical data, mainly from natural areas in Flanders (Belgium).
 
 ## Details
 
@@ -42,6 +42,12 @@ Useful links:
 ([ORCID](https://orcid.org/0000-0002-6378-6229))
 
 Authors:
+
+- Floris Vanderhaeghe <floris.vanderhaeghe@inbo.be>
+  ([ORCID](https://orcid.org/0000-0002-6378-6229))
+
+- Droomelot De Gendt <droomelot.degendt@inbo.be>
+  ([ORCID](https://orcid.org/0009-0004-8532-1870))
 
 - Cécile Herr <cecile.herr@inbo.be>
   ([ORCID](https://orcid.org/0000-0002-2833-6046))

@@ -13,6 +13,7 @@ hydrochemical data since 2024 from locations in the area ‘Kesterbeek’
 and saves it locally `(collect = TRUE)`:
 
 ``` r
+
 watina <- connect_watina()
 my_chem_data <-
   get_locs(watina, area_codes = "KES") %>%
@@ -20,6 +21,7 @@ my_chem_data <-
 ```
 
 ``` r
+
 my_chem_data
 #> # A tibble: 272 x 10
 #>    loc_code date       lab_project_id lab_sample_id chem_variable  value
@@ -47,10 +49,9 @@ This diagram, devised by Geert Van Wirdum, shows the chemical similarity
 of a water sample to references samples such as atmocline water
 (rainwater), thalassocline water (seawater) and lithocline water
 (calcium rich, fresh groundwater). The diagram plots the ionic ratio,
-that is
-$\left\lbrack Ca^{2 +} \right\rbrack/\left( \left\lbrack Ca^{2 +} \right\rbrack + \left\lbrack Cl^{-} \right\rbrack \right)$
-(as equivalent concentrations), against the logarithm of the electrical
-conductivity at 25°C.
+that is $`[Ca^{2+}] / ([Ca^{2+}] + [Cl^{-}])`$ (as equivalent
+concentrations), against the logarithm of the electrical conductivity at
+25°C.
 
 The electrical conductivity is available for most samples in Watina, but
 we need to **compute the ionic ratio**. We could do this manually for
@@ -61,6 +62,7 @@ function that can be applied directly to the output of the
 function to calculate the ionic ratio:
 
 ``` r
+
 my_chem_data_vanwirdum <- calculate_ir(my_chem_data)
 ```
 
@@ -69,6 +71,7 @@ all the fields from the input dataset and a new field `ir` that contains
 the calculated ionic ratio):
 
 ``` r
+
 names(my_chem_data_vanwirdum)
 #>  [1] "loc_code"       "date"           "lab_project_id" "lab_sample_id" 
 #>  [5] "elneutr"        "chem_variable"  "value"          "unit"          
@@ -87,6 +90,7 @@ thalassotrophic water (Th) and optionally molunotrophic water (Rh -
 polluted water as found in the Rhine).
 
 ``` r
+
 # background with standard options:
 ggplot_vanwirdum_background()
 ```
@@ -98,6 +102,7 @@ instead of a line and plot the reference point for polluted river water
 using respectively the `contour` and `rhine` arguments:
 
 ``` r
+
 ggplot_vanwirdum_background(
   contour = "curve",
   rhine = TRUE
@@ -110,6 +115,7 @@ Now let’s add our own data for the valley of the Kesterbeek. In this
 example we plot 2 locations that were sampled twice in 2024:
 
 ``` r
+
 # get the conductivity data
 my_chem_data_vanwirdum <- my_chem_data_vanwirdum %>%
   filter(chem_variable == "CondL") %>% # CondL = conductivity in the lab
