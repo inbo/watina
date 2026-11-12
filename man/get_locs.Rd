@@ -17,7 +17,7 @@ get_locs(
   bbox = NULL,
   area_codes = NULL,
   loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"),
-  loc_validity = c("VLD", "ENT"),
+  loc_validity = "VLD",
   loc_vec = NULL,
   collect = FALSE
 )
@@ -130,9 +130,9 @@ locations within the areas will be returned.}
 device). Defaults to \code{"P"}, i.e. only groundwater piezometers are
 returned by default. Can be a vector with multiple selected values.}
 
-\item{loc_validity}{Validation status of the location. Can be a vector with
-multiple selected values, which must belong to \code{"VLD"}, \code{"ENT"},
-\code{"DEL"} or \code{"CLD"}. Defaults to \code{c("VLD", "ENT")}.}
+\item{loc_validity}{Validation status of the location. The new DWH only
+contains records with status \code{"VLD"}. This argument is deprecated and
+will be removed in a future version.}
 
 \item{loc_vec}{An optional vector with location codes. If provided, only
 locations are returned that are present in this vector.}
@@ -157,8 +157,7 @@ the location or the location's observation wells. Essential metadata are
 included in the result.
 }
 \details{
-(TO BE ADDED: Explanation on the different available values of loc_type and
-loc_validity)
+(TO BE ADDED: Explanation on the different available values of loc_type)
 
 The lazy object returns a \code{loc_wid} variable, for further use in
 \emph{remote} queries. However, don't use it in local objects: \code{loc_wid}
@@ -309,7 +308,6 @@ mymask <-
   st_cast("GEOMETRYCOLLECTION")
 get_locs(
   watina,
-  loc_validity = "VLD",
   mask = mymask,
   buffer = 0
 )

@@ -1,5 +1,27 @@
 # watina (development version)
 
+This release migrates the package to the new Watina data warehouse, `W0002_10_Watina`.
+
+### Changes in behaviour
+
+- `connect_watina()` now connects to `W0002_10_Watina`.
+- Adapt `get_locs()`, `get_xg3()` and `get_chem()` to the new warehouse schema (#133, #134, #136).
+- Deprecate the `loc_validity` argument of `get_locs()`. Only `"VLD"` locations are available, and other requested statuses are ignored (#133).
+- `get_xg3()` now uses `FactBRPeilMetingJaar` and selects calculation settings through `DimParameterSet`. The previously unused arguments `truncated` and `with_estimated` are now applied and both default to `FALSE` (#134).
+- `get_xg3()` errors when no matching parameter set exists. When multiple sets match, it reports the ambiguity and selects the set with the highest `ParameterSetWID` (#134, #140).
+- `get_chem()` retrieves electroneutrality from `DimStaal` and excludes duplicate `CondF` records (#136).
+
+### Testing
+
+- Extend database snapshot tests to cover `get_xg3()` and `get_chem()` filters and queries for migration comparisons (#132).
+- Document how to run the complete test suite (#132).
+
+### Maintenance
+
+- Separate warehouse query logic into internal helpers `build_locs_query()`, `build_xg3_query()` and `build_chem_query()` (#133, #134, #136).
+- Clarify `drop_all_na` documentation: hydroyears with water-level records can be returned with all XG3 values missing, but hydroyears without records are not returned (#140).
+- Update the static output of the vignettes to use he latest code changes and data form the new DWH.
+
 # watina 0.6.0 (2026-11-12)
 
 ### Testing
