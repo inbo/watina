@@ -934,7 +934,8 @@ build_xg3_query <- function(
     message <- paste0(
       "No unambiguous results can be returned because the database contains ",
       "multiple xg3 values computed with the same %s, but different quality ",
-      "criteria. Contact package maintainer (check DimParameterSet)."
+      "criteria. Contact package maintainer (check DimParameterSet) or create ",
+      "an issue."
     )
 
     message(sprintf(
