@@ -157,8 +157,7 @@ the location or the location's observation wells. Essential metadata are
 included in the result.
 }
 \details{
-(TO BE ADDED: Explanation on the different available values of loc_type and
-loc_validity)
+(TO BE ADDED: Explanation on the different available values of loc_type)
 
 The lazy object returns a \code{loc_wid} variable, for further use in
 \emph{remote} queries. However, don't use it in local objects: \code{loc_wid}
@@ -309,7 +308,6 @@ mymask <-
   st_cast("GEOMETRYCOLLECTION")
 get_locs(
   watina,
-  loc_validity = "VLD",
   mask = mymask,
   buffer = 0
 )
