@@ -2,8 +2,8 @@ bibentry(
   bibtype = "Manual",
   title = "watina: an R package for querying and processing data from the INBO Watina data warehouse",
   author = c(
-    person("Floris", "Vanderhaeghe", role = c("aut", "cre")),
-    person("Droomelot", "De Gendt", role = c("aut")),
+    person("Floris", "Vanderhaeghe", role = c("aut")),
+    person("Droomelot", "De Gendt", role = c("aut", "cre")),
     person("Cécile", "Herr", role = c("aut"))
   ),
   year = "2026",
