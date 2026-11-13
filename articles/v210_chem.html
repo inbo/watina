@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">watina</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,8 @@
 
     
     
-<p><em>General note: the below vignette contains frozen output of 2 Oct
-2019.</em> <em>This makes it possible to build the package with
+<p><em>General note: the below vignette contains frozen output of 12 Nov
+2026.</em> <em>This makes it possible to build the package with
 vignettes without access to the Watina data warehouse.</em></p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -85,11 +85,11 @@ from locations in the area ‘Zwarte Beek’:</p>
 <span>  <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2010"</span><span class="op">)</span></span>
 <span><span class="va">mydata</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:   lazy query [?? x 1]</span></span>
+<span><span class="co">#&gt; # A query:  ?? x 1</span></span>
 <span><span class="co">#&gt; # Database: Microsoft SQL Server</span></span>
-<span><span class="co">#&gt;       n</span></span>
-<span><span class="co">#&gt;   &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1  1916</span></span>
+<span><span class="co">#&gt;         n</span></span>
+<span><span class="co">#&gt;   &lt;int64&gt;</span></span>
+<span><span class="co">#&gt; 1    5025</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">mydata</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "tbl_Microsoft SQL Server" "tbl_dbi"</span></span>
 <span><span class="co">#&gt; [3] "tbl_sql"                  "tbl_lazy"</span></span>
@@ -99,45 +99,45 @@ from locations in the area ‘Zwarte Beek’:</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    loc_code       date lab_project_id lab_sample_id chem_variable   value</span></span>
-<span><span class="co">#&gt; 1   ZWAP033 2011-04-14              0         10431            Ca  19.690</span></span>
-<span><span class="co">#&gt; 2   ZWAP033 2011-04-14              0         10431            Cl  19.582</span></span>
-<span><span class="co">#&gt; 3   ZWAP033 2011-04-14              0         10431         CondF 425.000</span></span>
-<span><span class="co">#&gt; 4   ZWAP033 2011-04-14              0         10431         CondL 372.000</span></span>
-<span><span class="co">#&gt; 5   ZWAP033 2011-04-14              0         10431            Fe  60.809</span></span>
-<span><span class="co">#&gt; 6   ZWAP033 2011-04-14              0         10431          HCO3  25.169</span></span>
-<span><span class="co">#&gt; 7   ZWAP033 2011-04-14              0         10431             K   2.530</span></span>
-<span><span class="co">#&gt; 8   ZWAP033 2011-04-14              0         10431            Mg   7.000</span></span>
-<span><span class="co">#&gt; 9   ZWAP033 2011-04-14              0         10431            Na   5.330</span></span>
-<span><span class="co">#&gt; 10  ZWAP033 2011-04-14              0         10431         N-NH4   0.318</span></span>
-<span><span class="co">#&gt; 11  ZWAP033 2011-04-14              0         10431         N-NO2   0.015</span></span>
-<span><span class="co">#&gt; 12  ZWAP033 2011-04-14              0         10431         N-NO3   0.041</span></span>
-<span><span class="co">#&gt; 13  ZWAP033 2011-04-14              0         10431           pHF   6.297</span></span>
-<span><span class="co">#&gt; 14  ZWAP033 2011-04-14              0         10431           pHL   5.830</span></span>
-<span><span class="co">#&gt; 15  ZWAP033 2011-04-14              0         10431         P-PO4   0.016</span></span>
-<span><span class="co">#&gt;    unit  below_loq loq  elneutr</span></span>
-<span><span class="co">#&gt; 1   mg/l        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 2   mg/l        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 3  µS/cm        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 4  µS/cm        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 5   mg/l        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 6   mg/l        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 7   mg/l        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 8   mg/l        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 9   mg/l        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 10  mg/l        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 11  mg/l        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 12  mg/l        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 13  &lt;NA&gt;        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 14  &lt;NA&gt;        NA -99 0.610484</span></span>
-<span><span class="co">#&gt; 15  mg/l        NA -99 0.610484</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   ZWAP245 2025-05-07    I-25W002-05         42718          HCO3  11.407</span></span>
+<span><span class="co">#&gt; 2   ZWAP245 2025-05-07    I-25W002-05         42718         N-NO3  25.922</span></span>
+<span><span class="co">#&gt; 3   ZWAP245 2025-05-07    I-25W002-05         42718         CondF 436.000</span></span>
+<span><span class="co">#&gt; 4   ZWAP245 2025-05-07    I-25W002-05         42718            Na  15.159</span></span>
+<span><span class="co">#&gt; 5   ZWAP245 2025-05-07    I-25W002-05         42718            Si   6.499</span></span>
+<span><span class="co">#&gt; 6   ZWAP245 2025-05-07    I-25W002-05         42718             K  22.666</span></span>
+<span><span class="co">#&gt; 7   ZWAP245 2025-05-07    I-25W002-05         42718           pHL   5.760</span></span>
+<span><span class="co">#&gt; 8   ZWAP245 2025-05-07    I-25W002-05         42718         N-NO2   0.015</span></span>
+<span><span class="co">#&gt; 9   ZWAP245 2025-05-07    I-25W002-05         42718         N-NH4   0.020</span></span>
+<span><span class="co">#&gt; 10  ZWAP245 2025-05-07    I-25W002-05         42718         CondL 440.200</span></span>
+<span><span class="co">#&gt; 11  ZWAP245 2025-05-07    I-25W002-05         42718         P-PO4   0.015</span></span>
+<span><span class="co">#&gt; 12  ZWAP245 2025-05-07    I-25W002-05         42718            Ca  31.531</span></span>
+<span><span class="co">#&gt; 13  ZWAP245 2025-05-07    I-25W002-05         42718            Cl  24.559</span></span>
+<span><span class="co">#&gt; 14  ZWAP245 2025-05-07    I-25W002-05         42718            Al   0.252</span></span>
+<span><span class="co">#&gt; 15  ZWAP245 2025-05-07    I-25W002-05         42718           SO4  48.999</span></span>
+<span><span class="co">#&gt;     unit below_loq loq     elneutr</span></span>
+<span><span class="co">#&gt; 1   mg/l     FALSE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 2   mg/l     FALSE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 3  µS/cm     FALSE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 4   mg/l     FALSE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 5   mg/l     FALSE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 6   mg/l     FALSE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 7   &lt;NA&gt;     FALSE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 8   mg/l      TRUE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 9   mg/l      TRUE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 10 µS/cm     FALSE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 11  mg/l      TRUE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 12  mg/l     FALSE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 13  mg/l     FALSE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 14  mg/l     FALSE -99 0.008499404</span></span>
+<span><span class="co">#&gt; 15  mg/l     FALSE -99 0.008499404</span></span></code></pre></div>
 <p>The first and last year of the dataset are:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mydata</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html" class="external-link">year</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>firstyear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, lastyear <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; firstyear  lastyear</span></span>
-<span><span class="co">#&gt;      2011      2019</span></span></code></pre></div>
+<span><span class="co">#&gt; firstyear  lastyear </span></span>
+<span><span class="co">#&gt;      2011      2026 </span></span></code></pre></div>
 <p>Let’s suppose that we now want to select locations for which:</p>
 <ul>
 <li>both N-NO3 (nitrate nitrogen) and P-PO4 (orthophosphate phosphorus)
@@ -210,6 +210,8 @@ with the <code>chem_var</code> argument in the
 <span>    conditions <span class="op">=</span> <span class="va">conditions_df</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="va">myresult</span></span>
+<span><span class="co"># Note: this output is outdated (created on 2 Oct 2019 as there is a known bug)</span></span>
+<span></span>
 <span><span class="co">#&gt; # A tibble: 18 x 1</span></span>
 <span><span class="co">#&gt;    loc_code</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;</span></span>
@@ -248,42 +250,43 @@ set as <em>today</em>. Here we only provide the
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mylocs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>, area_codes <span class="op">=</span> <span class="st">"ZWA"</span><span class="op">)</span></span>
 <span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:     lazy query [?? x 10]</span></span>
-<span><span class="co">#&gt; # Database:   Microsoft SQL Server</span></span>
-<span><span class="co">#&gt; # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code,</span></span>
-<span><span class="co">#&gt; #   loc_code, date, chem_variable</span></span>
-<span><span class="co">#&gt;    loc_code date       lab_project_id lab_sample_id chem_variable  value</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;    &lt;date&gt;     &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;          &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 ZWAP034  2018-10-29 0              40121         Al              0.05</span></span>
-<span><span class="co">#&gt;  2 ZWAP034  2018-10-29 0              40121         Ca              4.24</span></span>
-<span><span class="co">#&gt;  3 ZWAP034  2018-10-29 0              40121         Cl             14.4</span></span>
-<span><span class="co">#&gt;  4 ZWAP034  2018-10-29 0              40121         CondF         135</span></span>
-<span><span class="co">#&gt;  5 ZWAP034  2018-10-29 0              40121         CondL         120.</span></span>
-<span><span class="co">#&gt;  6 ZWAP034  2018-10-29 0              40121         Fe             19.9</span></span>
-<span><span class="co">#&gt;  7 ZWAP034  2018-10-29 0              40121         HCO3            5.97</span></span>
-<span><span class="co">#&gt;  8 ZWAP034  2018-10-29 0              40121         K               1.98</span></span>
-<span><span class="co">#&gt;  9 ZWAP034  2018-10-29 0              40121         Mg              1.36</span></span>
-<span><span class="co">#&gt; 10 ZWAP034  2018-10-29 0              40121         Mn              0.05</span></span>
-<span><span class="co">#&gt; # … with more rows, and 4 more variables: unit &lt;chr&gt;, below_loq &lt;lgl&gt;,</span></span>
-<span><span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; # A query:  ?? x 10</span></span>
+<span><span class="co">#&gt; # Database: Microsoft SQL Server</span></span>
+<span><span class="co">#&gt;    loc_code date       lab_project_id lab_sample_id chem_variable   value</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;    &lt;date&gt;     &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;           &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 ZWAP245  2025-05-07 I-25W002-05    42718         HCO3           11.4  </span></span>
+<span><span class="co">#&gt;  2 ZWAP245  2025-05-07 I-25W002-05    42718         N-NO3          25.9  </span></span>
+<span><span class="co">#&gt;  3 ZWAP245  2025-05-07 I-25W002-05    42718         CondF         436    </span></span>
+<span><span class="co">#&gt;  4 ZWAP245  2025-05-07 I-25W002-05    42718         Na             15.2  </span></span>
+<span><span class="co">#&gt;  5 ZWAP245  2025-05-07 I-25W002-05    42718         Si              6.50 </span></span>
+<span><span class="co">#&gt;  6 ZWAP245  2025-05-07 I-25W002-05    42718         K              22.7  </span></span>
+<span><span class="co">#&gt;  7 ZWAP245  2025-05-07 I-25W002-05    42718         pHL             5.76 </span></span>
+<span><span class="co">#&gt;  8 ZWAP245  2025-05-07 I-25W002-05    42718         N-NO2           0.015</span></span>
+<span><span class="co">#&gt;  9 ZWAP245  2025-05-07 I-25W002-05    42718         N-NH4           0.02 </span></span>
+<span><span class="co">#&gt; 10 ZWAP245  2025-05-07 I-25W002-05    42718         CondL         440.   </span></span>
+<span><span class="co">#&gt; # ℹ more rows</span></span>
+<span><span class="co">#&gt; # ℹ 4 more variables: unit &lt;chr&gt;, below_loq &lt;lgl&gt;, loq &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   elneutr &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>Retrieving the data locally:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span>, collect <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 608 x 10</span></span>
-<span><span class="co">#&gt;    loc_code date       lab_project_id lab_sample_id chem_variable  value</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;    &lt;date&gt;     &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;          &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 ZWAP034  2018-10-29 0              40121         Al              0.05</span></span>
-<span><span class="co">#&gt;  2 ZWAP034  2018-10-29 0              40121         Ca              4.24</span></span>
-<span><span class="co">#&gt;  3 ZWAP034  2018-10-29 0              40121         Cl             14.4</span></span>
-<span><span class="co">#&gt;  4 ZWAP034  2018-10-29 0              40121         CondF         135</span></span>
-<span><span class="co">#&gt;  5 ZWAP034  2018-10-29 0              40121         CondL         120.</span></span>
-<span><span class="co">#&gt;  6 ZWAP034  2018-10-29 0              40121         Fe             19.9</span></span>
-<span><span class="co">#&gt;  7 ZWAP034  2018-10-29 0              40121         HCO3            5.97</span></span>
-<span><span class="co">#&gt;  8 ZWAP034  2018-10-29 0              40121         K               1.98</span></span>
-<span><span class="co">#&gt;  9 ZWAP034  2018-10-29 0              40121         Mg              1.36</span></span>
-<span><span class="co">#&gt; 10 ZWAP034  2018-10-29 0              40121         Mn              0.05</span></span>
-<span><span class="co">#&gt; # … with 598 more rows, and 4 more variables: unit &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   below_loq &lt;lgl&gt;, loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 3,480 × 10</span></span>
+<span><span class="co">#&gt;    loc_code date       lab_project_id lab_sample_id chem_variable   value</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;    &lt;date&gt;     &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;           &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 ZWAP009  2025-12-01 I-25W002-10    43051         Al              0.05 </span></span>
+<span><span class="co">#&gt;  2 ZWAP009  2025-12-01 I-25W002-10    43051         Ca             12.3  </span></span>
+<span><span class="co">#&gt;  3 ZWAP009  2025-12-01 I-25W002-10    43051         Cl              8.98 </span></span>
+<span><span class="co">#&gt;  4 ZWAP009  2025-12-01 I-25W002-10    43051         CondF         107.   </span></span>
+<span><span class="co">#&gt;  5 ZWAP009  2025-12-01 I-25W002-10    43051         CondL         105.   </span></span>
+<span><span class="co">#&gt;  6 ZWAP009  2025-12-01 I-25W002-10    43051         Fe              0.389</span></span>
+<span><span class="co">#&gt;  7 ZWAP009  2025-12-01 I-25W002-10    43051         HCO3           21.6  </span></span>
+<span><span class="co">#&gt;  8 ZWAP009  2025-12-01 I-25W002-10    43051         K               0.978</span></span>
+<span><span class="co">#&gt;  9 ZWAP009  2025-12-01 I-25W002-10    43051         Mg              1.41 </span></span>
+<span><span class="co">#&gt; 10 ZWAP009  2025-12-01 I-25W002-10    43051         Mn              0.083</span></span>
+<span><span class="co">#&gt; # ℹ 3,470 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 4 more variables: unit &lt;chr&gt;, below_loq &lt;lgl&gt;, loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>Note below, the different number of results when using non-default
 settings for filtering according to <em>electroneutrality</em>! The
 default range of electroneutrality is from -0.1 to 0.1 (argument
@@ -292,27 +295,27 @@ default range of electroneutrality is from -0.1 to 0.1 (argument
 <code class="sourceCode R"><span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:   lazy query [?? x 1]</span></span>
+<span><span class="co">#&gt; # A query:  ?? x 1</span></span>
 <span><span class="co">#&gt; # Database: Microsoft SQL Server</span></span>
-<span><span class="co">#&gt;       n</span></span>
-<span><span class="co">#&gt;   &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1   608</span></span>
+<span><span class="co">#&gt;         n</span></span>
+<span><span class="co">#&gt;   &lt;int64&gt;</span></span>
+<span><span class="co">#&gt; 1    3480</span></span>
 <span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span>, en_exclude_na <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:   lazy query [?? x 1]</span></span>
+<span><span class="co">#&gt; # A query:  ?? x 1</span></span>
 <span><span class="co">#&gt; # Database: Microsoft SQL Server</span></span>
-<span><span class="co">#&gt;       n</span></span>
-<span><span class="co">#&gt;   &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1   602</span></span>
+<span><span class="co">#&gt;         n</span></span>
+<span><span class="co">#&gt;   &lt;int64&gt;</span></span>
+<span><span class="co">#&gt; 1    3480</span></span>
 <span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span>, en_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:   lazy query [?? x 1]</span></span>
+<span><span class="co">#&gt; # A query:  ?? x 1</span></span>
 <span><span class="co">#&gt; # Database: Microsoft SQL Server</span></span>
-<span><span class="co">#&gt;       n</span></span>
-<span><span class="co">#&gt;   &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1   674</span></span></code></pre></div>
+<span><span class="co">#&gt;         n</span></span>
+<span><span class="co">#&gt;   &lt;int64&gt;</span></span>
+<span><span class="co">#&gt; 1    3834</span></span></code></pre></div>
 <p>With <code>en_exclude_na = TRUE</code>, samples for which no
 electroneutrality could be calculated are discarded!</p>
 <p>By default, all measurements from water samples with a high iron /
@@ -327,33 +330,32 @@ relatively iron-rich water samples, set
 <code class="sourceCode R"><span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span>, en_fecond_threshold <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:   lazy query [?? x 1]</span></span>
+<span><span class="co">#&gt; # A query:  ?? x 1</span></span>
 <span><span class="co">#&gt; # Database: Microsoft SQL Server</span></span>
-<span><span class="co">#&gt;       n</span></span>
-<span><span class="co">#&gt;   &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1   524</span></span></code></pre></div>
+<span><span class="co">#&gt;         n</span></span>
+<span><span class="co">#&gt;   &lt;int64&gt;</span></span>
+<span><span class="co">#&gt; 1    2625</span></span></code></pre></div>
 <p>Equivalence concentrations instead of mass concentrations can be
 returned with <code>conc_type = "eq"</code>:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/get_chem.html">get_chem</a></span><span class="op">(</span><span class="va">watina</span>, <span class="st">"1/1/2017"</span>, conc_type <span class="op">=</span> <span class="st">"eq"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:     lazy query [?? x 10]</span></span>
-<span><span class="co">#&gt; # Database:   Microsoft SQL Server</span></span>
-<span><span class="co">#&gt; # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code,</span></span>
-<span><span class="co">#&gt; #   loc_code, date, chem_variable</span></span>
-<span><span class="co">#&gt;    loc_code date       lab_project_id lab_sample_id chem_variable   value</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;    &lt;date&gt;     &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;           &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 ZWAP034  2018-10-29 0              40121         Al            5.00e-2</span></span>
-<span><span class="co">#&gt;  2 ZWAP034  2018-10-29 0              40121         Ca            2.12e-1</span></span>
-<span><span class="co">#&gt;  3 ZWAP034  2018-10-29 0              40121         Cl            4.07e-1</span></span>
-<span><span class="co">#&gt;  4 ZWAP034  2018-10-29 0              40121         CondF         1.35e+2</span></span>
-<span><span class="co">#&gt;  5 ZWAP034  2018-10-29 0              40121         CondL         1.20e+2</span></span>
-<span><span class="co">#&gt;  6 ZWAP034  2018-10-29 0              40121         Fe            7.14e-1</span></span>
-<span><span class="co">#&gt;  7 ZWAP034  2018-10-29 0              40121         HCO3          9.78e-2</span></span>
-<span><span class="co">#&gt;  8 ZWAP034  2018-10-29 0              40121         K             5.07e-2</span></span>
-<span><span class="co">#&gt;  9 ZWAP034  2018-10-29 0              40121         Mg            1.12e-1</span></span>
-<span><span class="co">#&gt; 10 ZWAP034  2018-10-29 0              40121         Mn            5.00e-2</span></span>
-<span><span class="co">#&gt; # … with more rows, and 4 more variables: unit &lt;chr&gt;, below_loq &lt;lgl&gt;,</span></span>
-<span><span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; # A query:  ?? x 10</span></span>
+<span><span class="co">#&gt; # Database: Microsoft SQL Server</span></span>
+<span><span class="co">#&gt;    loc_code date       lab_project_id lab_sample_id chem_variable    value unit </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;    &lt;date&gt;     &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;</span></span>
+<span><span class="co">#&gt;  1 ZWAP245  2025-05-07 I-25W002-05    42718         HCO3           1.87e-1 meq/l</span></span>
+<span><span class="co">#&gt;  2 ZWAP245  2025-05-07 I-25W002-05    42718         N-NO3          1.85e+0 meq/l</span></span>
+<span><span class="co">#&gt;  3 ZWAP245  2025-05-07 I-25W002-05    42718         CondF          4.36e+2 µS/cm</span></span>
+<span><span class="co">#&gt;  4 ZWAP245  2025-05-07 I-25W002-05    42718         Na             6.59e-1 meq/l</span></span>
+<span><span class="co">#&gt;  5 ZWAP245  2025-05-07 I-25W002-05    42718         Si             9.25e-1 meq/l</span></span>
+<span><span class="co">#&gt;  6 ZWAP245  2025-05-07 I-25W002-05    42718         K              5.80e-1 meq/l</span></span>
+<span><span class="co">#&gt;  7 ZWAP245  2025-05-07 I-25W002-05    42718         pHL            5.76e+0 NA   </span></span>
+<span><span class="co">#&gt;  8 ZWAP245  2025-05-07 I-25W002-05    42718         N-NO2          1.07e-3 meq/l</span></span>
+<span><span class="co">#&gt;  9 ZWAP245  2025-05-07 I-25W002-05    42718         N-NH4          1.43e-3 meq/l</span></span>
+<span><span class="co">#&gt; 10 ZWAP245  2025-05-07 I-25W002-05    42718         CondL          4.40e+2 µS/cm</span></span>
+<span><span class="co">#&gt; # ℹ more rows</span></span>
+<span><span class="co">#&gt; # ℹ 3 more variables: below_loq &lt;lgl&gt;, loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>Joining results to <code>mylocs</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -364,25 +366,28 @@ returned with <code>conc_type = "eq"</code>:</p>
 <span>    <span class="va">.</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining, by = "loc_code"</span></span>
-<span><span class="co">#&gt; # A tibble: 765 x 20</span></span>
-<span><span class="co">#&gt;    loc_code area_code area_name      x      y loc_validitycode loc_validity</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;</span></span>
-<span><span class="co">#&gt;  1 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  2 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  3 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  4 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  5 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  6 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  7 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  8 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  9 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt; 10 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt; # … with 755 more rows, and 13 more variables: loc_typecode &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   loc_typename &lt;chr&gt;, filterdepth &lt;dbl&gt;, soilsurf_ost &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   date &lt;date&gt;, lab_project_id &lt;chr&gt;, lab_sample_id &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   chem_variable &lt;chr&gt;, value &lt;dbl&gt;, unit &lt;chr&gt;, below_loq &lt;lgl&gt;,</span></span>
-<span><span class="co">#&gt; #   loq &lt;dbl&gt;, elneutr &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; Joining with `by = join_by(loc_code)`</span></span>
+<span><span class="co">#&gt; # A tibble: 3,608 × 25</span></span>
+<span><span class="co">#&gt;    loc_code area_code area_name         x       y loc_validitycode loc_validity</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;       </span></span>
+<span><span class="co">#&gt;  1 ZWAP001  ZWA       Zwarte Beek 216505  198076. VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  2 ZWAP002  ZWA       Zwarte Beek 216540  198130  VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  3 ZWAP003  ZWA       Zwarte Beek 216540  198110  VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  4 ZWAP004  ZWA       Zwarte Beek 216550  198090  VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  5 ZWAP005  ZWA       Zwarte Beek 214270  196870  VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  6 ZWAP006  ZWA       Zwarte Beek 214270  196880  VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  7 ZWAP007  ZWA       Zwarte Beek 214240  196900  VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  8 ZWAP008  ZWA       Zwarte Beek 214210  196920  VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  9 ZWAP009  ZWA       Zwarte Beek 215044. 197330. VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt; 10 ZWAP009  ZWA       Zwarte Beek 215044. 197330. VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt; # ℹ 3,598 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 18 more variables: loc_typecode &lt;chr&gt;, loc_typename &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   obswell_statecode &lt;chr&gt;, obswell_state &lt;chr&gt;, soilsurf_ost &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   measuringref_ost &lt;dbl&gt;, tubelength &lt;dbl&gt;, filterlength &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   filterdepth &lt;dbl&gt;, date &lt;date&gt;, lab_project_id &lt;chr&gt;, lab_sample_id &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   chem_variable &lt;chr&gt;, value &lt;dbl&gt;, unit &lt;chr&gt;, below_loq &lt;lgl&gt;, loq &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   elneutr &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="processing-hydrochemical-data-and-selecting-locations">Processing hydrochemical data and selecting locations<a class="anchor" aria-label="anchor" href="#processing-hydrochemical-data-and-selecting-locations"></a>

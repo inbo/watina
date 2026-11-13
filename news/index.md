@@ -1,5 +1,67 @@
 # Changelog
 
+## watina 1.0.0 (2026-11-13)
+
+Note: transfer of maintainership from Floris Vanderhaeghe to Droomelot
+De Gendt (<droomelot.degendt@inbo.be>).
+
+This release migrates the package to the new Watina data warehouse,
+`W0002_10_Watina`.
+
+#### Changes in behaviour
+
+- [`connect_watina()`](https://inbo.github.io/watina/reference/connect_watina.md)
+  now connects to `W0002_10_Watina`.
+- Adapt
+  [`get_locs()`](https://inbo.github.io/watina/reference/get_locs.md),
+  [`get_xg3()`](https://inbo.github.io/watina/reference/get_xg3.md) and
+  [`get_chem()`](https://inbo.github.io/watina/reference/get_chem.md) to
+  the new warehouse schema
+  ([\#133](https://github.com/inbo/watina/issues/133),
+  [\#134](https://github.com/inbo/watina/issues/134),
+  [\#136](https://github.com/inbo/watina/issues/136)).
+- Deprecate the `loc_validity` argument of
+  [`get_locs()`](https://inbo.github.io/watina/reference/get_locs.md).
+  Only `"VLD"` locations are available, and other requested statuses are
+  ignored ([\#133](https://github.com/inbo/watina/issues/133)).
+- [`get_xg3()`](https://inbo.github.io/watina/reference/get_xg3.md) now
+  uses `FactBRPeilMetingJaar` and selects calculation settings through
+  `DimParameterSet`. The previously unused arguments `truncated` and
+  `with_estimated` are now applied and both default to `FALSE`
+  ([\#134](https://github.com/inbo/watina/issues/134)).
+- [`get_xg3()`](https://inbo.github.io/watina/reference/get_xg3.md)
+  errors when no matching parameter set exists. When multiple sets
+  match, it reports the ambiguity and selects the set with the highest
+  `ParameterSetWID` ([\#134](https://github.com/inbo/watina/issues/134),
+  [\#140](https://github.com/inbo/watina/issues/140)).
+- [`get_chem()`](https://inbo.github.io/watina/reference/get_chem.md)
+  retrieves electroneutrality from `DimStaal` and excludes duplicate
+  `CondF` records ([\#136](https://github.com/inbo/watina/issues/136)).
+
+#### Testing
+
+- Extend database snapshot tests to cover
+  [`get_xg3()`](https://inbo.github.io/watina/reference/get_xg3.md) and
+  [`get_chem()`](https://inbo.github.io/watina/reference/get_chem.md)
+  filters and queries for migration comparisons
+  ([\#132](https://github.com/inbo/watina/issues/132)).
+- Document how to run the complete test suite
+  ([\#132](https://github.com/inbo/watina/issues/132)).
+
+#### Maintenance
+
+- Separate warehouse query logic into internal helpers
+  `build_locs_query()`, `build_xg3_query()` and `build_chem_query()`
+  ([\#133](https://github.com/inbo/watina/issues/133),
+  [\#134](https://github.com/inbo/watina/issues/134),
+  [\#136](https://github.com/inbo/watina/issues/136)).
+- Clarify `drop_all_na` documentation: hydroyears with water-level
+  records can be returned with all XG3 values missing, but hydroyears
+  without records are not returned
+  ([\#140](https://github.com/inbo/watina/issues/140)).
+- Update the static output of the vignettes to use the latest code
+  changes and data from the new DWH.
+
 ## watina 0.6.0 (2026-11-12)
 
 #### Testing

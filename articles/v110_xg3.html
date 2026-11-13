@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">watina</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,8 @@
 
     
     
-<p><em>General note: the below vignette contains frozen output of 16 Sep
-2019.</em> <em>This makes it possible to build the package with
+<p><em>General note: the below vignette contains frozen output of 12 Nov
+2026.</em> <em>This makes it possible to build the package with
 vignettes without access to the Watina data warehouse.</em></p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -134,26 +134,22 @@ statistics are explained by the documentation of
 <span>    min_dur <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>    conditions <span class="op">=</span> <span class="va">conditions_df</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Dropped 19 locations in series evaluation because no XG3 series are available at those locations, for the requested XG3 variables: TORP012, TORP013, TORP019, TORP023, TORP025, TORP026, TORP027, TORP030, TORP031, TORS001, TORS002, TORS003, TORS004, TORS005, TORS006, TORS007, TORS008, TORS010, TORS012</span></span>
-<span><span class="co">#&gt; # A tibble: 16 x 1</span></span>
+<span><span class="co">#&gt; Dropped 24 locations in series evaluation because no XG3 series are available at those locations, for the requested XG3 variables: TORP013, TORP019, TORP023, TORP025, TORP026, TORP027, TORP032, TORP033, TORP034, TORS001, TORS002, TORS003, TORS004, TORS005, TORS006, TORS007, TORS008, TORS010, TORS011, TORS012, TORS013, TORS014, TORS015, TORS017</span></span>
+<span><span class="co">#&gt; # A tibble: 28 × 1</span></span>
 <span><span class="co">#&gt;    loc_code</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;</span></span>
-<span><span class="co">#&gt;  1 TORP001</span></span>
-<span><span class="co">#&gt;  2 TORP002</span></span>
-<span><span class="co">#&gt;  3 TORP004</span></span>
-<span><span class="co">#&gt;  4 TORP005</span></span>
-<span><span class="co">#&gt;  5 TORP010</span></span>
-<span><span class="co">#&gt;  6 TORP011</span></span>
-<span><span class="co">#&gt;  7 TORP014</span></span>
-<span><span class="co">#&gt;  8 TORP015</span></span>
-<span><span class="co">#&gt;  9 TORP016</span></span>
-<span><span class="co">#&gt; 10 TORP018</span></span>
-<span><span class="co">#&gt; 11 TORP020</span></span>
-<span><span class="co">#&gt; 12 TORP022</span></span>
-<span><span class="co">#&gt; 13 TORP024</span></span>
-<span><span class="co">#&gt; 14 TORP028</span></span>
-<span><span class="co">#&gt; 15 TORP029</span></span>
-<span><span class="co">#&gt; 16 TORS009</span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;chr&gt;   </span></span>
+<span><span class="co">#&gt;  1 TORP001 </span></span>
+<span><span class="co">#&gt;  2 TORP002 </span></span>
+<span><span class="co">#&gt;  3 TORP003 </span></span>
+<span><span class="co">#&gt;  4 TORP004 </span></span>
+<span><span class="co">#&gt;  5 TORP005 </span></span>
+<span><span class="co">#&gt;  6 TORP006 </span></span>
+<span><span class="co">#&gt;  7 TORP007 </span></span>
+<span><span class="co">#&gt;  8 TORP009 </span></span>
+<span><span class="co">#&gt;  9 TORP010 </span></span>
+<span><span class="co">#&gt; 10 TORP011 </span></span>
+<span><span class="co">#&gt; # ℹ 18 more rows</span></span>
+<span><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>With the argument <code>list = TRUE</code> you can also obtain
 intermediate test results. For further information, see the
 documentation of the <code><a href="../reference/selectlocs_xg3.html">selectlocs_xg3()</a></code> function.</p>
@@ -171,61 +167,62 @@ is set to the previous hydrological year. Here we only provide the
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mylocs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_locs.html">get_locs</a></span><span class="op">(</span><span class="va">watina</span>, area_codes <span class="op">=</span> <span class="st">"KAL"</span><span class="op">)</span></span>
 <span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:     lazy query [?? x 5]</span></span>
-<span><span class="co">#&gt; # Database:   Microsoft SQL Server</span></span>
-<span><span class="co">#&gt; # Ordered by: area_code, loc_code, loc_code, hydroyear</span></span>
+<span><span class="co">#&gt; # A query:  ?? x 5</span></span>
+<span><span class="co">#&gt; # Database: Microsoft SQL Server</span></span>
 <span><span class="co">#&gt;    loc_code hydroyear lg3_lcl hg3_lcl vg3_lcl</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 KALP022       2014  -0.948  -0.135  -0.473</span></span>
-<span><span class="co">#&gt;  2 KALP022       2015  -1.05   -0.112  -0.340</span></span>
-<span><span class="co">#&gt;  3 KALP022       2016  -1.07   -0.124  -0.269</span></span>
-<span><span class="co">#&gt;  4 KALP022       2017  NA      NA      -0.326</span></span>
-<span><span class="co">#&gt;  5 KALP079       2010  NA      NA      -0.873</span></span>
-<span><span class="co">#&gt;  6 KALP079       2011  NA      NA      -0.747</span></span>
-<span><span class="co">#&gt;  7 KALP079       2012  NA      NA      -0.773</span></span>
-<span><span class="co">#&gt;  8 KALP079       2013  NA      NA      -0.64</span></span>
-<span><span class="co">#&gt;  9 KALP081       2010  NA      NA      -0.557</span></span>
-<span><span class="co">#&gt; 10 KALP081       2013  NA      NA      -0.413</span></span>
-<span><span class="co">#&gt; # … with more rows</span></span></code></pre></div>
+<span><span class="co">#&gt;  1 KALP011       2024   NA      NA      NA   </span></span>
+<span><span class="co">#&gt;  2 KALP011       2023   NA      NA      -0.4 </span></span>
+<span><span class="co">#&gt;  3 KALP011       2022   -0.82   -0.29   -0.6 </span></span>
+<span><span class="co">#&gt;  4 KALP011       2021   NA      NA      NA   </span></span>
+<span><span class="co">#&gt;  5 KALP012       2021   NA      NA      NA   </span></span>
+<span><span class="co">#&gt;  6 KALP012       2022   -1.79   -0.63   -0.83</span></span>
+<span><span class="co">#&gt;  7 KALP012       2024   -1.09   -0.44   -0.5 </span></span>
+<span><span class="co">#&gt;  8 KALP012       2023   -1.43   -0.42   -0.65</span></span>
+<span><span class="co">#&gt;  9 KALP013       2021   NA      NA      NA   </span></span>
+<span><span class="co">#&gt; 10 KALP013       2022   -1.67    0.18    0.01</span></span>
+<span><span class="co">#&gt; # ℹ more rows</span></span>
+<span><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>Retrieving the data locally:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span>, collect <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 46 x 5</span></span>
+<span><span class="co">#&gt; # A tibble: 383 × 5</span></span>
 <span><span class="co">#&gt;    loc_code hydroyear lg3_lcl hg3_lcl vg3_lcl</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 KALP022       2014  -0.948  -0.135  -0.473</span></span>
-<span><span class="co">#&gt;  2 KALP022       2015  -1.05   -0.112  -0.340</span></span>
-<span><span class="co">#&gt;  3 KALP022       2016  -1.07   -0.124  -0.269</span></span>
-<span><span class="co">#&gt;  4 KALP022       2017  NA      NA      -0.326</span></span>
-<span><span class="co">#&gt;  5 KALP079       2010  NA      NA      -0.873</span></span>
-<span><span class="co">#&gt;  6 KALP079       2011  NA      NA      -0.747</span></span>
-<span><span class="co">#&gt;  7 KALP079       2012  NA      NA      -0.773</span></span>
-<span><span class="co">#&gt;  8 KALP079       2013  NA      NA      -0.64</span></span>
-<span><span class="co">#&gt;  9 KALP081       2010  NA      NA      -0.557</span></span>
-<span><span class="co">#&gt; 10 KALP081       2013  NA      NA      -0.413</span></span>
-<span><span class="co">#&gt; # … with 36 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt;  1 KALP011       2021   NA      NA      NA   </span></span>
+<span><span class="co">#&gt;  2 KALP011       2022   -0.82   -0.29   -0.6 </span></span>
+<span><span class="co">#&gt;  3 KALP011       2023   NA      NA      -0.4 </span></span>
+<span><span class="co">#&gt;  4 KALP011       2024   NA      NA      NA   </span></span>
+<span><span class="co">#&gt;  5 KALP012       2021   NA      NA      NA   </span></span>
+<span><span class="co">#&gt;  6 KALP012       2022   -1.79   -0.63   -0.83</span></span>
+<span><span class="co">#&gt;  7 KALP012       2023   -1.43   -0.42   -0.65</span></span>
+<span><span class="co">#&gt;  8 KALP012       2024   -1.09   -0.44   -0.5 </span></span>
+<span><span class="co">#&gt;  9 KALP012       2025   -1.69   -0.6    -0.7 </span></span>
+<span><span class="co">#&gt; 10 KALP013       2021   NA      NA      NA   </span></span>
+<span><span class="co">#&gt; # ℹ 373 more rows</span></span>
+<span><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>By default, the “local” vertical coordinate reference system (CRS) is
 used to express water levels, but also the CRS Ostend height (EPSG <a href="https://epsg.io/5710" class="external-link">5710</a>, also known as ‘TAW’ or ‘DNG’) is
 available from the data warehouse by setting
 <code>vert_crs = "ostend"</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/get_xg3.html">get_xg3</a></span><span class="op">(</span><span class="va">watina</span>, <span class="fl">2010</span>, vert_crs <span class="op">=</span> <span class="st">"ostend"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # Source:     lazy query [?? x 5]</span></span>
-<span><span class="co">#&gt; # Database:   Microsoft SQL Server</span></span>
-<span><span class="co">#&gt; # Ordered by: area_code, loc_code, loc_code, hydroyear</span></span>
+<span><span class="co">#&gt; # A query:  ?? x 5</span></span>
+<span><span class="co">#&gt; # Database: Microsoft SQL Server</span></span>
 <span><span class="co">#&gt;    loc_code hydroyear lg3_ost hg3_ost vg3_ost</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 KALP022       2014    22.5    23.4    23.0</span></span>
-<span><span class="co">#&gt;  2 KALP022       2015    22.4    23.4    23.1</span></span>
-<span><span class="co">#&gt;  3 KALP022       2016    22.4    23.4    23.2</span></span>
-<span><span class="co">#&gt;  4 KALP022       2017    NA      NA      23.2</span></span>
-<span><span class="co">#&gt;  5 KALP079       2010    NA      NA      19.6</span></span>
-<span><span class="co">#&gt;  6 KALP079       2011    NA      NA      19.7</span></span>
-<span><span class="co">#&gt;  7 KALP079       2012    NA      NA      19.7</span></span>
-<span><span class="co">#&gt;  8 KALP079       2013    NA      NA      19.8</span></span>
-<span><span class="co">#&gt;  9 KALP081       2010    NA      NA      20.9</span></span>
-<span><span class="co">#&gt; 10 KALP081       2013    NA      NA      21.0</span></span>
-<span><span class="co">#&gt; # … with more rows</span></span></code></pre></div>
+<span><span class="co">#&gt;  1 KALP011       2021    NA      NA      NA  </span></span>
+<span><span class="co">#&gt;  2 KALP011       2022    18.3    18.8    18.5</span></span>
+<span><span class="co">#&gt;  3 KALP011       2023    NA      NA      18.8</span></span>
+<span><span class="co">#&gt;  4 KALP011       2024    NA      NA      NA  </span></span>
+<span><span class="co">#&gt;  5 KALP012       2024    19.6    20.2    20.2</span></span>
+<span><span class="co">#&gt;  6 KALP012       2021    NA      NA      NA  </span></span>
+<span><span class="co">#&gt;  7 KALP012       2022    18.9    20.0    19.8</span></span>
+<span><span class="co">#&gt;  8 KALP012       2023    19.2    20.2    20.0</span></span>
+<span><span class="co">#&gt;  9 KALP012       2025    19.0    20.1    20.0</span></span>
+<span><span class="co">#&gt; 10 KALP013       2021    NA      NA      NA  </span></span>
+<span><span class="co">#&gt; # ℹ more rows</span></span>
+<span><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 <p>Joining results to <code>mylocs</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mylocs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -236,23 +233,27 @@ available from the data warehouse by setting
 <span>    <span class="va">.</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining, by = "loc_code"</span></span>
-<span><span class="co">#&gt; # A tibble: 109 x 13</span></span>
-<span><span class="co">#&gt;    loc_code area_code area_name      x      y loc_validitycode loc_validity</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;</span></span>
-<span><span class="co">#&gt;  1 KALP030  KAL       Kalmthou… 152990 238600 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  2 KALP035  KAL       Kalmthou… 153000 236850 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  3 KALP039  KAL       Kalmthou… 160940 235060 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  4 KALP052  KAL       Kalmthou… 153822 233761 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  5 KALP053  KAL       Kalmthou… 153781 233736 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  6 KALP059  KAL       Kalmthou… 154754 232459 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  7 KALP060  KAL       Kalmthou… 154702 232476 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  8 KALP061  KAL       Kalmthou… 154559 230477 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt;  9 KALP062  KAL       Kalmthou… 154553 230423 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt; 10 KALP063  KAL       Kalmthou… 154669 230340 VLD              Gevalideerd</span></span>
-<span><span class="co">#&gt; # … with 99 more rows, and 6 more variables: loc_typecode &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   loc_typename &lt;chr&gt;, hydroyear &lt;int&gt;, lg3_lcl &lt;dbl&gt;, hg3_lcl &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   vg3_lcl &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; Joining with `by = join_by(loc_code)`</span></span>
+<span><span class="co">#&gt; # A tibble: 490 × 20</span></span>
+<span><span class="co">#&gt;    loc_code area_code area_name        x      y loc_validitycode loc_validity</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;       </span></span>
+<span><span class="co">#&gt;  1 KALP011  KAL       Kalmthouts… 155827 231840 VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  2 KALP011  KAL       Kalmthouts… 155827 231840 VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  3 KALP011  KAL       Kalmthouts… 155827 231840 VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  4 KALP011  KAL       Kalmthouts… 155827 231840 VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  5 KALP012  KAL       Kalmthouts… 155725 231631 VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  6 KALP012  KAL       Kalmthouts… 155725 231631 VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  7 KALP012  KAL       Kalmthouts… 155725 231631 VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  8 KALP012  KAL       Kalmthouts… 155725 231631 VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt;  9 KALP012  KAL       Kalmthouts… 155725 231631 VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt; 10 KALP013  KAL       Kalmthouts… 155857 231322 VLD              Gevalideerd </span></span>
+<span><span class="co">#&gt; # ℹ 480 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 13 more variables: loc_typecode &lt;chr&gt;, loc_typename &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   obswell_statecode &lt;chr&gt;, obswell_state &lt;chr&gt;, soilsurf_ost &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   measuringref_ost &lt;dbl&gt;, tubelength &lt;dbl&gt;, filterlength &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   filterdepth &lt;dbl&gt;, hydroyear &lt;int&gt;, lg3_lcl &lt;dbl&gt;, hg3_lcl &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   vg3_lcl &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="processing-xg3-values-and-selecting-locations">Processing XG3 values and selecting locations<a class="anchor" aria-label="anchor" href="#processing-xg3-values-and-selecting-locations"></a>

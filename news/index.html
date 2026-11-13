@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">watina</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,35 @@
       <small>Source: <a href="https://github.com/inbo/watina/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.0" id="watina-100-2026-11-13">watina 1.0.0 (2026-11-13)<a class="anchor" aria-label="anchor" href="#watina-100-2026-11-13"></a></h2>
+<p>Note: transfer of maintainership from Floris Vanderhaeghe to Droomelot De Gendt (<a href="mailto:droomelot.degendt@inbo.be" class="email">droomelot.degendt@inbo.be</a>).</p>
+<p>This release migrates the package to the new Watina data warehouse, <code>W0002_10_Watina</code>.</p>
+<div class="section level4">
+<h4 id="changes-in-behaviour-1-0-0">Changes in behaviour<a class="anchor" aria-label="anchor" href="#changes-in-behaviour-1-0-0"></a></h4>
+<ul><li>
+<code><a href="../reference/connect_watina.html">connect_watina()</a></code> now connects to <code>W0002_10_Watina</code>.</li>
+<li>Adapt <code><a href="../reference/get_locs.html">get_locs()</a></code>, <code><a href="../reference/get_xg3.html">get_xg3()</a></code> and <code><a href="../reference/get_chem.html">get_chem()</a></code> to the new warehouse schema (<a href="https://github.com/inbo/watina/issues/133" class="external-link">#133</a>, <a href="https://github.com/inbo/watina/issues/134" class="external-link">#134</a>, <a href="https://github.com/inbo/watina/issues/136" class="external-link">#136</a>).</li>
+<li>Deprecate the <code>loc_validity</code> argument of <code><a href="../reference/get_locs.html">get_locs()</a></code>. Only <code>"VLD"</code> locations are available, and other requested statuses are ignored (<a href="https://github.com/inbo/watina/issues/133" class="external-link">#133</a>).</li>
+<li>
+<code><a href="../reference/get_xg3.html">get_xg3()</a></code> now uses <code>FactBRPeilMetingJaar</code> and selects calculation settings through <code>DimParameterSet</code>. The previously unused arguments <code>truncated</code> and <code>with_estimated</code> are now applied and both default to <code>FALSE</code> (<a href="https://github.com/inbo/watina/issues/134" class="external-link">#134</a>).</li>
+<li>
+<code><a href="../reference/get_xg3.html">get_xg3()</a></code> errors when no matching parameter set exists. When multiple sets match, it reports the ambiguity and selects the set with the highest <code>ParameterSetWID</code> (<a href="https://github.com/inbo/watina/issues/134" class="external-link">#134</a>, <a href="https://github.com/inbo/watina/issues/140" class="external-link">#140</a>).</li>
+<li>
+<code><a href="../reference/get_chem.html">get_chem()</a></code> retrieves electroneutrality from <code>DimStaal</code> and excludes duplicate <code>CondF</code> records (<a href="https://github.com/inbo/watina/issues/136" class="external-link">#136</a>).</li>
+</ul></div>
+<div class="section level4">
+<h4 id="testing-1-0-0">Testing<a class="anchor" aria-label="anchor" href="#testing-1-0-0"></a></h4>
+<ul><li>Extend database snapshot tests to cover <code><a href="../reference/get_xg3.html">get_xg3()</a></code> and <code><a href="../reference/get_chem.html">get_chem()</a></code> filters and queries for migration comparisons (<a href="https://github.com/inbo/watina/issues/132" class="external-link">#132</a>).</li>
+<li>Document how to run the complete test suite (<a href="https://github.com/inbo/watina/issues/132" class="external-link">#132</a>).</li>
+</ul></div>
+<div class="section level4">
+<h4 id="maintenance-1-0-0">Maintenance<a class="anchor" aria-label="anchor" href="#maintenance-1-0-0"></a></h4>
+<ul><li>Separate warehouse query logic into internal helpers <code>build_locs_query()</code>, <code>build_xg3_query()</code> and <code>build_chem_query()</code> (<a href="https://github.com/inbo/watina/issues/133" class="external-link">#133</a>, <a href="https://github.com/inbo/watina/issues/134" class="external-link">#134</a>, <a href="https://github.com/inbo/watina/issues/136" class="external-link">#136</a>).</li>
+<li>Clarify <code>drop_all_na</code> documentation: hydroyears with water-level records can be returned with all XG3 values missing, but hydroyears without records are not returned (<a href="https://github.com/inbo/watina/issues/140" class="external-link">#140</a>).</li>
+<li>Update the static output of the vignettes to use the latest code changes and data from the new DWH.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="watina-060-2026-11-12">watina 0.6.0 (2026-11-12)<a class="anchor" aria-label="anchor" href="#watina-060-2026-11-12"></a></h2>
 <div class="section level4">

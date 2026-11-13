@@ -1,8 +1,8 @@
 # Creating plots based on hydrochemical data
 
-*General note: the below vignette contains frozen output of 7 Nov 2025.*
-*This makes it possible to build the package with vignettes without
-access to the Watina data warehouse.*
+*General note: the below vignette contains frozen output of 12 Nov
+2026.* *This makes it possible to build the package with vignettes
+without access to the Watina data warehouse.*
 
 ## Retrieve chemical data from Watina
 
@@ -23,21 +23,22 @@ my_chem_data <-
 ``` r
 
 my_chem_data
-#> # A tibble: 272 x 10
-#>    loc_code date       lab_project_id lab_sample_id chem_variable  value
-#>    <chr>    <date>     <chr>          <chr>         <chr>          <dbl>
-#>  1 KESP001  2024-07-04 0              42052         Al             0.050
-#>  2 KESP001  2024-07-04 0              42052         Ca             109.881
-#>  3 KESP001  2024-07-04 0              42052         Cl             11.349
-#>  4 KESP001  2024-07-04 0              42052         CondF          599.000
-#>  5 KESP001  2024-07-04 0              42052         CondL          606.700
-#>  6 KESP001  2024-07-04 0              42052         Fe             2.788
-#>  7 KESP001  2024-07-04 0              42052         HCO3           375.292
-#>  8 KESP001  2024-07-04 0              42052         K              0.970
-#>  9 KESP001  2024-07-04 0              42052         Mg             8.960
-#> 10 KESP001  2024-07-04 0              42052         Mn             0.792
-#> # … with 262 more rows, and 4 more variables: unit <chr>,
-#> #   below_loq <lgl>, loq <dbl>, elneutr <dbl>
+#> # A tibble: 288 × 10
+#>    loc_code date       lab_project_id lab_sample_id chem_variable   value
+#>    <chr>    <date>     <chr>          <chr>         <chr>           <dbl>
+#>  1 KESP001  2024-07-04 V-24W019-01    42052         Al              0.05 
+#>  2 KESP001  2024-07-04 V-24W019-01    42052         Ca            110.   
+#>  3 KESP001  2024-07-04 V-24W019-01    42052         Cl             11.3  
+#>  4 KESP001  2024-07-04 V-24W019-01    42052         CondF         599    
+#>  5 KESP001  2024-07-04 V-24W019-01    42052         CondL         607.   
+#>  6 KESP001  2024-07-04 V-24W019-01    42052         Fe              2.79 
+#>  7 KESP001  2024-07-04 V-24W019-01    42052         HCO3          375.   
+#>  8 KESP001  2024-07-04 V-24W019-01    42052         K               0.97 
+#>  9 KESP001  2024-07-04 V-24W019-01    42052         Mg              8.96 
+#> 10 KESP001  2024-07-04 V-24W019-01    42052         Mn              0.792
+#> # ℹ 278 more rows
+#> # ℹ 4 more variables: unit <chr>, below_loq <lgl>, loq <dbl>, elneutr <dbl>
+#> # ℹ Use `print(n = ...)` to see more rows
 ```
 
 We will use this dataset to demonstrate the plotting options available
@@ -76,6 +77,9 @@ names(my_chem_data_vanwirdum)
 #>  [1] "loc_code"       "date"           "lab_project_id" "lab_sample_id" 
 #>  [5] "elneutr"        "chem_variable"  "value"          "unit"          
 #>  [9] "below_loq"      "loq"            "ir"
+#>  [1] "loc_code"       "date"           "lab_project_id" "lab_sample_id" 
+#>  [5] "elneutr"        "chem_variable"  "value"          "unit"          
+#>  [9] "below_loq"      "loq"            "ir"       
 ```
 
 Now we can create the diagram of the ionic ratio against the (log of)

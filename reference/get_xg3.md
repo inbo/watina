@@ -13,9 +13,11 @@ get_xg3(
   startyear,
   endyear = year(now()) - 1,
   vert_crs = c("local", "ostend", "both"),
-  truncated = TRUE,
-  with_estimated = TRUE,
-  collect = FALSE
+  truncated = FALSE,
+  with_estimated = FALSE,
+  collect = FALSE,
+  drop_all_na = FALSE,
+  debug = FALSE
 )
 ```
 
@@ -40,7 +42,8 @@ get_xg3(
 
 - endyear:
 
-  Last hydroyear of the timeframe.
+  Last hydroyear of the timeframe. Defaults to the value of the previous
+  calendar year.
 
 - vert_crs:
 
@@ -56,16 +59,16 @@ get_xg3(
 
 - truncated:
 
-  Logical. If `TRUE` (the default), the XG3 values are calculated after
-  having set the underlying water level measurements that are above soil
-  surface level to the soil surface level itself (which is zero in the
-  case of the local CRS).
+  Logical. If `TRUE`, the XG3 values are calculated after having capped
+  the underlying water level measurements that are above soil surface
+  level to the soil surface level itself (zero in the local CRS).
+  Defaults to `FALSE`.
 
 - with_estimated:
 
-  Logical. If `TRUE` (the default), the XG3 values calculations also use
-  estimated (i.e. non-measured) water level data that are available in
-  the data warehouse.
+  Logical. If `TRUE`, the XG3 calculation includes estimated or
+  simulated (e.g. Menyanthes model) water level data alongside raw
+  measurements. Defaults to `FALSE`.
 
 - collect:
 
@@ -73,6 +76,19 @@ get_xg3(
   default), a `tbl_lazy` object is returned (lazy query). Hence the
   result can be further built upon before retrieving data with
   [`collect()`](https://dplyr.tidyverse.org/reference/compute.html).
+
+- drop_all_na:
+
+  Logical. If `TRUE`, rows where all XG3 values (`lg3`, `hg3`, and
+  `vg3`) are `NA` are filtered out of the result. Defaults to `FALSE` to
+  preserve all hydroyears with water level records even when all XG3
+  values are NA. Note: hydroyears with no water level records are never
+  included.
+
+- debug:
+
+  Logical. If `TRUE`, returns debug messages or objects. Defaults to
+  `FALSE`.
 
 ## Value
 
@@ -89,10 +105,6 @@ The suffix of the XG3 variables is either "`_lcl`" for
 
 The timeframe is a selection interval between a given first and last
 hydroyear.
-
-Note: the arguments `truncated` and `with_estimated` are currently not
-used. Currently, non-truncated values are returned, with usage of
-estimated values.
 
 (TO BE ADDED: What are XG3 values? What is a hydroyear? Why truncate,
 and why truncate by default? When to choose which `vert_crs`?)

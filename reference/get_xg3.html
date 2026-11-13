@@ -11,7 +11,7 @@ to a specified timeframe."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">watina</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,9 +58,11 @@ to a specified timeframe.</p>
 <span>  <span class="va">startyear</span>,</span>
 <span>  endyear <span class="op">=</span> <span class="fu">year</span><span class="op">(</span><span class="fu">now</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
 <span>  vert_crs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"local"</span>, <span class="st">"ostend"</span>, <span class="st">"both"</span><span class="op">)</span>,</span>
-<span>  truncated <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  with_estimated <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  collect <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  truncated <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  with_estimated <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  collect <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  drop_all_na <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -85,7 +87,8 @@ returned. Typically, this will be the object returned by
 
 
 <dt id="arg-endyear">endyear<a class="anchor" aria-label="anchor" href="#arg-endyear"></a></dt>
-<dd><p>Last hydroyear of the timeframe.</p></dd>
+<dd><p>Last hydroyear of the timeframe. Defaults to the value of the
+previous calendar year.</p></dd>
 
 
 <dt id="arg-vert-crs">vert_crs<a class="anchor" aria-label="anchor" href="#arg-vert-crs"></a></dt>
@@ -101,16 +104,16 @@ returned. The units are always meters.</p></dd>
 
 
 <dt id="arg-truncated">truncated<a class="anchor" aria-label="anchor" href="#arg-truncated"></a></dt>
-<dd><p>Logical. If <code>TRUE</code> (the default), the XG3 values are
-calculated after having set the underlying water level measurements that
-are above soil surface level to the soil surface level itself (which is
-zero in the case of the local CRS).</p></dd>
+<dd><p>Logical. If <code>TRUE</code>, the XG3 values are calculated
+after having capped the underlying water level measurements that are above
+soil surface level to the soil surface level itself (zero in the local CRS).
+Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-with-estimated">with_estimated<a class="anchor" aria-label="anchor" href="#arg-with-estimated"></a></dt>
-<dd><p>Logical. If <code>TRUE</code> (the default), the XG3 values
-calculations also use estimated (i.e. non-measured) water level data that
-are available in the data warehouse.</p></dd>
+<dd><p>Logical. If <code>TRUE</code>, the XG3 calculation includes
+estimated or simulated (e.g. Menyanthes model) water level data alongside
+raw measurements. Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-collect">collect<a class="anchor" aria-label="anchor" href="#arg-collect"></a></dt>
@@ -118,6 +121,19 @@ are available in the data warehouse.</p></dd>
 <code>FALSE</code> (the default), a <code>tbl_lazy</code> object is returned (lazy
 query). Hence the result can be further built upon before retrieving data
 with <code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect()</a></code>.</p></dd>
+
+
+<dt id="arg-drop-all-na">drop_all_na<a class="anchor" aria-label="anchor" href="#arg-drop-all-na"></a></dt>
+<dd><p>Logical. If <code>TRUE</code>, rows where all XG3 values
+(<code>lg3</code>, <code>hg3</code>, and <code>vg3</code>) are <code>NA</code> are filtered out of
+the result. Defaults to <code>FALSE</code> to preserve all hydroyears with water
+level records even when all XG3 values are NA. Note: hydroyears with no
+water level records are never included.</p></dd>
+
+
+<dt id="arg-debug">debug<a class="anchor" aria-label="anchor" href="#arg-debug"></a></dt>
+<dd><p>Logical. If <code>TRUE</code>, returns debug messages or objects.
+Defaults to <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -132,9 +148,6 @@ local <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The timeframe is a selection interval between a given first and last
 hydroyear.</p>
-<p>Note: the arguments <code>truncated</code> and <code>with_estimated</code> are currently
-not used. Currently, non-truncated values are returned, with usage of
-estimated values.</p>
 <p>(TO BE ADDED: What are XG3 values? What is a hydroyear? Why truncate, and why
 truncate by default? When to choose which <code>vert_crs</code>?)</p>
     </div>

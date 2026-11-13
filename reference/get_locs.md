@@ -22,7 +22,7 @@ get_locs(
   bbox = NULL,
   area_codes = NULL,
   loc_type = c("P", "S", "R", "N", "W", "D", "L", "B"),
-  loc_validity = c("VLD", "ENT"),
+  loc_validity = "VLD",
   loc_vec = NULL,
   collect = FALSE
 )
@@ -163,9 +163,9 @@ get_locs(
 
 - loc_validity:
 
-  Validation status of the location. Can be a vector with multiple
-  selected values, which must belong to `"VLD"`, `"ENT"`, `"DEL"` or
-  `"CLD"`. Defaults to `c("VLD", "ENT")`.
+  Validation status of the location. The new DWH only contains records
+  with status `"VLD"`. This argument is deprecated and will be removed
+  in a future version.
 
 - loc_vec:
 
@@ -190,8 +190,7 @@ returned.
 
 ## Details
 
-(TO BE ADDED: Explanation on the different available values of loc_type
-and loc_validity)
+(TO BE ADDED: Explanation on the different available values of loc_type)
 
 The lazy object returns a `loc_wid` variable, for further use in
 *remote* queries. However, don't use it in local objects: `loc_wid` is
@@ -353,7 +352,6 @@ mymask <-
   st_cast("GEOMETRYCOLLECTION")
 get_locs(
   watina,
-  loc_validity = "VLD",
   mask = mymask,
   buffer = 0
 )

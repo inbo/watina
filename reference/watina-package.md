@@ -38,16 +38,16 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Floris Vanderhaeghe <floris.vanderhaeghe@inbo.be>
-([ORCID](https://orcid.org/0000-0002-6378-6229))
+**Maintainer**: Droomelot De Gendt <droomelot.degendt@inbo.be>
+([ORCID](https://orcid.org/0009-0004-8532-1870))
 
 Authors:
 
-- Floris Vanderhaeghe <floris.vanderhaeghe@inbo.be>
-  ([ORCID](https://orcid.org/0000-0002-6378-6229))
-
 - Droomelot De Gendt <droomelot.degendt@inbo.be>
   ([ORCID](https://orcid.org/0009-0004-8532-1870))
+
+- Floris Vanderhaeghe <floris.vanderhaeghe@inbo.be>
+  ([ORCID](https://orcid.org/0000-0002-6378-6229))
 
 - Cécile Herr <cecile.herr@inbo.be>
   ([ORCID](https://orcid.org/0000-0002-2833-6046))

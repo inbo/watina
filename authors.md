@@ -2,10 +2,10 @@
 
 ## Authors
 
-- **Floris Vanderhaeghe**. Author, maintainer.
+- **Floris Vanderhaeghe**. Author.
   [](https://orcid.org/0000-0002-6378-6229)
 
-- **Droomelot De Gendt**. Author.
+- **Droomelot De Gendt**. Author, maintainer.
   [](https://orcid.org/0009-0004-8532-1870)
 
 - **Cécile Herr**. Author. [](https://orcid.org/0000-0002-2833-6046)
