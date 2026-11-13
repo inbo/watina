@@ -22,7 +22,7 @@ This release migrates the package to the new Watina data warehouse, `W0002_10_Wa
 
 - Separate warehouse query logic into internal helpers `build_locs_query()`, `build_xg3_query()` and `build_chem_query()` (#133, #134, #136).
 - Clarify `drop_all_na` documentation: hydroyears with water-level records can be returned with all XG3 values missing, but hydroyears without records are not returned (#140).
-- Update the static output of the vignettes to use the latest code changes and data form the new DWH.
+- Update the static output of the vignettes to use the latest code changes and data from the new DWH.
 
 # watina 0.6.0 (2026-11-12)
 
