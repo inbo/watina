@@ -18,7 +18,7 @@ library(dplyr)
 library(knitr)
 ```
 
-_General note: the below vignette contains frozen output of 2 Oct 2019._
+_General note: the below vignette contains frozen output of 12 Nov 2026._
 _This makes it possible to build the package with vignettes without access to the Watina data warehouse._
 
 ## Overview
@@ -33,11 +33,11 @@ mydata <-
   get_chem(watina, "1/1/2010")
 mydata %>%
   count()
-#> # Source:   lazy query [?? x 1]
+#> # A query:  ?? x 1
 #> # Database: Microsoft SQL Server
-#>       n
-#>   <int>
-#> 1  1916
+#>         n
+#>   <int64>
+#> 1    5025
 class(mydata)
 #> [1] "tbl_Microsoft SQL Server" "tbl_dbi"
 #> [3] "tbl_sql"                  "tbl_lazy"
@@ -47,37 +47,37 @@ mydata %>%
   collect() %>%
   as.data.frame()
 #>    loc_code       date lab_project_id lab_sample_id chem_variable   value
-#> 1   ZWAP033 2011-04-14              0         10431            Ca  19.690
-#> 2   ZWAP033 2011-04-14              0         10431            Cl  19.582
-#> 3   ZWAP033 2011-04-14              0         10431         CondF 425.000
-#> 4   ZWAP033 2011-04-14              0         10431         CondL 372.000
-#> 5   ZWAP033 2011-04-14              0         10431            Fe  60.809
-#> 6   ZWAP033 2011-04-14              0         10431          HCO3  25.169
-#> 7   ZWAP033 2011-04-14              0         10431             K   2.530
-#> 8   ZWAP033 2011-04-14              0         10431            Mg   7.000
-#> 9   ZWAP033 2011-04-14              0         10431            Na   5.330
-#> 10  ZWAP033 2011-04-14              0         10431         N-NH4   0.318
-#> 11  ZWAP033 2011-04-14              0         10431         N-NO2   0.015
-#> 12  ZWAP033 2011-04-14              0         10431         N-NO3   0.041
-#> 13  ZWAP033 2011-04-14              0         10431           pHF   6.297
-#> 14  ZWAP033 2011-04-14              0         10431           pHL   5.830
-#> 15  ZWAP033 2011-04-14              0         10431         P-PO4   0.016
-#>    unit  below_loq loq  elneutr
-#> 1   mg/l        NA -99 0.610484
-#> 2   mg/l        NA -99 0.610484
-#> 3  µS/cm        NA -99 0.610484
-#> 4  µS/cm        NA -99 0.610484
-#> 5   mg/l        NA -99 0.610484
-#> 6   mg/l        NA -99 0.610484
-#> 7   mg/l        NA -99 0.610484
-#> 8   mg/l        NA -99 0.610484
-#> 9   mg/l        NA -99 0.610484
-#> 10  mg/l        NA -99 0.610484
-#> 11  mg/l        NA -99 0.610484
-#> 12  mg/l        NA -99 0.610484
-#> 13  <NA>        NA -99 0.610484
-#> 14  <NA>        NA -99 0.610484
-#> 15  mg/l        NA -99 0.610484
+#> 1   ZWAP245 2025-05-07    I-25W002-05         42718          HCO3  11.407
+#> 2   ZWAP245 2025-05-07    I-25W002-05         42718         N-NO3  25.922
+#> 3   ZWAP245 2025-05-07    I-25W002-05         42718         CondF 436.000
+#> 4   ZWAP245 2025-05-07    I-25W002-05         42718            Na  15.159
+#> 5   ZWAP245 2025-05-07    I-25W002-05         42718            Si   6.499
+#> 6   ZWAP245 2025-05-07    I-25W002-05         42718             K  22.666
+#> 7   ZWAP245 2025-05-07    I-25W002-05         42718           pHL   5.760
+#> 8   ZWAP245 2025-05-07    I-25W002-05         42718         N-NO2   0.015
+#> 9   ZWAP245 2025-05-07    I-25W002-05         42718         N-NH4   0.020
+#> 10  ZWAP245 2025-05-07    I-25W002-05         42718         CondL 440.200
+#> 11  ZWAP245 2025-05-07    I-25W002-05         42718         P-PO4   0.015
+#> 12  ZWAP245 2025-05-07    I-25W002-05         42718            Ca  31.531
+#> 13  ZWAP245 2025-05-07    I-25W002-05         42718            Cl  24.559
+#> 14  ZWAP245 2025-05-07    I-25W002-05         42718            Al   0.252
+#> 15  ZWAP245 2025-05-07    I-25W002-05         42718           SO4  48.999
+#>     unit below_loq loq     elneutr
+#> 1   mg/l     FALSE -99 0.008499404
+#> 2   mg/l     FALSE -99 0.008499404
+#> 3  µS/cm     FALSE -99 0.008499404
+#> 4   mg/l     FALSE -99 0.008499404
+#> 5   mg/l     FALSE -99 0.008499404
+#> 6   mg/l     FALSE -99 0.008499404
+#> 7   <NA>     FALSE -99 0.008499404
+#> 8   mg/l      TRUE -99 0.008499404
+#> 9   mg/l      TRUE -99 0.008499404
+#> 10 µS/cm     FALSE -99 0.008499404
+#> 11  mg/l      TRUE -99 0.008499404
+#> 12  mg/l     FALSE -99 0.008499404
+#> 13  mg/l     FALSE -99 0.008499404
+#> 14  mg/l     FALSE -99 0.008499404
+#> 15  mg/l     FALSE -99 0.008499404
 ```
 
 The first and last year of the dataset are:
@@ -87,8 +87,8 @@ mydata %>%
   pull(date) %>%
   lubridate::year(.) %>%
   (function(x) c(firstyear = min(x), lastyear = max(x)))
-#> firstyear  lastyear
-#>      2011      2019
+#> firstyear  lastyear 
+#>      2011      2026 
 ```
 
 Let's suppose that we now want to select locations for which:
@@ -130,6 +130,8 @@ myresult <-
     conditions = conditions_df
   )
 myresult
+# Note: this output is outdated (created on 2 Oct 2019 as there is a known bug)
+
 #> # A tibble: 18 x 1
 #>    loc_code
 #>    <chr>
@@ -167,45 +169,46 @@ Here we only provide the `startdate`:
 ```{r}
 mylocs <- get_locs(watina, area_codes = "ZWA")
 mylocs %>% get_chem(watina, "1/1/2017")
-#> # Source:     lazy query [?? x 10]
-#> # Database:   Microsoft SQL Server
-#> # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code,
-#> #   loc_code, date, chem_variable
-#>    loc_code date       lab_project_id lab_sample_id chem_variable  value
-#>    <chr>    <date>     <chr>          <chr>         <chr>          <dbl>
-#>  1 ZWAP034  2018-10-29 0              40121         Al              0.05
-#>  2 ZWAP034  2018-10-29 0              40121         Ca              4.24
-#>  3 ZWAP034  2018-10-29 0              40121         Cl             14.4
-#>  4 ZWAP034  2018-10-29 0              40121         CondF         135
-#>  5 ZWAP034  2018-10-29 0              40121         CondL         120.
-#>  6 ZWAP034  2018-10-29 0              40121         Fe             19.9
-#>  7 ZWAP034  2018-10-29 0              40121         HCO3            5.97
-#>  8 ZWAP034  2018-10-29 0              40121         K               1.98
-#>  9 ZWAP034  2018-10-29 0              40121         Mg              1.36
-#> 10 ZWAP034  2018-10-29 0              40121         Mn              0.05
-#> # … with more rows, and 4 more variables: unit <chr>, below_loq <lgl>,
-#> #   loq <dbl>, elneutr <dbl>
+#> # A query:  ?? x 10
+#> # Database: Microsoft SQL Server
+#>    loc_code date       lab_project_id lab_sample_id chem_variable   value
+#>    <chr>    <date>     <chr>          <chr>         <chr>           <dbl>
+#>  1 ZWAP245  2025-05-07 I-25W002-05    42718         HCO3           11.4  
+#>  2 ZWAP245  2025-05-07 I-25W002-05    42718         N-NO3          25.9  
+#>  3 ZWAP245  2025-05-07 I-25W002-05    42718         CondF         436    
+#>  4 ZWAP245  2025-05-07 I-25W002-05    42718         Na             15.2  
+#>  5 ZWAP245  2025-05-07 I-25W002-05    42718         Si              6.50 
+#>  6 ZWAP245  2025-05-07 I-25W002-05    42718         K              22.7  
+#>  7 ZWAP245  2025-05-07 I-25W002-05    42718         pHL             5.76 
+#>  8 ZWAP245  2025-05-07 I-25W002-05    42718         N-NO2           0.015
+#>  9 ZWAP245  2025-05-07 I-25W002-05    42718         N-NH4           0.02 
+#> 10 ZWAP245  2025-05-07 I-25W002-05    42718         CondL         440.   
+#> # ℹ more rows
+#> # ℹ 4 more variables: unit <chr>, below_loq <lgl>, loq <dbl>,
+#> #   elneutr <dbl>
+#> # ℹ Use `print(n = ...)` to see more rows
 ```
 
 Retrieving the data locally:
 
 ```{r}
 mylocs %>% get_chem(watina, "1/1/2017", collect = TRUE)
-#> # A tibble: 608 x 10
-#>    loc_code date       lab_project_id lab_sample_id chem_variable  value
-#>    <chr>    <date>     <chr>          <chr>         <chr>          <dbl>
-#>  1 ZWAP034  2018-10-29 0              40121         Al              0.05
-#>  2 ZWAP034  2018-10-29 0              40121         Ca              4.24
-#>  3 ZWAP034  2018-10-29 0              40121         Cl             14.4
-#>  4 ZWAP034  2018-10-29 0              40121         CondF         135
-#>  5 ZWAP034  2018-10-29 0              40121         CondL         120.
-#>  6 ZWAP034  2018-10-29 0              40121         Fe             19.9
-#>  7 ZWAP034  2018-10-29 0              40121         HCO3            5.97
-#>  8 ZWAP034  2018-10-29 0              40121         K               1.98
-#>  9 ZWAP034  2018-10-29 0              40121         Mg              1.36
-#> 10 ZWAP034  2018-10-29 0              40121         Mn              0.05
-#> # … with 598 more rows, and 4 more variables: unit <chr>,
-#> #   below_loq <lgl>, loq <dbl>, elneutr <dbl>
+#> # A tibble: 3,480 × 10
+#>    loc_code date       lab_project_id lab_sample_id chem_variable   value
+#>    <chr>    <date>     <chr>          <chr>         <chr>           <dbl>
+#>  1 ZWAP009  2025-12-01 I-25W002-10    43051         Al              0.05 
+#>  2 ZWAP009  2025-12-01 I-25W002-10    43051         Ca             12.3  
+#>  3 ZWAP009  2025-12-01 I-25W002-10    43051         Cl              8.98 
+#>  4 ZWAP009  2025-12-01 I-25W002-10    43051         CondF         107.   
+#>  5 ZWAP009  2025-12-01 I-25W002-10    43051         CondL         105.   
+#>  6 ZWAP009  2025-12-01 I-25W002-10    43051         Fe              0.389
+#>  7 ZWAP009  2025-12-01 I-25W002-10    43051         HCO3           21.6  
+#>  8 ZWAP009  2025-12-01 I-25W002-10    43051         K               0.978
+#>  9 ZWAP009  2025-12-01 I-25W002-10    43051         Mg              1.41 
+#> 10 ZWAP009  2025-12-01 I-25W002-10    43051         Mn              0.083
+#> # ℹ 3,470 more rows
+#> # ℹ 4 more variables: unit <chr>, below_loq <lgl>, loq <dbl>, elneutr <dbl>
+#> # ℹ Use `print(n = ...)` to see more rows
 ```
 
 Note below, the different number of results when using non-default settings for filtering according to _electroneutrality_!
@@ -215,27 +218,27 @@ The default range of electroneutrality is from -0.1 to 0.1 (argument `en_range`)
 mylocs %>%
   get_chem(watina, "1/1/2017") %>%
   count()
-#> # Source:   lazy query [?? x 1]
+#> # A query:  ?? x 1
 #> # Database: Microsoft SQL Server
-#>       n
-#>   <int>
-#> 1   608
+#>         n
+#>   <int64>
+#> 1    3480
 mylocs %>%
   get_chem(watina, "1/1/2017", en_exclude_na = TRUE) %>%
   count()
-#> # Source:   lazy query [?? x 1]
+#> # A query:  ?? x 1
 #> # Database: Microsoft SQL Server
-#>       n
-#>   <int>
-#> 1   602
+#>         n
+#>   <int64>
+#> 1    3480
 mylocs %>%
   get_chem(watina, "1/1/2017", en_range = c(-1, 1)) %>%
   count()
-#> # Source:   lazy query [?? x 1]
+#> # A query:  ?? x 1
 #> # Database: Microsoft SQL Server
-#>       n
-#>   <int>
-#> 1   674
+#>         n
+#>   <int64>
+#> 1    3834
 ```
 
 With `en_exclude_na = TRUE`, samples for which no electroneutrality could be calculated are discarded!
@@ -250,35 +253,34 @@ set `en_fecond_threshold = NA`:
 mylocs %>%
   get_chem(watina, "1/1/2017", en_fecond_threshold = NA) %>%
   count()
-#> # Source:   lazy query [?? x 1]
+#> # A query:  ?? x 1
 #> # Database: Microsoft SQL Server
-#>       n
-#>   <int>
-#> 1   524
+#>         n
+#>   <int64>
+#> 1    2625
 ```
 
 Equivalence concentrations instead of mass concentrations can be returned with `conc_type = "eq"`:
 
 ```{r}
 mylocs %>% get_chem(watina, "1/1/2017", conc_type = "eq")
-#> # Source:     lazy query [?? x 10]
-#> # Database:   Microsoft SQL Server
-#> # Ordered by: area_code, loc_code, obswell_rank, area_code, loc_code,
-#> #   loc_code, date, chem_variable
-#>    loc_code date       lab_project_id lab_sample_id chem_variable   value
-#>    <chr>    <date>     <chr>          <chr>         <chr>           <dbl>
-#>  1 ZWAP034  2018-10-29 0              40121         Al            5.00e-2
-#>  2 ZWAP034  2018-10-29 0              40121         Ca            2.12e-1
-#>  3 ZWAP034  2018-10-29 0              40121         Cl            4.07e-1
-#>  4 ZWAP034  2018-10-29 0              40121         CondF         1.35e+2
-#>  5 ZWAP034  2018-10-29 0              40121         CondL         1.20e+2
-#>  6 ZWAP034  2018-10-29 0              40121         Fe            7.14e-1
-#>  7 ZWAP034  2018-10-29 0              40121         HCO3          9.78e-2
-#>  8 ZWAP034  2018-10-29 0              40121         K             5.07e-2
-#>  9 ZWAP034  2018-10-29 0              40121         Mg            1.12e-1
-#> 10 ZWAP034  2018-10-29 0              40121         Mn            5.00e-2
-#> # … with more rows, and 4 more variables: unit <chr>, below_loq <lgl>,
-#> #   loq <dbl>, elneutr <dbl>
+#> # A query:  ?? x 10
+#> # Database: Microsoft SQL Server
+#>    loc_code date       lab_project_id lab_sample_id chem_variable    value unit 
+#>    <chr>    <date>     <chr>          <chr>         <chr>            <dbl> <chr>
+#>  1 ZWAP245  2025-05-07 I-25W002-05    42718         HCO3           1.87e-1 meq/l
+#>  2 ZWAP245  2025-05-07 I-25W002-05    42718         N-NO3          1.85e+0 meq/l
+#>  3 ZWAP245  2025-05-07 I-25W002-05    42718         CondF          4.36e+2 µS/cm
+#>  4 ZWAP245  2025-05-07 I-25W002-05    42718         Na             6.59e-1 meq/l
+#>  5 ZWAP245  2025-05-07 I-25W002-05    42718         Si             9.25e-1 meq/l
+#>  6 ZWAP245  2025-05-07 I-25W002-05    42718         K              5.80e-1 meq/l
+#>  7 ZWAP245  2025-05-07 I-25W002-05    42718         pHL            5.76e+0 NA   
+#>  8 ZWAP245  2025-05-07 I-25W002-05    42718         N-NO2          1.07e-3 meq/l
+#>  9 ZWAP245  2025-05-07 I-25W002-05    42718         N-NH4          1.43e-3 meq/l
+#> 10 ZWAP245  2025-05-07 I-25W002-05    42718         CondL          4.40e+2 µS/cm
+#> # ℹ more rows
+#> # ℹ 3 more variables: below_loq <lgl>, loq <dbl>, elneutr <dbl>
+#> # ℹ Use `print(n = ...)` to see more rows
 ```
 
 Joining results to `mylocs`:
@@ -292,25 +294,28 @@ mylocs %>%
     .
   ) %>%
   collect()
-#> Joining, by = "loc_code"
-#> # A tibble: 765 x 20
-#>    loc_code area_code area_name      x      y loc_validitycode loc_validity
-#>    <chr>    <chr>     <chr>      <dbl>  <dbl> <chr>            <chr>
-#>  1 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
-#>  2 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
-#>  3 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
-#>  4 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
-#>  5 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
-#>  6 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
-#>  7 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
-#>  8 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
-#>  9 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
-#> 10 ZWAP141  ZWA       Zwarte B… 216785 198435 VLD              Gevalideerd
-#> # … with 755 more rows, and 13 more variables: loc_typecode <chr>,
-#> #   loc_typename <chr>, filterdepth <dbl>, soilsurf_ost <dbl>,
-#> #   date <date>, lab_project_id <chr>, lab_sample_id <chr>,
-#> #   chem_variable <chr>, value <dbl>, unit <chr>, below_loq <lgl>,
-#> #   loq <dbl>, elneutr <dbl>
+#> Joining with `by = join_by(loc_code)`
+#> # A tibble: 3,608 × 25
+#>    loc_code area_code area_name         x       y loc_validitycode loc_validity
+#>    <chr>    <chr>     <chr>         <dbl>   <dbl> <chr>            <chr>       
+#>  1 ZWAP001  ZWA       Zwarte Beek 216505  198076. VLD              Gevalideerd 
+#>  2 ZWAP002  ZWA       Zwarte Beek 216540  198130  VLD              Gevalideerd 
+#>  3 ZWAP003  ZWA       Zwarte Beek 216540  198110  VLD              Gevalideerd 
+#>  4 ZWAP004  ZWA       Zwarte Beek 216550  198090  VLD              Gevalideerd 
+#>  5 ZWAP005  ZWA       Zwarte Beek 214270  196870  VLD              Gevalideerd 
+#>  6 ZWAP006  ZWA       Zwarte Beek 214270  196880  VLD              Gevalideerd 
+#>  7 ZWAP007  ZWA       Zwarte Beek 214240  196900  VLD              Gevalideerd 
+#>  8 ZWAP008  ZWA       Zwarte Beek 214210  196920  VLD              Gevalideerd 
+#>  9 ZWAP009  ZWA       Zwarte Beek 215044. 197330. VLD              Gevalideerd 
+#> 10 ZWAP009  ZWA       Zwarte Beek 215044. 197330. VLD              Gevalideerd 
+#> # ℹ 3,598 more rows
+#> # ℹ 18 more variables: loc_typecode <chr>, loc_typename <chr>,
+#> #   obswell_statecode <chr>, obswell_state <chr>, soilsurf_ost <dbl>,
+#> #   measuringref_ost <dbl>, tubelength <dbl>, filterlength <dbl>,
+#> #   filterdepth <dbl>, date <date>, lab_project_id <chr>, lab_sample_id <chr>,
+#> #   chem_variable <chr>, value <dbl>, unit <chr>, below_loq <lgl>, loq <dbl>,
+#> #   elneutr <dbl>
+#> # ℹ Use `print(n = ...)` to see more rows
 ```
 
 
