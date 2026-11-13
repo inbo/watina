@@ -34,12 +34,12 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (\href{https://orcid.org/0000-0002-6378-6229}{ORCID})
+\strong{Maintainer}: Droomelot De Gendt \email{droomelot.degendt@inbo.be} (\href{https://orcid.org/0009-0004-8532-1870}{ORCID})
 
 Authors:
 \itemize{
-  \item Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (\href{https://orcid.org/0000-0002-6378-6229}{ORCID})
   \item Droomelot De Gendt \email{droomelot.degendt@inbo.be} (\href{https://orcid.org/0009-0004-8532-1870}{ORCID})
+  \item Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (\href{https://orcid.org/0000-0002-6378-6229}{ORCID})
   \item Cécile Herr \email{cecile.herr@inbo.be} (\href{https://orcid.org/0000-0002-2833-6046}{ORCID})
 }
 
