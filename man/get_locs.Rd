@@ -81,7 +81,7 @@ missing filterdepth \emph{and} \code{filterdepth_na = TRUE};
 well that fulfills the \code{filterdepth_range} and
 \code{filterdepth_na} criteria \emph{and} for which \code{soilsurf_ost}
 (soil surface level in the
-\href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
+\href{https://crs.bkg.bund.de/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
 height} CRS (EPSG \href{https://epsg.io/5710}{5710}) is not missing
 (unless \emph{all} retained wells have missing \code{soilsurf_ost});
 \item \code{"mean"}: aggregation not by selecting an individual observation
@@ -128,7 +128,12 @@ locations within the areas will be returned.}
 
 \item{loc_type}{Type of the location (mainly: the type of measurement
 device). Defaults to \code{"P"}, i.e. only groundwater piezometers are
-returned by default. Can be a vector with multiple selected values.}
+returned by default. Can be a vector with multiple selected values.
+Possible values: \code{"P"} (piezometer/water well), \code{"S"}
+(surface water level gauge), \code{"B"} (water level outside a piezometer),
+\code{"L"} (barometer), \code{"N"} (rain meter), \code{"W"}
+(irrigation well), \code{"R"} (surface water quality), \code{"X"} and
+\code{"Y"} (start and endpoint of a virtual profile through the landscape).}
 
 \item{loc_validity}{Validation status of the location. The new DWH only
 contains records with status \code{"VLD"}. This argument is deprecated and
@@ -147,7 +152,44 @@ By default, a \code{tbl_lazy} object. With \code{collect = TRUE} or
 with a specified \code{mask}, a local \code{\link[tibble]{tibble}} is
 returned.
 
-(TO BE ADDED: Explanation on the variable names of the returned object)
+\strong{Returned Fields}
+\itemize{
+\item \code{loc_wid} (int): numerical ID of the location in the DWH
+\item \code{loc_code} (chr): location code such as KESP001, ABES001, ...
+\item \code{area_code} (chr): a 3-letter code for the site such as KES, ABE, ...
+\item \code{area_name} (chr): full name of the site
+\item \code{x} (num): x coordinate (m) in epsg 31370 Belgian Lambert 72
+\item \code{y} (num): y coordinate (m) in epsg 31370 Belgian Lambert 72
+\item \code{loc_validitycode} (chr): validation status code of the location: code
+(VLD = valid)
+\item \code{loc_validity} (chr): validation status of the location
+(Gevalideerd = valid)
+\item \code{loc_typecode} (chr): type of the location (of measurement device): code
+\item \code{loc_typename} (chr): type of the location (of measurement device)
+\item \code{obswell_statecode} (chr): state of the physical observation well: code
+(ADJUS: replaced by new observation well, BROKN: broken not to be repaired,
+BROKR: broken to repair, CONFM: ok and measured, CONFN: ok but not measured,
+NOTFO: not found, NVT: n/a, ONBEK: unknown, REMOV: removed)
+\item \code{obswell_state} (chr): state of the physical observation well (Niet van
+toepassing: not applicable, OK - bemeten: ok and measured, OK - niet bemeten:
+ok but not measured, Onbekend: unknown, Onvindbaar: not found,
+Stuk - onherstelbaar: broken not to be repaired, Stuk - te herstellen:
+broken to repair, Vervangen door nieuwe peilpuntversie: replaced by new
+observation well, Verwijderd: removed)
+\item \code{soilsurf_ost} (num): level of the soil surface level in m in the
+\href{https://crs.bkg.bund.de/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
+height} CRS (EPSG \href{https://epsg.io/5710}{5710})
+\item \code{measuringref_ost} (num): level of the reference point for the measurements
+in m in the
+\href{https://crs.bkg.bund.de/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
+height} CRS (EPSG \href{https://epsg.io/5710}{5710})
+\item \code{tubelength} (num): total length of the tube in m (below + above ground)
+\item \code{filterlength} (num): length of the filter (perforated tube) in m
+\item \code{filterdepth} (num): depth of the filter in m, calculated as
+\code{filterdepth = tubelength - filterlength / 2 -
+  [tubelength part above soil surface]}.
+\item \code{filterdepth_guessed} (logical, optional): was the filter depth guessed?
+}
 }
 \description{
 Returns locations (and optionally, observation wells) from the \emph{Watina}
@@ -157,8 +199,6 @@ the location or the location's observation wells. Essential metadata are
 included in the result.
 }
 \details{
-(TO BE ADDED: Explanation on the different available values of loc_type)
-
 The lazy object returns a \code{loc_wid} variable, for further use in
 \emph{remote} queries. However, don't use it in local objects: \code{loc_wid}
 is not to be regarded as stable. Therefore, \code{collect = TRUE} does not
