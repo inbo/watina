@@ -1,4 +1,4 @@
-# watina 1.0.0 (2026-11-13)
+# watina (development version)
 
 Note: transfer of maintainership from Floris Vanderhaeghe to Droomelot De Gendt (<droomelot.degendt@inbo.be>).
 
