@@ -36,7 +36,7 @@ reference system (CRS) of the XG3 water levels. Either \code{"local"} (the
 default, i.e. returned values are relative to soil surface level, with
 positive values = above soil surface), or \code{"ostend"} (values are from
 the CRS
-\href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
+\href{https://crs.bkg.bund.de/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
 height} (EPSG \href{https://epsg.io/5710}{5710}), also known as 'TAW' or
 'DNG'), or \code{"both"}, where the values for both CRS options are
 returned. The units are always meters.}
