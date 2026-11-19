@@ -7,8 +7,6 @@
 #' the location or the location's observation wells. Essential metadata are
 #' included in the result.
 #'
-#' (TO BE ADDED: Explanation on the different available values of loc_type)
-#'
 #' The lazy object returns a \code{loc_wid} variable, for further use in
 #' \emph{remote} queries. However, don't use it in local objects: \code{loc_wid}
 #' is not to be regarded as stable. Therefore, \code{collect = TRUE} does not
@@ -87,7 +85,7 @@
 #'      well that fulfills the \code{filterdepth_range} and
 #'      \code{filterdepth_na} criteria \emph{and} for which \code{soilsurf_ost}
 #'      (soil surface level in the
-#'      \href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
+#'      \href{https://crs.bkg.bund.de/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
 #'      height} CRS (EPSG \href{https://epsg.io/5710}{5710}) is not missing
 #'      (unless \emph{all} retained wells have missing \code{soilsurf_ost});
 #'   \item \code{"mean"}: aggregation not by selecting an individual observation
@@ -129,6 +127,11 @@
 #' @param loc_type Type of the location (mainly: the type of measurement
 #'   device). Defaults to \code{"P"}, i.e. only groundwater piezometers are
 #'   returned by default. Can be a vector with multiple selected values.
+#'   Possible values: \code{"P"} (piezometer/water well), \code{"S"}
+#'   (surface water level gauge), \code{"B"} (water level outside a piezometer),
+#'   \code{"L"} (barometer), \code{"N"} (rain meter), \code{"W"}
+#'   (irrigation well), \code{"R"} (surface water quality), \code{"X"} and
+#'   \code{"Y"} (start and endpoint of a virtual profile through the landscape).
 #' @param loc_validity Validation status of the location. The new DWH only
 #'   contains records with status \code{"VLD"}. This argument is deprecated and
 #'   will be removed in a future version.
@@ -143,7 +146,43 @@
 #' with a specified \code{mask}, a local \code{\link[tibble]{tibble}} is
 #' returned.
 #'
-#' (TO BE ADDED: Explanation on the variable names of the returned object)
+#' **Returned Fields**
+#'
+#' - `loc_wid` (int): numerical ID of the location in the DWH
+#' - `loc_code` (chr): location code such as KESP001, ABES001, ...
+#' - `area_code` (chr): a 3-letter code for the site such as KES, ABE, ...
+#' - `area_name` (chr): full name of the site
+#' - `x` (num): x coordinate (m) in epsg 31370 Belgian Lambert 72
+#' - `y` (num): y coordinate (m) in epsg 31370 Belgian Lambert 72
+#' - `loc_validitycode` (chr): validation status code of the location: code
+#' (VLD = valid)
+#' - `loc_validity` (chr): validation status of the location
+#' (Gevalideerd = valid)
+#' - `loc_typecode` (chr): type of the location (of measurement device): code
+#' - `loc_typename` (chr): type of the location (of measurement device)
+#' - `obswell_statecode` (chr): state of the physical observation well: code
+#' (ADJUS: replaced by new observation well, BROKN: broken not to be repaired,
+#' BROKR: broken to repair, CONFM: ok and measured, CONFN: ok but not measured,
+#' NOTFO: not found, NVT: n/a, ONBEK: unknown, REMOV: removed)
+#' - `obswell_state` (chr): state of the physical observation well (Niet van
+#' toepassing: not applicable, OK - bemeten: ok and measured, OK - niet bemeten:
+#' ok but not measured, Onbekend: unknown, Onvindbaar: not found,
+#' Stuk - onherstelbaar: broken not to be repaired, Stuk - te herstellen:
+#' broken to repair, Vervangen door nieuwe peilpuntversie: replaced by new
+#' observation well, Verwijderd: removed)
+#' - `soilsurf_ost` (num): level of the soil surface level in m in the
+#'      \href{https://crs.bkg.bund.de/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
+#'      height} CRS (EPSG \href{https://epsg.io/5710}{5710})
+#' - `measuringref_ost` (num): level of the reference point for the measurements
+#'      in m in the
+#'      \href{https://crs.bkg.bund.de/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
+#'      height} CRS (EPSG \href{https://epsg.io/5710}{5710})
+#' - `tubelength` (num): total length of the tube in m (below + above ground)
+#' - `filterlength` (num): length of the filter (perforated tube) in m
+#' - `filterdepth` (num): depth of the filter in m, calculated as
+#' \code{filterdepth = tubelength - filterlength / 2 -
+#'   [tubelength part above soil surface]}.
+#' - `filterdepth_guessed` (logical, optional): was the filter depth guessed?
 #'
 #' @family functions to query the data warehouse
 #'
@@ -719,10 +758,68 @@ build_locs_query <- function(
 #' to a specified timeframe.
 #'
 #' The timeframe is a selection interval between a given first and last
-#' hydroyear.
+#' hydroyear. Note that a hydrological year begins on April 1 and ends on
+#' March 31 (so hydrological year 2000 = Apr 1 2020 to March 31 2021).
 #'
-#' (TO BE ADDED: What are XG3 values? What is a hydroyear? Why truncate, and why
-#' truncate by default? When to choose which \code{vert_crs}?)
+#' **More information about the XG3**
+#'
+#' The term XG3 refers to specific groundwater level measurements that can be
+#' calculated for each hydrological year.
+#'
+#' Groundwater level dynamics can be described by 'characteristic average
+#' groundwater levels' (also called GXG in Dutch).
+#' These are long-term averages of the (highest,lowest, and spring)
+#' groundwater levels.
+#' The so-called XG3 are used for the calculation of these characteristic
+#' average groundwater levels.
+#'
+#' XG3 is a general term for:
+#' \itemize{
+#' \item HG3: the 3 highest groundwater levels measured in a given hydrological
+#' year with at least 14 days between two measurements,
+#' \item LG3: the 3 lowest groundwater levels measured in a given hydrological
+#' year with at least 14 days between two measurements,
+#' \item VG3: 3 groundwater levels measured as closed as possible to April 1,
+#' in the period between March 1 and May 1, with at least 12 days between two
+#' measurements. A VG3 can therefore consist of measurements from both the
+#' current and the previous hydrological year.
+#' }
+#'
+#' An XG3 calculation is only performed if the following quality criteria are
+#' met:
+#' \itemize{
+#' \item there are at least 20 measurements per hydrological year,
+#' \item there are no more than 30 days between two measurements.
+#' }
+#'
+#' **Which \code{vert_crs} should you use?**
+#'
+#' This function can retrieve water levels in m relative to ground level
+#' (\code{"local"}) or in m relative to a standard sea level measured in Ostend.
+#' (\code{"ostend"}). Using m relative to ground level is helpful for ecological
+#' or agricultural applications, for instance: can the root zone come into
+#' contact with groundwater?
+#' The option (\code{"ostend"}) can be used to understand the relationships
+#' between water levels throughout the landscape, for instance: are the water
+#' levels in a stream lower than the groundwater levels?
+#'
+#' **When should you use truncated XG3?**
+#'
+#' When we measure water levels in a piezometer, we actually do not measure the
+#' groundwater level itself, but rather the hydraulic head at the filter level
+#' (perforated part). The hydraulic head measures how high water will rise in
+#' a well or tube (a piezometer) due to a combination of water pressure and
+#' elevation.
+#' The difference between groundwater level and hydraulic head can be
+#' significant if the filter of the piezometer is deep and/or if there is a lot
+#' of seepage/infiltration (vertical groundwater movement).
+#' Truncated groundwater levels (that is: level measurements that are above
+#' soil surface level are capped to the soil surface level itself) can be used
+#' when you are interested in the actual groundwater levels and if you know that
+#' there is a significant difference between the measured head and this
+#' groundwater level, for instance when the groundwater head in a seepage
+#' area rises much higher than the ground level even though the ground level
+#' isn't actually flooded.
 #'
 #' @param locs A \code{tbl_lazy} object or a data frame, with at least a column
 #'   \code{loc_code} that defines the locations for which values are to be
@@ -736,7 +833,7 @@ build_locs_query <- function(
 #'   default, i.e. returned values are relative to soil surface level, with
 #'   positive values = above soil surface), or \code{"ostend"} (values are from
 #'   the CRS
-#'   \href{http://crs.bkg.bund.de/crseu/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
+#'   \href{https://crs.bkg.bund.de/crs/eu-description.php?crs_id=Y0JFX09PU1QrJTJGK1VOQ09S}{Ostend
 #'   height} (EPSG \href{https://epsg.io/5710}{5710}), also known as 'TAW' or
 #'   'DNG'), or \code{"both"}, where the values for both CRS options are
 #'   returned. The units are always meters.
@@ -760,7 +857,13 @@ build_locs_query <- function(
 #' @return By default, a \code{tbl_lazy} object. With \code{collect = TRUE}, a
 #' local \code{\link[tibble]{tibble}} is returned.
 #'
-#' (TO BE ADDED: Explanation on the variable names of the returned object)
+#'**Returned Fields**
+#'
+#' - `loc_code` (chr): location code such as KESP001, ABEP001, ...
+#' - `hydroyear` (int): hydrological year
+#' - `lg3_suffix` (num): average of the LG3 (lowest water levels) in m
+#' - `hg3_suffix` (num): average of the HG3 (highest water levels) in m
+#' - `vg3_suffix` (num): average of the VG3 (spring water levels) in m
 #'
 #' The suffix of the XG3 variables is either "\code{_lcl}" for \code{vert_crs =
 #' "local"} or "\code{_ost}" for \code{vert_crs = "ostend"}.
