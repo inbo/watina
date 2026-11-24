@@ -25,23 +25,11 @@
 #' @export
 #' @importFrom inbodb connect_inbo_dbase
 connect_watina <- function(scheduled_disconnect = FALSE) {
-  con_watina <- connect_inbo_dbase("W0002_10_Watina")
+  con_watina <- inbodb::connect_inbo_dbase("W0002_10_Watina")
 
   # optionally register disconnect for finalization
   if (scheduled_disconnect) {
-    # this will schedule dbDisconnect for the moment that the global
-    # environment is cleaned up at the end of an R session.
-    # more info: https://stackoverflow.com/a/41179916 or `?reg.finalizer`
-    reg.finalizer(
-      .GlobalEnv,
-      function(e) {
-        if (DBI::dbIsValid(con_watina)) {
-          DBI::dbDisconnect(con_watina)
-          message("WATINA database connection gracefully disconnected.")
-        }
-      },
-      onexit = TRUE
-    )
+    schedule_disconnect(con_watina)
   }
 
   return(con_watina)
@@ -59,3 +47,27 @@ connect_watina <- function(scheduled_disconnect = FALSE) {
 #' @importFrom inbodb dbDisconnect
 #' @export dbDisconnect
 NULL
+
+
+#' Disconnect a database object when the R session ends.
+#'
+#' This will schedule `dbDisconnect` for the moment that the global
+#' environment is cleaned up at the end of an R session.
+#' more info: `?reg.finalizer`
+#'
+#' @param con a database connection
+#'
+schedule_disconnect <- function(con) {
+
+  reg.finalizer(
+    .GlobalEnv,
+    function(e) {
+      if (DBI::dbIsValid(con)) {
+        DBI::dbDisconnect(con)
+        message("WATINA database connection gracefully disconnected.")
+      }
+    },
+    onexit = TRUE
+  )
+
+}
