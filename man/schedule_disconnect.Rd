@@ -14,3 +14,4 @@ This will schedule `dbDisconnect` for the moment that the global
 environment is cleaned up at the end of an R session.
 more info: `?reg.finalizer`
 }
+\keyword{internal}

@@ -56,6 +56,7 @@ NULL
 #' more info: `?reg.finalizer`
 #'
 #' @param con a database connection
+#' @keywords internal
 #'
 schedule_disconnect <- function(con) {
 
