@@ -4,7 +4,13 @@
 \alias{connect_watina}
 \title{Connect to the INBO Watina data warehouse}
 \usage{
-connect_watina()
+connect_watina(scheduled_disconnect = FALSE)
+}
+\arguments{
+\item{scheduled_disconnect}{provides the option to schedule a database
+disconnect which will trigger at the end of an R session. This
+prevents open connections loading the server after this client
+has finished.}
 }
 \value{
 A \code{DBIConnection} object.
