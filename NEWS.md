@@ -1,5 +1,7 @@
 # watina (development version)
 
+# watina 1.0.0 (2026-11-13)
+
 Note: transfer of maintainership from Floris Vanderhaeghe to Droomelot De Gendt (<droomelot.degendt@inbo.be>).
 
 This release migrates the package to the new Watina data warehouse, `W0002_10_Watina`.
