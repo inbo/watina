@@ -697,6 +697,7 @@ build_locs_query <- function(
       loc_typename = .data$MeetpuntType,
       obswell_code = .data$PeilpuntCode,
       obswell_rank = .data$PeilpuntVersie,
+      obswell_validity = .data$PeilpuntStatusCode,
       obswell_statecode = .data$PeilpuntToestandCode,
       obswell_state = .data$PeilpuntToestandNaam,
       obswell_installdate = .data$PeilpuntPlaatsing,
