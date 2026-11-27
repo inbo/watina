@@ -21,6 +21,7 @@ test_that("get_locs filters locations correctly using standard attributes", {
 
     # Default validity - locations and observations
     locs <- get_locs(watina, area_codes = c("KAL", "ZWA"), loc_validity = "VLD")
+    expect_true("obswell_validity" %in% colnames(locs))
     expect_locs(locs, "KAL_ZWA_locations")
 
     locs <- get_locs(
@@ -29,6 +30,7 @@ test_that("get_locs filters locations correctly using standard attributes", {
       loc_validity = "VLD",
       obswells = TRUE
     )
+    expect_true("obswell_validity" %in% colnames(locs))
     expect_locs(locs, "KAL_ZWA_observation_wells")
 
     # Area and location type filters
